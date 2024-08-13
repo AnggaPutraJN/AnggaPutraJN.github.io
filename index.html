@@ -40,6 +40,69 @@
     .ukuranfont {
       font-size: medium;
     }
+
+    .containeranimasi {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.boxanimasi {
+    position: relative;
+}
+
+.boxanimasi h7{
+ color: #fff;
+ font-size: 4em;
+ margin-top: 15px;
+ position: absolute;
+ transform: translate(-50%, -50%);
+}
+
+.boxanimasi h7:nth-child(1){
+  color: transparent;
+  -webkit-text-stroke: 2px #03a9f4;
+}
+
+.boxanimasi h7:nth-child(2){
+    color: #03a9f4;
+    animation: animated 4s ease-in-out infinite;
+}
+
+
+@keyframes animated {
+    0%, 100%{
+        clip-path: polygon(
+            0% 45%,
+            16% 44%,
+            33% 50%,
+            54% 60%,
+            70% 61%,
+            84% 59%,
+            100% 52%,
+            100% 100%,
+            0% 100%
+        );
+    }
+
+    50% {
+        clip-path: polygon(
+            0% 60%,
+            15% 65%,
+            34% 66%,
+            51% 62%,
+            67% 50%,
+            84% 45%,
+            100% 46%,
+            100% 100%,
+            0% 100%
+        );
+    }
+}
+
   </style>
   <!-- =======================================================
   * Template Name: Arsha
@@ -132,9 +195,13 @@
   <!-- Portfolio Section -->
   <section id="itemlist" class="portfolio section">
     <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
+    <div class="container section-title m" data-aos="fade-up">
       <h2>ITEM LIST</h2>
-      <p>JATI STORE LIST</p>
+      <div class="container-animasi">
+        <div class="boxanimasi">
+          <h7>JatiStore</h7>
+          <h7>JatiStore</h7>
+        </div></div>
     </div><!-- End Section Title -->
     <div class="container">
       <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
@@ -142,12 +209,16 @@
           <li data-filter="*" class="filter-active">All</li>
           <li data-filter=".filter-nf">Netflix</li>
           <li data-filter=".filter-yt">Youtube</li>
+          <li data-filter=".filter-bs">Bstation</li>
           <li data-filter=".filter-cv">Canva</li>
+          <li data-filter=".filter-sf">Spotify</li>
         </ul><!-- End Portfolio Filters -->
         <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+
+          <!--Netflix List-->
           <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-nf">
             <img src="assets/img/logo/netflix.png" class="img-fluid" alt="">
-            <div class="portfolio-info mt-4">
+            <div class="portfolio-info">
               <h4>Netflix</h4>
               <p>SHARING 1 PROFIL 1 USER (Tidak Berpin)
                 <br />1 BULAN: <sup>Rp</sup>20.000 <a
@@ -228,10 +299,11 @@
               </p>
             </div>
           </div><!-- End Portfolio Item -->
-
+          <!--END Netflix List-->
           
 
           
+          <!--Youtube List-->
           <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-yt">
             <img src="assets/img/logo/youtube.jpg" class="img-fluid" alt="">
             <div class="portfolio-info">
@@ -246,8 +318,10 @@
               </p>
             </div>
           </div><!-- End Portfolio Item -->
-
+          <!--End Youtube List-->
           
+          
+          <!--Canva List-->
           <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-cv">
             <img src="assets/img/logo/canva.jpg" class="img-fluid" alt="">
             <div class="portfolio-info">
@@ -280,6 +354,32 @@
               </p>
             </div>
           </div><!-- End Portfolio Item -->
+          <!--End Canva List-->
+
+
+          <!--BSTATION PREMIUM List-->
+          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-bs">
+            <img src="assets/img/logo/bstation.jpg" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>Bstation Premium</h4>
+              <p>SHARING
+                <br />1 BULAN : <sup>Rp</sup>10.000 <a
+                  href="https://api.whatsapp.com/send/?phone=6282286344446&text=Halo%2C+Mas+Mau+Beli+Bstation+Premium+1+BULAN+%28Rp+10.000%29"
+                  class="ukuranfont">Beli</a>
+                  <br />3 BULAN : <sup>Rp</sup>13.000 <a
+                    href="https://api.whatsapp.com/send/?phone=6282286344446&text=Halo%2C+Mas+Mau+Beli+Bstation+Premium+1+BULAN+%28Rp+13.000%29"
+                    class="ukuranfont">Beli</a>
+                    <br />1 Tahun : <sup>Rp</sup>16.000 <a
+                      href="https://api.whatsapp.com/send/?phone=6282286344446&text=Halo%2C+Mas+Mau+Beli+Bstation+Premium+1+BULAN+%28Rp+16.000%29"
+                      class="ukuranfont">Beli</a>
+                    <br />Garansi 6 Bulan
+              </p>
+            </div>
+          </div><!-- End Portfolio Item -->
+          <!--End BSTATION PREMIUM List-->
+
+
+
 
         </div><!-- End Portfolio Container -->
       </div>
