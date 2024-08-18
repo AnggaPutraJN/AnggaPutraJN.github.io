@@ -1,3 +1,170 @@
+/*Card 3D*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,800;1,800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    transition: 0.3s ease-in-out;
+} 
+
+body {
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    width: 350px;
+    height: 340px;
+    border-radius: 12px;
+    transform-style: preserve-3d;
+}
+.card.blue {
+    background: linear-gradient(135deg, #09AFFF, #125575);
+}
+
+.card.blue .title {
+  background: #039BE5;
+}
+.card.netflix {
+    background: linear-gradient(135deg, #db0000, #831010);
+}
+.card.netflix .title {
+  background: #564d4d;
+}
+
+
+.card.youtube {
+  background: linear-gradient(135deg, #db0000, #f0ecec);
+}
+.card.youtube .title {
+background: #2e2b35;
+}
+.card.bstation {
+  background: linear-gradient(135deg, #47b2e6, #f0ecec);
+}
+.card.bstation .title {
+background: #2e2b35;
+}
+
+.card.canva {
+  background: linear-gradient(135deg, #47b2e6, #6939e9);
+}
+.card.canva .title {
+background: #2e2b35;
+}
+.card .product {
+    height: 85%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+}
+.product .titlejualan {
+    font-size: 80px;
+    line-height: 80px;
+    font-style: italic;
+    opacity: 0.25;
+}
+.product .sneakers {
+    font-size: 35px;
+    line-height: 35px;
+    font-style: italic;
+    opacity: 0.7;
+}
+.product img {
+    height: 180px;
+    position: absolute;
+    top: 60%;
+    left: 28%;
+    transform: translate3d(-35%, -45%, 0);
+    pointer-events: none;
+}
+.product .price {
+    background: rgba(255, 255, 255, 0.15);
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: -20px;
+    padding: 5px 20px;
+    border-radius: 99px 0 0 99px;
+}
+
+.card .title {
+    height: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 12px 12px;
+    transform-style: preserve-3d;
+}
+
+.card:hover .product img {
+    transform: translate3d(-50%, -40%, 80px);
+}
+.card:hover .product .titlejualan {
+    transform: translateZ(40px);
+    opacity: 1;
+}
+.card:hover .product .sneakers {
+    transform: translateZ(40px);
+    opacity: 0.85;
+}
+.card:hover .product .price {
+    transform: translateZ(20px);
+}
+.card:hover .title h2 {
+    transform: translateZ(20px);
+    color: #ff0b0b;
+}
+.card .title h2 {
+    transform: translateZ(20px);
+    color: #b41c1c;
+}
+
+
+/*Batas*/
+.batas {
+  width: 500%;
+  height: 5px; /* Tingginya kini 5px, sesuaikan sesuai keinginan */
+  background-color: #ccc;
+  margin: 20px 0;
+  border-top: 2px dashed #ccc;
+}
+
+.judul-batas {
+  text-align: center;
+  margin-bottom: 10px; /* Sesuaikan margin bawah judul */
+}
+
+.judul-filter {
+  text-align: center;
+  margin-top: 5px;
+}
+
+.judul-filter:hover {
+  background: #039BE5;
+  border-radius: 20px 20px 15px 15px;
+  transform-style: preserve-3d;
+  height: 15%;
+}
+
+.card .titlenya {
+  height: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 0 12px 12px;
+  transform-style: preserve-3d;
+}
+.card .titlenya h6 {
+    transform: translateZ(20px);
+    color: #b41c1c;
+}
 /**
 * Template Name: Arsha
 * Template URL: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/
@@ -10,6 +177,146 @@
 # Font & Color Variables
 # Help: https://bootstrapmade.com/color-system/
 --------------------------------------------------------------*/
+/*Terbaru*/
+/* Hitung Mundur Pernikahan - Styling */
+#countdown {
+  font-size: 2.5rem; /* Menggunakan ukuran font yang relatif besar */
+  text-align: center;
+  margin-top: 30px;  /* Memberikan jarak dari elemen di atasnya */
+  font-family: var(--heading-font); /* Menggunakan font heading untuk tampilan yang lebih tegas */
+  color: var(--accent-color); /* Menggunakan warna aksen untuk menonjolkan hitung mundur */
+}
+
+#countdown span { /* Styling untuk setiap bagian waktu (hari, jam, dll.) */
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--surface-color); /* Menggunakan warna surface sebagai latar belakang */
+  border-radius: 5px;
+  margin: 0 5px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* Menambahkan sedikit bayangan */
+}
+
+
+
+/* Kirim Hadiah - Styling */
+/* Kirim Hadiah - Styling */
+.kirim-hadiah {
+  background-color: var(--surface-color); 
+  padding: 30px;
+  border-radius: 10px; 
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1); 
+}
+
+.kirim-hadiah h2 {
+  color: var(--accent-color); 
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.kirim-hadiah p {
+  color: var(--default-color);
+  margin-bottom: 15px;
+}
+
+.kirim-hadiah .opsi-kirim {
+  display: flex; 
+  justify-content: space-around; 
+  margin-bottom: 20px;
+}
+
+.kirim-hadiah .opsi {
+  text-align: center; 
+  display: flex; 
+  align-items: center; 
+  margin-bottom: 10px; 
+}
+
+.kirim-hadiah .opsi input[type="radio"] {
+  display: none; 
+}
+
+.kirim-hadiah .opsi .lingkaran {
+  display: inline-block;
+  width: 15px; 
+  height: 15px;
+  border-radius: 50%;
+  background-color: var(--surface-color); 
+  margin-right: 10px; 
+  vertical-align: middle; 
+  border: 2px solid var(--accent-color); 
+  cursor: pointer; 
+}
+
+.kirim-hadiah .opsi input[type="radio"]:checked + .lingkaran {
+  background-color: var(--accent-color); 
+}
+
+.kirim-hadiah .rekening-bank {
+  border: 1px solid var(--accent-color); 
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.kirim-hadiah .rekening-bank ul {
+  list-style: none;
+  padding: 0;
+}
+
+.kirim-hadiah .rekening-bank li {
+  margin-bottom: 10px;
+}
+
+.kirim-hadiah .rekening-bank strong {
+  font-weight: bold;
+}
+
+.kirim-hadiah .direct-transfer {
+  display: inline-block;
+  padding: 10px 30px;
+  background-color: var(--accent-color);
+  color: var(--contrast-color);
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s; 
+}
+
+.kirim-hadiah .direct-transfer:hover {
+  background-color: color-mix(in srgb, var(--accent-color), transparent 15%);
+}
+
+.kirim-hadiah button {
+  background-color: transparent;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  text-decoration: underline; 
+  font-size: inherit; 
+  padding: 0; 
+}
+
+/* Hitung Mundur Pernikahan - Styling */
+#countdown {
+font-size: 2.5rem; 
+text-align: center;
+margin-top: 30px;  
+font-family: var(--heading-font);
+color: var(--accent-color); 
+}
+
+#countdown span { 
+display: inline-block;
+padding: 10px 20px;
+background-color: var(--surface-color);
+border-radius: 5px;
+margin: 0 5px;
+box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); 
+}
+
+
+/* End My Ediy*/
+
 /* Fonts */
 :root {
   --default-font: "Open Sans",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -1358,6 +1665,7 @@ section,
 .portfolio .portfolio-item {
   position: relative;
   overflow: hidden;
+
 }
 
 .portfolio .portfolio-item .portfolio-info {
