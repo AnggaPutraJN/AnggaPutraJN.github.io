@@ -35,8 +35,33 @@ body {
 .card.netflix .title {
   background: #564d4d;
 }
-  
+.portfolio .portfolio-filters-netflix {
+  padding: 0;
+  margin: 0 auto 20px auto;
+  cursor: pointer;
+}
 
+
+
+.card .titlenya {
+  height: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 0 12px 12px;
+  transform-style: preserve-3d;
+  background-color: #2e2b35;
+  margin-top: 138px;
+  list-style: circle;
+}
+.card .titlenya h6 {
+    transform: translateZ(20px);
+    color: #ad2c2c;
+}
+.card .titlenya:hover h6 {
+    transform: translateZ(20px);
+    color: #ff0000;
+}
 .card.youtube {
   background: linear-gradient(135deg, #db0000, #f0ecec);
 }
@@ -66,8 +91,76 @@ background: #2e2b35;
 }
 
 
+/*MLBB COLOR*/
+
+.card:hover .title-mlbb h2 {
+  transform: translateZ(20px);
+  font-size: 30px;
+  color: #37c6f2;
+}
+.card .title-mlbb h2 {
+  transform: translateZ(20px);
+  font-size: 25px;
+  color: #18596d;
+}
+.card .title-mlbb {
+    height: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 12px 12px;
+    transform-style: preserve-3d;
+}
+
+.card.mlbb {
+  background: linear-gradient(135deg, #37c6f2, #252525);
+}
+
+.card.mlbb .title-mlbb {
+background: #2e2b35;
+}
+
+.product .mlbbnya {
+  font-size: 35px;
+  line-height: 35px;
+  font-style: italic;
+  opacity: 0.7;
+  color: #a30101e1;
+}
+.card:hover .product .mlbbnya {
+  transform: translateZ(40px);
+  opacity: 0.85;
+  color: #ff0202;
+
+}
+.product .keteranganmlbb {
+  font-style: italic;
+  opacity: 0.7;
+  color: #a30101e1;
+}
+.card:hover .product .keteranganmlbb {
+  transform: translateZ(40px);
+  font-size: 25px;
+  opacity: 0.85;
+  color: #ff0202;
+
+}
 
 
+.card:hover .product .harga-mlbb {
+  transform: translateZ(20px);
+  font-size: 20px;
+}
+
+
+.product .harga-mlbb {
+  background: rgba(255, 255, 255, 0.15);
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: -20px;
+  padding: 5px 20px;
+  border-radius: 99px 0 0 99px;
+}
 
 .card .product {
     height: 85%;
@@ -89,6 +182,10 @@ background: #2e2b35;
     line-height: 35px;
     font-style: italic;
     opacity: 0.7;
+}
+.card:hover .product .sneakers {
+    transform: translateZ(40px);
+    opacity: 0.85;
 }
 .product img {
     height: 180px;
@@ -123,10 +220,6 @@ background: #2e2b35;
     transform: translateZ(40px);
     opacity: 1;
 }
-.card:hover .product .sneakers {
-    transform: translateZ(40px);
-    opacity: 0.85;
-}
 .card:hover .product .price {
     transform: translateZ(20px);
 }
@@ -138,6 +231,47 @@ background: #2e2b35;
     transform: translateZ(20px);
     color: #b41c1c;
 }
+
+
+/*MLBB LIST*/
+.card.mlbb-list {
+  background: linear-gradient(135deg, #92d7ec, #37c6f2);
+}
+.portfolio .portfolio-filters-list-mlbb {
+  padding: 0;
+  margin:  35px ;
+  list-style: none;
+  list-style-type: circle;
+  margin-top: -2px;
+}
+
+.portfolio .portfolio-filters-list-mlbb:hover {
+  padding: 0;
+  margin:  35px ;
+  list-style: none;
+  list-style-type: circle;
+  transform: translateZ(20px);
+  font-size: 20px;
+  margin-top: -2px;
+  cursor: pointer;
+}
+
+.deskripsi-mlbb{
+  margin-top: -25px;
+  color: red;
+  font-size: 16px;
+  margin-left: 18px;
+}
+
+
+.judul-filter-mlbb-list {
+  text-align: center;
+  margin-top: 5px;
+  background: #039BE5;
+}
+
+
+
 
 
 /*Batas*/
@@ -163,21 +297,9 @@ background: #2e2b35;
   background: #039BE5;
   border-radius: 20px 20px 15px 15px;
   transform-style: preserve-3d;
-  height: 15%;
+  height: 7%;
 }
 
-.card .titlenya {
-  height: 15%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0 0 12px 12px;
-  transform-style: preserve-3d;
-}
-.card .titlenya h6 {
-    transform: translateZ(20px);
-    color: #b41c1c;
-}
 /**
 * Template Name: Arsha
 * Template URL: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/
