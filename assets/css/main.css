@@ -91,6 +91,19 @@ background: #2e2b35;
 }
 
 
+
+.card.viu {
+  background: linear-gradient(135deg, #8dfca5, #252525);
+}
+.card.viu .title {
+background: #2e2b35;
+}
+
+.card .keterangan:hover {
+  font-size: 25px;
+  transform: translateZ(20px);
+  }
+
 /*MLBB COLOR*/
 
 .card:hover .title-mlbb h2 {
