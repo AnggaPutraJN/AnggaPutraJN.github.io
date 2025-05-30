@@ -1,1388 +1,1117 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Jati Store</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Game INDapk</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3498db 0%, #7cc6ed 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet">
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+        .header {
+            background: linear-gradient(135deg, #7cc6ed, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
 
-  <!-- Main CSS File -->
-  <link href="assets/css/main.css" rel="stylesheet">
+        .header h1 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            word-break: break-word;
+        }
 
+        .header p {
+            opacity: 0.9;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            line-height: 1.4;
+        }
 
-  <!--CSS Pribadi-->
-  <style>
-    .cekharga {
-      font-size: medium;
+        /* Tab Navigation Styles */
+        .tab-navigation {
+            background: #e8eaed;
+            display: flex;
+            border-bottom: 3px solid #7cc6ed;
+            flex-wrap: wrap;
+        }
 
-    }
+        .tab-button {
+            flex: 1;
+            min-width: 150px;
+            background: transparent;
+            color: #374151;
+            border: none;
+            padding: 15px 10px;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+        }
 
-    .ukuranfont {
-      font-size: medium;
-    }
+        .tab-button:hover {
+            background: rgba(124, 198, 237, 0.1);
+            color: #3498db;
+        }
 
-    .containeranimasi {
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+        .tab-button.active {
+            background: linear-gradient(135deg, #7cc6ed, #3498db);
+            color: white;
+            position: relative;
+        }
 
-    }
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #3498db;
+        }
 
-    .boxanimasi {
-      position: relative;
-    }
+        /* Content Wrapper */
+        .content-wrapper {
+            background: #e8eaed;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
 
-    .boxanimasi h7 {
-      color: #fff;
-      font-size: 4em;
-      margin-top: 15px;
-      position: absolute;
-      transform: translate(-50%, -50%);
-    }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            min-height: 400px;
+        }
 
-    .boxanimasi h7:nth-child(1) {
-      color: transparent;
-      -webkit-text-stroke: 2px #03a9f4;
-    }
+        .tab-content.active {
+            display: block;
+        }
 
-    .boxanimasi h7:nth-child(2) {
-      color: #03a9f4;
-      animation: animated 4s ease-in-out infinite;
-    }
+        /* Form Styles */
+        .form-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
+        .section-title {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-    @keyframes animated {
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #7cc6ed, #3498db);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
 
-      0%,
-      100% {
-        clip-path: polygon(0% 45%,
-            16% 44%,
-            33% 50%,
-            54% 60%,
-            70% 61%,
-            84% 59%,
-            100% 52%,
-            100% 100%,
-            0% 100%);
-      }
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-      50% {
-        clip-path: polygon(0% 60%,
-            15% 65%,
-            34% 66%,
-            51% 62%,
-            67% 50%,
-            84% 45%,
-            100% 46%,
-            100% 100%,
-            0% 100%);
-      }
-    }
-  </style>
-  <!-- =======================================================
-  * Template Name: JatiStore
-  * Author: AnggaPutraJN
-  ======================================================== -->
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            transition: all 0.3s ease;
+            background-color: #f9fafb;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #7cc6ed;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-group select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .optional-label {
+            color: #6b7280;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            font-style: italic;
+        }
+
+        .help-text {
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            color: #6b7280;
+            margin-top: 5px;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #7cc6ed, #3498db);
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(76, 81, 191, 0.3);
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 81, 191, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-small {
+            padding: 10px 16px;
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            width: auto;
+            margin: 5px;
+            text-transform: none;
+            min-height: 40px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .refresh-btn {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 200px;
+            background: linear-gradient(135deg, #3498db, #7cc6ed);
+        }
+
+        .refresh-btn:hover {
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 500;
+            display: none;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            line-height: 1.4;
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 2px solid #a7f3d0;
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 2px solid #fecaca;
+        }
+
+        /* List Section Styles */
+        .list-section {
+            background: linear-gradient(135deg, #fff 0%, #e8eaed 100%);
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .data-item {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #7cc6ed;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .data-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .data-item.completed {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        }
+
+        .data-item h3 {
+            color: #1f2937;
+            margin-bottom: 12px;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .data-item p {
+            color: #6b7280;
+            margin-bottom: 6px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .data-item .timestamp {
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            color: #9ca3af;
+            font-style: italic;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 8px;
+            margin-top: 12px;
+        }
+
+        .rating-stars {
+            color: #fbbf24;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+        }
+
+        .status-pending:hover {
+            transform: scale(1.02);
+            box-shadow: 0 3px 10px rgba(146, 64, 14, 0.3);
+        }
+
+        .status-selesai {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+        }
+
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 2px solid #e2e8f0;
+            position: relative;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #1f2937;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            word-break: break-word;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state .icon {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        /* Custom Scrollbar */
+        .list-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .list-section::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .list-section::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #7cc6ed, #3498db);
+            border-radius: 10px;
+        }
+
+        .list-section::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #3c366b, #7cc6ed);
+        }
+
+        /* Responsive Breakpoints */
+        
+        /* Small devices (landscape phones, 576px and up) */
+        @media (max-width: 576px) {
+            body {
+                padding: 5px;
+            }
+            
+            .header {
+                padding: 15px 10px;
+                border-radius: 10px 10px 0 0;
+            }
+            
+            .tab-content {
+                padding: 15px 10px;
+            }
+            
+            .form-section,
+            .list-section {
+                padding: 15px;
+                border-radius: 10px;
+            }
+            
+            .tab-button {
+                padding: 12px 8px;
+                font-size: 0.8rem;
+                gap: 5px;
+                min-width: 120px;
+            }
+            
+            .data-item {
+                padding: 15px;
+                margin-bottom: 12px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-small {
+                width: 100%;
+                margin: 3px 0;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                padding: 15px;
+                width: 95%;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+            }
+            
+            .refresh-btn {
+                max-width: 100%;
+            }
+        }
+
+        /* Medium devices (tablets, 768px and up) */
+        @media (min-width: 577px) and (max-width: 768px) {
+            .tab-content {
+                padding: 20px 15px;
+            }
+            
+            .form-section,
+            .list-section {
+                padding: 20px 15px;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+            }
+            
+            .btn-small {
+                min-width: 120px;
+            }
+        }
+
+        /* Large devices (desktops, 992px and up) */
+        @media (min-width: 769px) and (max-width: 1199px) {
+            .main-container {
+                margin: 0 20px;
+            }
+            
+            .tab-content {
+                padding: 30px 25px;
+            }
+            
+            .form-section,
+            .list-section {
+                padding: 30px 25px;
+            }
+        }
+
+        /* Extra large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {
+            body {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 30px;
+                border-radius: 20px 20px 0 0;
+            }
+            
+            .tab-content {
+                padding: 40px;
+                min-height: 600px;
+            }
+            
+            .form-section,
+            .list-section {
+                padding: 40px;
+            }
+            
+            .content-wrapper {
+                border-radius: 0 0 20px 20px;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .modal-content {
+                margin: 2% auto;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .list-section {
+                max-height: 50vh;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .btn {
+                box-shadow: 0 2px 8px rgba(76, 81, 191, 0.2);
+            }
+            
+            .data-item {
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            }
+        }
+
+        /* Reduced motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .btn:focus,
+        .tab-button:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .header {
+                background: white;
+                color: black;
+                border: 1px solid black;
+            }
+            
+            .btn {
+                display: none;
+            }
+            
+            .modal {
+                display: none;
+            }
+        }
+    </style>
 </head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>🎮 Request Game INDapk</h1>
+            <p>Platform Request Game Terlengkap & Terpercaya</p>
+        </div>
 
-<body class="index-page">
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="showTab('request')">
+                📝 Request Game
+            </button>
+            <button class="tab-button" onclick="showTab('list')">
+                📋 Daftar Request Game
+            </button>
+        </div>
 
-  <header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+        <div class="content-wrapper">
+            <!-- Request Game Tab -->
+            <div id="requestTab" class="tab-content active">
+                <div class="form-section">
+                    <h2 class="section-title">📝 Request Game Baru</h2>
+                    
+                    <form id="gameForm">
+                        <div class="form-group">
+                            <label for="nama_pengguna">Nama Pengguna *</label>
+                            <input type="text" id="nama_pengguna" name="nama_pengguna" required>
+                        </div>
 
-      <a href="index.html" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1 class="sitename">Jati Store</h1>
-      </a>
+                        <div class="form-group">
+                            <label for="nama_game">Nama Game *</label>
+                            <input type="text" id="nama_game" name="nama_game" required>
+                        </div>
 
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="#jtstore" class="active">Home</a></li>
-          <li><a href="#pembayaran">Pembayaran</a></li>
-          <li><a href="#itemlistmlbb">List Item MLBB</a></li>
-          <li><a href="#itemlistacc">List Item Account Premiun</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
+                        <div class="form-group">
+                            <label for="jenis_emulator">Jenis Emulator *</label>
+                            <select id="jenis_emulator" name="jenis_emulator" required>
+                                <option value="">Pilih Emulator</option>
+                                <option value="Switch">Switch</option>
+                                <option value="Wii">Wii</option>
+                                <option value="Gamecube">Gamecube</option>
+                                <option value="PS1">PS1</option>
+                                <option value="PS2">PS2</option>
+                                <option value="PS3">PS3</option>
+                                <option value="PSP">PSP</option>
+                                <option value="PSVita">PSVita</option>
+                                <option value="PC">PC</option>
+                                <option value="Sega Genesis">Sega Genesis</option>
+                                <option value="SNES">SNES</option>
+                                <option value="NES">NES</option>
+                            </select>
+                        </div>
 
-      <a class="btn-getstarted" href="#itemlistmlbb">Get Started</a>
+                        <div class="form-group">
+                            <label for="version_game">Version Game <span class="optional-label">(Optional)</span></label>
+                            <input type="text" id="version_game" name="version_game" placeholder="Contoh: v1.2.3, Update 2024">
+                        </div>
 
+                        <div class="form-group">
+                            <label for="link_game">Link Game <span class="optional-label">(Optional)</span></label>
+                            <input type="text" id="link_game" name="link_game" placeholder="https://example.com/game-mod">
+                            <div class="help-text">Jika punya link bahan mod, silahkan masukkan linknya</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rating_web">Rating Web <span class="optional-label">(Optional)</span></label>
+                            <select id="rating_web" name="rating_web">
+                                <option value="">Pilih Rating</option>
+                                <option value="⭐">⭐ Bintang 1</option>
+                                <option value="⭐⭐">⭐⭐ Bintang 2</option>
+                                <option value="⭐⭐⭐">⭐⭐⭐ Bintang 3</option>
+                                <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ Bintang 4</option>
+                                <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ Bintang 5</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn" id="submitBtn">
+                            🚀 Kirim Request Game
+                        </button>
+                    </form>
+
+                    <div class="loading" id="loading">
+                        <p>⏳ Mengirim data...</p>
+                    </div>
+
+                    <div class="message" id="message"></div>
+                </div>
+            </div>
+
+            <!-- Daftar Request Game Tab -->
+            <div id="listTab" class="tab-content">
+                <div class="list-section">
+                    <h2 class="section-title">📋 Daftar Request Game</h2>
+                    
+                    <button type="button" class="btn refresh-btn" onclick="loadData()">
+                        🔄 Refresh Data
+                    </button>
+                    
+                    <div id="dataContainer">
+                        <div class="empty-state">
+                            <div class="icon">🎮</div>
+                            <p>Memuat data request game...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <main class="main">
-
-    <!-- Hero Section -->
-    <section id="jtstore" class="hero section dark-background">
-
-      <div class="container">
-        <div class="row gy-4">
-          <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
-            <h1>Tersedia Account Premium</h1>
-            <p>Hanya di Jati Store</p>
-            <div class="d-flex">
-              <a href="#itemlist" class="btn-get-started">Get Started</a>
+    <!-- Modal Link Selesai -->
+    <div id="linkModal" class="modal">
+        <div class="modal-content">
+            <h3>🔗 Masukkan Link Game Selesai</h3>
+            <div class="form-group" style="margin: 20px 0; text-align: left;">
+                <label for="linkSelesaiInput">Link Game yang Sudah Selesai:</label>
+                <input type="text" id="linkSelesaiInput" placeholder="https://example.com/completed-game" style="width: 100%; margin-top: 8px;">
             </div>
-          </div>
-          <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="200">
-            <img src="assets/img/mylogo.png" class="img-fluid animated" alt="">
-          </div>
+            <div class="modal-buttons">
+                <button class="btn btn-small btn-danger" onclick="closeLinkModal()">Batal</button>
+                <button class="btn btn-small btn-success" onclick="submitLinkSelesai()">Ya, Tandai Selesai</button>
+            </div>
         </div>
-      </div>
-
-    </section><!-- /Hero Section -->
-
-
-
-    <!-- Why Us Section -->
-    <section id="pembayaran" class="section why-us light-background mt-5" data-builder="section">
-
-      <div class="container-fluid">
-
-        <div class="row gy-4">
-
-          <div class="col-lg-7 d-flex flex-column justify-content-center order-2 order-lg-1">
-
-            <div class="content px-xl-5" data-aos="fade-up" data-aos-delay="100">
-              <h3><span>Jati Store</span></h3>
-              <p>Lakukan pembayaran melalui Qris
-                <br />Atau bisa melalui payment dibawah ini
-                <br /> <b>Mandiri:</b> 1740004968574 [A.P JATI NEGARA]
-                <br /> <b>Gopay:</b> 082286344446 [AnggaPutraJN]
-                <br /> <b>Dana:</b> 082286344446 [A.P JATI NEGARA MA]
-                <br /> <b>Shopeepay:</b> 082286344446 [AnggaPutraJN]
-              </p>
-            </div>
-
-
-          </div>
-          <div class="col-lg-5 order-1 order-lg-2 why-us-img">
-            <img src="assets/img/logo/payment.png" class="img-fluid" alt="" data-aos="zoom-in" data-aos-delay="100">
-          </div>
-        </div>
-      </div>
-    </section><!-- /Why Us Section -->
-  </main>
-
-
-
-
-
-
-
-
-  <!-- Portfolio Section -->
-  <section id="itemlistmlbb" class="portfolio section light-background mt-5">
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>ITEM LIST DIAOMOND MLBB</h2>
-      <div class="container-animasi">
-        <div class="boxanimasi">
-          <h7>JatiStore</h7>
-          <h7>JatiStore</h7>
-        </div>
-      </div>
-    </div><!-- End Section Title -->
-    <div class="container">
-      <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
-        <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-          <li data-filter="*" class="filter-active">All</li>
-          <li data-filter=".filter-mlbb">𝐆𝐈𝐅𝐓 𝐈𝐓𝐄𝐌 & 𝐒𝐊𝐈𝐍 𝐌𝐋𝐁𝐁</li>
-        </ul><!-- End Portfolio Filters -->
-        <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-
-          <div
-            class="col-lg-4 col-md-7 portfolio-item isotope-item filter-giftitem filter-giftcharisma filter-skin filter-mlbb">
-            <div class="card mlbb-list">
-              <span class="judul-filter-mlbb-list">𝐌𝐋𝐁𝐁 𝐋𝐈𝐒𝐓 𝐒𝐇𝐎𝐏<br>Klik Filter Dibawah</span>
-              <ul class="portfolio-filters-list-mlbb isotope-filters " data-aos="fade-up" data-aos-delay="100">
-                <li data-filter=".filter-giftitem">𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩</li>
-                <li data-filter=".filter-giftcharisma">𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩</li>
-                <li data-filter=".filter-skin">𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩</li>
-              </ul><!-- End Portfolio Filters -->
-              <div class="deskripsi-mlbb"> ʚ ָ 🌸◞ 𝐑𝐮𝐥𝐞𝐬 𝐆𝐢𝐟𝐭 ⨾
-                <br>⪧ Wajib berteman selama 8h/lebih
-                <br>⪧ Change name = hangus
-                <br>⪧ No unfoll akun gift = hangus
-                <br>⪧ No cancel / reffund
-                <br>⪧ Membeli = setuju & faham
-                <br>⪧ Di kirim sesuai antrian
-              </div>
-            </div>
-          </div>
-
-          <!--𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-giftitem">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Emote)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 109 (Emote)', '22.700'), '_blank'); 
-                    return false;"><sup>Rp</sup>22.700</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎109</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-
-
-          <!--𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-giftitem">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Create Sq)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 199 (Create Sq)', '35.000'), '_blank'); 
-                    return false;"><sup>Rp</sup>35.000</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb ">
-                <h2>💎199</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-giftitem">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Change Name)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 239 (Change Name)', '39.000'), '_blank'); 
-                    return false;"><sup>Rp</sup>39.000</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎239</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-giftitem">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Change Name Sq)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 299 (Change Name Sq)', '47.000'), '_blank'); 
-                    return false;"><sup>Rp</sup>47.000</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎299</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-giftitem">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Change Flag)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 300 (Change Flag)', '48.000'), '_blank'); 
-                              return false;"><sup>Rp</sup>48.000</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎300</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐈𝐭𝐞𝐦 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-giftcharisma">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Angel Ark)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 499 (Angel Ark)', '72.000'), '_blank'); 
-  return false;"><sup>Rp</sup>72.000</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎499</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-giftcharisma">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Paradise Island)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 499 (Paradise Island)', '72.000'), '_blank'); 
-return false;"><sup>Rp</sup>72.000</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎499</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-giftcharisma">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Gold Moon Lantern)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 1000 (Gold Moon Lantern)', '140.000'), '_blank'); 
-return false;"><sup>Rp</sup>140.000</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎1000</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐂𝐡𝐚𝐫𝐢𝐬𝐦𝐚 𝐒𝐡𝐨𝐩 List-->
-
-
-          <!--𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-skin">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Normal)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 296 (Normal)', '47.000'), '_blank'); 
-return false;"><sup>Rp</sup>47.000</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎296</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-skin">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Normal)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 299 (Normal)', '48.400'), '_blank'); 
-return false;"><sup>Rp</sup>48.400</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎299</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-skin">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Elite)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 399 (Elite)', '59.875'), '_blank'); 
-return false;"><sup>Rp</sup>59.875</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎399</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-skin">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Elite)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 599 (Elite)', '85.875'), '_blank'); 
-return false;"><sup>Rp</sup>85.875</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎599</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-skin">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Spesial)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 749 (Spesial)', '103.625'), '_blank'); 
-return false;"><sup>Rp</sup>103.625</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎749</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-skin">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Epic)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 899 (Epic)', '125.375'), '_blank'); 
-return false;"><sup>Rp</sup>125.375</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎899</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-
-          <!--𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-mlbb filter-skin">
-            <div class="card mlbb">
-              <div class="product">
-                <span class="mlbbnya">𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩</span>
-                <span class="keteranganmlbb">(Lightborn)</span>
-                <span class="harga-mlbb"><a href="#" onclick="window.open(createWhatsAppLink('𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 𝐌𝐋𝐁𝐁', 'Diamond 1089 (Lightborn)', '151.500'), '_blank'); 
-return false;"><sup>Rp</sup>151.500</span></a>
-                <img src="images/diamond.png" class="img-fluid" alt="">
-              </div>
-              <div class="title-mlbb">
-                <h2>💎1089</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝐆𝐢𝐟𝐭 𝐒𝐤𝐢𝐧 𝐒𝐡𝐨𝐩 List-->
-
-        </div><!-- End Portfolio Container -->
-      </div>
     </div>
-  </section><!-- /Portfolio Section -->
 
-
-
-
-
-  <!-- Portfolio Section -->
-  <section id="itemlistacc" class="portfolio section light-background mt-5">
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>ITEM LIST ACCOUNT PREMIUM</h2>
-      <div class="container-animasi">
-        <div class="boxanimasi">
-          <h7>JatiStore</h7>
-          <h7>JatiStore</h7>
+    <!-- Modal Konfirmasi -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Konfirmasi Aksi</h3>
+            <p id="modalMessage">Apakah Anda yakin ingin melakukan aksi ini?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-small btn-danger" onclick="closeModal()">Batal</button>
+                <button class="btn btn-small btn-success" id="confirmBtn" onclick="confirmAction()">Ya</button>
+            </div>
         </div>
-      </div>
-    </div><!-- End Section Title -->
-    <div class="container">
-      <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
-        <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-          <li data-filter="*" class="filter-active">𝐀𝐥𝐥</li>
-          <li data-filter=".filter-nf">𝐍𝐞𝐭𝐟𝐥𝐢𝐱</li>
-          <li data-filter=".filter-yt">𝐘𝐨𝐮𝐭𝐮𝐛𝐞</li>
-          <li data-filter=".filter-bs">𝐁𝐬𝐭𝐚𝐭𝐢𝐨𝐧</li>
-          <li data-filter=".filter-cv">𝐂𝐚𝐧𝐯𝐚</li>
-          <li data-filter=".filter-sf">𝗦𝗽𝗼𝘁𝗶𝗳𝘆</li>
-          <li data-filter=".filter-viu">𝗩𝗜𝗨</li>
-        </ul><!-- End Portfolio Filters -->
-        <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-
-
-          <div
-            class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-nopin filter-user2-nopin filter-user1-pin filter-user2-pin">
-            <div class="card netflix">
-              <span class="judul-filter">NETFLIX LIST SHARING PROFILE USER</span>
-              <ul class="portfolio-filters-netflix isotope-filters" data-aos="fade-up" data-aos-delay="100">
-                <li data-filter=".filter-user1-nopin">SHARING 1 PROFIL 1 USER (Tidak Berpin)</li>
-                <li data-filter=".filter-user2-nopin">SHARING 1 PROFIL 2 USER (Tidak Berpin)</li>
-                <li data-filter=".filter-user1-pin">SHARING 1 PROFIL 1 USER (Berpin)</li>
-                <li data-filter=".filter-user2-pin">SHARING 1 PROFIL 2 USER (Berpin)</li>
-              </ul><!-- End Portfolio Filters -->
-              <div class="titlenya">
-                <h6>NETFLIX LIST SHARING PROFILE USER</h6>
-              </div>
-            </div>
-          </div>
-
-
-
-          <!--SHARING 1 PROFIL 1 USER (Tidak Berpin)-->
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-nopin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 1 USER (Tidak Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 1 USER (Tidak Berpin)', '20.000'), '_blank'); return false;"><sup>Rp</sup>20.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-nopin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 1 USER (Tidak Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 1 USER (Tidak Berpin)', '35.000'), '_blank'); return false;"><sup>Rp</sup>35.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>2 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-nopin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 1 USER (Tidak Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 1 USER (Tidak Berpin)', '48.000'), '_blank'); return false;"><sup>Rp</sup>48.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 BULAN</h2>
-              </div>
-            </div></a>
-          </div>
-          <!--End NETFLIX List-->
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-nopin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 1 USER (Tidak Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 1 USER (Tidak Berpin)', '85.000'), '_blank'); return false;"><sup>Rp</sup>85.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>6 BULAN</h2>
-              </div>
-            </div>
-          </div></a>
-          <!--End NETFLIX List-->
-          <!--END SHARING 1 PROFIL 1 USER (Tidak Berpin)-->
-
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-user2-nopin">
-            <div class="judul-batas">
-              <h2>SHARING 1 PROFIL 2 USER (Tidak Berpin)</h2>
-            </div>
-            <div class="batas"></div>
-          </div>
-
-          <!--SHARING 1 PROFIL 2 USER (Tidak Berpin)-->
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user2-nopin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 2 USER (Tidak Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Tidak Berpin)', '14.000'), '_blank'); return false;"><sup>Rp</sup>14.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user2-nopin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 2 USER (Tidak Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Tidak Berpin)', '25.000'), '_blank'); return false;">
-                    <sup>Rp</sup>25.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>2 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user2-nopin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 2 USER (Tidak Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Tidak Berpin)', '35.000'), '_blank'); return false;"><sup>Rp</sup>35.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user2-nopin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 2 USER (Tidak Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Tidak Berpin)', '69.000'), '_blank'); return false;"><sup>Rp</sup>69.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>6 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-          <!--END SHARING 1 PROFIL 2 USER (Tidak Berpin)-->
-
-
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-user1-pin">
-            <div class="judul-batas">
-              <h2>SHARING 1 PROFIL 1 USER (Berpin)</h2>
-            </div>
-            <div class="batas"></div>
-          </div>
-
-          <!--SHARING 1 PROFIL 1 USER (Berpin)-->
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-pin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 1 USER (Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Berpin)', '28.000'), '_blank'); return false;"><sup>Rp</sup>28.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-pin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 1 USER (Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Berpin)', '53.000'), '_blank'); return false;"><sup>Rp</sup>53.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>2 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-pin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 1 USER (Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Berpin)', '70.000'), '_blank'); return false;"><sup>Rp</sup>70.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user1-pin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 1 USER (Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Berpin)', '130.000'), '_blank'); return false;"><sup>Rp</sup>130.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>6 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-          <!--END SHARING 1 PROFIL 1 USER (Berpin)-->
-
-
-
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-user2-pin">
-            <div class="judul-batas">
-              <h2>SHARING 1 PROFIL 2 USER (Berpin)</h2>
-            </div>
-            <div class="batas"></div>
-          </div>
-
-          <!--SHARING 1 PROFIL 2 USER (Berpin)-->
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user2-pin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 2 USER (Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Berpin)', '18.000'), '_blank'); return false;"><sup>Rp</sup>18.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user2-pin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 2 USER (Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Berpin)', '47.000'), '_blank'); return false;"><sup>Rp</sup>47.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-
-          <!--NETFLIX List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-nf filter-user2-pin">
-            <div class="card netflix">
-              <div class="product">
-                <span class="sneakers">Netflix</span>
-                <span class="keterangan">SHARING 1 PROFIL 2 USER (Berpin)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Netflix', 'SHARING 1 PROFIL 2 USER (Berpin)', '80.000'), '_blank'); return false;"><sup>Rp</sup>80.000</span></a>
-                <img src="images/netflix.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>6 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End NETFLIX List-->
-          <!--END SHARING 1 PROFIL 2 USER (Berpin)-->
-
-          <!--Youtube List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-yt">
-            <div class="card youtube">
-              <div class="product">
-                <span class="sneakers">Youtube Premium</span>
-                <span class="keterangan">NO GARANSI</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Youtube', 'Premium 1 Bulan Via Invite', '7.000'), '_blank'); return false;"><sup>Rp</sup>7.000</span></a>
-                <img src="images/youtube.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN Via Invite</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Youtube List-->
-
-          <!--Youtube List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-yt">
-            <div class="card youtube">
-              <div class="product">
-                <span class="sneakers">Youtube Premium</span>
-                <span class="keterangan">NO GARANSI</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Youtube', 'Premium 3 Bulan Via Invite', '12.000'), '_blank'); return false;"><sup>Rp</sup>12.000</span></a>
-                <img src="images/youtube.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 BULAN Email Seller</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Youtube List-->
-
-
-          <!--Canva List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-cv">
-            <div class="card canva">
-              <div class="product">
-                <span class="sneakers">Canva Premium</span>
-                <span class="keterangan">Full GARANSI</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Canva', 'Premium 1 Bulan', '3.000'), '_blank'); return false;"><sup>Rp</sup>3.000</span></a>
-                <img src="images/canva.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Canva List-->
-
-          <!--Canva List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-cv">
-            <div class="card canva">
-              <div class="product">
-                <span class="sneakers">Canva Premium</span>
-                <span class="keterangan">Full GARANSI</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Canva', 'DESAIGNER 1 Bulan', '5.000'), '_blank'); return false;"><sup>Rp</sup>5.000</span></a>
-                <img src="images/canva.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN DESAIGNER</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Canva List-->
-
-
-          <!--Bstation List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-bs">
-            <div class="card bstation">
-              <div class="product">
-                <span class="sneakers">Bstation Premium</span>
-                <span class="keterangan">SHARING</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Bstation', 'Premium 1 Bulan', '10.000'), '_blank'); return false;"><sup>Rp</sup>10.000</span></a>
-                <img src="images/bstation.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Bstation List-->
-
-
-          <!--Bstation List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-bs">
-            <div class="card bstation">
-              <div class="product">
-                <span class="sneakers">Bstation Premium</span>
-                <span class="keterangan">SHARING</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Bstation', 'Premium 3 Bulan', '13.000'), '_blank'); return false;"><sup>Rp</sup>13.000</span></a>
-                <img src="images/bstation.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Bstation List-->
-
-
-          <!--Bstation List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-bs">
-            <div class="card bstation">
-              <div class="product">
-                <span class="sneakers">Bstation Premium</span>
-                <span class="keterangan">SHARING</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('Bstation', 'Premium 6 Bulan', '16.000'), '_blank'); return false;"><sup>Rp</sup>16.000</span></a>
-                <img src="images/bstation.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>6 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Bstation List-->
-
-
-          <!--Spotify List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-sf">
-            <div class="card spotify">
-              <div class="product">
-                <span class="sneakers">SPOTIFY PREMIUM</span>
-                <span class="keterangan">NO GARANSI BILL PAYPAL</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('SPOTIFY', 'PREMIUM 1 Bulan', '7.500'), '_blank'); return false;"><sup>Rp</sup>7.500</span></a>
-                <img src="images/spotify.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Spotify List-->
-
-          <!--Spotify List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-sf">
-            <div class="card spotify">
-              <div class="product">
-                <span class="sneakers">SPOTIFY PREMIUM</span>
-                <span class="keterangan">FULL GARANSI BILL PAYPAL</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('SPOTIFY', 'PREMIUM 1 Bulan', '13.500'), '_blank'); return false;"><sup>Rp</sup>13.500</span></a>
-                <img src="images/spotify.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Spotify List-->
-
-
-          <!--Spotify List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-sf">
-            <div class="card spotify">
-              <div class="product">
-                <span class="sneakers">SPOTIFY PREMIUM</span>
-                <span class="keterangan">INDPLAN (NOGARANSI) Bill Paypal Reg US</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('SPOTIFY', 'PREMIUM 3 Bulan', '12.000'), '_blank'); return false;"><sup>Rp</sup>12.000</span></a>
-                <img src="images/spotify.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Spotify List-->
-
-
-          <!--Spotify List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-sf">
-            <div class="card spotify">
-              <div class="product">
-                <span class="sneakers">SPOTIFY PREMIUM</span>
-                <span class="keterangan">INDPLAN (FULL GARANSI) Bill Paypal Reg India/Random region</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('SPOTIFY', 'PREMIUM 3 Bulan', '9.500'), '_blank'); return false;"><sup>Rp</sup>9.500</span></a>
-                <img src="images/spotify.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 BULAN</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Spotify List-->
-
-          <!--Spotify List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-sf">
-            <div class="card spotify">
-              <div class="product">
-                <span class="sneakers">SPOTIFY PREMIUM</span>
-                <span class="keterangan">FAMPLAN VIA INVIT EMAIL NOGARANSI (REG INDO)</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('SPOTIFY', 'PREMIUM 19 DAYS', '11.000'), '_blank'); return false;"><sup>Rp</sup>11.000</span></a>
-                <img src="images/spotify.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>19 DAYS</h2>
-              </div>
-            </div>
-          </div>
-          <!--End Spotify List-->
-
-          <!--𝗩𝗜𝗨 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-viu">
-            <div class="card viu">
-              <div class="product">
-                <span class="sneakers">𝗩𝗜𝗨 𝗣𝗥𝗜𝗩𝗔𝗧𝗘</span>
-                <span class="keterangan">𝗕𝗜𝗔𝗦𝗔</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('𝗩𝗜𝗨 𝗕𝗜𝗔𝗦𝗔', '𝗣𝗥𝗜𝗩𝗔𝗧𝗘 1 Bulan', '7.500'), '_blank'); return false;"><sup>Rp</sup>7.500</span></a>
-                <img src="images/viu.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 Bulan</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝗩𝗜𝗨 List-->
-
-          <!--𝗩𝗜𝗨 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-viu">
-            <div class="card viu">
-              <div class="product">
-                <span class="sneakers">𝗩𝗜𝗨 𝗣𝗥𝗜𝗩𝗔𝗧𝗘</span>
-                <span class="keterangan">𝗕𝗜𝗔𝗦𝗔</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('𝗩𝗜𝗨 𝗕𝗜𝗔𝗦𝗔', '𝗣𝗥𝗜𝗩𝗔𝗧𝗘 6 Bulan', '9.000'), '_blank'); return false;"><sup>Rp</sup>9.000</span></a>
-                <img src="images/viu.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>6 Bulan</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝗩𝗜𝗨 List-->
-
-
-          <!--𝗩𝗜𝗨 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-viu">
-            <div class="card viu">
-              <div class="product">
-                <span class="sneakers">𝗩𝗜𝗨 𝗣𝗥𝗜𝗩𝗔𝗧𝗘</span>
-                <span class="keterangan">𝗕𝗜𝗔𝗦𝗔</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('𝗩𝗜𝗨 𝗕𝗜𝗔𝗦𝗔', '𝗣𝗥𝗜𝗩𝗔𝗧𝗘 1 Tahun', '12.000'), '_blank'); return false;"><sup>Rp</sup>12.000</span></a>
-                <img src="images/viu.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 Tahun</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝗩𝗜𝗨 List-->
-
-
-          <!--𝗩𝗜𝗨 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-viu">
-            <div class="card viu">
-              <div class="product">
-                <span class="sneakers">𝗩𝗜𝗨 𝗣𝗥𝗜𝗩𝗔𝗧𝗘</span>
-                <span class="keterangan">𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('𝗩𝗜𝗨 𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧', '𝗣𝗥𝗜𝗩𝗔𝗧𝗘 1 Bulan', '8.500'), '_blank'); return false;"><sup>Rp</sup>8.500</span></a>
-                <img src="images/viu.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>1 Bulan</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝗩𝗜𝗨 List-->
-
-          <!--𝗩𝗜𝗨 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-viu">
-            <div class="card viu">
-              <div class="product">
-                <span class="sneakers">𝗩𝗜𝗨 𝗣𝗥𝗜𝗩𝗔𝗧𝗘</span>
-                <span class="keterangan">𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('𝗩𝗜𝗨 𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧', '𝗣𝗥𝗜𝗩𝗔𝗧𝗘 2 Bulan', '9.000'), '_blank'); return false;"><sup>Rp</sup>9.000</span></a>
-                <img src="images/viu.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>2 Bulan</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝗩𝗜𝗨 List-->
-
-
-          <!--𝗩𝗜𝗨 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-viu">
-            <div class="card viu">
-              <div class="product">
-                <span class="sneakers">𝗩𝗜𝗨 𝗣𝗥𝗜𝗩𝗔𝗧𝗘</span>
-                <span class="keterangan">𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('𝗩𝗜𝗨 𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧', '𝗣𝗥𝗜𝗩𝗔𝗧𝗘 3 Bulan', '10.000'), '_blank'); return false;"><sup>Rp</sup>10.000</span></a>
-                <img src="images/viu.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>3 Bulan</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝗩𝗜𝗨 List-->
-
-          <!--𝗩𝗜𝗨 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-viu">
-            <div class="card viu">
-              <div class="product">
-                <span class="sneakers">𝗩𝗜𝗨 𝗣𝗥𝗜𝗩𝗔𝗧𝗘</span>
-                <span class="keterangan">𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('𝗩𝗜𝗨 𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧', '𝗣𝗥𝗜𝗩𝗔𝗧𝗘 7 Bulan', '11.000'), '_blank'); return false;"><sup>Rp</sup>11.000</span></a>
-                <img src="images/viu.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>7 Bulan</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝗩𝗜𝗨 List-->
-
-          <!--𝗩𝗜𝗨 List-->
-          <div class="col-lg-4 col-md-7 portfolio-item isotope-item filter-viu">
-            <div class="card viu">
-              <div class="product">
-                <span class="sneakers">𝗩𝗜𝗨 𝗣𝗥𝗜𝗩𝗔𝗧𝗘</span>
-                <span class="keterangan">𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧</span>
-                <span class="price"><a href="#"
-                    onclick="window.open(createWhatsAppLink('𝗩𝗜𝗨 𝗔𝗡𝗧𝗜 𝗟𝗜𝗠𝗜𝗧', '𝗣𝗥𝗜𝗩𝗔𝗧𝗘 9 Bulan', '14.000'), '_blank'); return false;"><sup>Rp</sup>14.000</span></a>
-                <img src="images/viu.png" class="img-fluid" alt="">
-              </div>
-              <div class="title">
-                <h2>9 Bulan</h2>
-              </div>
-            </div>
-          </div>
-          <!--End 𝗩𝗜𝗨 List-->
-
-
-        </div><!-- End Portfolio Container -->
-      </div>
     </div>
-  </section><!-- /Portfolio Section -->
+
+    <script>
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Load data if switching to list tab
+            if (tabName === 'list') {
+                loadData();
+            }
+        }
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHl_TTpjTawgMf07DW4--Ys3UOFtFVBEOvLNWH16rYIKwhRiaM0uigXqW9eRu0LoE/exec';
+        let currentAction = null;
+        let currentId = null;
+
+        document.getElementById('gameForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const messageDiv = document.getElementById('message');
+        
+        submitBtn.disabled = true;
+        loading.style.display = 'block';
+        messageDiv.style.display = 'none';
+        
+        const formData = new FormData();
+        formData.append('action', 'create');
+        formData.append('nama_pengguna', document.getElementById('nama_pengguna').value);
+        formData.append('nama_game', document.getElementById('nama_game').value);
+        formData.append('jenis_emulator', document.getElementById('jenis_emulator').value);
+        formData.append('version_game', document.getElementById('version_game').value);
+        formData.append('link_game', document.getElementById('link_game').value);
+        formData.append('rating_web', document.getElementById('rating_web').value);
+        
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response from server:', data); // Debugging
+            loading.style.display = 'none';
+            submitBtn.disabled = false;
+            
+            messageDiv.style.display = 'block';
+            messageDiv.textContent = data.message;
+            
+            if (data.status === 'success') {
+            messageDiv.className = 'message success';
+            document.getElementById('gameForm').reset();
+            loadData();
+            
+            // Debugging: Tampilkan data yang disimpan
+            if (data.savedData) {
+                console.log('Data yang disimpan di sheet:', data.savedData);
+            }
+            } else {
+            messageDiv.className = 'message error';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loading.style.display = 'none';
+            submitBtn.disabled = false;
+            
+            messageDiv.style.display = 'block';
+            messageDiv.className = 'message error';
+            messageDiv.textContent = 'Error: ' + error.message;
+        });
+        });
+
+        function loadData() {
+            const dataContainer = document.getElementById('dataContainer');
+            dataContainer.innerHTML = '<p style="text-align:center; color: #6b7280;">⏳ Memuat data...</p>';
+            
+            fetch(SCRIPT_URL + '?action=read')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    displayData(data.data);
+                } else {
+                    dataContainer.innerHTML = '<p style="color: #ef4444;">❌ Gagal memuat data: ' + data.message + '</p>';
+                }
+            })
+            .catch(error => {
+                dataContainer.innerHTML = '<p style="color: #ef4444;">❌ Error: ' + error.message + '</p>';
+            });
+        }
 
 
 
-
-
-
-
-
-
-
-
-
-
-  <!-- Why Us Section -->
-  <section id="penjelasan" class="section why-us light-background mt-5" data-builder="section">
-
-    <div class="container-fluid">
-
-      <div class="row gy-4">
-
-        <div class="col-lg-7 d-flex flex-column justify-content-center order-2 order-lg-1">
-
-          <div class="content px-xl-5" data-aos="fade-up" data-aos-delay="100">
-            <h3><span>Penjelasan</span></h3>
-            <p>
-              Penjelasan tiap Item </p>
-          </div>
-
-          <div class="faq-container px-xl-5" data-aos="fade-up" data-aos-delay="200">
-
-            <div class="faq-item">
-
-              <h3><span>01</span> Netflix</h3>
-              <div class="faq-content">
-                <p><b>NETFLIX CRACK</b>
-                  <br>itu Akun Bule yg gak punya pin jadi karna kita hanya meminjan akun bule saja jadi nontonya
-                  barengan sama bulenya dan tidak bisa otak atik Akun email password dan bahasa ataupun profil Jadi kita
-                  cuma numpang nonton saja tapi Netflix sama aja dengan yg biasa jadi gk ada bedanya kalau nonton
-                  <br><br><b>NETFLIX SHARING</b>
-                  <br> 🍿 Profil Private / 1 User
-                  <br> Akun sharing tpi satu profil hanya 1 user saja. Jadi history watch aman
-                  <br>°ada limit sreen tapi jauh lebih sedikit karna 1Profil hanya 1user, Karena maksimal nonton 4
-                  device atau 4 screen dan profil akun Netflix ada 5 user ( 1 device 1 orang )
-                  <br>°garansi Fast tapi jika sedang tidak ada stok 1x24 jam karna lagi restock dulu
-
-                  <br><br>🍿Profile sharing 2user
-                  <br>° dalam 1profil Ada 2 user, jadi history tontonan tercampur
-                  <br>° limit screen lebih sering terjadi di banding profil private karena usernya lebih banyak (10 user
-                  atau 1akun - per profil 2user ) dan Maksimal streamung secara bersamaan 4device
-                  <br>° garansi Fast jika ada stock tapi jika tidak ada stock 1x24 jam
-
-                  <br><br>🍿NETFLIX PRIVATE
-                  <br>° bebas login di berapa device tpi limit screen ya tetap 4 device you know lah Netflix hanya bisa
-                  4 screen
-                  <br>° Mostly aman, selama ada yang beli netflix private gapernah ada complain masalah password ke
-                  ganti dan keluhan lainya.
+let tempLinkSelesai = '';
+        function displayData(data) {
+    const dataContainer = document.getElementById('dataContainer');
+    
+    if (!data || data.length === 0) {
+        dataContainer.innerHTML = '<p style="text-align:center; color: #6b7280;">📝 Belum ada request game.</p>';
+        return;
+    }
+    
+    let html = '';
+    data.reverse().forEach(item => {
+        const timestamp = new Date(item.timestamp).toLocaleString('id-ID');
+        const status = item.status_req || 'PENDING';
+        const isCompleted = status === 'SELESAI';
+        const isPending = status === 'PENDING';
+        
+        html += `
+            <div class="data-item ${isCompleted ? 'completed' : ''}">
+                <h3>🎮 ${item.nama_game}</h3>
+                <p><strong>👤 Pengguna:</strong> ${item.nama_pengguna}</p>
+                <p><strong>🕹️ Emulator:</strong> ${item.jenis_emulator}</p>
+                ${item.version_game ? `<p><strong>📦 Version:</strong> ${item.version_game}</p>` : ''}
+                ${item.link_game ? `<p><strong>🔗 Link:</strong> <a href="${item.link_game}" target="_blank" style="color: #3498db;">${item.link_game}</a></p>` : ''}
+                ${item.rating_web ? `<p><strong>⭐ Rating:</strong> <span class="rating-stars">${item.rating_web}</span></p>` : ''}
+                <p><strong>📊 Status:</strong> 
+                    <span class="status-badge ${status === 'SELESAI' ? 'status-selesai' : 'status-pending'}" 
+                          onclick="${isPending ? `showLinkModal('${item.nama_game}', ${item.id})` : ''}">
+                        ${status}
+                    </span>
                 </p>
-              </div>
-              <i class="faq-toggle bi bi-chevron-right"></i>
-            </div><!-- End Faq item-->
-
-            <div class="faq-item">
-              <h3><span>02</span> Youtube</h3>
-              <div class="faq-content">
-                <p>Youtube Premium</p>
-              </div>
-              <i class="faq-toggle bi bi-chevron-right"></i>
-            </div><!-- End Faq item-->
-
-            <div class="faq-item">
-              <h3><span>03</span> Canva</h3>
-              <div class="faq-content">
-                <p><b>⚠️Perbedaan Canva template designer pro / member pro!!⚠️</b>
-                  <br>°template designer bisa upload font, brand Kit, upload Color palette ( termasuk fitur Ppt dan
-                  lainnya )
-                  <br>°member tidak bisa melakukan kelebihan yang ada di template desaigner ( hanya mendapatkan fitur
-                  PPT dan lainnya )
-                </p>
-              </div>
-              <i class="faq-toggle bi bi-chevron-right"></i>
-            </div><!-- End Faq item-->
-
-          </div>
-
-        </div>
-
-        <div class="col-lg-5 order-1 order-lg-2 why-us-img">
-          <img src="assets/img/mylogo.png" class="img-fluid" alt="" data-aos="zoom-in" data-aos-delay="100">
-        </div>
-      </div>
-
-    </div>
-
-  </section><!-- /Why Us Section -->
-
-
-
-  <!--Footer-->
-  <footer id="footer" class="footer">
-    <div class="container footer-top">
-      <div class="row gy-4">
-        <div class="col-lg-4 col-md-6 footer-about">
-          <a href="index.html" class="d-flex align-items-center">
-            <span class="sitename">information</span>
-          </a>
-          <div class="footer-contact pt-3">
-            <p>AnggaPutraJN</p>
-            <p>Indonesia, Sulawesi Selatan</p>
-            <p class="mt-3"><strong>Phone:</strong> <span>+6282286344446</span></p>
-            <p><strong>Email:</strong> <span>anggafina15@gmail.com</span></p>
-          </div>
-        </div>
-
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Gunakan Alternatif Link</h4>
-          <ul>
-            <li><i class="bi bi-chevron-right"></i> <a href="#">Home</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Our Services</h4>
-          <ul>
-            <li><i class="bi bi-chevron-right"></i> <a href="#">Web Design</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-4 col-md-12">
-          <h4>Follow Us</h4>
-          <p>Ikuti Soocial Media</p>
-          <div class="social-links d-flex">
-            <a href=""><i class="bi bi-twitter-x"></i></a>
-            <a href=""><i class="bi bi-facebook"></i></a>
-            <a href=""><i class="bi bi-instagram"></i></a>
-            <a href=""><i class="bi bi-whatsapp"></i></a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">AnggaPutraJN</strong> <span>All Rights Reserved</span>
-      </p>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://indapk.com/">AnggaPutraJN</a>
-      </div>
-    </div>
-
-  </footer>
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
-      class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
-  <div id="preloader"></div>
-
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
-  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-
-  <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
-
-
-
-
-
-  <script src="vanilla-tilt.js"></script>
-  <script type="text/javascript">
-    VanillaTilt.init(document.querySelectorAll(".card"), {
-      max: 25,
-      speed: 5000,
-      glare: true,
-      'max-glare': 0.5,
+                ${isCompleted && item.link_selesai ? `<p><strong>🔗 Link Game Request:</strong> <a href="${item.link_selesai}" target="_blank" style="color: #10b981;">${item.link_selesai}</a></p>` : ''}
+                ${isCompleted ? `<p><strong>🛡️ Approved By:</strong> AnggaPutraJN ✅ </p>` : ''}
+            
+                <p class="timestamp">${timestamp}</p>
+                
+                <div class="action-buttons">
+                    ${isPending ? `<button class="btn btn-small btn-success" onclick="showLinkModal('${item.nama_game}', ${item.id})">✅ Tandai Selesai</button>` : ''}
+                    <button class="btn btn-small btn-danger" onclick="showModal('delete', ${item.id}, '${item.nama_game}')">🗑️ Hapus Request</button>
+                </div>
+            </div>
+        `;
     });
-  </script>
+    
+    dataContainer.innerHTML = html;
+}
+// MODIFIKASI fungsi untuk menampilkan modal input link
+function showLinkModal(gameName, id) {
+    currentId = id;
+    const modal = document.getElementById('linkModal');
+    const input = document.getElementById('linkSelesaiInput');
+    
+    // Reset input
+    input.value = '';
+    
+    // Update judul dengan nama game
+    document.querySelector('#linkModal h3').textContent = `🔗 Link Game "${gameName}" yang Selesai`;
+    
+    modal.style.display = 'block';
+}
 
+function closeLinkModal() {
+    document.getElementById('linkModal').style.display = 'none';
+    currentId = null;
+}
+
+// MODIFIKASI fungsi untuk submit link selesai
+function submitLinkSelesai() {
+    const linkInput = document.getElementById('linkSelesaiInput');
+    const link = linkInput.value.trim();
+    
+    // Validasi link (opsional - bisa dikomentari jika tidak ingin validasi)
+    if (link && !link.startsWith('http://') && !link.startsWith('https://')) {
+        alert('Masukkan link yang valid (harus dimulai dengan http:// atau https://)');
+        return;
+    }
+    
+    if (!currentId) return;
+    
+    const formData = new FormData();
+    formData.append('action', 'markDone');
+    formData.append('id', currentId);
+    formData.append('link_selesai', link);
+    
+    // Show loading state
+    const submitBtn = document.querySelector('#linkModal .btn-success');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Memproses...';
+    
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        
+        if (data.status === 'success') {
+            closeLinkModal();
+            loadData(); // Refresh data
+            showMessage('Request berhasil ditandai selesai!', 'success');
+        } else {
+            showMessage('Gagal: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        showMessage('Terjadi kesalahan: ' + error.message, 'error');
+    });
+}
+        function showModal(action, id, gameName) {
+            currentAction = action;
+            currentId = id;
+            
+            const modal = document.getElementById('confirmModal');
+            const title = document.getElementById('modalTitle');
+            const message = document.getElementById('modalMessage');
+            
+            if (action === 'delete') {
+                title.textContent = '🗑️ Hapus Request';
+                message.textContent = `Apakah Anda yakin ingin menghapus request game "${gameName}"? Aksi ini tidak dapat dibatalkan.`;
+            } else if (action === 'markDone') {
+                title.textContent = '✅ Tandai Selesai';
+                message.textContent = `Apakah Anda yakin ingin menandai request game "${gameName}" sebagai SELESAI?`;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            currentAction = null;
+            currentId = null;
+        }
+
+        function confirmAction() {
+            if (!currentAction || !currentId) return;
+            
+            const formData = new FormData();
+            formData.append('action', currentAction);
+            formData.append('id', currentId);
+            
+            // Show loading state
+            const confirmBtn = document.getElementById('confirmBtn');
+            const originalText = confirmBtn.textContent;
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = '⏳ Memproses...';
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => 
+            {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = originalText;
+                console.log('Response dari server:', data); // Tambahkan ini
+                if (data.savedStatus) 
+                console.log('Status yang disimpan:', data.savedStatus);
+                if (data.status === 'success') {
+                    closeModal();
+                    loadData(); // Refresh data
+                    showMessage(data.message, 'success');
+                } else {
+                    showMessage('Gagal: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = originalText;
+                showMessage('Terjadi kesalahan: ' + error.message, 'error');
+            });
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+window.onclick = function(event) {
+    const confirmModal = document.getElementById('confirmModal');
+    const linkModal = document.getElementById('linkModal');
+    
+    if (event.target === confirmModal) {
+        closeModal();
+    }
+    if (event.target === linkModal) {
+        closeLinkModal();
+    }
+}
+</script>
 </body>
-
 </html>
