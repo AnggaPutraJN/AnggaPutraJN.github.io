@@ -693,17 +693,17 @@
                     
                     <form id="gameForm">
                         <div class="form-group">
-                            <label for="nama_pengguna">Nama Pengguna *</label>
+                            <label for="nama_pengguna">Nama Pengguna <span class="optional-label">(wajib diisi)</span></label>
                             <input type="text" id="nama_pengguna" name="nama_pengguna" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="nama_game">Nama Game *</label>
+                            <label for="nama_game">Nama Game <span class="optional-label">(wajib diisi)</span></label>
                             <input type="text" id="nama_game" name="nama_game" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="jenis_emulator">Jenis Emulator *</label>
+                            <label for="jenis_emulator">Jenis Emulator <span class="optional-label">(wajib diisi)</span></label>
                             <select id="jenis_emulator" name="jenis_emulator" required>
                                 <option value="">Pilih Emulator</option>
                                 <option value="Switch">Switch</option>
@@ -780,10 +780,16 @@
     <!-- Modal Link Selesai -->
     <div id="linkModal" class="modal">
         <div class="modal-content">
-            <h3>🔗 Masukkan Link Game Selesai</h3>
+            <h3>🔗 Input Data Game Selesai</h3>
             <div class="form-group" style="margin: 20px 0; text-align: left;">
                 <label for="linkSelesaiInput">Link Game yang Sudah Selesai:</label>
                 <input type="text" id="linkSelesaiInput" placeholder="https://example.com/completed-game" style="width: 100%; margin-top: 8px;">
+            </div>
+            <!-- TAMBAHAN BARU: Input Pesan Owner -->
+            <div class="form-group" style="margin: 20px 0; text-align: left;">
+                <label for="pesanOwnerInput">Pesan Owner <span class="optional-label">(Optional)</span>:</label>
+                <textarea id="pesanOwnerInput" placeholder="Contoh: Game sudah selesai dimod, silahkan download di link di atas" 
+                        style="width: 100%; margin-top: 8px; min-height: 80px; resize: vertical;"></textarea>
             </div>
             <div class="modal-buttons">
                 <button class="btn btn-small btn-danger" onclick="closeLinkModal()">Batal</button>
@@ -806,6 +812,23 @@
 
     <script>
 
+document.getElementById('link_game').addEventListener('input', function () {
+    const input = this.value;
+    const helpText = document.getElementById('linkHelp');
+
+    // Pola regex untuk URL dengan http/https
+    const urlPattern = /^(https?:\/\/)[\w\-]+(\.[\w\-]+)+[/#?]?.*$/;
+
+    if (urlPattern.test(input)) {
+        this.setCustomValidity('');
+        helpText.style.color = 'green';
+        helpText.textContent = 'Link valid';
+    } else {
+        this.setCustomValidity('Harap masukkan link dengan format yang benar (contoh: https://example.com)');
+        helpText.style.color = 'red';
+        helpText.textContent = 'Format link tidak valid. Gunakan format: https://example.com';
+    }
+});
         // Tab functionality
         function showTab(tabName) {
             // Hide all tab contents
@@ -827,7 +850,7 @@
                 loadData();
             }
         }
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHl_TTpjTawgMf07DW4--Ys3UOFtFVBEOvLNWH16rYIKwhRiaM0uigXqW9eRu0LoE/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRhhj9yw17YeIeClqC1u9o8zp7qCcHSdhKP6gBwJ0CjciOOKF7XhLRenKz0CksebM/exec';
         let currentAction = null;
         let currentId = null;
 
@@ -913,49 +936,51 @@
 
 let tempLinkSelesai = '';
         function displayData(data) {
-    const dataContainer = document.getElementById('dataContainer');
-    
-    if (!data || data.length === 0) {
-        dataContainer.innerHTML = '<p style="text-align:center; color: #6b7280;">📝 Belum ada request game.</p>';
-        return;
-    }
-    
-    let html = '';
-    data.reverse().forEach(item => {
-        const timestamp = new Date(item.timestamp).toLocaleString('id-ID');
-        const status = item.status_req || 'PENDING';
-        const isCompleted = status === 'SELESAI';
-        const isPending = status === 'PENDING';
-        
-        html += `
-            <div class="data-item ${isCompleted ? 'completed' : ''}">
-                <h3>🎮 ${item.nama_game}</h3>
-                <p><strong>👤 Pengguna:</strong> ${item.nama_pengguna}</p>
-                <p><strong>🕹️ Emulator:</strong> ${item.jenis_emulator}</p>
-                ${item.version_game ? `<p><strong>📦 Version:</strong> ${item.version_game}</p>` : ''}
-                ${item.link_game ? `<p><strong>🔗 Link:</strong> <a href="${item.link_game}" target="_blank" style="color: #3498db;">${item.link_game}</a></p>` : ''}
-                ${item.rating_web ? `<p><strong>⭐ Rating:</strong> <span class="rating-stars">${item.rating_web}</span></p>` : ''}
-                <p><strong>📊 Status:</strong> 
-                    <span class="status-badge ${status === 'SELESAI' ? 'status-selesai' : 'status-pending'}" 
-                          onclick="${isPending ? `showLinkModal('${item.nama_game}', ${item.id})` : ''}">
-                        ${status}
-                    </span>
-                </p>
-                ${isCompleted && item.link_selesai ? `<p><strong>🔗 Link Game Request:</strong> <a href="${item.link_selesai}" target="_blank" style="color: #10b981;">${item.link_selesai}</a></p>` : ''}
-                ${isCompleted ? `<p><strong>🛡️ Approved By:</strong> AnggaPutraJN ✅ </p>` : ''}
+            const dataContainer = document.getElementById('dataContainer');
             
-                <p class="timestamp">${timestamp}</p>
+            if (!data || data.length === 0) {
+                dataContainer.innerHTML = '<p style="text-align:center; color: #6b7280;">📝 Belum ada request game.</p>';
+                return;
+            }
+            
+            let html = '';
+            data.reverse().forEach(item => {
+                const timestamp = new Date(item.timestamp).toLocaleString('id-ID');
+                const status = item.status_req || 'PENDING';
+                const isCompleted = status === 'SELESAI';
+                const isPending = status === 'PENDING';
                 
-                <div class="action-buttons">
-                    ${isPending ? `<button class="btn btn-small btn-success" onclick="showLinkModal('${item.nama_game}', ${item.id})">✅ Tandai Selesai</button>` : ''}
-                    <button class="btn btn-small btn-danger" onclick="showModal('delete', ${item.id}, '${item.nama_game}')">🗑️ Hapus Request</button>
-                </div>
-            </div>
-        `;
-    });
-    
-    dataContainer.innerHTML = html;
-}
+                html += `
+                    <div class="data-item ${isCompleted ? 'completed' : ''}">
+                        <h3>🎮 ${item.nama_game}</h3>
+                        <p><strong>👤 Pengguna:</strong> ${item.nama_pengguna}</p>
+                        <p><strong>🕹️ Emulator:</strong> ${item.jenis_emulator}</p>
+                        ${item.version_game ? `<p><strong>📦 Version:</strong> ${item.version_game}</p>` : ''}
+                        ${item.link_game ? `<p><strong>🔗 Link:</strong> <a href="${item.link_game}" target="_blank" style="color: #3498db;">${item.link_game}</a></p>` : ''}
+                        ${item.rating_web ? `<p><strong>⭐ Rating:</strong> <span class="rating-stars">${item.rating_web}</span></p>` : ''}
+                        <p><strong>📊 Status:</strong> 
+                            <span class="status-badge ${status === 'SELESAI' ? 'status-selesai' : 'status-pending'}" 
+                                onclick="${isPending ? `showLinkModal('${item.nama_game}', ${item.id})` : ''}">
+                                ${status}
+                            </span>
+                        </p>
+                        ${isCompleted && item.link_selesai ? `<p><strong>🔗 Link Game Request:</strong> <a href="${item.link_selesai}" target="_blank" style="color: #10b981;">${item.link_selesai}</a></p>` : ''}
+                        <!-- TAMBAHAN BARU: Tampilkan pesan owner jika ada -->
+                        ${isCompleted && item.pesan_owner ? `<p><strong>💬 Pesan Owner:</strong> <span style="background: #f0fdf4; padding: 8px; border-radius: 6px; display: block; margin-top: 5px; border-left: 3px solid #10b981;">${item.pesan_owner}</span></p>` : ''}
+                        ${isCompleted ? `<p><strong>🛡️ Approved By:</strong> AnggaPutraJN ✅ </p>` : ''}
+                    
+                        <p class="timestamp">${timestamp}</p>
+                        
+                        <div class="action-buttons">
+                            ${isPending ? `<button class="btn btn-small btn-success" onclick="showLinkModal('${item.nama_game}', ${item.id})">✅ Tandai Selesai</button>` : ''}
+                            <button class="btn btn-small btn-danger" onclick="showModal('delete', ${item.id}, '${item.nama_game}')">🗑️ Hapus Request</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            dataContainer.innerHTML = html;
+        }
 // MODIFIKASI fungsi untuk menampilkan modal input link
 function showLinkModal(gameName, id) {
     currentId = id;
@@ -973,13 +998,17 @@ function showLinkModal(gameName, id) {
 
 function closeLinkModal() {
     document.getElementById('linkModal').style.display = 'none';
+    document.getElementById('linkSelesaiInput').value = ''; // Reset link input
+    document.getElementById('pesanOwnerInput').value = ''; // TAMBAHAN BARU - Reset pesan input
     currentId = null;
 }
 
 // MODIFIKASI fungsi untuk submit link selesai
 function submitLinkSelesai() {
     const linkInput = document.getElementById('linkSelesaiInput');
+    const pesanInput = document.getElementById('pesanOwnerInput'); // TAMBAHAN BARU
     const link = linkInput.value.trim();
+    const pesan = pesanInput.value.trim(); // TAMBAHAN BARU
     
     // Validasi link (opsional - bisa dikomentari jika tidak ingin validasi)
     if (link && !link.startsWith('http://') && !link.startsWith('https://')) {
@@ -993,6 +1022,7 @@ function submitLinkSelesai() {
     formData.append('action', 'markDone');
     formData.append('id', currentId);
     formData.append('link_selesai', link);
+    formData.append('pesan_owner', pesan); // TAMBAHAN BARU
     
     // Show loading state
     const submitBtn = document.querySelector('#linkModal .btn-success');
@@ -1023,6 +1053,7 @@ function submitLinkSelesai() {
         showMessage('Terjadi kesalahan: ' + error.message, 'error');
     });
 }
+
         function showModal(action, id, gameName) {
             currentAction = action;
             currentId = id;
