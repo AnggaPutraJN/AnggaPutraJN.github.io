@@ -74,13 +74,20 @@
         .header::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #f72585, #7209b7, #3a86ff, #4cc9f0);
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s ease-in-out infinite;
         }
 
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        }
+        
         .header h1 {
             font-size: clamp(1.8rem, 4vw, 2.8rem);
             margin-bottom: 10px;
@@ -873,6 +880,7 @@
                                 <p><i class="fas fa-wallet"></i> <strong>Gopay:</strong> 082286344446 (AnggaPutraJN)</p>
                                 <p><i class="fas fa-wallet"></i> <strong>Dana:</strong> 082286344446 (A.P JATI NEGARA MA)</p>
                                 <p><i class="fas fa-wallet"></i> <strong>Shopeepay:</strong> 082286344446 (AnggaPutraJN)</p>
+                                <p><i class="fab fa-whatsapp"></i><strong> Join Whatsapp:</strong> <span style="background: #f0fdf4; padding: 8px; border-radius: 6px; display: block; margin-top: 5px; border-left: 3px solid #10b981;"><a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" target="_blank" style="color: #10b981;">Click To Join Whatsapp</a></span></p>
                             </div>
                         </div>
 
@@ -1082,7 +1090,8 @@ document.getElementById('link_game').addEventListener('input', function () {
 
         function loadData() {
             const dataContainer = document.getElementById('dataContainer');
-            dataContainer.innerHTML = '<p style="text-align:center; color: #6b7280;">⏳ Memuat data...</p>';
+            loading.className = 'loading';
+            loading.innerHTML = '<p><i class="fas fa-spinner"></i> Memuat data...</p>';
             
             fetch(SCRIPT_URL + '?action=read')
             .then(response => response.json())
