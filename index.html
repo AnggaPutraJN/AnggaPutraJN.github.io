@@ -363,6 +363,21 @@ button:hover, .btn:hover {
   color: white;
 }
 
+.btn-gradient-bg4 {
+  background: linear-gradient(-45deg, #176de9, #dd3546, #6c757f);
+  background-size: 400% 400%;
+  animation: gradientAnimation 10s ease infinite;
+  color: white;
+}
+
+.btn-gradient-bg5 {
+  background: linear-gradient(-45deg, #6c757f, #dd3546, #176de9);
+  background-size: 400% 400%;
+  animation: gradientAnimation 10s ease infinite;
+  color: white;
+}
+
+
 @keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
@@ -374,6 +389,7 @@ button:hover, .btn:hover {
     background-position: 0% 50%;
   }
 }
+
 
 /* Modal styles */
 .modal-content {
@@ -668,8 +684,8 @@ button:hover, .btn:hover {
 <button type="button" onclick="generateCode()" class="btn btn-gradient-bg1 me-2">Generate Codingan</button>
 <button type="button" onclick="copyCode()" class="btn btn-gradient-bg2 me-2">Copy Generate</button>
 <button type="button" onclick="clearCode()" class="btn btn-gradient-bg3 me-2">Clear Codingan</button>
-    <button type="button" onclick="viewDatabase()" class="btn btn-gradient-bg5 me-2">Lihat Database</button>
-    <button type="button" onclick="saveToSpreadsheet()" class="btn btn-gradient-bg4 me-2">Simpan ke Database</button>
+    <button type="button" onclick="viewDatabase()" class="btn btn-gradient-bg4 me-2">Lihat Database</button>
+    <button type="button" onclick="saveToSpreadsheet()" class="btn btn-gradient-bg5 me-2">Simpan ke Database</button>
 </div>
 <div id="result"></div>
 </div>
@@ -730,34 +746,37 @@ button:hover, .btn:hover {
 <!--Script-->
 <script>
 // Fungsi untuk menyimpan data ke spreadsheet
+// Enhanced saveToSpreadsheet function with comma-separated links
 function saveToSpreadsheet() {
-    // Kumpulkan semua data dari form
+    // Format links with commas
+    const formatLinks = (links) => {
+        return links.map(link => link.trim()).filter(link => link).join(', ');
+    };
+
     const gameData = {
-        action: 'create', // Tambahkan ini untuk memanggil fungsi createData di GS
+        action: document.getElementById("inputGameId") ? 'update' : 'create',
+        id: document.getElementById("inputGameId")?.value || '',
         nama_game: document.getElementById("inputName").value,
         ukuran_nsp: document.getElementById("inputSingleNSPSize").value,
         ukuran_xci: document.getElementById("inputSingleXCISize").value,
-        // Kolom baru yang ditambahkan
         category: document.getElementById("inputCategory")?.value || '',
         game_id: document.getElementById("inputGameID")?.value || '',
         region: document.getElementById("inputRegion")?.value || '',
         language: document.getElementById("inputLanguage")?.value || '',
-        // Kolom yang sudah ada sebelumnya
         jumlah_link_nsp_single: singleNSPLinkCount,
         jumlah_link_xci_single: singleXCILinkCount,
         jumlah_link_nsp_part: partNSPLinkCount,
         jumlah_link_xci_part: partXCILinkCount,
-        link_single_nsp: getLinkValues('singleNSP'),
-        link_single_xci: getLinkValues('singleXCI'),
-        link_part_nsp: getLinkValues('partNSP'),
-        link_part_xci: getLinkValues('partXCI'),
-        jenis_link_single_nsp: selectedSingleNSPLinksOrder.join(','),
-        jenis_link_single_xci: selectedSingleXCILinksOrder.join(','),
-        jenis_link_part_nsp: selectedPartNSPLinksOrder.join(','),
-        jenis_link_part_xci: selectedPartXCILinksOrder.join(',')
+        link_single_nsp: formatLinks(getLinkValues('singleNSP')),
+        link_single_xci: formatLinks(getLinkValues('singleXCI')),
+        link_part_nsp: formatLinks(getLinkValues('partNSP')),
+        link_part_xci: formatLinks(getLinkValues('partXCI')),
+        jenis_link_single_nsp: selectedSingleNSPLinksOrder.join(', '),
+        jenis_link_single_xci: selectedSingleXCILinksOrder.join(', '),
+        jenis_link_part_nsp: selectedPartNSPLinksOrder.join(', '),
+        jenis_link_part_xci: selectedPartXCILinksOrder.join(', ')
     };
 
-    // Kirim data ke Google Apps Script
     fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
         method: 'POST',
         headers: {
@@ -769,8 +788,113 @@ function saveToSpreadsheet() {
     .then(data => {
         if (data.status === 'success') {
             alert('Data berhasil disimpan ke database!');
-            // Reset form setelah berhasil menyimpan (opsional)
-            // resetForm();
+            viewDatabase();
+        } else {
+            alert('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat menyimpan data');
+    });
+}
+
+// Fungsi untuk melihat data di database
+function viewDatabase() {
+    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec?action=read')
+        .then(response => response.json())
+        .then(data => displayDatabase(data))
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memuat data');
+        });
+}
+
+// Fungsi pembantu untuk mendapatkan nilai link
+// Enhanced getLinkValues function to ensure proper formatting
+function getLinkValues(type) {
+    let links = [];
+    let prefix = '';
+    
+    switch(type) {
+        case 'singleNSP':
+            prefix = 'inputINDapkNSPSingleLink';
+            selectedSingleNSPLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'singleXCI':
+            prefix = 'inputINDapkSingleLinkXCI';
+            selectedSingleXCILinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'partNSP':
+            prefix = 'inputINDapkNSPPart';
+            selectedPartNSPLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'partXCI':
+            prefix = 'inputINDapkXCIPart';
+            selectedPartXCILinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+    }
+    
+    // Clean up links - remove empty entries and trim whitespace
+    return links.map(link => link.trim()).filter(link => link);
+}
+
+// Fungsi untuk menampilkan data dari database
+// Enhanced displayDatabase function with search and filters
+function saveToSpreadsheet() {
+    // Format links with commas
+    const formatLinks = (links) => {
+        return links.map(link => link.trim()).filter(link => link).join(', ');
+    };
+
+    const gameData = {
+        action: document.getElementById("inputGameId") ? 'update' : 'create',
+        id: document.getElementById("inputGameId")?.value || '',
+        nama_game: document.getElementById("inputName").value,
+        ukuran_nsp: document.getElementById("inputSingleNSPSize").value,
+        ukuran_xci: document.getElementById("inputSingleXCISize").value,
+        category: document.getElementById("inputCategory")?.value || '',
+        game_id: document.getElementById("inputGameID")?.value || '',
+        region: document.getElementById("inputRegion")?.value || '',
+        language: document.getElementById("inputLanguage")?.value || '',
+        jumlah_link_nsp_single: singleNSPLinkCount,
+        jumlah_link_xci_single: singleXCILinkCount,
+        jumlah_link_nsp_part: partNSPLinkCount,
+        jumlah_link_xci_part: partXCILinkCount,
+        link_single_nsp: formatLinks(getLinkValues('singleNSP')),
+        link_single_xci: formatLinks(getLinkValues('singleXCI')),
+        link_part_nsp: formatLinks(getLinkValues('partNSP')),
+        link_part_xci: formatLinks(getLinkValues('partXCI')),
+        jenis_link_single_nsp: selectedSingleNSPLinksOrder.join(', '),
+        jenis_link_single_xci: selectedSingleXCILinksOrder.join(', '),
+        jenis_link_part_nsp: selectedPartNSPLinksOrder.join(', '),
+        jenis_link_part_xci: selectedPartXCILinksOrder.join(', ')
+    };
+
+    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(gameData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Data berhasil disimpan ke database!');
+            viewDatabase();
         } else {
             alert('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
         }
@@ -828,19 +952,29 @@ function getLinkValues(type) {
             break;
     }
     
-    return links.join('|');
+    // Clean up links - remove empty entries and trim whitespace
+    return links.map(link => link.trim()).filter(link => link);
 }
 
 // Fungsi untuk menampilkan data dari database
 function displayDatabase(data) {
     if (data.status === 'success') {
-        // Buat modal untuk menampilkan data dengan kolom tambahan
+        // Remove existing modal if present
+        const existingModal = document.getElementById('databaseModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
         const modalContent = `
             <div class="modal fade" id="databaseModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-fullscreen">
+                <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Database Game</h5>
+                            <div class="d-flex gap-2">
+                                <input type="text" id="databaseSearch" class="form-control" placeholder="Cari game..." style="width: 200px;">
+                                <button class="btn btn-sm btn-primary" onclick="filterDatabase()">Filter</button>
+                            </div>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -848,60 +982,50 @@ function displayDatabase(data) {
                                 <table class="table table-striped table-hover">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th>Timestamp</th>
                                             <th>Nama Game</th>
                                             <th>Category</th>
                                             <th>Game ID</th>
                                             <th>Region</th>
-                                            <th>Language</th>
-                                            <th>Ukuran NSP</th>
-                                            <th>Ukuran XCI</th>
+                                            <th>Ukuran</th>
                                             <th>Jumlah Link</th>
-                                            <th>Jenis Link</th>
+                                            <th>Terakhir Update</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="databaseTableBody">
                                         ${data.data.map(game => `
                                             <tr>
+                                                <td><strong>${game.nama_game || '-'}</strong></td>
+                                                <td>${game.category || '-'}</td>
+                                                <td><code>${game.game_id || '-'}</code></td>
+                                                <td>${game.region || '-'}</td>
+                                                <td>
+                                                    <small>NSP: ${game.ukuran_nsp || '-'}<br>
+                                                    XCI: ${game.ukuran_xci || '-'}</small>
+                                                </td>
+                                                <td>
+                                                    <small>
+                                                        NSP: ${game.jumlah_link_nsp_single || 0}S ${game.jumlah_link_nsp_part || 0}P<br>
+                                                        XCI: ${game.jumlah_link_xci_single || 0}S ${game.jumlah_link_xci_part || 0}P
+                                                    </small>
+                                                </td>
                                                 <td>${new Date(game.timestamp).toLocaleString('id-ID', {
-                                                    year: 'numeric',
-                                                    month: '2-digit',
                                                     day: '2-digit',
+                                                    month: '2-digit',
+                                                    year: 'numeric',
                                                     hour: '2-digit',
                                                     minute: '2-digit'
                                                 })}</td>
-                                                <td><strong>${game.nama_game || '-'}</strong></td>
-                                                <td><span class="badge bg-primary">${game.category || '-'}</span></td>
-                                                <td><code>${game.game_id || '-'}</code></td>
-                                                <td><span class="badge bg-info">${game.region || '-'}</span></td>
-                                                <td><span class="badge bg-success">${game.language || '-'}</span></td>
-                                                <td>${game.ukuran_nsp || '-'}</td>
-                                                <td>${game.ukuran_xci || '-'}</td>
                                                 <td>
-                                                    <small>
-                                                        <strong>NSP:</strong> Single: ${game.jumlah_link_nsp_single || 0}, Part: ${game.jumlah_link_nsp_part || 0}<br>
-                                                        <strong>XCI:</strong> Single: ${game.jumlah_link_xci_single || 0}, Part: ${game.jumlah_link_xci_part || 0}
-                                                    </small>
-                                                </td>
-                                                <td>
-                                                    <small>
-                                                        <strong>NSP Single:</strong> ${game.jenis_link_single_nsp || '-'}<br>
-                                                        <strong>XCI Single:</strong> ${game.jenis_link_single_xci || '-'}<br>
-                                                        <strong>NSP Part:</strong> ${game.jenis_link_part_nsp || '-'}<br>
-                                                        <strong>XCI Part:</strong> ${game.jenis_link_part_xci || '-'}
-                                                    </small>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group-vertical btn-group-sm">
-                                                        <button class="btn btn-outline-info btn-sm" onclick="viewGameDetails(${game.id})">
-                                                            <i class="fas fa-eye"></i> Detail
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
+                                                            <i class="fas fa-eye"></i>
                                                         </button>
-                                                        <button class="btn btn-outline-warning btn-sm" onclick="editGame(${game.id})">
-                                                            <i class="fas fa-edit"></i> Edit
+                                                        <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
+                                                            <i class="fas fa-edit"></i>
                                                         </button>
-                                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteGame(${game.id})">
-                                                            <i class="fas fa-trash"></i> Hapus
+                                                        <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
+                                                            <i class="fas fa-trash"></i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -928,25 +1052,113 @@ function displayDatabase(data) {
             </div>
         `;
         
-        // Hapus modal yang sudah ada jika ada
-        const existingModal = document.getElementById('databaseModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
+        // Add modal to DOM and show it
+        document.body.insertAdjacentHTML('beforeend', modalContent);
         
-        // Tambahkan modal ke body
-        const modalDiv = document.createElement('div');
-        modalDiv.innerHTML = modalContent;
-        document.body.appendChild(modalDiv);
-        
-        // Tampilkan modal
         const modal = new bootstrap.Modal(document.getElementById('databaseModal'));
         modal.show();
         
-        // Simpan data untuk fungsi lain
+        // Save data for other functions
         window.currentDatabaseData = data.data;
+        window.originalDatabaseData = data.data; // Save original data for filtering
     } else {
         alert("Gagal memuat data: " + (data.message || 'Unknown error'));
+    }
+}
+
+// Fungsi untuk filter database
+function filterDatabase() {
+    const searchTerm = document.getElementById('databaseSearch').value.toLowerCase();
+    const tableBody = document.getElementById('databaseTableBody');
+    
+    if (!searchTerm) {
+        // If search is empty, show all data
+        displayFilteredData(window.originalDatabaseData);
+        return;
+    }
+    
+    // Filter the data based on search term
+    const filteredData = window.originalDatabaseData.filter(game => {
+        return (game.nama_game && game.nama_game.toLowerCase().includes(searchTerm)) ||
+               (game.category && game.category.toLowerCase().includes(searchTerm)) ||
+               (game.game_id && game.game_id.toLowerCase().includes(searchTerm)) ||
+               (game.region && game.region.toLowerCase().includes(searchTerm));
+    });
+    
+    displayFilteredData(filteredData);
+}
+
+// Fungsi untuk menampilkan data yang sudah difilter
+function displayFilteredData(filteredData) {
+    const tableBody = document.getElementById('databaseTableBody');
+    
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data yang ditemukan</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = filteredData.map(game => `
+        <tr>
+            <td><strong>${game.nama_game || '-'}</strong></td>
+            <td>${game.category || '-'}</td>
+            <td><code>${game.game_id || '-'}</code></td>
+            <td>${game.region || '-'}</td>
+            <td>
+                <small>NSP: ${game.ukuran_nsp || '-'}<br>
+                XCI: ${game.ukuran_xci || '-'}</small>
+            </td>
+            <td>
+                <small>
+                    NSP: ${game.jumlah_link_nsp_single || 0}S ${game.jumlah_link_nsp_part || 0}P<br>
+                    XCI: ${game.jumlah_link_xci_single || 0}S ${game.jumlah_link_xci_part || 0}P
+                </small>
+            </td>
+            <td>${new Date(game.timestamp).toLocaleString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Event listener untuk search input (real-time filtering)
+document.addEventListener('DOMContentLoaded', function() {
+    // This will be added when modal is created
+});
+
+// Add event listener when modal is shown
+function addSearchEventListener() {
+    const searchInput = document.getElementById('databaseSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                filterDatabase();
+            }, 300); // Debounce search for 300ms
+        });
+        
+        // Also allow Enter key to trigger search
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterDatabase();
+            }
+        });
     }
 }
 
@@ -954,6 +1166,12 @@ function displayDatabase(data) {
 function viewGameDetails(gameId) {
     const game = window.currentDatabaseData.find(g => g.id === gameId);
     if (!game) return;
+    
+    // Remove existing detail modal if present
+    const existingDetailModal = document.getElementById('gameDetailModal');
+    if (existingDetailModal) {
+        existingDetailModal.remove();
+    }
     
     const detailModalContent = `
         <div class="modal fade" id="gameDetailModal" tabindex="-1" aria-hidden="true">
@@ -1001,7 +1219,7 @@ function viewGameDetails(gameId) {
                                         </h2>
                                         <div id="nspSingle" class="accordion-collapse collapse">
                                             <div class="accordion-body">
-                                                <small>${game.link_single_nsp.split('|').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                                <small>${game.link_single_nsp.split(', ').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
                                             </div>
                                         </div>
                                     </div>` : ''}
@@ -1014,7 +1232,7 @@ function viewGameDetails(gameId) {
                                         </h2>
                                         <div id="xciSingle" class="accordion-collapse collapse">
                                             <div class="accordion-body">
-                                                <small>${game.link_single_xci.split('|').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                                <small>${game.link_single_xci.split(', ').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
                                             </div>
                                         </div>
                                     </div>` : ''}
@@ -1027,7 +1245,7 @@ function viewGameDetails(gameId) {
                                         </h2>
                                         <div id="nspPart" class="accordion-collapse collapse">
                                             <div class="accordion-body">
-                                                <small>${game.link_part_nsp.split('|').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                                <small>${game.link_part_nsp.split(', ').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
                                             </div>
                                         </div>
                                     </div>` : ''}
@@ -1040,7 +1258,7 @@ function viewGameDetails(gameId) {
                                         </h2>
                                         <div id="xciPart" class="accordion-collapse collapse">
                                             <div class="accordion-body">
-                                                <small>${game.link_part_xci.split('|').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                                <small>${game.link_part_xci.split(', ').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
                                             </div>
                                         </div>
                                     </div>` : ''}
@@ -1056,9 +1274,583 @@ function viewGameDetails(gameId) {
         </div>
     `;
     
-    const detailModalDiv = document.createElement('div');
-    detailModalDiv.innerHTML = detailModalContent;
-    document.body.appendChild(detailModalDiv);
+    document.body.insertAdjacentHTML('beforeend', detailModalContent);
+    
+    const detailModal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
+    detailModal.show();
+}
+
+// Fungsi untuk menghapus game
+function deleteGame(gameId) {
+    if (confirm('Apakah Anda yakin ingin menghapus game ini?')) {
+        fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'delete',
+                id: gameId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Game berhasil dihapus!');
+                viewDatabase(); // Refresh tampilan database
+            } else {
+                alert('Gagal menghapus game: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus game');
+        });
+    }
+}
+
+// Fungsi untuk export ke CSV
+function exportToCSV() {
+    if (!window.currentDatabaseData || window.currentDatabaseData.length === 0) {
+        alert('Tidak ada data untuk di-export');
+        return;
+    }
+    
+    const headers = [
+        'Timestamp', 'Nama Game', 'Category', 'Game ID', 'Region', 'Language',
+        'Ukuran NSP', 'Ukuran XCI', 'Jumlah Link NSP Single', 'Jumlah Link XCI Single',
+        'Jumlah Link NSP Part', 'Jumlah Link XCI Part', 'Link Single NSP', 'Link Single XCI',
+        'Link Part NSP', 'Link Part XCI', 'Jenis Link Single NSP', 'Jenis Link Single XCI',
+        'Jenis Link Part NSP', 'Jenis Link Part XCI'
+    ];
+    
+    const csvContent = [
+        headers.join(','),
+        ...window.currentDatabaseData.map(game => [
+            `"${new Date(game.timestamp).toISOString()}"`,
+            `"${game.nama_game || ''}"`,
+            `"${game.category || ''}"`,
+            `"${game.game_id || ''}"`,
+            `"${game.region || ''}"`,
+            `"${game.language || ''}"`,
+            `"${game.ukuran_nsp || ''}"`,
+            `"${game.ukuran_xci || ''}"`,
+            game.jumlah_link_nsp_single || 0,
+            game.jumlah_link_xci_single || 0,
+            game.jumlah_link_nsp_part || 0,
+            game.jumlah_link_xci_part || 0,
+            `"${game.link_single_nsp || ''}"`,
+            `"${game.link_single_xci || ''}"`,
+            `"${game.link_part_nsp || ''}"`,
+            `"${game.link_part_xci || ''}"`,
+            `"${game.jenis_link_single_nsp || ''}"`,
+            `"${game.jenis_link_single_xci || ''}"`,
+            `"${game.jenis_link_part_nsp || ''}"`,
+            `"${game.jenis_link_part_xci || ''}"`
+        ].join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `game_database_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+// Fungsi untuk edit game - DIPERBAIKI
+function editGame(gameId) {
+    const game = window.currentDatabaseData.find(g => g.id === gameId);
+    if (!game) {
+        alert('Game tidak ditemukan!');
+        return;
+    }
+
+    // Close database modal first
+    const databaseModal = bootstrap.Modal.getInstance(document.getElementById('databaseModal'));
+    if (databaseModal) {
+        databaseModal.hide();
+    }
+
+    // Wait for modal to close then populate form
+    setTimeout(() => {
+        try {
+            // Create or update hidden input for game ID
+            let gameIdInput = document.getElementById("inputGameId");
+            if (!gameIdInput) {
+                gameIdInput = document.createElement("input");
+                gameIdInput.type = "hidden";
+                gameIdInput.id = "inputGameId";
+                gameIdInput.name = "inputGameId";
+                const form = document.getElementById("myForm");
+                if (form) {
+                    form.appendChild(gameIdInput);
+                }
+            }
+            gameIdInput.value = game.id;
+        
+            // Populate basic form fields
+            const setFieldValue = (id, value) => {
+                const field = document.getElementById(id);
+                if (field) {
+                    field.value = value || '';
+                }
+            };
+
+            setFieldValue("inputName", game.nama_game);
+            setFieldValue("inputSingleNSPSize", game.ukuran_nsp);
+            setFieldValue("inputSingleXCISize", game.ukuran_xci);
+            setFieldValue("inputCategory", game.category);
+            setFieldValue("inputGameID", game.game_id);
+            setFieldValue("inputRegion", game.region);
+            setFieldValue("inputLanguage", game.language);
+
+            // Set link counts
+            setFieldValue("singleNSPLinkCount", game.jumlah_link_nsp_single || 0);
+            setFieldValue("singleXCILinkCount", game.jumlah_link_xci_single || 0);
+            setFieldValue("partNSPLinkCount", game.jumlah_link_nsp_part || 0);
+            setFieldValue("partXCILinkCount", game.jumlah_link_xci_part || 0);
+
+            // Update global variables if they exist
+            if (typeof singleNSPLinkCount !== 'undefined') {
+                singleNSPLinkCount = game.jumlah_link_nsp_single || 0;
+            }
+            if (typeof singleXCILinkCount !== 'undefined') {
+                singleXCILinkCount = game.jumlah_link_xci_single || 0;
+            }
+            if (typeof partNSPLinkCount !== 'undefined') {
+                partNSPLinkCount = game.jumlah_link_nsp_part || 0;
+            }
+            if (typeof partXCILinkCount !== 'undefined') {
+                partXCILinkCount = game.jumlah_link_xci_part || 0;
+            }
+
+            // Set link types if arrays exist
+            if (typeof selectedSingleNSPLinksOrder !== 'undefined') {
+                selectedSingleNSPLinksOrder = game.jenis_link_single_nsp ? game.jenis_link_single_nsp.split(', ') : [];
+            }
+            if (typeof selectedSingleXCILinksOrder !== 'undefined') {
+                selectedSingleXCILinksOrder = game.jenis_link_single_xci ? game.jenis_link_single_xci.split(', ') : [];
+            }
+            if (typeof selectedPartNSPLinksOrder !== 'undefined') {
+                selectedPartNSPLinksOrder = game.jenis_link_part_nsp ? game.jenis_link_part_nsp.split(', ') : [];
+            }
+            if (typeof selectedPartXCILinksOrder !== 'undefined') {
+                selectedPartXCILinksOrder = game.jenis_link_part_xci ? game.jenis_link_part_xci.split(', ') : [];
+            }
+
+            // Try to call functions if they exist
+            if (typeof showTripleLinkTypeSelection === 'function') {
+                showTripleLinkTypeSelection();
+            }
+
+            if (typeof generateTripleLinkInputs === 'function') {
+                generateTripleLinkInputs();
+            }
+
+            // Populate link values - DIPERBAIKI
+            const populateLinks = (linkString, linkTypeArray, prefix) => {
+                if (linkString && linkTypeArray && linkTypeArray.length > 0) {
+                    const linkArray = linkString.split(', ');
+                    linkArray.forEach((link, index) => {
+                        if (linkTypeArray[index]) {
+                            const inputId = `${prefix}${linkTypeArray[index]}`;
+                            const input = document.getElementById(inputId);
+                            if (input) {
+                                input.value = link.trim();
+                            }
+                        }
+                    });
+                }
+            };
+
+            // Populate all link types with delay to ensure inputs are generated
+            setTimeout(() => {
+                populateLinks(game.link_single_nsp, selectedSingleNSPLinksOrder, 'singleNSP');
+                populateLinks(game.link_single_xci, selectedSingleXCILinksOrder, 'singleXCI');
+                populateLinks(game.link_part_nsp, selectedPartNSPLinksOrder, 'partNSP');
+                populateLinks(game.link_part_xci, selectedPartXCILinksOrder, 'partXCI');
+            }, 100);
+
+        } catch (error) {
+            console.error('Error in editGame:', error);
+            alert('Terjadi kesalahan saat memuat data game untuk diedit');
+        }
+    }, 300);
+}
+
+// Fungsi untuk melihat data di database
+function viewDatabase() {
+    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec?action=read')
+        .then(response => response.json())
+        .then(data => displayDatabase(data))
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memuat data');
+        });
+}
+
+// Fungsi pembantu untuk mendapatkan nilai link
+function getLinkValues(type) {
+    let links = [];
+    let prefix = '';
+    
+    switch(type) {
+        case 'singleNSP':
+            prefix = 'inputINDapkNSPSingleLink';
+            selectedSingleNSPLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'singleXCI':
+            prefix = 'inputINDapkSingleLinkXCI';
+            selectedSingleXCILinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'partNSP':
+            prefix = 'inputINDapkNSPPart';
+            selectedPartNSPLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'partXCI':
+            prefix = 'inputINDapkXCIPart';
+            selectedPartXCILinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+    }
+    
+    // Clean up links - remove empty entries and trim whitespace
+    return links.map(link => link.trim()).filter(link => link);
+}
+
+// Fungsi untuk menampilkan data dari database
+function displayDatabase(data) {
+    if (data.status === 'success') {
+        // Remove existing modal if present
+        const existingModal = document.getElementById('databaseModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        const modalContent = `
+            <div class="modal fade" id="databaseModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Database Game</h5>
+                            <div class="d-flex gap-2">
+                                <input type="text" id="databaseSearch" class="form-control" placeholder="Cari game..." style="width: 200px;">
+                                <button class="btn btn-sm btn-primary" onclick="filterDatabase()">Filter</button>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Nama Game</th>
+                                            <th>Category</th>
+                                            <th>Game ID</th>
+                                            <th>Region</th>
+                                            <th>Ukuran</th>
+                                            <th>Jumlah Link</th>
+                                            <th>Terakhir Update</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="databaseTableBody">
+                                        ${data.data.map(game => `
+                                            <tr>
+                                                <td><strong>${game.nama_game || '-'}</strong></td>
+                                                <td>${game.category || '-'}</td>
+                                                <td><code>${game.game_id || '-'}</code></td>
+                                                <td>${game.region || '-'}</td>
+                                                <td>
+                                                    <small>NSP: ${game.ukuran_nsp || '-'}<br>
+                                                    XCI: ${game.ukuran_xci || '-'}</small>
+                                                </td>
+                                                <td>
+                                                    <small>
+                                                        NSP: ${game.jumlah_link_nsp_single || 0}S ${game.jumlah_link_nsp_part || 0}P<br>
+                                                        XCI: ${game.jumlah_link_xci_single || 0}S ${game.jumlah_link_xci_part || 0}P
+                                                    </small>
+                                                </td>
+                                                <td>${new Date(game.timestamp).toLocaleString('id-ID', {
+                                                    day: '2-digit',
+                                                    month: '2-digit',
+                                                    year: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            ${data.data.length === 0 ? '<div class="alert alert-info text-center"><i class="fas fa-info-circle"></i> Tidak ada data dalam database</div>' : ''}
+                        </div>
+                        <div class="modal-footer">
+                            <div class="me-auto">
+                                <small class="text-muted">Total: ${data.data.length} game(s)</small>
+                            </div>
+                            <button type="button" class="btn btn-success" onclick="exportToCSV()">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i> Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to DOM and show it
+        document.body.insertAdjacentHTML('beforeend', modalContent);
+        
+        const modal = new bootstrap.Modal(document.getElementById('databaseModal'));
+        modal.show();
+        
+        // Save data for other functions
+        window.currentDatabaseData = data.data;
+        window.originalDatabaseData = data.data; // Save original data for filtering
+    } else {
+        alert("Gagal memuat data: " + (data.message || 'Unknown error'));
+    }
+}
+
+// Fungsi untuk filter database
+function filterDatabase() {
+    const searchTerm = document.getElementById('databaseSearch').value.toLowerCase();
+    const tableBody = document.getElementById('databaseTableBody');
+    
+    if (!searchTerm) {
+        // If search is empty, show all data
+        displayFilteredData(window.originalDatabaseData);
+        return;
+    }
+    
+    // Filter the data based on search term
+    const filteredData = window.originalDatabaseData.filter(game => {
+        return (game.nama_game && game.nama_game.toLowerCase().includes(searchTerm)) ||
+               (game.category && game.category.toLowerCase().includes(searchTerm)) ||
+               (game.game_id && game.game_id.toLowerCase().includes(searchTerm)) ||
+               (game.region && game.region.toLowerCase().includes(searchTerm));
+    });
+    
+    displayFilteredData(filteredData);
+}
+
+// Fungsi untuk menampilkan data yang sudah difilter
+function displayFilteredData(filteredData) {
+    const tableBody = document.getElementById('databaseTableBody');
+    
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data yang ditemukan</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = filteredData.map(game => `
+        <tr>
+            <td><strong>${game.nama_game || '-'}</strong></td>
+            <td>${game.category || '-'}</td>
+            <td><code>${game.game_id || '-'}</code></td>
+            <td>${game.region || '-'}</td>
+            <td>
+                <small>NSP: ${game.ukuran_nsp || '-'}<br>
+                XCI: ${game.ukuran_xci || '-'}</small>
+            </td>
+            <td>
+                <small>
+                    NSP: ${game.jumlah_link_nsp_single || 0}S ${game.jumlah_link_nsp_part || 0}P<br>
+                    XCI: ${game.jumlah_link_xci_single || 0}S ${game.jumlah_link_xci_part || 0}P
+                </small>
+            </td>
+            <td>${new Date(game.timestamp).toLocaleString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Event listener untuk search input (real-time filtering)
+document.addEventListener('DOMContentLoaded', function() {
+    // This will be added when modal is created
+});
+
+// Add event listener when modal is shown
+function addSearchEventListener() {
+    const searchInput = document.getElementById('databaseSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                filterDatabase();
+            }, 300); // Debounce search for 300ms
+        });
+        
+        // Also allow Enter key to trigger search
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterDatabase();
+            }
+        });
+    }
+}
+
+// Fungsi untuk melihat detail game
+function viewGameDetails(gameId) {
+    const game = window.currentDatabaseData.find(g => g.id === gameId);
+    if (!game) return;
+    
+    // Remove existing detail modal if present
+    const existingDetailModal = document.getElementById('gameDetailModal');
+    if (existingDetailModal) {
+        existingDetailModal.remove();
+    }
+    
+    const detailModalContent = `
+        <div class="modal fade" id="gameDetailModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detail Game: ${game.nama_game}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Informasi Dasar</h6>
+                                <table class="table table-sm">
+                                    <tr><td><strong>Nama Game:</strong></td><td>${game.nama_game || '-'}</td></tr>
+                                    <tr><td><strong>Category:</strong></td><td>${game.category || '-'}</td></tr>
+                                    <tr><td><strong>Game ID:</strong></td><td>${game.game_id || '-'}</td></tr>
+                                    <tr><td><strong>Region:</strong></td><td>${game.region || '-'}</td></tr>
+                                    <tr><td><strong>Language:</strong></td><td>${game.language || '-'}</td></tr>
+                                    <tr><td><strong>Ukuran NSP:</strong></td><td>${game.ukuran_nsp || '-'}</td></tr>
+                                    <tr><td><strong>Ukuran XCI:</strong></td><td>${game.ukuran_xci || '-'}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Link Information</h6>
+                                <table class="table table-sm">
+                                    <tr><td><strong>NSP Single Links:</strong></td><td>${game.jumlah_link_nsp_single || 0}</td></tr>
+                                    <tr><td><strong>XCI Single Links:</strong></td><td>${game.jumlah_link_xci_single || 0}</td></tr>
+                                    <tr><td><strong>NSP Part Links:</strong></td><td>${game.jumlah_link_nsp_part || 0}</td></tr>
+                                    <tr><td><strong>XCI Part Links:</strong></td><td>${game.jumlah_link_xci_part || 0}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <h6>Download Links</h6>
+                                <div class="accordion" id="linksAccordion">
+                                    ${game.link_single_nsp ? `
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nspSingle">
+                                                NSP Single Links
+                                            </button>
+                                        </h2>
+                                        <div id="nspSingle" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <small>${game.link_single_nsp.split(', ').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
+                                    ${game.link_single_xci ? `
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#xciSingle">
+                                                XCI Single Links
+                                            </button>
+                                        </h2>
+                                        <div id="xciSingle" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <small>${game.link_single_xci.split(', ').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
+                                    ${game.link_part_nsp ? `
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nspPart">
+                                                NSP Part Links
+                                            </button>
+                                        </h2>
+                                        <div id="nspPart" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <small>${game.link_part_nsp.split(', ').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
+                                    ${game.link_part_xci ? `
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#xciPart">
+                                                XCI Part Links
+                                            </button>
+                                        </h2>
+                                        <div id="xciPart" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <small>${game.link_part_xci.split(', ').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', detailModalContent);
     
     const detailModal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
     detailModal.show();
@@ -1145,11 +1937,197 @@ function exportToCSV() {
     document.body.removeChild(link);
 }
 
-// Fungsi untuk edit game (placeholder)
+// Fungsi untuk edit game - DIPERBAIKI
 function editGame(gameId) {
-    alert('Fitur edit akan ditambahkan pada update selanjutnya');
-    // TODO: Implementasi fungsi edit
+    const game = window.currentDatabaseData.find(g => g.id === gameId);
+    if (!game) {
+        alert('Game tidak ditemukan!');
+        return;
+    }
+
+    // Close database modal first
+    const databaseModal = bootstrap.Modal.getInstance(document.getElementById('databaseModal'));
+    if (databaseModal) {
+        databaseModal.hide();
+    }
+
+    // Wait for modal to close then populate form
+    setTimeout(() => {
+        try {
+            // Create or update hidden input for game ID
+            let gameIdInput = document.getElementById("inputGameId");
+            if (!gameIdInput) {
+                gameIdInput = document.createElement("input");
+                gameIdInput.type = "hidden";
+                gameIdInput.id = "inputGameId";
+                gameIdInput.name = "inputGameId";
+                const form = document.getElementById("myForm");
+                if (form) {
+                    form.appendChild(gameIdInput);
+                }
+            }
+            gameIdInput.value = game.id;
+
+            // Populate basic form fields
+            const setFieldValue = (id, value) => {
+                const field = document.getElementById(id);
+                if (field) {
+                    field.value = value || '';
+                }
+            };
+
+            setFieldValue("inputName", game.nama_game);
+            setFieldValue("inputSingleNSPSize", game.ukuran_nsp);
+            setFieldValue("inputSingleXCISize", game.ukuran_xci);
+            setFieldValue("inputCategory", game.category);
+            setFieldValue("inputGameID", game.game_id);
+            setFieldValue("inputRegion", game.region);
+            setFieldValue("inputLanguage", game.language);
+
+            // Set link counts
+            setFieldValue("singleNSPLinkCount", game.jumlah_link_nsp_single || 0);
+            setFieldValue("singleXCILinkCount", game.jumlah_link_xci_single || 0);
+            setFieldValue("partNSPLinkCount", game.jumlah_link_nsp_part || 0);
+            setFieldValue("partXCILinkCount", game.jumlah_link_xci_part || 0);
+
+            // Update global variables if they exist
+            if (typeof singleNSPLinkCount !== 'undefined') {
+                singleNSPLinkCount = game.jumlah_link_nsp_single || 0;
+            }
+            if (typeof singleXCILinkCount !== 'undefined') {
+                singleXCILinkCount = game.jumlah_link_xci_single || 0;
+            }
+            if (typeof partNSPLinkCount !== 'undefined') {
+                partNSPLinkCount = game.jumlah_link_nsp_part || 0;
+            }
+            if (typeof partXCILinkCount !== 'undefined') {
+                partXCILinkCount = game.jumlah_link_xci_part || 0;
+            }
+
+            // Set link types if arrays exist
+            if (typeof selectedSingleNSPLinksOrder !== 'undefined') {
+                selectedSingleNSPLinksOrder = game.jenis_link_single_nsp ? game.jenis_link_single_nsp.split(', ') : [];
+            }
+            if (typeof selectedSingleXCILinksOrder !== 'undefined') {
+                selectedSingleXCILinksOrder = game.jenis_link_single_xci ? game.jenis_link_single_xci.split(', ') : [];
+            }
+            if (typeof selectedPartNSPLinksOrder !== 'undefined') {
+                selectedPartNSPLinksOrder = game.jenis_link_part_nsp ? game.jenis_link_part_nsp.split(', ') : [];
+            }
+            if (typeof selectedPartXCILinksOrder !== 'undefined') {
+                selectedPartXCILinksOrder = game.jenis_link_part_xci ? game.jenis_link_part_xci.split(', ') : [];
+            }
+
+            // Try to call functions if they exist
+            if (typeof showTripleLinkTypeSelection === 'function') {
+                showTripleLinkTypeSelection();
+            }
+
+            if (typeof generateTripleLinkInputs === 'function') {
+                generateTripleLinkInputs();
+            }
+
+            // Populate link values
+            const populateLinks = (linkString, prefixArray) => {
+                if (linkString && prefixArray) {
+                    const linkArray = linkString.split(', ');
+                    linkArray.forEach((link, index) => {
+                        if (prefixArray[index]) {
+                            prefixArray.forEach(prefix => {
+                                const input = document.getElementById(`${prefix}${prefixArray[index]}`);
+                                if (input && index < linkArray.length) {
+                                    input.value = linkArray[index];
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+
+            // Try to populate links
+            if (game.link_single_nsp && typeof selectedSingleNSPLinksOrder !== 'undefined') {
+                const linkArray = game.link_single_nsp.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedSingleNSPLinksOrder[index]) {
+                        const inputId = `inputINDapkNSPSingleLink${selectedSingleNSPLinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            if (game.link_single_xci && typeof selectedSingleXCILinksOrder !== 'undefined') {
+                const linkArray = game.link_single_xci.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedSingleXCILinksOrder[index]) {
+                        const inputId = `inputINDapkSingleLinkXCI${selectedSingleXCILinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            if (game.link_part_nsp && typeof selectedPartNSPLinksOrder !== 'undefined') {
+                const linkArray = game.link_part_nsp.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedPartNSPLinksOrder[index]) {
+                        const inputId = `inputINDapkNSPPart${selectedPartNSPLinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            if (game.link_part_xci && typeof selectedPartXCILinksOrder !== 'undefined') {
+                const linkArray = game.link_part_xci.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedPartXCILinksOrder[index]) {
+                        const inputId = `inputINDapkXCIPart${selectedPartXCILinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            // Scroll to form
+            const mainGenerator = document.getElementById("mainGenerator");
+            if (mainGenerator) {
+                mainGenerator.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Change button text to indicate editing mode
+            const submitButton = document.querySelector('button[onclick*="saveToSpreadsheet"]');
+            if (submitButton) {
+                submitButton.innerHTML = '<i class="fas fa-save"></i> Update Game';
+                submitButton.className = 'btn btn-warning';
+            }
+
+            alert('Data game berhasil dimuat untuk diedit!');
+            
+        } catch (error) {
+            console.error('Error in editGame:', error);
+            alert('Terjadi kesalahan saat memuat data untuk edit: ' + error.message);
+        }
+    }, 500); // Wait for modal to close
 }
+
+// Add event listener when database modal is shown
+document.addEventListener('DOMContentLoaded', function() {
+    // Listen for when database modal is shown
+    document.addEventListener('shown.bs.modal', function(event) {
+        if (event.target.id === 'databaseModal') {
+            addSearchEventListener();
+        }
+    });
+});
 
 
 // Theme switcher functionality
