@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://apis.google.com/js/api.js"></script>
  <title>Generator Kode HTML</title>
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"> 
@@ -435,13 +436,13 @@ button:hover, .btn:hover {
 <!-- Navigation Buttons -->
 <div class="container-fluid py-3">
   <div class="d-flex justify-content-center gap-3 flex-wrap">
-    <a href="index" class="btn btn-gradient-bg3">
+    <a href="#index" class="btn btn-gradient-bg3">
       <i class="fas fa-code me-2"></i>HTML Generator
     </a>
-    <a href="shortingswitch" class="btn btn-gradient-bg1">
+    <a href="#shortingswitch" class="btn btn-gradient-bg1">
       <i class="fas fa-gamepad me-2"></i>Shorting Game Switch
     </a>
-    <a href="shortingswitchpartonly" class="btn btn-gradient-bg2">
+    <a href="#shortingswitchpartonly" class="btn btn-gradient-bg2">
       <i class="fas fa-puzzle-piece me-2"></i>Parts Only
     </a>
   </div>
@@ -667,6 +668,8 @@ button:hover, .btn:hover {
 <button type="button" onclick="generateCode()" class="btn btn-gradient-bg1 me-2">Generate Codingan</button>
 <button type="button" onclick="copyCode()" class="btn btn-gradient-bg2 me-2">Copy Generate</button>
 <button type="button" onclick="clearCode()" class="btn btn-gradient-bg3 me-2">Clear Codingan</button>
+    <button type="button" onclick="viewDatabase()" class="btn btn-gradient-bg5 me-2">Lihat Database</button>
+    <button type="button" onclick="saveToSpreadsheet()" class="btn btn-gradient-bg4 me-2">Simpan ke Database</button>
 </div>
 <div id="result"></div>
 </div>
@@ -726,6 +729,429 @@ button:hover, .btn:hover {
 
 <!--Script-->
 <script>
+// Fungsi untuk menyimpan data ke spreadsheet
+function saveToSpreadsheet() {
+    // Kumpulkan semua data dari form
+    const gameData = {
+        action: 'create', // Tambahkan ini untuk memanggil fungsi createData di GS
+        nama_game: document.getElementById("inputName").value,
+        ukuran_nsp: document.getElementById("inputSingleNSPSize").value,
+        ukuran_xci: document.getElementById("inputSingleXCISize").value,
+        // Kolom baru yang ditambahkan
+        category: document.getElementById("inputCategory")?.value || '',
+        game_id: document.getElementById("inputGameID")?.value || '',
+        region: document.getElementById("inputRegion")?.value || '',
+        language: document.getElementById("inputLanguage")?.value || '',
+        // Kolom yang sudah ada sebelumnya
+        jumlah_link_nsp_single: singleNSPLinkCount,
+        jumlah_link_xci_single: singleXCILinkCount,
+        jumlah_link_nsp_part: partNSPLinkCount,
+        jumlah_link_xci_part: partXCILinkCount,
+        link_single_nsp: getLinkValues('singleNSP'),
+        link_single_xci: getLinkValues('singleXCI'),
+        link_part_nsp: getLinkValues('partNSP'),
+        link_part_xci: getLinkValues('partXCI'),
+        jenis_link_single_nsp: selectedSingleNSPLinksOrder.join(','),
+        jenis_link_single_xci: selectedSingleXCILinksOrder.join(','),
+        jenis_link_part_nsp: selectedPartNSPLinksOrder.join(','),
+        jenis_link_part_xci: selectedPartXCILinksOrder.join(',')
+    };
+
+    // Kirim data ke Google Apps Script
+    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(gameData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Data berhasil disimpan ke database!');
+            // Reset form setelah berhasil menyimpan (opsional)
+            // resetForm();
+        } else {
+            alert('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat menyimpan data');
+    });
+}
+
+// Fungsi untuk melihat data di database
+function viewDatabase() {
+    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec?action=read')
+        .then(response => response.json())
+        .then(data => displayDatabase(data))
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memuat data');
+        });
+}
+
+// Fungsi pembantu untuk mendapatkan nilai link
+function getLinkValues(type) {
+    let links = [];
+    let prefix = '';
+    
+    switch(type) {
+        case 'singleNSP':
+            prefix = 'inputINDapkNSPSingleLink';
+            selectedSingleNSPLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'singleXCI':
+            prefix = 'inputINDapkSingleLinkXCI';
+            selectedSingleXCILinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'partNSP':
+            prefix = 'inputINDapkNSPPart';
+            selectedPartNSPLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'partXCI':
+            prefix = 'inputINDapkXCIPart';
+            selectedPartXCILinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+    }
+    
+    return links.join('|');
+}
+
+// Fungsi untuk menampilkan data dari database
+function displayDatabase(data) {
+    if (data.status === 'success') {
+        // Buat modal untuk menampilkan data dengan kolom tambahan
+        const modalContent = `
+            <div class="modal fade" id="databaseModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Database Game</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Nama Game</th>
+                                            <th>Category</th>
+                                            <th>Game ID</th>
+                                            <th>Region</th>
+                                            <th>Language</th>
+                                            <th>Ukuran NSP</th>
+                                            <th>Ukuran XCI</th>
+                                            <th>Jumlah Link</th>
+                                            <th>Jenis Link</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${data.data.map(game => `
+                                            <tr>
+                                                <td>${new Date(game.timestamp).toLocaleString('id-ID', {
+                                                    year: 'numeric',
+                                                    month: '2-digit',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}</td>
+                                                <td><strong>${game.nama_game || '-'}</strong></td>
+                                                <td><span class="badge bg-primary">${game.category || '-'}</span></td>
+                                                <td><code>${game.game_id || '-'}</code></td>
+                                                <td><span class="badge bg-info">${game.region || '-'}</span></td>
+                                                <td><span class="badge bg-success">${game.language || '-'}</span></td>
+                                                <td>${game.ukuran_nsp || '-'}</td>
+                                                <td>${game.ukuran_xci || '-'}</td>
+                                                <td>
+                                                    <small>
+                                                        <strong>NSP:</strong> Single: ${game.jumlah_link_nsp_single || 0}, Part: ${game.jumlah_link_nsp_part || 0}<br>
+                                                        <strong>XCI:</strong> Single: ${game.jumlah_link_xci_single || 0}, Part: ${game.jumlah_link_xci_part || 0}
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <small>
+                                                        <strong>NSP Single:</strong> ${game.jenis_link_single_nsp || '-'}<br>
+                                                        <strong>XCI Single:</strong> ${game.jenis_link_single_xci || '-'}<br>
+                                                        <strong>NSP Part:</strong> ${game.jenis_link_part_nsp || '-'}<br>
+                                                        <strong>XCI Part:</strong> ${game.jenis_link_part_xci || '-'}
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group-vertical btn-group-sm">
+                                                        <button class="btn btn-outline-info btn-sm" onclick="viewGameDetails(${game.id})">
+                                                            <i class="fas fa-eye"></i> Detail
+                                                        </button>
+                                                        <button class="btn btn-outline-warning btn-sm" onclick="editGame(${game.id})">
+                                                            <i class="fas fa-edit"></i> Edit
+                                                        </button>
+                                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteGame(${game.id})">
+                                                            <i class="fas fa-trash"></i> Hapus
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            ${data.data.length === 0 ? '<div class="alert alert-info text-center"><i class="fas fa-info-circle"></i> Tidak ada data dalam database</div>' : ''}
+                        </div>
+                        <div class="modal-footer">
+                            <div class="me-auto">
+                                <small class="text-muted">Total: ${data.data.length} game(s)</small>
+                            </div>
+                            <button type="button" class="btn btn-success" onclick="exportToCSV()">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i> Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Hapus modal yang sudah ada jika ada
+        const existingModal = document.getElementById('databaseModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Tambahkan modal ke body
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalContent;
+        document.body.appendChild(modalDiv);
+        
+        // Tampilkan modal
+        const modal = new bootstrap.Modal(document.getElementById('databaseModal'));
+        modal.show();
+        
+        // Simpan data untuk fungsi lain
+        window.currentDatabaseData = data.data;
+    } else {
+        alert("Gagal memuat data: " + (data.message || 'Unknown error'));
+    }
+}
+
+// Fungsi untuk melihat detail game
+function viewGameDetails(gameId) {
+    const game = window.currentDatabaseData.find(g => g.id === gameId);
+    if (!game) return;
+    
+    const detailModalContent = `
+        <div class="modal fade" id="gameDetailModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detail Game: ${game.nama_game}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Informasi Dasar</h6>
+                                <table class="table table-sm">
+                                    <tr><td><strong>Nama Game:</strong></td><td>${game.nama_game || '-'}</td></tr>
+                                    <tr><td><strong>Category:</strong></td><td>${game.category || '-'}</td></tr>
+                                    <tr><td><strong>Game ID:</strong></td><td>${game.game_id || '-'}</td></tr>
+                                    <tr><td><strong>Region:</strong></td><td>${game.region || '-'}</td></tr>
+                                    <tr><td><strong>Language:</strong></td><td>${game.language || '-'}</td></tr>
+                                    <tr><td><strong>Ukuran NSP:</strong></td><td>${game.ukuran_nsp || '-'}</td></tr>
+                                    <tr><td><strong>Ukuran XCI:</strong></td><td>${game.ukuran_xci || '-'}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Link Information</h6>
+                                <table class="table table-sm">
+                                    <tr><td><strong>NSP Single Links:</strong></td><td>${game.jumlah_link_nsp_single || 0}</td></tr>
+                                    <tr><td><strong>XCI Single Links:</strong></td><td>${game.jumlah_link_xci_single || 0}</td></tr>
+                                    <tr><td><strong>NSP Part Links:</strong></td><td>${game.jumlah_link_nsp_part || 0}</td></tr>
+                                    <tr><td><strong>XCI Part Links:</strong></td><td>${game.jumlah_link_xci_part || 0}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <h6>Download Links</h6>
+                                <div class="accordion" id="linksAccordion">
+                                    ${game.link_single_nsp ? `
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nspSingle">
+                                                NSP Single Links
+                                            </button>
+                                        </h2>
+                                        <div id="nspSingle" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <small>${game.link_single_nsp.split('|').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
+                                    ${game.link_single_xci ? `
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#xciSingle">
+                                                XCI Single Links
+                                            </button>
+                                        </h2>
+                                        <div id="xciSingle" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <small>${game.link_single_xci.split('|').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
+                                    ${game.link_part_nsp ? `
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nspPart">
+                                                NSP Part Links
+                                            </button>
+                                        </h2>
+                                        <div id="nspPart" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <small>${game.link_part_nsp.split('|').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
+                                    ${game.link_part_xci ? `
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#xciPart">
+                                                XCI Part Links
+                                            </button>
+                                        </h2>
+                                        <div id="xciPart" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <small>${game.link_part_xci.split('|').map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>')}</small>
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const detailModalDiv = document.createElement('div');
+    detailModalDiv.innerHTML = detailModalContent;
+    document.body.appendChild(detailModalDiv);
+    
+    const detailModal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
+    detailModal.show();
+}
+
+// Fungsi untuk menghapus game
+function deleteGame(gameId) {
+    if (confirm('Apakah Anda yakin ingin menghapus game ini?')) {
+        fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'delete',
+                id: gameId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Game berhasil dihapus!');
+                viewDatabase(); // Refresh tampilan database
+            } else {
+                alert('Gagal menghapus game: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus game');
+        });
+    }
+}
+
+// Fungsi untuk export ke CSV
+function exportToCSV() {
+    if (!window.currentDatabaseData || window.currentDatabaseData.length === 0) {
+        alert('Tidak ada data untuk di-export');
+        return;
+    }
+    
+    const headers = [
+        'Timestamp', 'Nama Game', 'Category', 'Game ID', 'Region', 'Language',
+        'Ukuran NSP', 'Ukuran XCI', 'Jumlah Link NSP Single', 'Jumlah Link XCI Single',
+        'Jumlah Link NSP Part', 'Jumlah Link XCI Part', 'Link Single NSP', 'Link Single XCI',
+        'Link Part NSP', 'Link Part XCI', 'Jenis Link Single NSP', 'Jenis Link Single XCI',
+        'Jenis Link Part NSP', 'Jenis Link Part XCI'
+    ];
+    
+    const csvContent = [
+        headers.join(','),
+        ...window.currentDatabaseData.map(game => [
+            `"${new Date(game.timestamp).toISOString()}"`,
+            `"${game.nama_game || ''}"`,
+            `"${game.category || ''}"`,
+            `"${game.game_id || ''}"`,
+            `"${game.region || ''}"`,
+            `"${game.language || ''}"`,
+            `"${game.ukuran_nsp || ''}"`,
+            `"${game.ukuran_xci || ''}"`,
+            game.jumlah_link_nsp_single || 0,
+            game.jumlah_link_xci_single || 0,
+            game.jumlah_link_nsp_part || 0,
+            game.jumlah_link_xci_part || 0,
+            `"${game.link_single_nsp || ''}"`,
+            `"${game.link_single_xci || ''}"`,
+            `"${game.link_part_nsp || ''}"`,
+            `"${game.link_part_xci || ''}"`,
+            `"${game.jenis_link_single_nsp || ''}"`,
+            `"${game.jenis_link_single_xci || ''}"`,
+            `"${game.jenis_link_part_nsp || ''}"`,
+            `"${game.jenis_link_part_xci || ''}"`
+        ].join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `game_database_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Fungsi untuk edit game (placeholder)
+function editGame(gameId) {
+    alert('Fitur edit akan ditambahkan pada update selanjutnya');
+    // TODO: Implementasi fungsi edit
+}
+
+
 // Theme switcher functionality
 const themeToggle = document.getElementById('theme-toggle');
 const themeLabel = document.querySelector('.theme-switch label span');
@@ -2721,6 +3147,6 @@ function deleteLinkSettings(index) {
 </div>
 
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
