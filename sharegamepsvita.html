@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generator Kode HTML</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+        }
+        
+        .container-fluid {
+            padding: 0;
+        }
+        
+        /* Navigation Styles */
+        .nav-section {
+            background: linear-gradient(-45deg, #007bff, #0056b3, #17a2b8, #20c997);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 180px;
+            justify-content: center;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            color: white;
+        }
+        
+        .nav-btn i {
+            font-size: 16px;
+        }
+        
+        /* Gradient Buttons */
+        .btn-gradient-bg1 {
+            background: linear-gradient(-45deg, #176de9, #6c757d, #dc3545);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+        }
+        
+        .btn-gradient-bg2 {
+            background: linear-gradient(-45deg, #6c757d, #176de9, #dc3545);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+        }
+        
+        .btn-gradient-bg3 {
+            background: linear-gradient(-45deg, #dc3545, #6c757d, #176de9);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+        }
+        
+        .btn-gradient-bg4 {
+            background: linear-gradient(-45deg, #28a745, #ffc107, #17a2b8);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+        }
+        
+        .btn-gradient-bg5 {
+            background: linear-gradient(-45deg, #6f42c1, #e83e8c, #fd7e14);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+        }
+        
+        /* Animation */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                max-width: 300px;
+                min-width: auto;
+            }
+            
+            .nav-section {
+                padding: 15px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .nav-btn i {
+                font-size: 14px;
+            }
+        }
+        
+        /* Content Styles */
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        #myTextarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+        label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+        
+        .parallax {
+            background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhAv3H_4xvWgbNYSHswIUoCbcPutd8TrEdrB2NOHvpwDZLjQitOUsuWW3h2ZkGsfPs4EJ3W29NPjPjMrWF-oy7C4NowFKEj76LxuXG1wjYUS6Caac9Lr1XbqXLL-uKKbGZeT2c0QW5vDhSdfP8yNsqaXYVlghtbimta2xn3hh2dlXuZ7OQE5Y5rwLSH8Co/s1600/797.jpg');
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Animasi Teks */
+        .containeranimasi {
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            display: inline-block;
+            margin-left: 300px;
+            margin-bottom: -550px;
+        }
+        
+        .boxanimasi {
+            position: relative;
+        }
+        
+        .boxanimasi h7 {
+            color: #fff;
+            font-size: 4em;
+            margin-top: 15px;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+        
+        .boxanimasi h7:nth-child(1) {
+            color: transparent;
+            -webkit-text-stroke: 2px #03a9f4;
+        }
+        
+        .boxanimasi h7:nth-child(2) {
+            color: #03a9f4;
+            animation: animated 4s ease-in-out infinite;
+        }
+        
+        @keyframes animated {
+            0%, 100% {
+                clip-path: polygon(0% 45%, 16% 44%, 33% 50%, 54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
+            }
+            50% {
+                clip-path: polygon(0% 60%, 15% 65%, 34% 66%, 51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%);
+            }
+        }
+        
+        /* Responsive untuk form */
+        @media (max-width: 768px) {
+            .col-md-6 {
+                flex: 0 0 auto;
+                width: 100%;
+            }
+            
+            .containeranimasi {
+                margin-left: 0;
+                margin-bottom: 0;
+                position: relative;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Section -->
+    <div class="nav-section">
+        <div class="nav-buttons">
+            <a href="psvita" class="nav-btn btn-gradient-bg5">
+                <i class="fas fa-gamepad"></i>
+                Kembali Ke Generator HTML PSvita
+            </a>
+        </div>
+    </div>
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-6">
+<div class="mb-3">
+<h2>Masukkan Detail Game PSVita</h2>
+<textarea id="myTextarea" class="form-control"></textarea>
+</div>
+<div class="d-flex justify-content-center">
+<button type="button" onclick="generateCode()" class="btn btn-primary me-2">Generate Codingan</button>
+<button type="button" onclick="copyCode()" class="btn btn-secondary">Copy Generate</button>
+<button type="button" onclick="clearCode()" class="btn btn-danger">Clear Codingan</button>
+</div>
+<div id="result"></div>
+</div>
+
+<div class="col-md-6">
+<div class="card">
+<div class="card-header">
+<h2>Masukkan Detail Game PSVita</h2>
+</div>
+<div class="card-body">
+<form id="myForm">
+<label for="inputName">Nama Game:</label>
+<input type="text" id="inputName" name="inputName"><br><br>
+
+<label for="inputSingleSizeNSP">Ukuran NSP Game:</label>
+<input type="text" id="inputSingleSizeNSP" name="inputSingleSizeNSP"><br><br>
+
+<label for="inputCategory">Category:</label>
+<input type="text" id="inputCategory" name="inputCategory"><br><br>
+
+<label for="inputGameID">Game ID:</label>
+<input type="text" id="inputGameID" name="inputGameID"><br><br>
+
+<label for="inputRegion">Region:</label>
+<input type="text" id="inputRegion" name="inputRegion"><br><br>
+
+<label for="inputLink">Link Game:</label>
+<input type="text" id="inputLink" name="inputLink"><br><br>
+
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!--Script-->
+<script>
+function clearCode() {
+document.getElementById("result").innerText = ""; // Mengosongkan konten dari elemen "result"
+
+// Menghapus semua inputan dan textarea
+const allInputs = document.querySelectorAll('input, textarea');
+allInputs.forEach(input => {
+input.value = '';
+});
+}
+</script>
+<script>
+function copyCode() {
+const resultDiv = document.getElementById("result");
+const generatedHtml = resultDiv.innerText;
+
+if (generatedHtml.trim() === "") {
+alert("Maaf Codingannya Belum Dibuat");
+return;
+}
+
+const tempTextarea = document.createElement("textarea");
+tempTextarea.value = generatedHtml;
+document.body.appendChild(tempTextarea);
+tempTextarea.select();
+document.execCommand("copy");
+document.body.removeChild(tempTextarea);
+alert("Codingan Berhasil Disalin!");
+}
+</script>
+
+<script>
+const textarea = document.getElementById('myTextarea');
+const form = document.getElementById('myForm');
+const inputs = form.querySelectorAll('input');
+
+textarea.addEventListener('input', () => {
+const text = textarea.value.trim();
+const values = text.split('\n');
+
+inputs.forEach((input, index) => {
+if (values[index]) {
+input.value = values[index];
+} else {
+input.value = '';
+}
+});
+});
+
+textarea.addEventListener('keydown', (event) => {
+if (event.key === 'Enter' && !event.shiftKey) {
+event.preventDefault();
+
+const currentIndex = Array.from(inputs).findIndex((input) => input === document.activeElement);
+
+if (currentIndex === -1) {
+const start = textarea.selectionStart;
+const end = textarea.selectionEnd;
+
+textarea.value = textarea.value.substring(0, start) + '\n' + textarea.value.substring(end);
+textarea.selectionStart = textarea.selectionEnd = start + 1;
+} else {
+const nextIndex = currentIndex + 1;
+
+if (nextIndex < inputs.length) {
+inputs[nextIndex].focus();
+}
+}
+}
+});
+
+</script>
+
+<script>
+function generateCode() {
+// Get values from game form
+const inputName = document.getElementById("inputName").value;
+const inputSingleSizeNSP = document.getElementById("inputSingleSizeNSP").value;
+const inputCategory = document.getElementById("inputCategory").value;
+const inputGameID = document.getElementById("inputGameID").value;
+const inputRegion = document.getElementById("inputRegion").value;
+const inputLink = document.getElementById("inputLink").value;
+
+
+// Create more complete HTML string with template
+const generatedHtml = `UPDATE REQUEST GAME PSVITA
+🎮Update Game Vita3k:
+Nama Game: ${inputName}
+Ukuran Game: ${inputSingleSizeNSP}
+Category: ${inputCategory}
+Game ID: ${inputGameID}
+Region: ${inputRegion}
+Emulator: Vita3K
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: NoNpDRM
+
+🌐Link Game:
+${inputLink}
+
+================
+🔰Whatsapp INDapk: https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f
+
+⚠️ REQUEST GAME BISA DISINI:
+https://indapk.com/request.html
+
+⚠️ REPORT LINK BISA DISINI:
+https://indapk.com/report.html
+
+💵Donate Dana/Shopeepay/Gopay:
+082286344446
+
+NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
+
+// Display the generated HTML
+document.getElementById("result").innerText = generatedHtml;
+}
+</script>
+
+</body>
+
+</html>
