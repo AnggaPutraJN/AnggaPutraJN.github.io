@@ -514,7 +514,7 @@ button:hover, .btn:hover {
       <i class="fas fa-puzzle-piece"></i>Parts Only
     </a>
     <a href="pageparts" class="nav-btn btn-gradient-bg4">
-      <i class="fas fa-file-alt"></i>Shorting Page Parts
+      <i class="fas fa-file-alt"></i>Shorting Page Parts 3
     </a>
     <a href="psvita" class="nav-btn btn-gradient-bg5">
       <i class="fas fa-gamepad"></i>Generator HTML PSvita
@@ -2699,13 +2699,13 @@ function confirmSaveSettings() {
     };
 
     // Ambil settingan yang sudah ada dari localStorage
-    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2') || '[]');
+    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsPSvita') || '[]');
     
     // Tambahkan settingan baru
     savedSettings.push(settings);
     
     // Simpan ke localStorage
-    localStorage.setItem('linkSettingsV2', JSON.stringify(savedSettings));
+    localStorage.setItem('linkSettingsPSvita', JSON.stringify(savedSettings));
     
     // Tutup modal dan reset input
     document.getElementById('settingsName').value = '';
@@ -2717,7 +2717,7 @@ function confirmSaveSettings() {
 // Ganti nama fungsi dari loadLinkSettings() menjadi loadLinkSettingsModal()
 function loadLinkSettingsModal() {
     // Ambil settingan dari localStorage
-    const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2') || []);
+    const savedSettings = JSON.parse(localStorage.getItem('linkSettingsPSvita') || []);
     
     if (savedSettings.length === 0) {
         alert("Belum ada settingan yang disimpan");
@@ -2757,7 +2757,7 @@ function loadLinkSettingsModal() {
 function applyLinkSettings(index) {
     try {
         // Ambil settingan dari localStorage
-        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2')) || [];
+        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsPSvita')) || [];
         
         if (index < 0 || index >= savedSettings.length) {
             alert("Settingan tidak ditemukan");
@@ -2803,13 +2803,13 @@ function deleteLinkSettings(index) {
     }
     
     // Ambil settingan dari localStorage
-    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2') || '[]');
+    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsPSvita') || '[]');
     
     // Hapus settingan yang dipilih
     const deletedSetting = savedSettings.splice(index, 1);
     
     // Simpan kembali ke localStorage
-    localStorage.setItem('linkSettingsV2', JSON.stringify(savedSettings));
+    localStorage.setItem('linkSettingsPSvita', JSON.stringify(savedSettings));
     
     // Refresh daftar settingan
     loadLinkSettingsModal();
