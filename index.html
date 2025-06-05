@@ -858,163 +858,6 @@ function saveToSpreadsheet() {
     });
 }
 
-// Fungsi untuk melihat data di database
-function viewDatabase() {
-    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec?action=read')
-        .then(response => response.json())
-        .then(data => displayDatabase(data))
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat memuat data');
-        });
-}
-
-// Fungsi pembantu untuk mendapatkan nilai link
-// Enhanced getLinkValues function to ensure proper formatting
-function getLinkValues(type) {
-    let links = [];
-    let prefix = '';
-    
-    switch(type) {
-        case 'singleNSP':
-            prefix = 'inputINDapkNSPSingleLink';
-            selectedSingleNSPLinksOrder.forEach(linkType => {
-                const value = document.getElementById(prefix + linkType)?.value || '';
-                if (value) links.push(value);
-            });
-            break;
-        case 'singleXCI':
-            prefix = 'inputINDapkSingleLinkXCI';
-            selectedSingleXCILinksOrder.forEach(linkType => {
-                const value = document.getElementById(prefix + linkType)?.value || '';
-                if (value) links.push(value);
-            });
-            break;
-        case 'partNSP':
-            prefix = 'inputINDapkNSPPart';
-            selectedPartNSPLinksOrder.forEach(linkType => {
-                const value = document.getElementById(prefix + linkType)?.value || '';
-                if (value) links.push(value);
-            });
-            break;
-        case 'partXCI':
-            prefix = 'inputINDapkXCIPart';
-            selectedPartXCILinksOrder.forEach(linkType => {
-                const value = document.getElementById(prefix + linkType)?.value || '';
-                if (value) links.push(value);
-            });
-            break;
-    }
-    
-    // Clean up links - remove empty entries and trim whitespace
-    return links.map(link => link.trim()).filter(link => link);
-}
-
-// Fungsi untuk menampilkan data dari database
-// Enhanced displayDatabase function with search and filters
-function saveToSpreadsheet() {
-    // Format links with commas
-    const formatLinks = (links) => {
-        return links.map(link => link.trim()).filter(link => link).join(', ');
-    };
-
-    const gameData = {
-        action: document.getElementById("inputGameId") ? 'update' : 'create',
-        id: document.getElementById("inputGameId")?.value || '',
-        nama_game: document.getElementById("inputName").value,
-        ukuran_nsp: document.getElementById("inputSingleNSPSize").value,
-        ukuran_xci: document.getElementById("inputSingleXCISize").value,
-        category: document.getElementById("inputCategory")?.value || '',
-        game_id: document.getElementById("inputGameID")?.value || '',
-        region: document.getElementById("inputRegion")?.value || '',
-        language: document.getElementById("inputLanguage")?.value || '',
-        jumlah_link_nsp_single: singleNSPLinkCount,
-        jumlah_link_xci_single: singleXCILinkCount,
-        jumlah_link_nsp_part: partNSPLinkCount,
-        jumlah_link_xci_part: partXCILinkCount,
-        link_single_nsp: formatLinks(getLinkValues('singleNSP')),
-        link_single_xci: formatLinks(getLinkValues('singleXCI')),
-        link_part_nsp: formatLinks(getLinkValues('partNSP')),
-        link_part_xci: formatLinks(getLinkValues('partXCI')),
-        jenis_link_single_nsp: selectedSingleNSPLinksOrder.join(', '),
-        jenis_link_single_xci: selectedSingleXCILinksOrder.join(', '),
-        jenis_link_part_nsp: selectedPartNSPLinksOrder.join(', '),
-        jenis_link_part_xci: selectedPartXCILinksOrder.join(', ')
-    };
-
-    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(gameData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('Data berhasil disimpan ke database!');
-            viewDatabase();
-        } else {
-            alert('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat menyimpan data');
-    });
-}
-
-// Fungsi untuk melihat data di database
-function viewDatabase() {
-    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec?action=read')
-        .then(response => response.json())
-        .then(data => displayDatabase(data))
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat memuat data');
-        });
-}
-
-// Fungsi pembantu untuk mendapatkan nilai link
-function getLinkValues(type) {
-    let links = [];
-    let prefix = '';
-    
-    switch(type) {
-        case 'singleNSP':
-            prefix = 'inputINDapkNSPSingleLink';
-            selectedSingleNSPLinksOrder.forEach(linkType => {
-                const value = document.getElementById(prefix + linkType)?.value || '';
-                if (value) links.push(value);
-            });
-            break;
-        case 'singleXCI':
-            prefix = 'inputINDapkSingleLinkXCI';
-            selectedSingleXCILinksOrder.forEach(linkType => {
-                const value = document.getElementById(prefix + linkType)?.value || '';
-                if (value) links.push(value);
-            });
-            break;
-        case 'partNSP':
-            prefix = 'inputINDapkNSPPart';
-            selectedPartNSPLinksOrder.forEach(linkType => {
-                const value = document.getElementById(prefix + linkType)?.value || '';
-                if (value) links.push(value);
-            });
-            break;
-        case 'partXCI':
-            prefix = 'inputINDapkXCIPart';
-            selectedPartXCILinksOrder.forEach(linkType => {
-                const value = document.getElementById(prefix + linkType)?.value || '';
-                if (value) links.push(value);
-            });
-            break;
-    }
-    
-    // Clean up links - remove empty entries and trim whitespace
-    return links.map(link => link.trim()).filter(link => link);
-}
-
 // Fungsi untuk menampilkan data dari database
 function displayDatabase(data) {
     if (data.status === 'success') {
@@ -1147,281 +990,6 @@ function filterDatabase() {
     displayFilteredData(filteredData);
 }
 
-// Fungsi untuk menampilkan data yang sudah difilter
-function displayFilteredData(filteredData) {
-    const tableBody = document.getElementById('databaseTableBody');
-    
-    if (filteredData.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data yang ditemukan</td></tr>';
-        return;
-    }
-    
-    tableBody.innerHTML = filteredData.map(game => `
-        <tr>
-            <td><strong>${game.nama_game || '-'}</strong></td>
-            <td>${game.category || '-'}</td>
-            <td><code>${game.game_id || '-'}</code></td>
-            <td>${game.region || '-'}</td>
-            <td>
-                <small>NSP: ${game.ukuran_nsp || '-'}<br>
-                XCI: ${game.ukuran_xci || '-'}</small>
-            </td>
-            <td>
-                <small>
-                    NSP: ${game.jumlah_link_nsp_single || 0}S ${game.jumlah_link_nsp_part || 0}P<br>
-                    XCI: ${game.jumlah_link_xci_single || 0}S ${game.jumlah_link_xci_part || 0}P
-                </small>
-            </td>
-            <td>${new Date(game.timestamp).toLocaleString('id-ID', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            })}</td>
-            <td>
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-}
-
-// Event listener untuk search input (real-time filtering)
-document.addEventListener('DOMContentLoaded', function() {
-    // This will be added when modal is created
-});
-
-// Add event listener when modal is shown
-function addSearchEventListener() {
-    const searchInput = document.getElementById('databaseSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            clearTimeout(this.searchTimeout);
-            this.searchTimeout = setTimeout(() => {
-                filterDatabase();
-            }, 300); // Debounce search for 300ms
-        });
-        
-        // Also allow Enter key to trigger search
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                filterDatabase();
-            }
-        });
-    }
-}
-
-
-// Fungsi untuk menghapus game
-function deleteGame(gameId) {
-    if (confirm('Apakah Anda yakin ingin menghapus game ini?')) {
-        fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                action: 'delete',
-                id: gameId
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Game berhasil dihapus!');
-                viewDatabase(); // Refresh tampilan database
-            } else {
-                alert('Gagal menghapus game: ' + (data.message || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menghapus game');
-        });
-    }
-}
-
-// Fungsi untuk export ke CSV
-function exportToCSV() {
-    if (!window.currentDatabaseData || window.currentDatabaseData.length === 0) {
-        alert('Tidak ada data untuk di-export');
-        return;
-    }
-    
-    const headers = [
-        'Timestamp', 'Nama Game', 'Category', 'Game ID', 'Region', 'Language',
-        'Ukuran NSP', 'Ukuran XCI', 'Jumlah Link NSP Single', 'Jumlah Link XCI Single',
-        'Jumlah Link NSP Part', 'Jumlah Link XCI Part', 'Link Single NSP', 'Link Single XCI',
-        'Link Part NSP', 'Link Part XCI', 'Jenis Link Single NSP', 'Jenis Link Single XCI',
-        'Jenis Link Part NSP', 'Jenis Link Part XCI'
-    ];
-    
-    const csvContent = [
-        headers.join(','),
-        ...window.currentDatabaseData.map(game => [
-            `"${new Date(game.timestamp).toISOString()}"`,
-            `"${game.nama_game || ''}"`,
-            `"${game.category || ''}"`,
-            `"${game.game_id || ''}"`,
-            `"${game.region || ''}"`,
-            `"${game.language || ''}"`,
-            `"${game.ukuran_nsp || ''}"`,
-            `"${game.ukuran_xci || ''}"`,
-            game.jumlah_link_nsp_single || 0,
-            game.jumlah_link_xci_single || 0,
-            game.jumlah_link_nsp_part || 0,
-            game.jumlah_link_xci_part || 0,
-            `"${game.link_single_nsp || ''}"`,
-            `"${game.link_single_xci || ''}"`,
-            `"${game.link_part_nsp || ''}"`,
-            `"${game.link_part_xci || ''}"`,
-            `"${game.jenis_link_single_nsp || ''}"`,
-            `"${game.jenis_link_single_xci || ''}"`,
-            `"${game.jenis_link_part_nsp || ''}"`,
-            `"${game.jenis_link_part_xci || ''}"`
-        ].join(','))
-    ].join('\n');
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `game_database_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-// Fungsi untuk edit game - DIPERBAIKI
-function editGame(gameId) {
-    const game = window.currentDatabaseData.find(g => g.id === gameId);
-    if (!game) {
-        alert('Game tidak ditemukan!');
-        return;
-    }
-
-    // Close database modal first
-    const databaseModal = bootstrap.Modal.getInstance(document.getElementById('databaseModal'));
-    if (databaseModal) {
-        databaseModal.hide();
-    }
-
-    // Wait for modal to close then populate form
-    setTimeout(() => {
-        try {
-            // Create or update hidden input for game ID
-            let gameIdInput = document.getElementById("inputGameId");
-            if (!gameIdInput) {
-                gameIdInput = document.createElement("input");
-                gameIdInput.type = "hidden";
-                gameIdInput.id = "inputGameId";
-                gameIdInput.name = "inputGameId";
-                const form = document.getElementById("myForm");
-                if (form) {
-                    form.appendChild(gameIdInput);
-                }
-            }
-            gameIdInput.value = game.id;
-        
-            // Populate basic form fields
-            const setFieldValue = (id, value) => {
-                const field = document.getElementById(id);
-                if (field) {
-                    field.value = value || '';
-                }
-            };
-
-            setFieldValue("inputName", game.nama_game);
-            setFieldValue("inputSingleNSPSize", game.ukuran_nsp);
-            setFieldValue("inputSingleXCISize", game.ukuran_xci);
-            setFieldValue("inputCategory", game.category);
-            setFieldValue("inputGameID", game.game_id);
-            setFieldValue("inputRegion", game.region);
-            setFieldValue("inputLanguage", game.language);
-
-            // Set link counts
-            setFieldValue("singleNSPLinkCount", game.jumlah_link_nsp_single || 0);
-            setFieldValue("singleXCILinkCount", game.jumlah_link_xci_single || 0);
-            setFieldValue("partNSPLinkCount", game.jumlah_link_nsp_part || 0);
-            setFieldValue("partXCILinkCount", game.jumlah_link_xci_part || 0);
-
-            // Update global variables if they exist
-            if (typeof singleNSPLinkCount !== 'undefined') {
-                singleNSPLinkCount = game.jumlah_link_nsp_single || 0;
-            }
-            if (typeof singleXCILinkCount !== 'undefined') {
-                singleXCILinkCount = game.jumlah_link_xci_single || 0;
-            }
-            if (typeof partNSPLinkCount !== 'undefined') {
-                partNSPLinkCount = game.jumlah_link_nsp_part || 0;
-            }
-            if (typeof partXCILinkCount !== 'undefined') {
-                partXCILinkCount = game.jumlah_link_xci_part || 0;
-            }
-
-            // Set link types if arrays exist
-            if (typeof selectedSingleNSPLinksOrder !== 'undefined') {
-                selectedSingleNSPLinksOrder = game.jenis_link_single_nsp ? game.jenis_link_single_nsp.split(', ') : [];
-            }
-            if (typeof selectedSingleXCILinksOrder !== 'undefined') {
-                selectedSingleXCILinksOrder = game.jenis_link_single_xci ? game.jenis_link_single_xci.split(', ') : [];
-            }
-            if (typeof selectedPartNSPLinksOrder !== 'undefined') {
-                selectedPartNSPLinksOrder = game.jenis_link_part_nsp ? game.jenis_link_part_nsp.split(', ') : [];
-            }
-            if (typeof selectedPartXCILinksOrder !== 'undefined') {
-                selectedPartXCILinksOrder = game.jenis_link_part_xci ? game.jenis_link_part_xci.split(', ') : [];
-            }
-
-            // Try to call functions if they exist
-            if (typeof showTripleLinkTypeSelection === 'function') {
-                showTripleLinkTypeSelection();
-            }
-
-            if (typeof generateTripleLinkInputs === 'function') {
-                generateTripleLinkInputs();
-            }
-
-            // Populate link values - DIPERBAIKI
-            const populateLinks = (linkString, linkTypeArray, prefix) => {
-                if (linkString && linkTypeArray && linkTypeArray.length > 0) {
-                    const linkArray = linkString.split(', ');
-                    linkArray.forEach((link, index) => {
-                        if (linkTypeArray[index]) {
-                            const inputId = `${prefix}${linkTypeArray[index]}`;
-                            const input = document.getElementById(inputId);
-                            if (input) {
-                                input.value = link.trim();
-                            }
-                        }
-                    });
-                }
-            };
-
-            // Populate all link types with delay to ensure inputs are generated
-            setTimeout(() => {
-                populateLinks(game.link_single_nsp, selectedSingleNSPLinksOrder, 'singleNSP');
-                populateLinks(game.link_single_xci, selectedSingleXCILinksOrder, 'singleXCI');
-                populateLinks(game.link_part_nsp, selectedPartNSPLinksOrder, 'partNSP');
-                populateLinks(game.link_part_xci, selectedPartXCILinksOrder, 'partXCI');
-            }, 100);
-
-        } catch (error) {
-            console.error('Error in editGame:', error);
-            alert('Terjadi kesalahan saat memuat data game untuk diedit');
-        }
-    }, 300);
-}
 
 // Fungsi untuk melihat data di database
 function viewDatabase() {
@@ -1474,138 +1042,6 @@ function getLinkValues(type) {
     return links.map(link => link.trim()).filter(link => link);
 }
 
-// Fungsi untuk menampilkan data dari database
-function displayDatabase(data) {
-    if (data.status === 'success') {
-        // Remove existing modal if present
-        const existingModal = document.getElementById('databaseModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
-
-        const modalContent = `
-            <div class="modal fade" id="databaseModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Database Game</h5>
-                            <div class="d-flex gap-2">
-                                <input type="text" id="databaseSearch" class="form-control" placeholder="Cari game..." style="width: 200px;">
-                                <button class="btn btn-sm btn-primary" onclick="filterDatabase()">Filter</button>
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Nama Game</th>
-                                            <th>Category</th>
-                                            <th>Game ID</th>
-                                            <th>Region</th>
-                                            <th>Ukuran</th>
-                                            <th>Jumlah Link</th>
-                                            <th>Terakhir Update</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="databaseTableBody">
-                                        ${data.data.map(game => `
-                                            <tr>
-                                                <td><strong>${game.nama_game || '-'}</strong></td>
-                                                <td>${game.category || '-'}</td>
-                                                <td><code>${game.game_id || '-'}</code></td>
-                                                <td>${game.region || '-'}</td>
-                                                <td>
-                                                    <small>NSP: ${game.ukuran_nsp || '-'}<br>
-                                                    XCI: ${game.ukuran_xci || '-'}</small>
-                                                </td>
-                                                <td>
-                                                    <small>
-                                                        NSP: ${game.jumlah_link_nsp_single || 0}S ${game.jumlah_link_nsp_part || 0}P<br>
-                                                        XCI: ${game.jumlah_link_xci_single || 0}S ${game.jumlah_link_xci_part || 0}P
-                                                    </small>
-                                                </td>
-                                                <td>${new Date(game.timestamp).toLocaleString('id-ID', {
-                                                    day: '2-digit',
-                                                    month: '2-digit',
-                                                    year: 'numeric',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit'
-                                                })}</td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
-                                                            <i class="fas fa-edit"></i>
-                                                        </button>
-                                                        <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                            ${data.data.length === 0 ? '<div class="alert alert-info text-center"><i class="fas fa-info-circle"></i> Tidak ada data dalam database</div>' : ''}
-                        </div>
-                        <div class="modal-footer">
-                            <div class="me-auto">
-                                <small class="text-muted">Total: ${data.data.length} game(s)</small>
-                            </div>
-                            <button type="button" class="btn btn-success" onclick="exportToCSV()">
-                                <i class="fas fa-download"></i> Export CSV
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times"></i> Tutup
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Add modal to DOM and show it
-        document.body.insertAdjacentHTML('beforeend', modalContent);
-        
-        const modal = new bootstrap.Modal(document.getElementById('databaseModal'));
-        modal.show();
-        
-        // Save data for other functions
-        window.currentDatabaseData = data.data;
-        window.originalDatabaseData = data.data; // Save original data for filtering
-    } else {
-        alert("Gagal memuat data: " + (data.message || 'Unknown error'));
-    }
-}
-
-// Fungsi untuk filter database
-function filterDatabase() {
-    const searchTerm = document.getElementById('databaseSearch').value.toLowerCase();
-    const tableBody = document.getElementById('databaseTableBody');
-    
-    if (!searchTerm) {
-        // If search is empty, show all data
-        displayFilteredData(window.originalDatabaseData);
-        return;
-    }
-    
-    // Filter the data based on search term
-    const filteredData = window.originalDatabaseData.filter(game => {
-        return (game.nama_game && game.nama_game.toLowerCase().includes(searchTerm)) ||
-               (game.category && game.category.toLowerCase().includes(searchTerm)) ||
-               (game.game_id && game.game_id.toLowerCase().includes(searchTerm)) ||
-               (game.region && game.region.toLowerCase().includes(searchTerm));
-    });
-    
-    displayFilteredData(filteredData);
-}
-
 // Fungsi untuk menampilkan data yang sudah difilter
 function displayFilteredData(filteredData) {
     const tableBody = document.getElementById('databaseTableBody');
@@ -1680,8 +1116,17 @@ function addSearchEventListener() {
     }
 }
 
-// Fungsi untuk melihat detail game
+// Fungsi untuk melihat detail game - IMPROVED VERSION dengan auto close database modal
 function viewGameDetails(gameId) {
+    // PERBAIKAN: Tutup modal database terlebih dahulu jika sedang terbuka
+    const databaseModal = document.getElementById('databaseModal');
+    if (databaseModal) {
+        const databaseModalInstance = bootstrap.Modal.getInstance(databaseModal);
+        if (databaseModalInstance) {
+            databaseModalInstance.hide();
+        }
+    }
+
     // Cari game dari database
     const game = window.currentDatabaseData.find(g => g.id === gameId);
     if (!game) {
@@ -1689,105 +1134,417 @@ function viewGameDetails(gameId) {
         return;
     }
 
-    // Isi informasi dasar
-    document.getElementById('detailGameName').textContent = game.nama_game || '-';
-    document.getElementById('detailNspSize').textContent = game.ukuran_nsp || '-';
-    document.getElementById('detailXciSize').textContent = game.ukuran_xci || '-';
-    document.getElementById('detailCategory').textContent = game.category || '-';
-    document.getElementById('detailGameId').textContent = game.game_id || '-';
-    document.getElementById('detailRegion').textContent = game.region || '-';
-    document.getElementById('detailLanguage').textContent = game.language || '-';
-    document.getElementById('detailTimestamp').textContent = 
-        game.timestamp ? new Date(game.timestamp).toLocaleString('id-ID') : '-';
-
-    // Isi statistik link
-    document.getElementById('detailNspSingleCount').textContent = game.jumlah_link_nsp_single || '0';
-    document.getElementById('detailNspPartCount').textContent = game.jumlah_link_nsp_part || '0';
-    document.getElementById('detailXciSingleCount').textContent = game.jumlah_link_xci_single || '0';
-    document.getElementById('detailXciPartCount').textContent = game.jumlah_link_xci_part || '0';
-
-    // Tampilkan jenis link yang digunakan
-    let linkTypesHtml = '';
-    if (game.jenis_link_single_nsp) {
-        linkTypesHtml += `<p class="mb-1"><strong>NSP Single:</strong> ${game.jenis_link_single_nsp}</p>`;
-    }
-    if (game.jenis_link_part_nsp) {
-        linkTypesHtml += `<p class="mb-1"><strong>NSP Part:</strong> ${game.jenis_link_part_nsp}</p>`;
-    }
-    if (game.jenis_link_single_xci) {
-        linkTypesHtml += `<p class="mb-1"><strong>XCI Single:</strong> ${game.jenis_link_single_xci}</p>`;
-    }
-    if (game.jenis_link_part_xci) {
-        linkTypesHtml += `<p class="mb-1"><strong>XCI Part:</strong> ${game.jenis_link_part_xci}</p>`;
-    }
-    document.getElementById('detailLinkTypes').innerHTML = linkTypesHtml || '<p class="text-muted">Tidak ada data jenis link</p>';
-
-    // Fungsi untuk membuat list link
-    const createLinkList = (links, containerId) => {
-        const container = document.getElementById(containerId);
-        container.innerHTML = '';
+    // Isi informasi dasar dengan animasi loading
+    const loadingSpinner = '<div class="spinner-border spinner-border-sm me-1" role="status"></div>Loading...';
+    document.getElementById('detailGameName').innerHTML = loadingSpinner;
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+        // Isi informasi dasar
+        document.getElementById('detailGameName').innerHTML = `<i class="fas fa-gamepad me-2 text-primary"></i>${game.nama_game || '-'}`;
+        document.getElementById('detailNspSize').innerHTML = `<span class="badge bg-info">${game.ukuran_nsp || '-'}</span>`;
+        document.getElementById('detailXciSize').innerHTML = `<span class="badge bg-info">${game.ukuran_xci || '-'}</span>`;
+        document.getElementById('detailCategory').innerHTML = `<span class="badge bg-secondary">${game.category || '-'}</span>`;
+        document.getElementById('detailGameId').innerHTML = `<code class="bg-light px-2 py-1 rounded">${game.game_id || '-'}</code>`;
+        document.getElementById('detailRegion').innerHTML = `<span class="badge bg-warning text-dark">${game.region || '-'}</span>`;
+        document.getElementById('detailLanguage').innerHTML = `<span class="badge bg-success">${game.language || '-'}</span>`;
         
-        if (!links) {
-            container.innerHTML = '<div class="list-group-item text-center text-muted">Tidak ada link</div>';
-            return;
-        }
-        
-        const linkArray = links.split(', ');
-        if (linkArray.length === 0 || (linkArray.length === 1 && !linkArray[0])) {
-            container.innerHTML = '<div class="list-group-item text-center text-muted">Tidak ada link</div>';
-            return;
-        }
-        
-        linkArray.forEach((link, index) => {
-            if (link.trim()) {
-                const linkItem = document.createElement('a');
-                linkItem.href = link;
-                linkItem.target = '_blank';
-                linkItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
-                linkItem.innerHTML = `
-                    <span class="text-truncate" style="max-width: 70%;">
-                        <i class="fas fa-link me-2"></i>
-                        ${link}
-                    </span>
-                    <span class="badge bg-primary rounded-pill">${index + 1}</span>
-                `;
-                container.appendChild(linkItem);
+        // Format timestamp dengan style yang lebih baik
+        const timestamp = game.timestamp ? new Date(game.timestamp).toLocaleString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }) : '-';
+        document.getElementById('detailTimestamp').innerHTML = `<small class="text-muted"><i class="fas fa-clock me-1"></i>${timestamp}</small>`;
+
+        // Isi statistik link dengan animasi counter
+        animateCounter('detailNspSingleCount', game.jumlah_link_nsp_single || 0);
+        animateCounter('detailNspPartCount', game.jumlah_link_nsp_part || 0);
+        animateCounter('detailXciSingleCount', game.jumlah_link_xci_single || 0);
+        animateCounter('detailXciPartCount', game.jumlah_link_xci_part || 0);
+
+        // Tampilkan jenis link yang digunakan dengan icon
+        let linkTypesHtml = '';
+        const linkTypeData = [
+            { type: game.jenis_link_single_nsp, label: 'NSP Single', icon: 'fas fa-file-alt', color: 'primary' },
+            { type: game.jenis_link_part_nsp, label: 'NSP Part', icon: 'fas fa-file-archive', color: 'info' },
+            { type: game.jenis_link_single_xci, label: 'XCI Single', icon: 'fas fa-compact-disc', color: 'success' },
+            { type: game.jenis_link_part_xci, label: 'XCI Part', icon: 'fas fa-layer-group', color: 'warning' }
+        ];
+
+        linkTypeData.forEach(item => {
+            if (item.type) {
+                linkTypesHtml += `
+                    <div class="d-flex align-items-center mb-2 p-2 border rounded bg-light">
+                        <i class="${item.icon} text-${item.color} me-2"></i>
+                        <strong class="me-2">${item.label}:</strong>
+                        <span class="badge bg-${item.color}">${item.type}</span>
+                    </div>`;
             }
         });
+        
+        document.getElementById('detailLinkTypes').innerHTML = linkTypesHtml || 
+            '<div class="text-center p-3"><i class="fas fa-info-circle text-muted me-2"></i><span class="text-muted">Tidak ada data jenis link</span></div>';
+    }, 300);
+
+    // Fungsi untuk membuat list link dengan tampilan yang lebih menarik
+    const createLinkList = (links, containerId) => {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '<div class="text-center p-3"><div class="spinner-border text-primary" role="status"></div></div>';
+        
+        setTimeout(() => {
+            container.innerHTML = '';
+            
+            if (!links) {
+                container.innerHTML = `
+                    <div class="list-group-item text-center border-0 bg-light">
+                        <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">Tidak ada link tersedia</p>
+                    </div>`;
+                return;
+            }
+            
+            const linkArray = links.split(', ');
+            if (linkArray.length === 0 || (linkArray.length === 1 && !linkArray[0])) {
+                container.innerHTML = `
+                    <div class="list-group-item text-center border-0 bg-light">
+                        <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">Tidak ada link tersedia</p>
+                    </div>`;
+                return;
+            }
+            
+            linkArray.forEach((link, index) => {
+                if (link.trim()) {
+                    // Deteksi jenis link berdasarkan domain
+                    let linkIcon = 'fas fa-link';
+                    let linkBadgeColor = 'primary';
+                    const lowerLink = link.toLowerCase();
+                    
+                    if (lowerLink.includes('drive.google.com')) {
+                        linkIcon = 'fab fa-google-drive';
+                        linkBadgeColor = 'success';
+                    } else if (lowerLink.includes('mega.nz')) {
+                        linkIcon = 'fas fa-cloud';
+                        linkBadgeColor = 'danger';
+                    } else if (lowerLink.includes('mediafire.com')) {
+                        linkIcon = 'fas fa-fire';
+                        linkBadgeColor = 'warning';
+                    } else if (lowerLink.includes('1fichier.com')) {
+                        linkIcon = 'fas fa-file-archive';
+                        linkBadgeColor = 'info';
+                    }
+
+                    const linkItem = document.createElement('a');
+                    linkItem.href = link;
+                    linkItem.target = '_blank';
+                    linkItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center border-start border-4 border-primary mb-2 link-hover-effect';
+                    linkItem.innerHTML = `
+                        <div class="d-flex align-items-center flex-grow-1">
+                            <i class="${linkIcon} text-${linkBadgeColor} me-3 fa-lg"></i>
+                            <div class="flex-grow-1">
+                                <div class="text-truncate fw-semibold" style="max-width: 400px;" title="${link}">
+                                    ${link}
+                                </div>
+                                <small class="text-muted">Klik untuk membuka link</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-${linkBadgeColor} rounded-pill me-2">#${index + 1}</span>
+                            <i class="fas fa-external-link-alt text-muted"></i>
+                        </div>
+                    `;
+                    
+                    // Add hover effects
+                    linkItem.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateX(5px)';
+                        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                    });
+                    
+                    linkItem.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateX(0)';
+                        this.style.boxShadow = 'none';
+                    });
+                    
+                    container.appendChild(linkItem);
+                }
+            });
+        }, 500);
     };
 
-    // Isi link download
+    // Isi link download dengan delay untuk effect
     createLinkList(game.link_single_nsp, 'detailNspSingleLinks');
     createLinkList(game.link_part_nsp, 'detailNspPartLinks');
     createLinkList(game.link_single_xci, 'detailXciSingleLinks');
     createLinkList(game.link_part_xci, 'detailXciPartLinks');
 
-    // Set event listener untuk tombol edit
+    // Set event listener untuk tombol edit dengan confirmation
     document.getElementById('btnEditGame').onclick = () => {
-        editGame(game.id);
-        bootstrap.Modal.getInstance(document.getElementById('gameDetailModal')).hide();
-    };
-
-    // Set event listener untuk tombol salin link
-    document.getElementById('btnCopyLinks').onclick = () => {
-        let allLinks = '';
-        if (game.link_single_nsp) allLinks += game.link_single_nsp + '\n';
-        if (game.link_part_nsp) allLinks += game.link_part_nsp + '\n';
-        if (game.link_single_xci) allLinks += game.link_single_xci + '\n';
-        if (game.link_part_xci) allLinks += game.link_part_xci;
-        
-        if (allLinks.trim()) {
-            navigator.clipboard.writeText(allLinks.trim())
-                .then(() => alert('Semua link berhasil disalin!'))
-                .catch(() => alert('Gagal menyalin link.'));
-        } else {
-            alert('Tidak ada link untuk disalin.');
+        if (confirm('Apakah Anda yakin ingin mengedit game ini?')) {
+            editGame(game.id);
+            bootstrap.Modal.getInstance(document.getElementById('gameDetailModal')).hide();
         }
     };
 
-    // Tampilkan modal
-    const modal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
+    // Set event listener untuk tombol salin link dengan feedback yang lebih baik
+    document.getElementById('btnCopyLinks').onclick = () => {
+        let allLinks = '';
+        let linkCount = 0;
+        
+        if (game.link_single_nsp) {
+            allLinks += `NSP Single Links:\n${game.link_single_nsp}\n\n`;
+            linkCount += game.link_single_nsp.split(', ').length;
+        }
+        if (game.link_part_nsp) {
+            allLinks += `NSP Part Links:\n${game.link_part_nsp}\n\n`;
+            linkCount += game.link_part_nsp.split(', ').length;
+        }
+        if (game.link_single_xci) {
+            allLinks += `XCI Single Links:\n${game.link_single_xci}\n\n`;
+            linkCount += game.link_single_xci.split(', ').length;
+        }
+        if (game.link_part_xci) {
+            allLinks += `XCI Part Links:\n${game.link_part_xci}`;
+            linkCount += game.link_part_xci.split(', ').length;
+        }
+        
+        if (allLinks.trim()) {
+            navigator.clipboard.writeText(allLinks.trim())
+                .then(() => {
+                    showToast(`Berhasil menyalin ${linkCount} link!`, 'success');
+                    // Tambahkan efek visual pada button
+                    const btn = document.getElementById('btnCopyLinks');
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check me-1"></i> Tersalin!';
+                    btn.classList.remove('btn-info');
+                    btn.classList.add('btn-success');
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-info');
+                    }, 2000);
+                })
+                .catch(() => {
+                    showToast('Gagal menyalin link. Silakan coba lagi.', 'error');
+                });
+        } else {
+            showToast('Tidak ada link untuk disalin.', 'warning');
+        }
+    };
+
+    // Tambahkan tombol untuk melihat QR Code (fitur baru)
+    const btnQrCode = document.getElementById('btnGenerateQR');
+    if (btnQrCode) {
+        btnQrCode.onclick = () => generateGameQRCode(game);
+    }
+
+    // Update tab counters with badges
+    updateTabCounters(game);
+
+    // PERBAIKAN: Tunggu sebentar untuk memastikan modal database tertutup sepenuhnya
+    // kemudian baru tampilkan modal detail game
+    setTimeout(() => {
+        const modal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
+        modal.show();
+        
+        // Add entrance animation
+        const modalDialog = document.querySelector('#gameDetailModal .modal-dialog');
+        modalDialog.style.transform = 'scale(0.8)';
+        modalDialog.style.opacity = '0';
+        
+        setTimeout(() => {
+            modalDialog.style.transition = 'all 0.3s ease';
+            modalDialog.style.transform = 'scale(1)';
+            modalDialog.style.opacity = '1';
+        }, 100);
+    }, 300); // Delay 300ms untuk memastikan modal database tertutup
+}
+
+// Helper function untuk animasi counter
+function animateCounter(elementId, targetValue) {
+    const element = document.getElementById(elementId);
+    let currentValue = 0;
+    const increment = Math.ceil(targetValue / 20);
+    const timer = setInterval(() => {
+        currentValue += increment;
+        if (currentValue >= targetValue) {
+            currentValue = targetValue;
+            clearInterval(timer);
+        }
+        element.textContent = currentValue;
+    }, 50);
+}
+
+// Helper function untuk menampilkan toast notification
+function showToast(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+
+    const toastId = 'toast-' + Date.now();
+    const iconMap = {
+        success: 'fas fa-check-circle text-success',
+        error: 'fas fa-exclamation-circle text-danger',
+        warning: 'fas fa-exclamation-triangle text-warning',
+        info: 'fas fa-info-circle text-info'
+    };
+
+    const toastHtml = `
+        <div id="${toastId}" class="toast align-items-center border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center">
+                    <i class="${iconMap[type]} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+
+    toastContainer.innerHTML = toastHtml;
+    const toastElement = new bootstrap.Toast(document.getElementById(toastId), {
+        autohide: true,
+        delay: 3000
+    });
+    toastElement.show();
+}
+
+// Helper function untuk update tab counters
+function updateTabCounters(game) {
+    const tabs = [
+        { id: 'nsp-single-tab', count: game.jumlah_link_nsp_single || 0 },
+        { id: 'nsp-part-tab', count: game.jumlah_link_nsp_part || 0 },
+        { id: 'xci-single-tab', count: game.jumlah_link_xci_single || 0 },
+        { id: 'xci-part-tab', count: game.jumlah_link_xci_part || 0 }
+    ];
+
+    tabs.forEach(tab => {
+        const tabElement = document.getElementById(tab.id);
+        if (tabElement && tab.count > 0) {
+            const badgeHtml = ` <span class="badge bg-danger rounded-pill ms-1">${tab.count}</span>`;
+            if (!tabElement.innerHTML.includes('badge')) {
+                tabElement.innerHTML += badgeHtml;
+            }
+        }
+    });
+}
+
+// Fitur baru: Generate QR Code untuk game info (opsional)
+function generateGameQRCode(game) {
+    const gameInfo = `Game: ${game.nama_game}\nSize NSP: ${game.ukuran_nsp}\nSize XCI: ${game.ukuran_xci}\nCategory: ${game.category}`;
+    
+    // Ini memerlukan library QR code seperti qrcode.js
+    // Untuk saat ini, kita tampilkan info dalam format text
+    const qrModal = document.createElement('div');
+    qrModal.className = 'modal fade';
+    qrModal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-qrcode me-2"></i>Game Info QR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        QR Code feature requires additional library
+                    </div>
+                    <pre class="bg-light p-3 rounded">${gameInfo}</pre>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(qrModal);
+    const modal = new bootstrap.Modal(qrModal);
     modal.show();
+    
+    qrModal.addEventListener('hidden.bs.modal', () => {
+        document.body.removeChild(qrModal);
+    });
+}
+
+// Improved CSS untuk efek hover dan animasi
+const additionalStyles = `
+<style>
+.link-hover-effect {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.link-hover-effect:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-left-width: 6px !important;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+.toast {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="dark"] .toast {
+    background-color: rgba(45, 55, 72, 0.95);
+    color: #e2e8f0;
+}
+
+.modal-dialog {
+    transition: all 0.3s ease;
+}
+
+/* Badge pulse animation for counters */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.badge-animated {
+    animation: pulse 0.5s ease-in-out;
+}
+
+/* Improved tab styling */
+.nav-tabs .nav-link {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    transform: translateY(-2px);
+}
+
+.nav-tabs .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border-radius: 2px 2px 0 0;
+}
+</style>
+`;
+
+// Inject additional styles
+if (!document.getElementById('gameDetailStyles')) {
+    const styleElement = document.createElement('div');
+    styleElement.id = 'gameDetailStyles';
+    styleElement.innerHTML = additionalStyles;
+    document.head.appendChild(styleElement);
 }
 
 // Fungsi untuk menghapus game
@@ -4057,6 +3814,7 @@ function deleteLinkSettings(index) {
         </div>
     </div>
 </div>
+
 <!-- Modal untuk Lihat Detail Game -->
 <div class="modal fade" id="gameDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -4165,12 +3923,12 @@ function deleteLinkSettings(index) {
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="xci-single-tab" data-bs-toggle="tab" data-bs-target="#xci-single" type="button" role="tab">
-                            <i class="fas fa-file-alt me-1"></i> XCI Single
+                            <i class="fas fa-compact-disc me-1"></i> XCI Single
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="xci-part-tab" data-bs-toggle="tab" data-bs-target="#xci-part" type="button" role="tab">
-                            <i class="fas fa-file-archive me-1"></i> XCI Part
+                            <i class="fas fa-layer-group me-1"></i> XCI Part
                         </button>
                     </li>
                 </ul>
@@ -4180,7 +3938,8 @@ function deleteLinkSettings(index) {
                     <div class="tab-pane fade show active" id="nsp-single" role="tabpanel">
                         <div id="detailNspSingleLinks" class="list-group">
                             <div class="list-group-item text-center text-muted">
-                                Tidak ada link single NSP
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link single NSP</p>
                             </div>
                         </div>
                     </div>
@@ -4189,7 +3948,8 @@ function deleteLinkSettings(index) {
                     <div class="tab-pane fade" id="nsp-part" role="tabpanel">
                         <div id="detailNspPartLinks" class="list-group">
                             <div class="list-group-item text-center text-muted">
-                                Tidak ada link part NSP
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link part NSP</p>
                             </div>
                         </div>
                     </div>
@@ -4198,7 +3958,8 @@ function deleteLinkSettings(index) {
                     <div class="tab-pane fade" id="xci-single" role="tabpanel">
                         <div id="detailXciSingleLinks" class="list-group">
                             <div class="list-group-item text-center text-muted">
-                                Tidak ada link single XCI
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link single XCI</p>
                             </div>
                         </div>
                     </div>
@@ -4207,7 +3968,8 @@ function deleteLinkSettings(index) {
                     <div class="tab-pane fade" id="xci-part" role="tabpanel">
                         <div id="detailXciPartLinks" class="list-group">
                             <div class="list-group-item text-center text-muted">
-                                Tidak ada link part XCI
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link part XCI</p>
                             </div>
                         </div>
                     </div>
@@ -4220,6 +3982,9 @@ function deleteLinkSettings(index) {
                 <button type="button" id="btnEditGame" class="btn btn-warning">
                     <i class="fas fa-edit me-1"></i> Edit
                 </button>
+                <button type="button" id="btnGenerateQR" class="btn btn-outline-secondary">
+                    <i class="fas fa-qrcode me-1"></i> QR Code
+                </button>
                 <button type="button" id="btnCopyLinks" class="btn btn-info">
                     <i class="fas fa-copy me-1"></i> Salin Link
                 </button>
@@ -4228,125 +3993,250 @@ function deleteLinkSettings(index) {
     </div>
 </div>
 
-<style>
-/* Dark Mode Styles for Game Detail Modal */
-[data-theme="dark"] #gameDetailModal .modal-content {
-  background-color: #2d3748;
-  color: #e2e8f0;
-  border-color: #4a5568;
-}
+    <style>
+        /* Base styling */
+        .link-hover-effect {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-[data-theme="dark"] #gameDetailModal .modal-header {
-  background-color: #2c5282 !important;
-  border-bottom-color: #4a5568;
-}
+        .link-hover-effect:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left-width: 6px !important;
+        }
 
-[data-theme="dark"] #gameDetailModal .card {
-  background-color: #1a202c;
-  border-color: #4a5568;
-  color: #e2e8f0;
-}
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
 
-[data-theme="dark"] #gameDetailModal .card-header {
-  background-color: #2d3748 !important;
-  border-bottom-color: #4a5568;
-  color: #e2e8f0;
-}
+        .modal-dialog {
+            transition: all 0.3s ease;
+        }
 
-[data-theme="dark"] #gameDetailModal .table {
-  color: #e2e8f0;
-  background-color: #1a202c;
-}
+        /* Badge pulse animation for counters */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
 
-[data-theme="dark"] #gameDetailModal .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(74, 85, 104, 0.3);
-}
+        .badge-animated {
+            animation: pulse 0.5s ease-in-out;
+        }
 
-[data-theme="dark"] #gameDetailModal th {
-  color: #4895ef;
-}
+        /* Improved tab styling */
+        .nav-tabs .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
 
-[data-theme="dark"] #gameDetailModal .nav-tabs {
-  border-bottom-color: #4a5568;
-}
+        .nav-tabs .nav-link:hover {
+            transform: translateY(-2px);
+        }
 
-[data-theme="dark"] #gameDetailModal .nav-tabs .nav-link {
-  color: #4895ef;
-  background-color: #2d3748;
-  border-color: #4a5568;
-}
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border-radius: 2px 2px 0 0;
+        }
 
-[data-theme="dark"] #gameDetailModal .nav-tabs .nav-link.active {
-  background-color: #1a202c;
-  border-color: #4a5568 #4a5568 #1a202c;
-  color: #e2e8f0;
-}
+        /* Toast container */
+        #toast-container {
+            z-index: 9999;
+        }
 
-[data-theme="dark"] #gameDetailModal .tab-content {
-  background-color: #1a202c;
-  border-color: #4a5568;
-  color: #e2e8f0;
-}
+        .toast {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
 
-[data-theme="dark"] #gameDetailModal .list-group-item {
-  background-color: #2d3748;
-  border-color: #4a5568;
-  color: #3e86e6;
-}
+        /* FIXED: Ensure table content doesn't overflow the card */
+        .table-responsive {
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
 
-[data-theme="dark"] #gameDetailModal .list-group-item-action:hover {
-  background-color: #4a5568;
-  color: #ffffff;
-}
+        .table td, .table th {
+            word-wrap: break-word;
+            word-break: break-word;
+            max-width: 200px;
+        }
 
-[data-theme="dark"] #gameDetailModal .text-muted {
-  color: #4895ef !important;
-}
+        /* FIXED: Better link type display styling */
+        .link-type-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
 
-[data-theme="dark"] #gameDetailModal .badge {
-  color: white;
-}
+        .link-type-item {
+            background: rgba(13, 110, 253, 0.1);
+            border: 1px solid rgba(13, 110, 253, 0.2);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
 
-/* Light Mode Styles for Game Detail Modal */
-#gameDetailModal .modal-content {
-  transition: all 0.3s ease;
-}
+        .link-type-item:hover {
+            background: rgba(13, 110, 253, 0.15);
+            transform: translateY(-1px);
+        }
 
-#gameDetailModal .list-group-item {
-  transition: all 0.3s ease;
-}
-/* Dark Mode Adjustments for Stats Card */
-[data-theme="dark"] .text-dark {
-    color: #e2e8f0 !important;
-}
+        /* Dark Mode Styles - FIXED */
+        [data-theme="dark"] {
+            background-color: #1a202c;
+            color: #0067ee;
+        }
 
-[data-theme="dark"] .card-body {
-    background-color: #2d3748;
-}
+        [data-theme="dark"] #gameDetailModal .modal-content {
+            background-color: #2d3748;
+            color: #0067ee;
+            border-color: #4a5568;
+        }
 
-[data-theme="dark"] .card {
-    border-color: #4a5568;
-    background-color: #2d3748;
-}
+        [data-theme="dark"] #gameDetailModal .modal-header {
+            background-color: #2c5282 !important;
+            border-bottom-color: #4a5568;
+        }
 
-[data-theme="dark"] .card-header:not(.bg-success):not(.bg-primary) {
-    background-color: #1a202c !important;
-    border-bottom-color: #4a5568;
-}
+        [data-theme="dark"] #gameDetailModal .card {
+            background-color: #1a202c;
+            border-color: #4a5568;
+            color: #0067ee;
+        }
 
-.dark\:text-gray-200 {
-    color: #e2e8f0;
-}
+        [data-theme="dark"] #gameDetailModal .card-header {
+            background-color: #2d3748 !important;
+            border-bottom-color: #4a5568;
+            color: #e2e8f0;
+        }
 
-.dark\:text-gray-400 {
-    color: #a0aec0;
-}
+        /* FIXED: Table styling in dark mode */
+        [data-theme="dark"] #gameDetailModal .table {
+            color: #0067ee;
+            background-color: transparent;
+        }
 
-.dark\:text-white {
-    color: #ffffff;
-}
-</style>
+        [data-theme="dark"] #gameDetailModal .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(74, 85, 104, 0.2);
+        }
 
+        [data-theme="dark"] #gameDetailModal .table th {
+            color: #4895ef;
+            background-color: transparent;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .table td {
+            border-color: #4a5568;
+            background-color: transparent;
+        }
+
+        /* FIXED: Link type container in dark mode */
+        [data-theme="dark"] .link-type-container {
+            background-color: #1a202c;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] .link-type-item {
+            background: rgba(72, 149, 239, 0.15);
+            border-color: rgba(72, 149, 239, 0.3);
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .link-type-item:hover {
+            background: rgba(72, 149, 239, 0.25);
+        }
+
+        /* FIXED: Link types section heading */
+        [data-theme="dark"] .link-types-heading {
+            color: #0067ee !important;
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs {
+            border-bottom-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs .nav-link {
+            color: #4895ef;
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs .nav-link.active {
+            background-color: #1a202c;
+            border-color: #4a5568 #4a5568 #1a202c;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .tab-content {
+            background-color: #1a202c;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .list-group-item {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .list-group-item-action:hover {
+            background-color: #4a5568;
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] #gameDetailModal .text-muted {
+            color: #0067ee !important;
+        }
+
+        [data-theme="dark"] .toast {
+            background-color: rgba(45, 55, 72, 0.95);
+            color: #e2e8f0;
+        }
+
+        /* FIXED: Badge and code elements */
+        [data-theme="dark"] .badge {
+            color: white !important;
+        }
+
+        [data-theme="dark"] code {
+            background-color: #2d3748 !important;
+            color: #ff9292 !important;
+            border: 1px solid #4a5568;
+        }
+
+        /* FIXED: Responsive table wrapper */
+        .card-body .table-responsive {
+            margin: -0.5rem;
+            padding: 0.5rem;
+        }
+
+        /* Loading states */
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        [data-theme="dark"] .loading-shimmer {
+            background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+            background-size: 200% 100%;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
