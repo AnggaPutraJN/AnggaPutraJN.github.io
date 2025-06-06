@@ -627,6 +627,7 @@ h1 {
     background-color: rgba(0, 0, 0, 0.7);
 }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="theme-switch">
@@ -1277,68 +1278,245 @@ function updateTextareaFromInputs() {
             document.getElementById('linkTypeSection').classList.add('hidden');
         });
         
-        function setupOrderSection() {
-            // Setup section order
-            const sectionOrderList = document.getElementById('sectionOrderList');
-            sectionOrderList.innerHTML = '';
-            
-            sectionOrder.forEach((section, index) => {
-                const li = document.createElement('li');
-                li.className = 'order-item';
-                li.dataset.section = section;
-                li.innerHTML = `
-                    <span class="order-number">${index + 1}</span>
-                    <span class="order-item-handle">☰</span>
-                    ${getSectionName(section)}
-                `;
-                sectionOrderList.appendChild(li);
-            });
-            
-            new Sortable(sectionOrderList, {
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                onEnd: function() {
-                    updateSectionOrderNumbers();
-                }
-            });
-            
-            // Setup link orders
-            const linkOrderSections = document.getElementById('linkOrderSections');
-            linkOrderSections.innerHTML = '';
-            
-            sectionOrder.forEach(section => {
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'mb-4';
-                sectionDiv.innerHTML = `<h5>${getSectionName(section)}</h5>`;
-                
-                const linkList = document.createElement('ul');
-                linkList.className = 'order-list';
-                linkList.id = `${section}LinkOrderList`;
-                
-                linkOrders[section].forEach((linkType, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'order-item';
-                    li.dataset.linkType = linkType;
-                    li.innerHTML = `
-                        <span class="order-number">${index + 1}</span>
-                        <span class="order-item-handle">☰</span>
-                        ${linkType}
-                    `;
-                    linkList.appendChild(li);
-                });
-                
-                new Sortable(linkList, {
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    onEnd: function() {
-                        updateLinkOrderNumbers(section);
-                    }
-                });
-                
-                sectionDiv.appendChild(linkList);
-                linkOrderSections.appendChild(sectionDiv);
-            });
+ function setupOrderSection() {
+    // Setup section order
+    const sectionOrderList = document.getElementById('sectionOrderList');
+    sectionOrderList.innerHTML = '';
+    
+    sectionOrder.forEach((section, index) => {
+        const li = document.createElement('li');
+        li.className = 'order-item';
+        li.dataset.section = section;
+        li.innerHTML = `
+            <span class="order-number">${index + 1}</span>
+            <span class="order-item-handle">☰</span>
+            ${getSectionName(section)}
+        `;
+        sectionOrderList.appendChild(li);
+    });
+    
+    new Sortable(sectionOrderList, {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onEnd: function() {
+            updateSectionOrderNumbers();
         }
+    });
+    
+    // Setup link orders
+    const linkOrderSections = document.getElementById('linkOrderSections');
+    linkOrderSections.innerHTML = '';
+    
+    sectionOrder.forEach(section => {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'mb-4';
+        sectionDiv.innerHTML = `<h5>${getSectionName(section)}</h5>`;
+        
+        const linkList = document.createElement('ul');
+        linkList.className = 'order-list';
+        linkList.id = `${section}LinkOrderList`;
+        
+        // Gunakan urutan yang sudah ada di linkOrders[section] jika ada
+        const currentOrder = linkOrders[section] || [];
+        
+        // Jika tidak ada urutan yang disimpan, gunakan urutan dari selectedLinks
+        if (currentOrder.length === 0) {
+            const linksInSection = [...new Set(selectedLinks
+                .filter(l => l.section === section)
+                .map(l => l.type))];
+            linkOrders[section] = linksInSection;
+        }
+        
+        linkOrders[section].forEach((linkType, index) => {
+            const li = document.createElement('li');
+            li.className = 'order-item';
+            li.dataset.linkType = linkType;
+            li.innerHTML = `
+                <span class="order-number">${index + 1}</span>
+                <span class="order-item-handle">☰</span>
+                ${linkType}
+            `;
+            linkList.appendChild(li);
+        });
+        
+        new Sortable(linkList, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: function() {
+                updateLinkOrderNumbers(section);
+            }
+        });
+        
+        sectionDiv.appendChild(linkList);
+        linkOrderSections.appendChild(sectionDiv);
+    });
+}
+
+function generateInputFields() {
+    const container = document.getElementById('generatedInputs');
+    container.innerHTML = '';
+    
+    // Dapatkan semua jenis link yang dipilih (unik)
+    const allLinkTypes = [...new Set(selectedLinks.map(link => link.type))];
+    
+    // Urutkan jenis link sesuai urutan yang diatur pengguna (ambil dari linkOrders)
+    const orderedLinkTypes = [];
+    sectionOrder.forEach(section => {
+        (linkOrders[section] || []).forEach(linkType => {
+            if (!orderedLinkTypes.includes(linkType) && allLinkTypes.includes(linkType)) {
+                orderedLinkTypes.push(linkType);
+            }
+        });
+    });
+    
+    // Tambahkan link type yang belum ada di linkOrders (jika ada)
+    allLinkTypes.forEach(linkType => {
+        if (!orderedLinkTypes.includes(linkType)) {
+            orderedLinkTypes.push(linkType);
+        }
+    });
+    
+    orderedLinkTypes.forEach(linkType => {
+        const sanitizedType = linkType.replace(/\s+/g, '');
+        
+        // Add link type header
+        const header = document.createElement('h4');
+        header.textContent = linkType;
+        header.style.marginTop = '20px';
+        container.appendChild(header);
+        
+        // Untuk setiap section yang dipilih
+        sectionOrder.forEach(section => {
+            // Cek apakah link type ini ada di section ini
+            const hasLinkType = selectedLinks.some(link => 
+                link.section === section && link.type === linkType);
+            
+            if (!hasLinkType) return;
+            
+            if (section === 'partNSP') {
+                for (let i = 1; i <= partNSPCount; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'mb-3';
+                    
+                    const label = document.createElement('label');
+                    label.className = 'form-label';
+                    label.textContent = `${getSectionName(section)} Part ${i}:`;
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'form-control';
+                    input.id = `${section}${sanitizedType}${i}`;
+                    
+                    div.appendChild(label);
+                    div.appendChild(input);
+                    container.appendChild(div);
+                }
+            }
+            else if (section === 'partXCI') {
+                for (let i = 1; i <= partXCICount; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'mb-3';
+                    
+                    const label = document.createElement('label');
+                    label.className = 'form-label';
+                    label.textContent = `${getSectionName(section)} Part ${i}:`;
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'form-control';
+                    input.id = `${section}${sanitizedType}${i}`;
+                    
+                    div.appendChild(label);
+                    div.appendChild(input);
+                    container.appendChild(div);
+                }
+            }
+            else if (section === 'singleXCI' || section === 'singleNSP') {
+                const div = document.createElement('div');
+                div.className = 'mb-3';
+                
+                const label = document.createElement('label');
+                label.className = 'form-label';
+                label.textContent = `${getSectionName(section)}:`;
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-control';
+                input.id = `${section}${sanitizedType}`;
+                
+                div.appendChild(label);
+                div.appendChild(input);
+                container.appendChild(div);
+            }
+        });
+    });
+    
+    updateInputsCollection();
+}
+
+document.getElementById('copyResultBtn').addEventListener('click', function() {
+    const gameName = document.getElementById('gameName').value.trim();
+    if (!gameName) {
+        alert('Harap masukkan nama game');
+        return;
+    }
+    
+    let resultText = `${gameName}\n\n`;
+    
+    // Urutkan berdasarkan section yang diatur pengguna
+    const orderedSections = [...sectionOrder];
+    
+    orderedSections.forEach(section => {
+        // Cek apakah section ini digunakan
+        const isUsed = selectedLinks.some(link => link.section === section);
+        if (!isUsed) return;
+        
+        // Tambahkan header section
+        resultText += `${getSectionName(section)}\n`;
+        
+        // Dapatkan semua jenis link untuk section ini, diurutkan sesuai urutan yang diatur pengguna
+        const orderedLinks = linkOrders[section] || [];
+        
+        orderedLinks.forEach(linkType => {
+            const sanitizedType = linkType.replace(/\s+/g, '');
+            
+            // Untuk single links
+            if (section === 'singleNSP' || section === 'singleXCI') {
+                const input = document.getElementById(`${section}${sanitizedType}`);
+                if (input && input.value) {
+                    resultText += `${input.value}\n`;
+                }
+            }
+            // Untuk part links
+            else if (section === 'partNSP' || section === 'partXCI') {
+                const partCount = section === 'partNSP' ? partNSPCount : partXCICount;
+                
+                for (let i = 1; i <= partCount; i++) {
+                    const input = document.getElementById(`${section}${sanitizedType}${i}`);
+                    if (input && input.value) {
+                        resultText += `${input.value}\n`;
+                    }
+                }
+            }
+        });
+        
+        resultText += '\n';
+    });
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(resultText).then(() => {
+        const resultDiv = document.getElementById('result');
+        resultDiv.textContent = resultText;
+        resultDiv.classList.remove('hidden');
+        alert('Hasil shorting telah disalin ke clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        const resultDiv = document.getElementById('result');
+        resultDiv.textContent = resultText;
+        resultDiv.classList.remove('hidden');
+        alert('Gagal menyalin ke clipboard. Silahkan copy manual dari text area.');
+    });
+});
         
         function updateSectionOrderNumbers() {
             const items = document.querySelectorAll('#sectionOrderList .order-item');
@@ -1376,188 +1554,7 @@ function updateTextareaFromInputs() {
             document.getElementById('resultSection').classList.remove('hidden');
             document.getElementById('orderSection').classList.add('hidden');
         });
-        
-function generateInputFields() {
-    const container = document.getElementById('generatedInputs');
-    container.innerHTML = '';
-    
-    // Urutan jenis link yang tetap
-    const fixedLinkOrder = [
-        "Google Drive", "Mediafire", "VikingFile", "PixelDrain", 
-        "1Fichier", "Multiup", "Megaup", "Mega", "Qiwi", 
-        "Uploadhaven", "GoFile", "RapidGator", "UseNet", "FastUpload"
-    ];
-    
-    // Urutan section yang tetap
-    const fixedSectionOrder = ['partNSP', 'partXCI', 'singleXCI', 'singleNSP'];
-    
-    fixedLinkOrder.forEach(linkType => {
-        // Cek apakah link type ini dipilih di salah satu section
-        const isUsed = selectedLinks.some(link => link.type === linkType);
-        if (!isUsed) return;
-        
-        const sanitizedType = linkType.replace(/\s+/g, '');
-        
-        // Add link type header
-        const header = document.createElement('h4');
-        header.textContent = linkType;
-        header.style.marginTop = '20px';
-        container.appendChild(header);
-        
-        // Generate inputs untuk setiap section dalam urutan yang tetap
-        fixedSectionOrder.forEach(section => {
-            const sectionLinks = selectedLinks.filter(link => 
-                link.section === section && link.type === linkType);
-            
-            if (sectionLinks.length === 0) return;
-            
-            if (section === 'partNSP') {
-                for (let i = 1; i <= partNSPCount; i++) {
-                    const div = document.createElement('div');
-                    div.className = 'mb-3';
-                    
-                    const label = document.createElement('label');
-                    label.className = 'form-label';
-                    label.textContent = `${linkType} Link NSP Part ${i}:`;
-                    
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'form-control';
-                    input.id = `partNSP${sanitizedType}${i}`;
-                    
-                    div.appendChild(label);
-                    div.appendChild(input);
-                    container.appendChild(div);
-                }
-            }
-            else if (section === 'partXCI') {
-                for (let i = 1; i <= partXCICount; i++) {
-                    const div = document.createElement('div');
-                    div.className = 'mb-3';
-                    
-                    const label = document.createElement('label');
-                    label.className = 'form-label';
-                    label.textContent = `${linkType} Link XCI Part ${i}:`;
-                    
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'form-control';
-                    input.id = `partXCI${sanitizedType}${i}`;
-                    
-                    div.appendChild(label);
-                    div.appendChild(input);
-                    container.appendChild(div);
-                }
-            }
-            else if (section === 'singleXCI') {
-                const div = document.createElement('div');
-                div.className = 'mb-3';
-                
-                const label = document.createElement('label');
-                label.className = 'form-label';
-                label.textContent = `${linkType} Single Link XCI:`;
-                
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'form-control';
-                input.id = `singleXCI${sanitizedType}`;
-                
-                div.appendChild(label);
-                div.appendChild(input);
-                container.appendChild(div);
-            }
-            else if (section === 'singleNSP') {
-                const div = document.createElement('div');
-                div.className = 'mb-3';
-                
-                const label = document.createElement('label');
-                label.className = 'form-label';
-                label.textContent = `${linkType} Single Link NSP:`;
-                
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'form-control';
-                input.id = `singleNSP${sanitizedType}`;
-                
-                div.appendChild(label);
-                div.appendChild(input);
-                container.appendChild(div);
-            }
-        });
-    });
-    
-    updateInputsCollection();
-}
 
-
-        
-document.getElementById('copyResultBtn').addEventListener('click', function() {
-    const gameName = document.getElementById('gameName').value.trim();
-    if (!gameName) {
-        alert('Harap masukkan nama game');
-        return;
-    }
-    
-    let resultText = `${gameName}\n\n`;
-    
-    // Urutan section yang tetap
-    const fixedSectionOrder = ['singleNSP', 'singleXCI', 'partNSP', 'partXCI'];
-    
-    fixedSectionOrder.forEach(section => {
-        // Cek apakah section ini digunakan
-        const isUsed = selectedLinks.some(link => link.section === section);
-        if (!isUsed) return;
-        
-        // Tambahkan header section
-        resultText += `${getSectionName(section)}\n`;
-        
-        // Untuk single links
-        if (section === 'singleNSP' || section === 'singleXCI') {
-            selectedLinks
-                .filter(link => link.section === section)
-                .sort((a, b) => linkTypes.indexOf(a.type) - linkTypes.indexOf(b.type))
-                .forEach(link => {
-                    const input = document.getElementById(`${section}${link.type.replace(/\s+/g, '')}`);
-                    if (input && input.value) {
-                        resultText += `${input.value}\n`;
-                    }
-                });
-        }
-        // Untuk part links
-        else if (section === 'partNSP' || section === 'partXCI') {
-            const partCount = section === 'partNSP' ? partNSPCount : partXCICount;
-            
-            selectedLinks
-                .filter(link => link.section === section)
-                .sort((a, b) => linkTypes.indexOf(a.type) - linkTypes.indexOf(b.type))
-                .forEach(link => {
-                    const sanitizedType = link.type.replace(/\s+/g, '');
-                    for (let i = 1; i <= partCount; i++) {
-                        const input = document.getElementById(`${section}${sanitizedType}${i}`);
-                        if (input && input.value) {
-                            resultText += `${input.value}\n`;
-                        }
-                    }
-                });
-        }
-        
-        resultText += '\n';
-    });
-    
-    // Copy to clipboard
-    navigator.clipboard.writeText(resultText).then(() => {
-        const resultDiv = document.getElementById('result');
-        resultDiv.textContent = resultText;
-        resultDiv.classList.remove('hidden');
-        alert('Hasil shorting telah disalin ke clipboard!');
-    }).catch(err => {
-        console.error('Failed to copy:', err);
-        const resultDiv = document.getElementById('result');
-        resultDiv.textContent = resultText;
-        resultDiv.classList.remove('hidden');
-        alert('Gagal menyalin ke clipboard. Silahkan copy manual dari text area.');
-    });
-});
 
 // Helper function untuk nama section
 function getSectionName(section) {
