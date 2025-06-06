@@ -873,6 +873,49 @@
 .dark-theme .komunitas-link {
     background-color: rgba(16, 185, 129, 0.15);
 }
+
+/* Status badge untuk DITOLAK */
+.status-ditolak {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+}
+
+/* Dark mode untuk status DITOLAK */
+.dark-theme .status-ditolak {
+    background-color: #7f1d1d;
+    color: #fca5a5;
+    border: 1px solid #dc2626;
+}
+
+/* Data item yang ditolak */
+.data-item.rejected {
+    border-left: 4px solid #ef4444;
+}
+
+.dark-theme .data-item.rejected {
+    border-left: 4px solid #dc2626;
+}
+
+/* Button warning untuk tombol tolak */
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border: none;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    transform: translateY(-2px);
+}
+
+.dark-theme .btn-warning {
+    background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.dark-theme .btn-warning:hover {
+    background: linear-gradient(135deg, #b45309, #92400e);
+}
     </style>
 </head>
 <body>
@@ -903,12 +946,12 @@
             </button>
         </div>
 
-<div class="content-wrapper">
+        <div class="content-wrapper">
 <div style="text-align: center; display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
     <a href="report" class="back-button">
         <i class="fas fa-flag"></i> Report Link
     </a>
-    <a href="https://indapk.com" class="back-button">
+    <a href="index" class="back-button">
         <i class="fas fa-home"></i> Home
     </a>
 </div>
@@ -994,6 +1037,7 @@
                                 <p><i class="fas fa-wallet"></i> <strong>Gopay:</strong> 082286344446 (AnggaPutraJN)</p>
                                 <p><i class="fas fa-wallet"></i> <strong>Dana:</strong> 082286344446 (A.P JATI NEGARA MA)</p>
                                 <p><i class="fas fa-wallet"></i> <strong>Shopeepay:</strong> 082286344446 (AnggaPutraJN)</p>
+                                <p><i class="fab fa-telegram"></i><strong> Join Telegram!:</strong> <span style="background: #f0fdf4; padding: 8px; border-radius: 6px; display: block; margin-top: 5px; border-left: 3px solid #36ace8;"><a href="https://t.me/iindapk" target="_blank" style="color: #36ace8;">Click To Join Whatsapp</a></span></p>
                             </div>
                         </div>
 
@@ -1024,17 +1068,20 @@
             </div>
         </div>
         
-        <div class="filter-buttons">
-            <button class="btn filter-btn active" onclick="filterRequests('all')">
-                <i class="fas fa-list-ul"></i> Semua Request (<span id="count-all">0</span>)
-            </button>
-            <button class="btn filter-btn" onclick="filterRequests('selesai')">
-                <i class="fas fa-check-circle"></i> Selesai (<span id="count-selesai">0</span>)
-            </button>
-            <button class="btn filter-btn" onclick="filterRequests('pending')">
-                <i class="fas fa-clock"></i> Pending (<span id="count-pending">0</span>)
-            </button>
-        </div>
+<div class="filter-buttons">
+    <button class="btn filter-btn active" onclick="filterRequests('all')">
+        <i class="fas fa-list-ul"></i> Semua Request (<span id="count-all">0</span>)
+    </button>
+    <button class="btn filter-btn" onclick="filterRequests('selesai')">
+        <i class="fas fa-check-circle"></i> Selesai (<span id="count-selesai">0</span>)
+    </button>
+    <button class="btn filter-btn" onclick="filterRequests('pending')">
+        <i class="fas fa-clock"></i> Pending (<span id="count-pending">0</span>)
+    </button>
+    <button class="btn filter-btn" onclick="filterRequests('ditolak')">
+        <i class="fas fa-times-circle"></i> Ditolak (<span id="count-ditolak">0</span>)
+    </button>
+</div>
         
         <button type="button" class="btn refresh-btn" onclick="loadData()">
             <i class="fas fa-sync-alt"></i> Refresh Data
@@ -1048,6 +1095,12 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+
 
 <!-- Komunitas Tab -->
 <div id="komunitasTab" class="tab-content">
@@ -1107,6 +1160,28 @@
 </div>
 
 
+<!-- Modal Request Ditolak -->
+<div id="rejectModal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-times-circle"></i> Tolak Request Game</h3>
+        
+        <!-- Input Pesan Owner (Wajib) -->
+        <div class="form-group" style="margin: 20px 0; text-align: left;">
+            <label for="pesanRejectInput">Alasan Penolakan <span class="optional-label">(Wajib Diisi)</span>:</label>
+            <textarea id="pesanRejectInput" placeholder="Contoh: Game tidak tersedia / Game sudah ada di website / dll" 
+                    style="width: 100%; margin-top: 8px; min-height: 80px; resize: vertical;" required></textarea>
+        </div>
+        
+        <div class="modal-buttons">
+            <button class="btn btn-small btn-danger" onclick="closeRejectModal()">
+                <i class="fas fa-times"></i> Batal
+            </button>
+            <button class="btn btn-small btn-warning" onclick="submitRejectRequest()">
+                <i class="fas fa-ban"></i> Tolak Request
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Modal Link Selesai -->
 <div id="linkModal" class="modal">
@@ -1219,7 +1294,7 @@ document.getElementById('link_game').addEventListener('input', function () {
     }
 });
 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRhhj9yw17YeIeClqC1u9o8zp7qCcHSdhKP6gBwJ0CjciOOKF7XhLRenKz0CksebM/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhqLiH7rm59y8ciYzdXd6oIsmVcWeYBGf63tNUqTCKzc5gAYBeCavX-m4aKAz6ToU/exec';
         let currentAction = null;
         let currentId = null;
 
@@ -1302,11 +1377,14 @@ function updateCounters(data) {
     const totalAll = data.length;
     const totalSelesai = data.filter(item => (item.status_req || 'PENDING') === 'SELESAI').length;
     const totalPending = data.filter(item => (item.status_req || 'PENDING') === 'PENDING').length;
+    const totalDitolak = data.filter(item => (item.status_req || 'PENDING') === 'DITOLAK').length;
     
     document.getElementById('count-all').textContent = totalAll;
     document.getElementById('count-selesai').textContent = totalSelesai;
     document.getElementById('count-pending').textContent = totalPending;
+    document.getElementById('count-ditolak').textContent = totalDitolak;
 }
+
 // Modifikasi fungsi loadData untuk menerapkan filter
 function loadData() {
     const dataContainer = document.getElementById('dataContainer');
@@ -1325,6 +1403,8 @@ function loadData() {
                 filteredData = data.data.filter(item => (item.status_req || 'PENDING') === 'SELESAI');
             } else if (currentFilter === 'pending') {
                 filteredData = data.data.filter(item => (item.status_req || 'PENDING') === 'PENDING');
+            } else if (currentFilter === 'ditolak') {
+                filteredData = data.data.filter(item => (item.status_req || 'PENDING') === 'DITOLAK');
             }
             displayData(filteredData);
         } else {
@@ -1378,6 +1458,8 @@ function displayData(data) {
             message = '🎉 Tidak ada request yang sudah selesai.';
         } else if (currentFilter === 'pending') {
             message = '⏳ Tidak ada request yang pending.';
+        } else if (currentFilter === 'ditolak') {
+            message = '❌ Tidak ada request yang ditolak.';
         }
         dataContainer.innerHTML = `<p style="text-align:center; color: #6b7280;">${message}</p>`;
         return;
@@ -1389,13 +1471,14 @@ function displayData(data) {
         const status = item.status_req || 'PENDING';
         const isCompleted = status === 'SELESAI';
         const isPending = status === 'PENDING';
+        const isRejected = status === 'DITOLAK';
         
         // Split multiple links and filter out empty ones
         const links = item.link_selesai ? 
             item.link_selesai.split(',').map(link => link.trim()).filter(link => link) : [];
         
         html += `
-            <div class="data-item ${isCompleted ? 'completed' : ''}">
+            <div class="data-item ${isCompleted ? 'completed' : ''} ${isRejected ? 'rejected' : ''}">
                 <h3>🎮 ${item.nama_game}</h3>
                 <p><strong>👤 Pengguna:</strong> ${item.nama_pengguna}</p>
                 <p><strong>🕹️ Emulator:</strong> ${item.jenis_emulator}</p>
@@ -1403,7 +1486,7 @@ function displayData(data) {
                 ${item.link_game ? `<p><strong>🔗 Link Request:</strong> <a href="${item.link_game}" target="_blank" style="color: #3498db;">${item.link_game}</a></p>` : ''}
                 ${item.rating_web ? `<p><strong>⭐ Rating:</strong> <span class="rating-stars">${item.rating_web}</span></p>` : ''}
                 <p><strong>📊 Status:</strong> 
-                    <span class="status-badge ${status === 'SELESAI' ? 'status-selesai' : 'status-pending'}">
+                    <span class="status-badge ${status === 'SELESAI' ? 'status-selesai' : status === 'DITOLAK' ? 'status-ditolak' : 'status-pending'}">
                         ${status}
                     </span>
                 </p>
@@ -1412,13 +1495,14 @@ function displayData(data) {
                         <p><strong>🔗 Link Game${links.length > 1 ? ' ' + (index+1) : ''}:</strong> 
                         <a href="${link}" target="_blank" style="color: #10b981;">${link}</a></p>
                     `).join('') : ''}
-                ${isCompleted && item.pesan_owner ? `<p><strong>💬 Pesan Owner:</strong> <span style="background: #f0fdf4; padding: 8px; border-radius: 6px; display: block; margin-top: 5px; border-left: 3px solid #10b981;">${item.pesan_owner}</span></p>` : ''}
-                ${isCompleted ? `<p><strong>🛡️ Approved By:</strong> AnggaPutraJN ✅ </p>` : ''}
+                ${(isCompleted || isRejected) && item.pesan_owner ? `<p><strong>💬 Pesan Owner:</strong> <span style="background: ${isRejected ? '#fef2f2' : '#f0fdf4'}; padding: 8px; border-radius: 6px; display: block; margin-top: 5px; border-left: 3px solid ${isRejected ? '#ef4444' : '#10b981'};">${item.pesan_owner}</span></p>` : ''}
+                ${(isCompleted || isRejected) ? `<p><strong>🛡️ ${isRejected ? 'Rejected' : 'Approved'} By:</strong> AnggaPutraJN ${isRejected ? '❌' : '✅'}</p>` : ''}
             
                 <p class="timestamp">${timestamp}</p>
                 
                 <div class="action-buttons">
                     ${isPending ? `<button class="btn btn-small btn-success" onclick="showLinkModal('${item.nama_game.replace(/'/g, "\\'")}', ${item.id})">✅ Tandai Selesai</button>` : ''}
+                    ${isPending ? `<button class="btn btn-small btn-warning" onclick="showRejectModal('${item.nama_game.replace(/'/g, "\\'")}', ${item.id})">❌ Tolak Request</button>` : ''}
                     <button class="btn btn-small btn-danger" onclick="showModal('delete', ${item.id}, '${item.nama_game.replace(/'/g, "\\'")}')">🗑️ Hapus Request</button>
                 </div>
             </div>
@@ -1444,6 +1528,76 @@ function addLinkInput() {
     `;
     
     linksContainer.appendChild(linkGroup);
+}
+
+// Fungsi untuk menampilkan modal tolak request
+function showRejectModal(gameName, id) {
+    currentId = id;
+    const modal = document.getElementById('rejectModal');
+    
+    // Reset input
+    document.getElementById('pesanRejectInput').value = '';
+    
+    // Update judul dengan nama game
+    document.querySelector('#rejectModal h3').textContent = `❌ Tolak Request "${gameName}"`;
+    
+    modal.style.display = 'block';
+}
+
+
+// Fungsi untuk menutup modal tolak request
+function closeRejectModal() {
+    document.getElementById('rejectModal').style.display = 'none';
+    document.getElementById('pesanRejectInput').value = '';
+    currentId = null;
+}
+
+// Fungsi untuk submit tolak request
+function submitRejectRequest() {
+    const pesanInput = document.getElementById('pesanRejectInput');
+    const pesan = pesanInput.value.trim();
+    
+    // Validate pesan wajib diisi
+    if (!pesan) {
+        showMessage('Alasan penolakan wajib diisi!', 'error');
+        return;
+    }
+    
+    if (!currentId) return;
+    
+    const formData = new FormData();
+    formData.append('action', 'markRejected');
+    formData.append('id', currentId);
+    formData.append('pesan_owner', pesan);
+    
+    // Show loading state
+    const submitBtn = document.querySelector('#rejectModal .btn-warning');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+    
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        
+        if (data.status === 'success') {
+            closeRejectModal();
+            loadData(); // Refresh data
+            showMessage('Request berhasil ditolak!', 'success');
+        } else {
+            showMessage('Gagal: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        showMessage('Terjadi kesalahan: ' + error.message, 'error');
+    });
 }
 
 // Function to remove link input field
@@ -1656,12 +1810,16 @@ function showModal(action, id, gameName) {
 window.onclick = function(event) {
     const confirmModal = document.getElementById('confirmModal');
     const linkModal = document.getElementById('linkModal');
+    const rejectModal = document.getElementById('rejectModal');
     
     if (event.target === confirmModal) {
         closeModal();
     }
     if (event.target === linkModal) {
         closeLinkModal();
+    }
+    if (event.target === rejectModal) {
+        closeRejectModal();
     }
 }
 </script>
