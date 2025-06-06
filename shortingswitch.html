@@ -705,10 +705,12 @@ h1 {
                 </div>
             </div>
             
-            <div class="button-group">
+        <div id="startSection" class="form-section">
+            <div class="button-group" > 
                 <button id="continueBtn" class="btn btn-primary">Lanjutkan</button>
                 <button id="loadSettingsBtn" class="btn btn-secondary">Load Setting</button>
             </div>
+        </div>
         </div>
         
         <!-- Save Settings Modal -->
@@ -811,12 +813,17 @@ h1 {
     
     
     <div id="generatedInputs"></div>
-    
-    <div class="button-group">
-        <button id="copyResultBtn" class="btn btn-primary">Copy Result</button>
-        <button id="newShortingBtn" class="btn btn-secondary">Buat Shorting Baru</button>
+ <!-- Result Section -->
+        <div id="resultSection" class="form-section">
+            <h3 class="section-title">✅ Hasil</h3>
+            <div id="resultContent"></div>
+            <div class="button-group">
+                <button id="copyResultBtn" class="btn btn-primary">📋 Copy Result</button>
+                <button id="newShortingBtn" class="btn btn-secondary">🆕 Buat Shorting Baru</button>
+            </div>
+        </div>
     </div>
-    
+
     <div id="result" class="hidden"></div>
 </div>
     </div>
@@ -1590,6 +1597,658 @@ function getSectionName(section) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
+        
+       // URL Google Apps Script Anda
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQOjr9ZrTF-wDsEtpBCcygp8GK9eAlukzHZMJtO1SA8xgP5YUcDLqOTtt4C6zU67o/exec';
+
+// Fungsi untuk menyimpan data ke Google Sheets
+async function saveToGoogleSheets() {
+    const gameName = document.getElementById('gameName').value.trim();
+    if (!gameName) {
+        alert('Harap masukkan nama game');
+        return;
+    }
+
+    // Kumpulkan semua data link
+    const singleNSPLinks = [];
+    const singleXCILinks = [];
+    const partNSPLinks = [];
+    const partXCILinks = [];
+
+    // Ambil semua input yang terisi
+    const inputs = document.querySelectorAll('#generatedInputs input[type="text"]');
+    inputs.forEach(input => {
+        if (input.value.trim()) {
+            const idParts = input.id.match(/(singleNSP|singleXCI|partNSP|partXCI)(\w+)(\d*)/);
+            if (idParts) {
+                const section = idParts[1];
+                const linkType = idParts[2];
+                const partNumber = idParts[3] || '';
+                
+                const linkData = {
+                    type: linkType,
+                    url: input.value.trim(),
+                    part: partNumber
+                };
+
+                switch(section) {
+                    case 'singleNSP':
+                        singleNSPLinks.push(linkData);
+                        break;
+                    case 'singleXCI':
+                        singleXCILinks.push(linkData);
+                        break;
+                    case 'partNSP':
+                        partNSPLinks.push(linkData);
+                        break;
+                    case 'partXCI':
+                        partXCILinks.push(linkData);
+                        break;
+                }
+            }
+        }
+    });
+
+    // Format data untuk dikirim
+    const data = {
+        action: 'create',
+        nama_game: gameName,
+        single_link_nsp: formatLinks(singleNSPLinks),
+        single_link_xci: formatLinks(singleXCILinks),
+        part_link_nsp: formatLinks(partNSPLinks),
+        part_link_xci: formatLinks(partXCILinks)
+    };
+
+    try {
+        // Kirim data ke Google Apps Script
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(data).toString()
+        });
+
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Data berhasil disimpan ke Google Sheets!');
+            console.log('Response:', result);
+        } else {
+            throw new Error(result.message || 'Gagal menyimpan data');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Gagal menyimpan data: ' + error.message);
+    }
+}
+
+// Fungsi untuk memuat data dari Google Sheets
+async function loadFromGoogleSheets() {
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=read`);
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            displayData(result.data);
+        } else {
+            throw new Error(result.message || 'Gagal memuat data');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Gagal memuat data: ' + error.message);
+    }
+}
+
+// Fungsi untuk memformat array link menjadi string
+function formatLinks(links) {
+    return links.map(link => {
+        return link.part ? 
+            `${link.type} Part ${link.part}: ${link.url}` : 
+            `${link.type}: ${link.url}`;
+    }).join('\n');
+}
+
+// Fungsi untuk menampilkan detail game
+async function showGameDetail(index) {
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=read`);
+        const result = await response.json();
+        
+        if (result.status === 'success' && result.data[index]) {
+            const gameData = result.data[index];
+            gameData.index = index; // TAMBAHKAN BARIS INI
+            displayGameDetail(gameData);
+        } else {
+            throw new Error('Data tidak ditemukan');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Gagal memuat detail game: ' + error.message);
+    }
+}
+
+// Fungsi untuk menampilkan detail game dalam modal
+// Fungsi untuk menampilkan detail game dalam modal - DIPERBAIKI RESPONSIF
+function displayGameDetail(gameData) {
+    // Parse link data
+    function parseLinks(linkString) {
+        if (!linkString) return [];
+        return linkString.split('\n').filter(link => link.trim());
+    }
+
+    // Fungsi untuk menyalin semua link
+    function copyAllLinks() {
+        const gameName = gameData.nama_game || '';
+        let resultText = `${gameName}\n\n`;
+        
+        // Format untuk Single NSP
+        const singleNSPLinks = parseLinks(gameData.single_link_nsp);
+        if (singleNSPLinks.length > 0) {
+            resultText += `Single Link NSP\n`;
+            singleNSPLinks.forEach(link => {
+                const urlMatch = link.match(/https?:\/\/[^\s]+/);
+                const url = urlMatch ? urlMatch[0] : link;
+                resultText += `${url}\n`;
+            });
+            resultText += `\n`;
+        }
+        
+        // Format untuk Single XCI
+        const singleXCILinks = parseLinks(gameData.single_link_xci);
+        if (singleXCILinks.length > 0) {
+            resultText += `Single Link XCI\n`;
+            singleXCILinks.forEach(link => {
+                const urlMatch = link.match(/https?:\/\/[^\s]+/);
+                const url = urlMatch ? urlMatch[0] : link;
+                resultText += `${url}\n`;
+            });
+            resultText += `\n`;
+        }
+        
+        // Format untuk Part NSP
+        const partNSPLinks = parseLinks(gameData.part_link_nsp);
+        if (partNSPLinks.length > 0) {
+            resultText += `Part Link NSP\n`;
+            partNSPLinks.forEach(link => {
+                const urlMatch = link.match(/https?:\/\/[^\s]+/);
+                const url = urlMatch ? urlMatch[0] : link;
+                resultText += `${url}\n`;
+            });
+            resultText += `\n`;
+        }
+        
+        // Format untuk Part XCI
+        const partXCILinks = parseLinks(gameData.part_link_xci);
+        if (partXCILinks.length > 0) {
+            resultText += `Part Link XCI\n`;
+            partXCILinks.forEach(link => {
+                const urlMatch = link.match(/https?:\/\/[^\s]+/);
+                const url = urlMatch ? urlMatch[0] : link;
+                resultText += `${url}\n`;
+            });
+            resultText += `\n`;
+        }
+
+        // Hapus newline ekstra di akhir jika ada
+        resultText = resultText.trim();
+
+        if (resultText === gameName) {
+            alert('Tidak ada link yang bisa disalin');
+            return;
+        }
+
+        // Salin ke clipboard
+        navigator.clipboard.writeText(resultText).then(() => {
+            // Visual feedback untuk tombol
+            const copyButton = document.querySelector('.modal-footer .btn-info');
+            if (copyButton) {
+                const originalHTML = copyButton.innerHTML;
+                copyButton.innerHTML = '<i class="fas fa-check text-success me-1"></i> Tersalin!';
+                copyButton.classList.remove('btn-info');
+                copyButton.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    copyButton.innerHTML = originalHTML;
+                    copyButton.classList.remove('btn-success');
+                    copyButton.classList.add('btn-info');
+                }, 2000);
+            }
+            
+            console.log('Text yang disalin:', resultText);
+        }).catch(err => {
+            console.error('Gagal menyalin:', err);
+            // Fallback untuk browser lama
+            const textarea = document.createElement('textarea');
+            textarea.value = resultText;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Semua link berhasil disalin (menggunakan metode fallback)');
+        });
+    }
+
+    // Fungsi untuk membuat HTML link yang dapat disalin - DIPERBAIKI RESPONSIF
+    function createCopyableLinks(links, title) {
+        if (!links || links.length === 0) {
+            return `<div class="mb-4">
+                <h6 class="text-muted"><strong>${title}:</strong> Tidak ada link</h6>
+            </div>`;
+        }
+        
+        let html = `<div class="mb-4">
+            <h6 class="mb-3"><strong>${title}:</strong></h6>
+            <div class="border rounded p-3 bg-light">`;
+        
+        links.forEach((link, index) => {
+            const linkId = `link_${title.replace(/\s+/g, '_')}_${index}`;
+            // Extract URL from formatted string
+            const urlMatch = link.match(/https?:\/\/[^\s]+/);
+            const url = urlMatch ? urlMatch[0] : link;
+            
+            // Truncate URL untuk tampilan jika terlalu panjang
+            const displayUrl = url.length > 50 ? url.substring(0, 47) + '...' : url;
+            
+            html += `
+                <div class="mb-3 ${index !== links.length - 1 ? 'border-bottom pb-3' : ''}">
+                    <div class="mb-2">
+                        <small class="text-muted fw-bold">${link}</small>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-12 col-md-8 col-lg-9">
+                            <div class="input-group">
+                                <input type="text" 
+                                       id="${linkId}" 
+                                       value="${url}" 
+                                       class="form-control form-control-sm" 
+                                       readonly
+                                       style="font-size: 12px; word-break: break-all;">
+                                <button class="btn btn-outline-secondary btn-sm" 
+                                        type="button" 
+                                        onclick="document.getElementById('${linkId}').select()"
+                                        title="Pilih semua text">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-3">
+                            <button class="btn btn-primary btn-sm w-100" 
+                                    onclick="copyToClipboard('${linkId}')"
+                                    title="Salin link">
+                                <i class="fas fa-copy me-1"></i> Salin
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `</div></div>`;
+        return html;
+    }
+
+    const singleNSPLinks = parseLinks(gameData.single_link_nsp);
+    const singleXCILinks = parseLinks(gameData.single_link_xci);
+    const partNSPLinks = parseLinks(gameData.part_link_nsp);
+    const partXCILinks = parseLinks(gameData.part_link_xci);
+
+    const modalHtml = `
+        <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen-lg-down modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Detail Game: <span class="text-break">${gameData.nama_game || 'Tidak ada nama'}</span>
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-primary">
+                                            <i class="fas fa-gamepad me-1"></i> Informasi Game
+                                        </h6>
+                                        <p class="mb-2">
+                                            <strong>Nama Game:</strong><br>
+                                            <span class="text-break">${gameData.nama_game || 'Tidak ada nama'}</span>
+                                        </p>
+                                        <p class="mb-0">
+                                            <strong>Tanggal Dibuat:</strong><br>
+                                            <small class="text-muted">${new Date(gameData.timestamp).toLocaleString('id-ID')}</small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-info">
+                                            <i class="fas fa-info-circle me-1"></i> Panduan
+                                        </h6>
+                                        <ul class="small mb-0">
+                                            <li>Klik tombol "Salin" untuk menyalin link individual</li>
+                                            <li>Gunakan "Salin Semua Link" untuk menyalin semua sekaligus</li>
+                                            <li><strong>NSP:</strong> Nintendo Submission Package</li>
+                                            <li><strong>XCI:</strong> NX Card Image</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Links Section -->
+                        <div class="row">
+                            <div class="col-lg-6">
+                                ${createCopyableLinks(singleNSPLinks, 'Single NSP Links')}
+                                ${createCopyableLinks(partNSPLinks, 'Part NSP Links')}
+                            </div>
+                            <div class="col-lg-6">
+                                ${createCopyableLinks(singleXCILinks, 'Single XCI Links')}
+                                ${createCopyableLinks(partXCILinks, 'Part XCI Links')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <div class="d-flex flex-wrap gap-2 w-100 justify-content-between">
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-info" onclick="copyAllLinks()">
+                                    <i class="fas fa-copy me-1"></i> Salin Semua Link
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="loadGameData(${gameData.index || 0})">
+                                  <i class="fas fa-download me-1"></i> Load ke Form
+                              </button>
+                            </div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-1"></i> Tutup
+                            </button>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Hapus modal sebelumnya jika ada
+    const existingModal = document.getElementById('detailModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Tambahkan modal ke body
+    const modalDiv = document.createElement('div');
+    modalDiv.innerHTML = modalHtml;
+    document.body.appendChild(modalDiv);
+
+    // Tampilkan modal
+    const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+    modal.show();
+
+    // Buat fungsi copyAllLinks tersedia secara global dalam konteks modal
+    window.copyAllLinks = copyAllLinks;
+
+    // Hapus modal setelah ditutup
+    document.getElementById('detailModal').addEventListener('hidden.bs.modal', function() {
+        modalDiv.remove();
+        // Bersihkan fungsi global
+        if (window.copyAllLinks) {
+            delete window.copyAllLinks;
+        }
+    });
+}
+
+// Fungsi untuk menyalin text ke clipboard
+async function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        try {
+            await navigator.clipboard.writeText(element.value);
+            
+            // Visual feedback
+            const button = element.parentElement.querySelector('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check text-success"></i> Tersalin!';
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-success');
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-primary');
+            }, 2000);
+            
+        } catch (err) {
+            // Fallback untuk browser lama
+            element.select();
+            document.execCommand('copy');
+            alert('Link berhasil disalin!');
+        }
+    }
+}
+
+// Modifikasi fungsi displayData untuk menambahkan tombol Lihat Detail
+function displayData(data) {
+    // Buat modal untuk menampilkan data
+    const modalHtml = `
+        <div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Data Game Switch</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Timestamp</th>
+                                        <th>Nama Game</th>
+                                        <th>Single NSP</th>
+                                        <th>Single XCI</th>
+                                        <th>Part NSP</th>
+                                        <th>Part XCI</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.map((item, index) => `
+                                        <tr>
+                                            <td>${index + 1}</td>
+                                            <td>${new Date(item.timestamp).toLocaleString()}</td>
+                                            <td>${item.nama_game || '-'}</td>
+                                            <td>${item.single_link_nsp ? '✅' : '❌'}</td>
+                                            <td>${item.single_link_xci ? '✅' : '❌'}</td>
+                                            <td>${item.part_link_nsp ? '✅' : '❌'}</td>
+                                            <td>${item.part_link_xci ? '✅' : '❌'}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-sm btn-info" onclick="showGameDetail(${index})" title="Lihat Detail">
+                                                        <i class="fas fa-eye"></i> Detail
+                                                    </button>
+                                                    <button class="btn btn-sm btn-primary" onclick="loadGameData(${index})" title="Load ke Form">
+                                                        <i class="fas fa-download"></i> Load
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteGameData('${item.id}')" title="Hapus Data">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Tambahkan modal ke body
+    const modalDiv = document.createElement('div');
+    modalDiv.innerHTML = modalHtml;
+    document.body.appendChild(modalDiv);
+
+    // Tampilkan modal
+    const modal = new bootstrap.Modal(document.getElementById('dataModal'));
+    modal.show();
+
+    // Hapus modal setelah ditutup
+    document.getElementById('dataModal').addEventListener('hidden.bs.modal', function() {
+        modalDiv.remove();
+    });
+}
+
+// Modifikasi fungsi loadGameData untuk menyimpan index
+async function loadGameData(index) {
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=read`);
+        const result = await response.json();
+        
+        if (result.status === 'success' && result.data[index]) {
+            const gameData = result.data[index];
+            gameData.index = index; // Simpan index untuk referensi
+            
+            // Isi form dengan data yang dipilih
+            document.getElementById('gameName').value = gameData.nama_game || '';
+            
+            // Tutup modal data
+            const dataModal = bootstrap.Modal.getInstance(document.getElementById('dataModal'));
+            if (dataModal) dataModal.hide();
+            
+            // Tutup modal detail jika ada
+            const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+            if (detailModal) detailModal.hide();
+            
+            // Scroll ke form
+            document.getElementById('resultSection').scrollIntoView();
+            
+            alert(`Data "${gameData.nama_game}" telah dimuat. Silahkan edit jika perlu.`);
+        } else {
+            throw new Error('Data tidak ditemukan');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Gagal memuat data game: ' + error.message);
+    }
+}
+
+// Fungsi untuk memuat data game ke form
+async function loadGameData(index) {
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=read`);
+        const result = await response.json();
+        
+        if (result.status === 'success' && result.data[index]) {
+            const gameData = result.data[index];
+            // Isi form dengan data yang dipilih
+            document.getElementById('gameName').value = gameData.nama_game || '';
+            
+            // Tutup modal data
+            bootstrap.Modal.getInstance(document.getElementById('dataModal')).hide();
+            
+            // Scroll ke form
+            document.getElementById('resultSection').scrollIntoView();
+            
+            alert(`Data "${gameData.nama_game}" telah dimuat. Silahkan edit jika perlu.`);
+        } else {
+            throw new Error('Data tidak ditemukan');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Gagal memuat data game: ' + error.message);
+    }
+}
+
+// Fungsi untuk menghapus data game
+async function deleteGameData(id) {
+    if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'delete',
+                id: id
+            }).toString()
+        });
+
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Data berhasil dihapus!');
+            // Refresh tampilan data
+            loadFromGoogleSheets();
+        } else {
+            throw new Error(result.message || 'Gagal menghapus data');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Gagal menghapus data: ' + error.message);
+    }
+}
+
+// Tambahkan tombol baru saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    const buttonGroup = document.querySelector('#resultSection .button-group');
+    
+    if (buttonGroup) {
+        // Tombol Simpan ke Google Sheets
+        const saveToSheetsBtn = document.createElement('button');
+        saveToSheetsBtn.className = 'btn btn-success me-2';
+        saveToSheetsBtn.innerHTML = '<i class="fas fa-save me-1"></i> Simpan ke Google Sheets';
+        saveToSheetsBtn.onclick = saveToGoogleSheets;
+        
+        // Tombol Lihat Data
+        const viewDataBtn = document.createElement('button');
+        viewDataBtn.className = 'btn btn-info me-2';
+        viewDataBtn.innerHTML = '<i class="fas fa-database me-1"></i> Lihat Data';
+        viewDataBtn.onclick = loadFromGoogleSheets;
+        
+        // Sisipkan tombol
+        buttonGroup.prepend(viewDataBtn);
+        buttonGroup.prepend(saveToSheetsBtn);
+    }
+});
+
+
+
+// Tambahkan tombol baru saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    const buttonGroup = document.querySelector('#startSection .button-group');
+    
+    if (buttonGroup) {
+        // Tombol Lihat Data
+        const viewDataBtn = document.createElement('button');
+        viewDataBtn.className = 'btn btn-info me-2';
+        viewDataBtn.innerHTML = '<i class="fas fa-database me-1"></i> Lihat Data';
+        viewDataBtn.onclick = loadFromGoogleSheets;
+        
+        // Sisipkan tombol
+        buttonGroup.prepend(viewDataBtn);
+        buttonGroup.prepend(saveToSheetsBtn);
+    }
+});
+
+
     </script>
 </body>
-</html>                           
+</html>
