@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request Game INDapk</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+   <style>
         :root {
             --primary: #4361ee;
             --primary-light: #4895ef;
@@ -479,16 +479,16 @@
             gap: 0.5rem;
         }
 
-        /* Modal Styles */
+        /* Modal Styles - IMPROVED */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 9999; /* Increased z-index */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
             overflow-y: auto;
             animation: fadeIn 0.3s ease;
         }
@@ -523,6 +523,69 @@
             justify-content: center;
             margin-top: 1.5rem;
             flex-wrap: wrap;
+        }
+
+        /* Image Modal Styles - IMPROVED */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000; /* Highest z-index */
+            left: 0;
+            top: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            overflow: auto;
+            padding: 20px;
+        }
+
+        .image-modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-modal-caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 20px 0;
+            height: auto;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 30px;
+            right: 45px;
+            color: #fff;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10001;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: all 0.3s ease;
+        }
+
+        .image-modal-close:hover,
+        .image-modal-close:focus {
+            color: #bbb;
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
         }
 
         /* Empty State */
@@ -634,290 +697,211 @@
             transform: translateY(-1px);
         }
 
-        /* Responsive Breakpoints */
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            .header {
-                padding: 1.5rem 1rem;
-            }
-            
-            .tab-content {
-                padding: 1rem;
-            }
-            
-            .form-section,
-            .list-section {
-                padding: 1rem;
-            }
-            
-            .tab-button {
-                padding: 0.75rem;
-                min-width: 120px;
-                font-size: 0.85rem;
-            }
-            
-            .modal-content {
-                padding: 1.25rem;
-                width: 95%;
-            }
+        .link-input-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        @media (max-width: 576px) {
-            .header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .header p {
-                font-size: 0.9rem;
-            }
-            
-            .section-title {
-                font-size: 1.25rem;
-            }
-            
-            .theme-switcher {
-                position: relative;
-                top: auto;
-                right: auto;
-                justify-content: center;
-                margin-bottom: 1rem;
-            }
-            
-            .modal-buttons {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .btn-small {
-                width: 100%;
-            }
+        .link-input {
+            flex-grow: 1;
         }
 
-        /* Accessibility */
-        .btn:focus,
-        .tab-button:focus,
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
+        .add-link-btn, .remove-link-btn {
+            flex-shrink: 0;
         }
 
-        /* Reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation: none !important;
-                transition: none !important;
-            }
+        .data-item p {
+            margin: 5px 0;
         }
-.link-input-container {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
 
-.link-input {
-    flex-grow: 1;
-}
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
 
-.add-link-btn, .remove-link-btn {
-    flex-shrink: 0;
-}
+        .filter-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #e2e8f0;
+            color: #4a5568;
+            border: 1px solid #cbd5e0;
+        }
 
-.data-item p {
-    margin: 5px 0;
-}
+        .filter-btn.active {
+            background-color: #4299e1;
+            color: white;
+            border-color: #3182ce;
+        }
 
-.filter-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-}
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-.filter-btn {
-    padding: 8px 15px;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    background-color: #e2e8f0;
-    color: #4a5568;
-    border: 1px solid #cbd5e0;
-}
+        .dark-theme .filter-btn {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
 
-.filter-btn.active {
-    background-color: #4299e1;
-    color: white;
-    border-color: #3182ce;
-}
+        .dark-theme .filter-btn.active {
+            background-color: #3182ce;
+            color: white;
+            border-color: #4299e1;
+        }
 
-.filter-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+        .filter-btn span {
+            margin-left: 5px;
+            font-weight: bold;
+        }
 
-.dark-theme .filter-btn {
-    background-color: #2d3748;
-    color: #e2e8f0;
-    border-color: #4a5568;
-}
+        .filter-btn.active span {
+            color: white;
+        }
 
-.dark-theme .filter-btn.active {
-    background-color: #3182ce;
-    color: white;
-    border-color: #4299e1;
-}
+        .dark-theme .filter-btn:not(.active) span {
+            color: #cbd5e0;
+        }
 
-.filter-btn span {
-    margin-left: 5px;
-    font-weight: bold;
-}
+        /* Info Message Styles */
+        .info-message {
+            background-color: rgba(72, 149, 239, 0.1);
+            color: var(--primary);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
 
-.filter-btn.active span {
-    color: white;
-}
+        .info-message i {
+            font-size: 1.1rem;
+            margin-top: 0.1rem;
+        }
 
-.dark-theme .filter-btn:not(.active) span {
-    color: #cbd5e0;
-}
+        .info-message a {
+            color: var(--primary-dark);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
 
-/* Info Message Styles */
-.info-message {
-    background-color: rgba(72, 149, 239, 0.1);
-    color: var(--primary);
-    padding: 1rem;
-    border-radius: var(--radius);
-    margin: 1rem 0;
-    font-size: 0.9rem;
-    border-left: 4px solid var(--primary);
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-}
+        .info-message a:hover {
+            text-decoration: underline;
+        }
 
-.info-message i {
-    font-size: 1.1rem;
-    margin-top: 0.1rem;
-}
+        /* Komunitas Section Styles */
+        .komunitas-section {
+            background-color: var(--bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
 
-.info-message a {
-    color: var(--primary-dark);
-    font-weight: 600;
-    text-decoration: none;
-    transition: var(--transition);
-}
+        .komunitas-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-.info-message a:hover {
-    text-decoration: underline;
-}
+        .komunitas-info {
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: var(--radius);
+        }
 
-/* Komunitas Section Styles */
-.komunitas-section {
-    background-color: var(--bg);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin: 1.5rem 0;
-    border: 1px solid var(--border);
-}
+        .komunitas-category {
+            font-weight: 600;
+            margin: 1rem 0 0.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-.komunitas-title {
-    font-size: 1.1rem;
-    color: var(--primary);
-    margin-bottom: 1rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+        .komunitas-link {
+            display: block;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            background-color: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius);
+            border-left: 3px solid #10b981;
+            transition: var(--transition);
+            text-decoration: none;
+            color: #10b981;
+            font-weight: 500;
+        }
 
-.komunitas-info {
-    background-color: var(--card-bg);
-    padding: 1rem;
-    border-radius: var(--radius);
-}
+        .komunitas-link:hover {
+            background-color: rgba(16, 185, 129, 0.2);
+            transform: translateX(3px);
+        }
 
-.komunitas-category {
-    font-weight: 600;
-    margin: 1rem 0 0.5rem;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+        .komunitas-link i {
+            margin-right: 0.5rem;
+        }
 
-.komunitas-link {
-    display: block;
-    margin-bottom: 0.75rem;
-    padding: 0.75rem;
-    background-color: rgba(16, 185, 129, 0.1);
-    border-radius: var(--radius);
-    border-left: 3px solid #10b981;
-    transition: var(--transition);
-    text-decoration: none;
-    color: #10b981;
-    font-weight: 500;
-}
+        .dark-theme .komunitas-link {
+            background-color: rgba(16, 185, 129, 0.15);
+        }
 
-.komunitas-link:hover {
-    background-color: rgba(16, 185, 129, 0.2);
-    transform: translateX(3px);
-}
+        /* Status badge untuk DITOLAK */
+        .status-ditolak {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
 
-.komunitas-link i {
-    margin-right: 0.5rem;
-}
+        /* Dark mode untuk status DITOLAK */
+        .dark-theme .status-ditolak {
+            background-color: #7f1d1d;
+            color: #fca5a5;
+            border: 1px solid #dc2626;
+        }
 
-.dark-theme .komunitas-link {
-    background-color: rgba(16, 185, 129, 0.15);
-}
+        /* Data item yang ditolak */
+        .data-item.rejected {
+            border-left: 4px solid #ef4444;
+        }
 
-/* Status badge untuk DITOLAK */
-.status-ditolak {
-    background-color: #fee2e2;
-    color: #dc2626;
-    border: 1px solid #fca5a5;
-}
+        .dark-theme .data-item.rejected {
+            border-left: 4px solid #dc2626;
+        }
 
-/* Dark mode untuk status DITOLAK */
-.dark-theme .status-ditolak {
-    background-color: #7f1d1d;
-    color: #fca5a5;
-    border: 1px solid #dc2626;
-}
+        /* Button warning untuk tombol tolak */
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+        }
 
-/* Data item yang ditolak */
-.data-item.rejected {
-    border-left: 4px solid #ef4444;
-}
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            transform: translateY(-2px);
+        }
 
-.dark-theme .data-item.rejected {
-    border-left: 4px solid #dc2626;
-}
+        .dark-theme .btn-warning {
+            background: linear-gradient(135deg, #d97706, #b45309);
+        }
 
-/* Button warning untuk tombol tolak */
-.btn-warning {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
-    border: none;
-}
+        .dark-theme .btn-warning:hover {
+            background: linear-gradient(135deg, #b45309, #92400e);
+        }
 
-.btn-warning:hover {
-    background: linear-gradient(135deg, #d97706, #b45309);
-    transform: translateY(-2px);
-}
-
-.dark-theme .btn-warning {
-    background: linear-gradient(135deg, #d97706, #b45309);
-}
-
-.dark-theme .btn-warning:hover {
-    background: linear-gradient(135deg, #b45309, #92400e);
-}
-
-   /* CSS untuk dropdown kategori */
+        /* CSS untuk dropdown kategori */
         .category-dropdown {
             position: relative;
             display: inline-block;
@@ -996,18 +980,299 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        /* Responsive */
+        .admin-control-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .admin-control-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-control-card h4 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .admin-control-card .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .admin-control-card label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .admin-control-card textarea,
+        .admin-control-card input[type="url"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background-color: var(--bg);
+            color: var(--text);
+            resize: vertical;
+        }
+
+        .admin-control-card textarea:focus,
+        .admin-control-card input[type="url"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+        }
+
+        #currentInfoDisplay {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Perbaikan untuk Info Section */
+        .info-section {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+            color: white;
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-header h3 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .status-icon:hover {
+            transform: scale(1.1);
+            border-color: var(--primary-dark);
+        }
+
+        .info-text {
+            flex: 1;
+        }
+
+        .info-text h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .info-text p {
+            margin: 0 0 0.5rem 0;
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .detail-link {
+            color: var(--primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+        }
+
+        .detail-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* Perbaikan Modal untuk gambar */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            text-align: center;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .modal.image-modal .modal-content {
+            background: none;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
+            max-width: 90%;
+            max-height: 90%;
+            width: auto;
+            height: auto;
+            display: block;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal.image-modal img {
+            max-width: 100%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            border-radius: var(--radius);
+        }
+
+        #caption {
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .close {
+            position: absolute;
+            top: 2rem;
+            right: 3rem;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+            transition: var(--transition);
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #ff4444;
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* Responsive untuk mobile */
         @media (max-width: 768px) {
-            .dropdown-btn {
-                min-width: 150px;
-                padding: 8px 12px;
-                font-size: 13px;
+            .info-content {
+                grid-template-columns: 1fr;
             }
             
-            .dropdown-content {
-                min-width: 180px;
+            .info-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .status-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .close {
+                top: 1rem;
+                right: 1rem;
+                font-size: 2rem;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .modal {
+                padding: 1rem;
+            }
+            
+            .admin-control-card {
+                padding: 1rem;
             }
         }
+
+        /* Dark theme support */
+        .dark-theme .info-card {
+            background: rgba(30, 30, 30, 0.95);
+            border-left-color: var(--primary);
+        }
+
+        .dark-theme .info-text h4 {
+            color: var(--primary-light);
+        }
+
+        .dark-theme .info-text p {
+            color: var(--text-light);
+        }
+
+        .dark-theme .detail-link {
+            color: var(--primary-light);
+        }
+
+        .dark-theme .detail-link:hover {
+            color: var(--primary);
+        }
+        
+ /*.komunitas-section {
+  display: none;
+} */
     </style>
 </head>
 <body>
@@ -1155,6 +1420,41 @@
         
 
 
+<div class="info-section" id="infoSection">
+<div class="info-header">
+    <h3>Informasi Request Game</h3>
+    <button type="button" class="btn btn-small" onclick="loadAdminData()" style="margin-left: 10px;">
+        <i class="fas fa-sync-alt"></i> Refresh Info
+    </button>
+</div>
+    
+    <div class="info-content" id="infoContent">
+        <div class="info-card">
+            <img src="" alt="Selesai" class="status-icon" id="selesaiImage">
+            <div class="info-text">
+                <h4>Request Selesai</h4>
+                <p id="selesaiMessage">Memuat informasi...</p>
+                <p class="detail-link" onclick="showEnlarged(document.getElementById('selesaiImage').src, 'Request Selesai')">Lihat detail →</p>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <img src="" alt="Pending" class="status-icon" id="pendingImage">
+            <div class="info-text">
+                <h4>Request Pending</h4>
+                <p id="pendingMessage">Memuat informasi...</p>
+                <p class="detail-link" onclick="showEnlarged(document.getElementById('pendingImage').src, 'Request Pending')">Lihat detail →</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal untuk gambar diperbesar -->
+<div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+    <div id="caption"></div>
+</div>
         
         <!-- TAMBAHAN BARU: Category Dropdown -->
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 15px;">
@@ -1286,7 +1586,61 @@
 <div id="komunitasTab" class="tab-content">
     <div class="komunitas-section">
         <h2 class="section-title"><i class="fas fa-users"></i> Komunitas</h2>
-        
+          <!-- Admin Section -->
+                        <div class="admin-section">
+                            <h3 class="admin-title"><i class="fas fa-cog"></i> Admin Controls</h3>
+                            <div class="admin-info">
+                                
+                                <!-- Tambah Informasi Selesai -->
+                                <div class="admin-control-card">
+                                    <h4><i class="fas fa-check-circle"></i> Informasi Request Selesai</h4>
+                                    <form id="selesaiForm">
+                                        <div class="form-group">
+                                            <label for="pesanSelesai">💬 Pesan Informasi Selesai:</label>
+                                            <textarea id="pesanSelesai" name="pesan_selesai" placeholder="Contoh: Request game sudah selesai diproses! Silahkan download di link yang sudah disediakan." style="width: 100%; min-height: 80px; resize: vertical; margin-top: 8px;"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="gambarSelesai">🖼️ Link Gambar Selesai:</label>
+                                            <input type="url" id="gambarSelesai" name="gambar_selesai" placeholder="https://example.com/image-selesai.jpg" style="width: 100%; margin-top: 8px;">
+                                        </div>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-save"></i> Simpan Info Selesai
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Tambah Informasi Pending -->
+                                <div class="admin-control-card">
+                                    <h4><i class="fas fa-clock"></i> Informasi Request Pending</h4>
+                                    <form id="pendingForm">
+                                        <div class="form-group">
+                                            <label for="pesanPending">💬 Pesan Informasi Pending:</label>
+                                            <textarea id="pesanPending" name="pesan_pending" placeholder="Contoh: Request game sedang diproses. Mohon bersabar menunggu, biasanya membutuhkan waktu 1-7 hari." style="width: 100%; min-height: 80px; resize: vertical; margin-top: 8px;"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="gambarPending">🖼️ Link Gambar Pending:</label>
+                                            <input type="url" id="gambarPending" name="gambar_pending" placeholder="https://example.com/image-pending.jpg" style="width: 100%; margin-top: 8px;">
+                                        </div>
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="fas fa-save"></i> Simpan Info Pending
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Current Info Display -->
+                                <div class="admin-control-card">
+                                    <h4><i class="fas fa-info-circle"></i> Informasi Saat Ini</h4>
+                                    <button class="btn btn-info" onclick="loadAdminData()">
+                                        <i class="fas fa-refresh"></i> Load Current Info
+                                    </button>
+                                    <div id="currentInfoDisplay" style="margin-top: 15px;">
+                                        <p>Klik tombol di atas untuk melihat informasi yang sedang aktif.</p>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
                         <!-- Komunitas Section -->
                         <div class="komunitas-section">
                             <h3 class="komunitas-title"><i class="fas fa-users"></i> Komunitas INDapk</h3>
@@ -1409,7 +1763,180 @@
 </div>
 
     <script>
+//Fungsi untuk membuka gambar
+const ADMIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxHOR-2HovClG5dxyEMfFjVcFVvQYYdMR_9gW514OjCimWZGqKJ6X9ohT9KQx196OA/exec';
 
+//Fungsi untuk membuka gambar
+function showEnlarged(imgSrc, captionText) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const caption = document.getElementById('caption');
+    
+    modal.style.display = "block";
+    modalImg.src = imgSrc;
+    caption.innerHTML = captionText;
+    
+    // Fokuskan modal untuk memungkinkan penutupan dengan ESC
+    modal.focus();
+}
+
+function closeImageModal() {
+    document.getElementById('imageModal').style.display = "none";
+}
+
+// Tutup modal jika mengklik di luar gambar
+window.onclick = function(event) {
+    const imageModal = document.getElementById('imageModal');
+    const confirmModal = document.getElementById('confirmModal');
+    const linkModal = document.getElementById('linkModal');
+    const rejectModal = document.getElementById('rejectModal');
+    
+    if (event.target === imageModal) {
+        imageModal.style.display = "none";
+    }
+    if (event.target === confirmModal) {
+        closeModal();
+    }
+    if (event.target === linkModal) {
+        closeLinkModal();
+    }
+    if (event.target === rejectModal) {
+        closeRejectModal();
+    }
+}
+
+// Tutup modal dengan tombol ESC
+document.onkeydown = function(event) {
+    const modal = document.getElementById('imageModal');
+    if (event.key === "Escape" && modal.style.display === "block") {
+        modal.style.display = "none";
+    }
+}
+
+// Admin Controls Functions
+function loadAdminData() {
+    fetch(ADMIN_SCRIPT_URL + '?action=read')
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data.length > 0) {
+            const adminData = data.data[data.data.length - 1]; // Get latest data
+            
+            // Update form fields with current data
+            document.getElementById('pesanSelesai').value = adminData.pesan_selesai || '';
+            document.getElementById('gambarSelesai').value = adminData.gambar_selesai || '';
+            document.getElementById('pesanPending').value = adminData.pesan_pending || '';
+            document.getElementById('gambarPending').value = adminData.gambar_pending || '';
+            
+            // Update info display
+            updateInfoDisplay(adminData);
+            
+            // Update the info section in List Tab
+            updateInfoSection(adminData);
+            
+        } else {
+            document.getElementById('currentInfoDisplay').innerHTML = '<p style="color: #ef4444;">Belum ada data admin yang tersimpan.</p>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading admin data:', error);
+        document.getElementById('currentInfoDisplay').innerHTML = '<p style="color: #ef4444;">Error loading data: ' + error.message + '</p>';
+    });
+}
+
+function updateInfoDisplay(data) {
+    const display = document.getElementById('currentInfoDisplay');
+    display.innerHTML = `
+        <div style="border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; margin-top: 10px;">
+            <h5><i class="fas fa-check-circle" style="color: #10b981;"></i> Info Selesai Saat Ini:</h5>
+            <p><strong>Pesan:</strong> ${data.pesan_selesai || 'Belum ada pesan'}</p>
+            <p><strong>Gambar:</strong> ${data.gambar_selesai ? `<a href="${data.gambar_selesai}" target="_blank">Lihat Gambar</a>` : 'Belum ada gambar'}</p>
+            
+            <h5 style="margin-top: 20px;"><i class="fas fa-clock" style="color: #f59e0b;"></i> Info Pending Saat Ini:</h5>
+            <p><strong>Pesan:</strong> ${data.pesan_pending || 'Belum ada pesan'}</p>
+            <p><strong>Gambar:</strong> ${data.gambar_pending ? `<a href="${data.gambar_pending}" target="_blank">Lihat Gambar</a>` : 'Belum ada gambar'}</p>
+            
+            <p style="margin-top: 15px; font-size: 0.9em; color: #6b7280;">
+                <i class="fas fa-clock"></i> Terakhir diupdate: ${new Date(data.timestamp).toLocaleString('id-ID')}
+            </p>
+        </div>
+    `;
+}
+
+function updateInfoSection(data) {
+    // Update images and messages in the info section
+    const selesaiImage = document.getElementById('selesaiImage');
+    const selesaiMessage = document.getElementById('selesaiMessage');
+    const pendingImage = document.getElementById('pendingImage');
+    const pendingMessage = document.getElementById('pendingMessage');
+    
+    if (selesaiImage && selesaiMessage) {
+        selesaiImage.src = data.gambar_selesai || 'https://via.placeholder.com/100x100?text=No+Image';
+        selesaiMessage.textContent = data.pesan_selesai || 'Belum ada informasi selesai';
+    }
+    
+    if (pendingImage && pendingMessage) {
+        pendingImage.src = data.gambar_pending || 'https://via.placeholder.com/100x100?text=No+Image';
+        pendingMessage.textContent = data.pesan_pending || 'Belum ada informasi pending';
+    }
+}
+
+// Form submission handlers
+document.getElementById('selesaiForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    submitAdminForm('selesai');
+});
+
+document.getElementById('pendingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    submitAdminForm('pending');
+});
+
+function submitAdminForm(type) {
+    const formData = new FormData();
+    formData.append('action', 'create');
+    
+    if (type === 'selesai') {
+        formData.append('pesan_selesai', document.getElementById('pesanSelesai').value);
+        formData.append('gambar_selesai', document.getElementById('gambarSelesai').value);
+        // Keep existing pending data
+        formData.append('pesan_pending', document.getElementById('pesanPending').value);
+        formData.append('gambar_pending', document.getElementById('gambarPending').value);
+    } else {
+        formData.append('pesan_pending', document.getElementById('pesanPending').value);
+        formData.append('gambar_pending', document.getElementById('gambarPending').value);
+        // Keep existing selesai data
+        formData.append('pesan_selesai', document.getElementById('pesanSelesai').value);
+        formData.append('gambar_selesai', document.getElementById('gambarSelesai').value);
+    }
+    
+    // Show loading state
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+    
+    fetch(ADMIN_SCRIPT_URL, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        
+        if (data.status === 'success') {
+            showMessage(`Info ${type} berhasil disimpan!`, 'success');
+            loadAdminData(); // Reload to show updated data
+        } else {
+            showMessage('Gagal menyimpan: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        showMessage('Error: ' + error.message, 'error');
+    });
+}
 
 
 
