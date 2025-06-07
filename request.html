@@ -1023,7 +1023,7 @@
             </div>
             
             <h1><i class="fas fa-gamepad"></i> Admin Request Game INDapk</h1>
-            <p>Request Game Terpercaya</p>
+            <p>Request Game Free</p>
         </div>
         <!-- Tab Navigation -->
         <div class="tab-navigation">
@@ -1078,6 +1078,7 @@
                                 <option value="">Pilih Emulator</option>
                                 <option value="Switch">Switch</option>
                                 <option value="Wii">Wii</option>
+                                <option value="WiiU">Wii-U</option>
                                 <option value="Gamecube">Gamecube</option>
                                 <option value="PS1">PS1</option>
                                 <option value="PS2">PS2</option>
@@ -1207,6 +1208,11 @@
                     <div class="dropdown-item" onclick="selectCategory('Wii', 'Nintendo Wii')">
                         <i class="fas fa-gamepad"></i>
                         <span>Nintendo Wii</span>
+                        <span class="category-count" id="count-wii">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('WiiU', 'Nintendo Wii-U')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Nintendo Wii-U</span>
                         <span class="category-count" id="count-wii">0</span>
                     </div>
                     <div class="dropdown-item" onclick="selectCategory('Gamecube', 'GameCube')">
@@ -1453,6 +1459,7 @@
                 'PSP': data.filter(item => item.jenis_emulator === 'PSP').length,
                 'PSVita': data.filter(item => item.jenis_emulator === 'PSVita').length,
                 'PC': data.filter(item => item.jenis_emulator === 'PC').length,
+                'WiiU': data.filter(item => item.jenis_emulator === 'WiiU').length,
                 'Wii': data.filter(item => item.jenis_emulator === 'Wii').length,
                 'Gamecube': data.filter(item => item.jenis_emulator === 'Gamecube').length,
                 'SNES': data.filter(item => item.jenis_emulator === 'SNES').length,
@@ -1469,6 +1476,7 @@
             document.getElementById('count-psp').textContent = categories.PSP;
             document.getElementById('count-psvita').textContent = categories.PSVita;
             document.getElementById('count-pc').textContent = categories.PC;
+            document.getElementById('count-wiiU').textContent = categories.WiiU;
             document.getElementById('count-wii').textContent = categories.Wii;
             document.getElementById('count-gamecube').textContent = categories.Gamecube;
             document.getElementById('count-snes').textContent = categories.SNES;
