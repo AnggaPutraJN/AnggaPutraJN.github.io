@@ -346,6 +346,33 @@ label {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-secondary);
 }
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.2em;
+    background-color: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+}
+
+.form-check-label {
+    margin-left: 0.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -376,6 +403,18 @@ label {
 </div>
 <div class="card-body">
 <div class="mb-3">
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="updateRequest" value="update" checked>
+        <label class="form-check-label" for="updateRequest">
+            UPDATE REQUEST GAME PS2
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="shareGame" value="share">
+        <label class="form-check-label" for="shareGame">
+            SHARE GAME PS2
+        </label>
+    </div>
 <label for="myTextarea">Masukkan Detail Game PS2 (satu per baris):</label>
 <textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game...&#10;Contoh:&#10;God of War&#10;2.5 GB&#10;4.2 GB&#10;Action&#10;NTSC-U&#10;https://example.com/download"></textarea>
 </div>
@@ -394,6 +433,8 @@ label {
 </div>
 </div>
 </div>
+
+
 
 <div class="col-md-6 mb-4">
 <div class="custom-card">
@@ -577,23 +618,28 @@ textarea.addEventListener('keydown', (event) => {
 });
 
 function generateCode() {
-  // Show loading state
-  const generateBtn = document.querySelector('.btn-primary-custom');
-  const originalText = generateBtn.innerHTML;
-  generateBtn.innerHTML = '<span class="loading"></span> Generating...';
-  generateBtn.disabled = true;
-  
-  setTimeout(() => {
-    // Get values from game form
-    const inputName = document.getElementById("inputName").value;
-    const inputSingleSizeCHD = document.getElementById("inputSingleSizeCHD").value;
-    const inputSingleSizeISO = document.getElementById("inputSingleSizeISO").value;
-    const inputCategory = document.getElementById("inputCategory").value;
-    const inputRegion = document.getElementById("inputRegion").value;
-    const inputLink = document.getElementById("inputLink").value;
+    // Show loading state
+    const generateBtn = document.querySelector('.btn-primary-custom');
+    const originalText = generateBtn.innerHTML;
+    generateBtn.innerHTML = '<span class="loading"></span> Generating...';
+    generateBtn.disabled = true;
+    
+    setTimeout(() => {
+        // Get values from game form
+        const inputName = document.getElementById("inputName").value;
+        const inputSingleSizeCHD = document.getElementById("inputSingleSizeCHD").value;
+        const inputSingleSizeISO = document.getElementById("inputSingleSizeISO").value;
+        const inputCategory = document.getElementById("inputCategory").value;
+        const inputRegion = document.getElementById("inputRegion").value;
+        const inputLink = document.getElementById("inputLink").value;
+        
+        // Get selected post type
+        const postType = document.querySelector('input[name="postType"]:checked').value;
 
-    // Create more complete HTML string with template
-    const generatedHtml = `UPDATE REQUEST GAME PS2
+        let generatedHtml;
+        
+        if (postType === 'share') {
+            generatedHtml = `SHARE GAME PS2
 🎮Update Game PS2:
 Nama Game: ${inputName}
 Ukuran Game CHD: ${inputSingleSizeCHD}
@@ -619,17 +665,45 @@ https://indapk.com/report/
 082286344446
 
 NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
+        } else {
+            generatedHtml = `UPDATE REQUEST GAME PS2
+🎮Update Game PS2:
+Nama Game: ${inputName}
+Ukuran Game CHD: ${inputSingleSizeCHD}
+Ukuran Game ISO: ${inputSingleSizeISO}
+Category: ${inputCategory}
+Region: ${inputRegion}
+Emulator: AetherSX2 (Android), PCSX2 (Windows)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: CHD dan ISO
 
-    // Display the generated HTML
-    document.getElementById("result").innerText = generatedHtml;
-    
-    // Reset button
-    generateBtn.innerHTML = originalText;
-    generateBtn.disabled = false;
-    
-    // Show success notification
-    showNotification("Code berhasil di-generate!", "success");
-  }, 1000);
+🌐Link Game:
+${inputLink}
+
+================
+⚠️ REQUEST GAME BISA DISINI:
+https://indapk.com/request-game/
+
+⚠️ REPORT LINK BISA DISINI:
+https://indapk.com/report/
+
+💵Donate Dana/Shopeepay/Gopay:
+082286344446
+
+NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
+        }
+
+        // Display the generated HTML
+        document.getElementById("result").innerText = generatedHtml;
+        
+        // Reset button
+        generateBtn.innerHTML = originalText;
+        generateBtn.disabled = false;
+        
+        // Show success notification
+        showNotification("Code berhasil di-generate!", "success");
+    }, 1000);
 }
 </script>
 
