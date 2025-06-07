@@ -916,6 +916,98 @@
 .dark-theme .btn-warning:hover {
     background: linear-gradient(135deg, #b45309, #92400e);
 }
+
+   /* CSS untuk dropdown kategori */
+        .category-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+            margin-right: 10px;
+        }
+
+        .dropdown-btn {
+            background: var(--primary, #3498db);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 180px;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-btn:hover {
+            background: var(--primary-dark, #2980b9);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--card-bg, white);
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            left: 0;
+            border: 1px solid var(--border, #e5e7eb);
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            color: var(--text, black);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--hover-bg, #f3f4f6);
+        }
+
+        .dropdown-item.active {
+            background-color: var(--primary, #3498db);
+            color: white;
+        }
+
+        .category-count {
+            background: var(--secondary, #6b7280);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .dropdown-item.active .category-count {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dropdown-btn {
+                min-width: 150px;
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            
+            .dropdown-content {
+                min-width: 180px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -994,8 +1086,8 @@
                                 <option value="PSVita">PSVita</option>
                                 <option value="PC">PC</option>
                                 <option value="Sega Genesis">Sega Genesis</option>
-                                <option value="SNES">SNES</option>
-                                <option value="NES">NES</option>
+                                <option value="SNES">Super Nintendo (SNES)</option>
+                                <option value="NES">Nintendo NES</option>
                             </select>
                         </div>
 
@@ -1060,6 +1152,88 @@
     <div class="list-section">
         <h2 class="section-title"><i class="fas fa-list"></i> Daftar Request Game</h2>
         
+
+
+        
+        <!-- TAMBAHAN BARU: Category Dropdown -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 15px;">
+            <div class="category-dropdown">
+                <button class="dropdown-btn" onclick="toggleCategoryDropdown()">
+                    <i class="fas fa-filter"></i>
+                    <span id="selectedCategory">Semua Kategori</span>
+                    <i class="fas fa-chevron-down" id="dropdownArrow"></i>
+                </button>
+                <div class="dropdown-content" id="categoryDropdown">
+                    <div class="dropdown-item active" onclick="selectCategory('all', 'Semua Kategori')">
+                        <i class="fas fa-list-ul"></i>
+                        <span>Semua Kategori</span>
+                        <span class="category-count" id="count-all-cat">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('Switch', 'Nintendo Switch')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Nintendo Switch</span>
+                        <span class="category-count" id="count-switch">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('PS1', 'PlayStation 1')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>PlayStation 1</span>
+                        <span class="category-count" id="count-ps1">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('PS2', 'PlayStation 2')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>PlayStation 2</span>
+                        <span class="category-count" id="count-ps2">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('PS3', 'PlayStation 3')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>PlayStation 3</span>
+                        <span class="category-count" id="count-ps3">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('PSP', 'PlayStation Portable')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>PlayStation Portable</span>
+                        <span class="category-count" id="count-psp">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('PSVita', 'PlayStation Vita')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>PlayStation Vita</span>
+                        <span class="category-count" id="count-psvita">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('PC', 'PC Games')">
+                        <i class="fas fa-desktop"></i>
+                        <span>PC Games</span>
+                        <span class="category-count" id="count-pc">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('Wii', 'Nintendo Wii')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Nintendo Wii</span>
+                        <span class="category-count" id="count-wii">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('Gamecube', 'GameCube')">
+                        <i class="fas fa-cube"></i>
+                        <span>GameCube</span>
+                        <span class="category-count" id="count-gamecube">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('SNES', 'Super Nintendo')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Super Nintendo</span>
+                        <span class="category-count" id="count-snes">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('NES', 'Nintendo')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Nintendo</span>
+                        <span class="category-count" id="count-nes">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('Sega Genesis', 'Sega Genesis')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Sega Genesis</span>
+                        <span class="category-count" id="count-sega">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- Add this search input -->
         <div style="margin-bottom: 15px;">
             <div class="form-group" style="margin-bottom: 0;">
@@ -1231,6 +1405,113 @@
     <script>
 
 
+
+
+//Script Kategori Daftar Game
+        // Variabel untuk menyimpan filter kategori dan status
+        let currentCategory = 'all';
+        let allData = []; // Menyimpan semua data untuk filtering
+
+        // Fungsi untuk toggle dropdown kategori
+        function toggleCategoryDropdown() {
+            const dropdown = document.getElementById('categoryDropdown');
+            const arrow = document.getElementById('dropdownArrow');
+            
+            dropdown.classList.toggle('show');
+            arrow.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        // Fungsi untuk memilih kategori
+        function selectCategory(category, displayName) {
+            currentCategory = category;
+            
+            // Update tampilan button
+            document.getElementById('selectedCategory').textContent = displayName;
+            
+            // Update active state
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Tutup dropdown
+            document.getElementById('categoryDropdown').classList.remove('show');
+            document.getElementById('dropdownArrow').style.transform = 'rotate(0deg)';
+            
+            // Apply filter
+            applyFilters();
+        }
+
+        // Fungsi untuk update counter kategori
+        function updateCategoryCounters(data) {
+            const categories = {
+                'all': data.length,
+                'Switch': data.filter(item => item.jenis_emulator === 'Switch').length,
+                'PS1': data.filter(item => item.jenis_emulator === 'PS1').length,
+                'PS2': data.filter(item => item.jenis_emulator === 'PS2').length,
+                'PS3': data.filter(item => item.jenis_emulator === 'PS3').length,
+                'PSP': data.filter(item => item.jenis_emulator === 'PSP').length,
+                'PSVita': data.filter(item => item.jenis_emulator === 'PSVita').length,
+                'PC': data.filter(item => item.jenis_emulator === 'PC').length,
+                'Wii': data.filter(item => item.jenis_emulator === 'Wii').length,
+                'Gamecube': data.filter(item => item.jenis_emulator === 'Gamecube').length,
+                'SNES': data.filter(item => item.jenis_emulator === 'SNES').length,
+                'NES': data.filter(item => item.jenis_emulator === 'NES').length,
+                'Sega Genesis': data.filter(item => item.jenis_emulator === 'Sega Genesis').length
+            };
+            
+            // Update counters
+            document.getElementById('count-all-cat').textContent = categories.all;
+            document.getElementById('count-switch').textContent = categories.Switch;
+            document.getElementById('count-ps1').textContent = categories.PS1;
+            document.getElementById('count-ps2').textContent = categories.PS2;
+            document.getElementById('count-ps3').textContent = categories.PS3;
+            document.getElementById('count-psp').textContent = categories.PSP;
+            document.getElementById('count-psvita').textContent = categories.PSVita;
+            document.getElementById('count-pc').textContent = categories.PC;
+            document.getElementById('count-wii').textContent = categories.Wii;
+            document.getElementById('count-gamecube').textContent = categories.Gamecube;
+            document.getElementById('count-snes').textContent = categories.SNES;
+            document.getElementById('count-nes').textContent = categories.NES;
+            document.getElementById('count-sega').textContent = categories['Sega Genesis'];
+        }
+
+        // Modified filterRequests function
+        function filterRequests(filterType) {
+            currentFilter = filterType;
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Apply combined filters
+            applyFilters();
+        }
+
+        // Fungsi baru untuk menerapkan kedua filter (status dan kategori)
+        function applyFilters() {
+            let filteredData = [...allData];
+            
+            // Filter berdasarkan status
+            if (currentFilter === 'selesai') {
+                filteredData = filteredData.filter(item => (item.status_req || 'PENDING') === 'SELESAI');
+            } else if (currentFilter === 'pending') {
+                filteredData = filteredData.filter(item => (item.status_req || 'PENDING') === 'PENDING');
+            } else if (currentFilter === 'ditolak') {
+                filteredData = filteredData.filter(item => (item.status_req || 'PENDING') === 'DITOLAK');
+            }
+            
+            // Filter berdasarkan kategori
+            if (currentCategory !== 'all') {
+                filteredData = filteredData.filter(item => item.jenis_emulator === currentCategory);
+            }
+            
+            // Tampilkan data yang sudah difilter
+            displayData(filteredData);
+        }
+
         // Theme Switcher Functionality
         const themeToggle = document.getElementById('themeToggle');
         const savedTheme = localStorage.getItem('theme') || 'light';
@@ -1387,63 +1668,73 @@ function updateCounters(data) {
 
 // Modifikasi fungsi loadData untuk menerapkan filter
 function loadData() {
-    const dataContainer = document.getElementById('dataContainer');
-    dataContainer.innerHTML = '<div class="loading"><p><i class="fas fa-spinner fa-spin"></i> Memuat data...</p></div>';
-    
-    fetch(SCRIPT_URL + '?action=read')
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            // Update counters
-            updateCounters(data.data);
+            const dataContainer = document.getElementById('dataContainer');
+            dataContainer.innerHTML = '<div class="loading"><p><i class="fas fa-spinner fa-spin"></i> Memuat data...</p></div>';
             
-            // Apply filter before displaying
-            let filteredData = data.data;
-            if (currentFilter === 'selesai') {
-                filteredData = data.data.filter(item => (item.status_req || 'PENDING') === 'SELESAI');
-            } else if (currentFilter === 'pending') {
-                filteredData = data.data.filter(item => (item.status_req || 'PENDING') === 'PENDING');
-            } else if (currentFilter === 'ditolak') {
-                filteredData = data.data.filter(item => (item.status_req || 'PENDING') === 'DITOLAK');
+            fetch(SCRIPT_URL + '?action=read')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Simpan semua data
+                    allData = data.data;
+                    
+                    // Update counters
+                    updateCounters(allData);
+                    updateCategoryCounters(allData);
+                    
+                    // Apply current filters
+                    applyFilters();
+                } else {
+                    dataContainer.innerHTML = '<p style="color: #ef4444;">❌ Gagal memuat data: ' + data.message + '</p>';
+                }
+            })
+            .catch(error => {
+                dataContainer.innerHTML = '<p style="color: #ef4444;">❌ Error: ' + error.message + '</p>';
+            });
+        }
+
+
+       // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('categoryDropdown');
+            const button = document.querySelector('.dropdown-btn');
+            
+            if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+                document.getElementById('dropdownArrow').style.transform = 'rotate(0deg)';
             }
-            displayData(filteredData);
-        } else {
-            dataContainer.innerHTML = '<p style="color: #ef4444;">❌ Gagal memuat data: ' + data.message + '</p>';
-        }
-    })
-    .catch(error => {
-        dataContainer.innerHTML = '<p style="color: #ef4444;">❌ Error: ' + error.message + '</p>';
-    });
-}
+        });
 
-
-// Search functionality
-document.getElementById('searchInput').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const dataItems = document.querySelectorAll('.data-item');
-    let visibleCount = 0;
-    
-    dataItems.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        if (text.includes(searchTerm)) {
-            item.style.display = 'block';
-            visibleCount++;
-        } else {
-            item.style.display = 'none';
-        }
-    });
-    
-    // Show empty state if no results
-    const dataContainer = document.getElementById('dataContainer');
-    if (visibleCount === 0 && searchTerm.length > 0) {
-        dataContainer.innerHTML = `
-            <div class="empty-state">
-                <div class="icon"><i class="fas fa-search"></i></div>
-                <p>Tidak ditemukan request yang cocok dengan "${searchTerm}"</p>
-            </div>
-        `;
-    }
-});
+        // Modified search functionality to work with filters
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const dataItems = document.querySelectorAll('.data-item');
+            let visibleCount = 0;
+            
+            dataItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show empty state if no results
+            const dataContainer = document.getElementById('dataContainer');
+            if (visibleCount === 0 && searchTerm.length > 0) {
+                dataContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon"><i class="fas fa-search"></i></div>
+                        <p>Tidak ditemukan request yang cocok dengan "${searchTerm}"</p>
+                    </div>
+                `;
+            } else if (visibleCount === 0 && searchTerm.length === 0) {
+                // Re-apply filters when search is cleared
+                applyFilters();
+            }
+        });
 
 
 let tempLinkSelesai = '';
