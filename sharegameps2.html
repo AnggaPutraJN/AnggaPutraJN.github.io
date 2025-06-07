@@ -9,13 +9,14 @@
   --primary-bg: #0a0a0a;
   --secondary-bg: #1a1a1a;
   --card-bg: #2a2a2a;
-  --text-primary: #ffffff;
-  --text-secondary: #b0b0b0;
+  --text-primary: #7CC6ED;
+  --text-secondary: #7CC6ED;
   --accent-color: #00d4ff;
   --accent-secondary: #ff006e;
   --accent-green: #00ff88;
   --border-color: #333;
   --neon-glow: 0 0 20px;
+  --placeholder-color: #888;
 }
 
 [data-theme="light"] {
@@ -29,6 +30,7 @@
   --accent-green: #28a745;
   --border-color: #dee2e6;
   --neon-glow: 0 0 10px;
+  --placeholder-color: #6c757d;
 }
 
 * {
@@ -203,6 +205,40 @@ body {
   background: var(--card-bg);
 }
 
+/* Placeholder Styles - Fixed */
+.form-control::placeholder, 
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 1;
+}
+
+.form-control::-webkit-input-placeholder,
+input[type="text"]::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: var(--placeholder-color) !important;
+}
+
+.form-control::-moz-placeholder,
+input[type="text"]::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 1;
+}
+
+.form-control:-ms-input-placeholder,
+input[type="text"]:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: var(--placeholder-color) !important;
+}
+
+.form-control:-moz-placeholder,
+input[type="text"]:-moz-placeholder,
+textarea:-moz-placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 1;
+}
+
 textarea.form-control {
   min-height: 200px;
   resize: vertical;
@@ -210,7 +246,7 @@ textarea.form-control {
 }
 
 label {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-weight: 600;
   margin-bottom: 0.5rem;
   display: block;
