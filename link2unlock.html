@@ -1,207 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link2Unlock by INDapk</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .container {
-            max-width: 800px;
-            margin-top: 50px;
-        }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
-        .card-header {
-            background-color: #4a94bb;
-            color: white;
-            border-radius: 15px 15px 0 0 !important;
-            font-weight: bold;
-            text-align: center;
-        }
-        .btn-primary {
-            background-color: #4a94bb;
-            border: none;
-            padding: 10px 25px;
-        }
-        .btn-primary:hover {
-            background-color: #3a7b9b;
-        }
-        .form-control:focus {
-            border-color: #4a94bb;
-            box-shadow: 0 0 0 0.25rem rgba(74, 148, 187, 0.25);
-        }
-        .result-container {
-            display: none;
-            margin-top: 20px;
-            animation: fadeIn 0.5s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .copy-btn {
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .copy-btn:hover {
-            transform: scale(1.05);
-        }
-        .telegram-icon {
-            color: #0088cc;
-            font-size: 1.2rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link2Unlock Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 2rem;
+    }
+    .container {
+      max-width: 600px;
+    }
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      background-color: #4a94bb;
+      color: white;
+      border-radius: 15px 15px 0 0 !important;
+    }
+    .btn-primary {
+      background-color: #4a94bb;
+      border-color: #4a94bb;
+    }
+    .result-container {
+      display: none;
+      margin-top: 20px;
+    }
+    #shareableLink {
+      cursor: pointer;
+    }
+    #shareableLink:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="card-header py-3">
-                <h3>Link2Unlock by INDapk</h3>
-                <p class="mb-0">Buat link yang memerlukan follow Telegram sebelum mengakses</p>
-            </div>
-            <div class="card-body">
-                <form id="linkForm">
-                    <div class="mb-3">
-                        <label for="namaGame" class="form-label">Nama Game/Aplikasi</label>
-                        <input type="text" class="form-control" id="namaGame" required placeholder="Contoh: Free Fire, Mobile Legends, dll">
-                    </div>
-                    <div class="mb-3">
-                        <label for="linkTujuan" class="form-label">Link Tujuan</label>
-                        <input type="url" class="form-control" id="linkTujuan" required placeholder="https://">
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <span id="submitText">Buat Link Unlock</span>
-                            <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                        </button>
-                    </div>
-                </form>
-
-                <div class="result-container" id="resultContainer">
-                    <div class="alert alert-success mt-4">
-                        <h5 class="alert-heading">Link Berhasil Dibuat!</h5>
-                        <p>Bagikan link berikut ke pengguna:</p>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="generatedLink" readonly>
-                            <button class="btn btn-outline-secondary copy-btn" type="button" id="copyBtn" title="Salin ke clipboard">
-                                <i class="bi bi-clipboard"></i> Salin
-                            </button>
-                        </div>
-                        <hr>
-                        <p class="mb-0">Pengguna harus follow Telegram <a href="https://t.me/iindapk" target="_blank">@iindapk</a> terlebih dahulu sebelum bisa mengakses link tujuan.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer text-muted text-center">
-                <small>© 2023 Link2Unlock by INDapk | <i class="bi bi-telegram telegram-icon"></i> <a href="https://t.me/iindapk" target="_blank">@iindapk</a></small>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby5tvWycqduUEfKnlFqQ4q7oqVrBMxd3v4jMqEJyZtaSK3be0S8vEefDDbGpCBAiPo/exec';
+  <div class="container">
+    <div class="card">
+      <div class="card-header text-center">
+        <h3>Link2Unlock Admin</h3>
+      </div>
+      <div class="card-body">
+        <form id="linkForm">
+          <div class="mb-3">
+            <label for="namaGame" class="form-label">Nama Game</label>
+            <input type="text" class="form-control" id="namaGame" required>
+          </div>
+          <div class="mb-3">
+            <label for="linkTujuan" class="form-label">Link Tujuan</label>
+            <input type="url" class="form-control" id="linkTujuan" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Generate Link</button>
+        </form>
         
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('linkForm');
-            const submitBtn = document.getElementById('submitBtn');
-            const submitText = document.getElementById('submitText');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const resultContainer = document.getElementById('resultContainer');
-            const generatedLink = document.getElementById('generatedLink');
-            const copyBtn = document.getElementById('copyBtn');
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const namaGame = document.getElementById('namaGame').value;
-                const linkTujuan = document.getElementById('linkTujuan').value;
-                
-                // Show loading state
-                submitText.textContent = 'Memproses...';
-                loadingSpinner.style.display = 'inline-block';
-                submitBtn.disabled = true;
-                
-                // Create data object
-                const data = {
-                    action: 'create',
-                    nama_game: namaGame,
-                    link_tujuan: linkTujuan
-                };
-                
-                // Send data to Google Apps Script
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams(data)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // Show success result
-                        const fullUrl = window.location.origin + window.location.pathname.replace('index.html', '') + 'unlock.html?id=' + data.data.linkId;
-                        generatedLink.value = fullUrl;
-                        resultContainer.style.display = 'block';
-                        
-                        // Scroll to result
-                        resultContainer.scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: data.message || 'Terjadi kesalahan saat membuat link'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Terjadi kesalahan saat menghubungkan ke server'
-                    });
-                })
-                .finally(() => {
-                    // Reset button state
-                    submitText.textContent = 'Buat Link Unlock';
-                    loadingSpinner.style.display = 'none';
-                    submitBtn.disabled = false;
-                });
-            });
-            
-            // Copy to clipboard functionality
-            copyBtn.addEventListener('click', function() {
-                generatedLink.select();
-                document.execCommand('copy');
-                
-                // Show tooltip feedback
-                const originalTitle = copyBtn.title;
-                copyBtn.title = 'Tersalin!';
-                setTimeout(() => {
-                    copyBtn.title = originalTitle;
-                }, 2000);
-                
-                // Optional: Show SweetAlert notification
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Link berhasil disalin',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            });
-        });
-    </script>
+        <div class="result-container" id="resultContainer">
+          <hr>
+          <h5>Link berhasil dibuat!</h5>
+          <p>Bagikan link berikut:</p>
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" id="shareableLink" readonly>
+            <button class="btn btn-outline-secondary" type="button" id="copyButton">Copy</button>
+          </div>
+          <div class="alert alert-info">
+            <small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqLXCVli_8yvOTWqI0ZgeDiq7y4jMx4Hi89w_NEFsgS2k8Yzxsni_V0a95g_evvpM/exec';
+    
+    document.getElementById('linkForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const namaGame = document.getElementById('namaGame').value;
+      const linkTujuan = document.getElementById('linkTujuan').value;
+      
+      const payload = {
+        action: 'create',
+        nama_game: namaGame,
+        link_tujuan: linkTujuan
+      };
+      
+      // Show loading state
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...';
+      
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          // Show result
+          const resultContainer = document.getElementById('resultContainer');
+          const shareableLink = document.getElementById('shareableLink');
+          
+          shareableLink.value = data.data.shareableLink;
+          resultContainer.style.display = 'block';
+          
+          // Reset form
+          document.getElementById('linkForm').reset();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      })
+      .catch(error => {
+        alert('Terjadi kesalahan: ' + error.message);
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Generate Link';
+      });
+    });
+    
+    // Copy button functionality
+    document.getElementById('copyButton').addEventListener('click', function() {
+      const shareableLink = document.getElementById('shareableLink');
+      shareableLink.select();
+      document.execCommand('copy');
+      
+      // Show tooltip or feedback
+      const originalText = this.textContent;
+      this.textContent = 'Copied!';
+      setTimeout(() => {
+        this.textContent = originalText;
+      }, 2000);
+    });
+  </script>
 </body>
 </html>
