@@ -844,15 +844,15 @@ function saveToSpreadsheet() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert('Data berhasil disimpan ke database!');
+         showNotification('Data berhasil disimpan ke database!');
             viewDatabase();
         } else {
-            alert('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
+         showNotification('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan saat menyimpan data');
+     showNotification('Terjadi kesalahan saat menyimpan data');
     });
 }
 
@@ -964,7 +964,7 @@ function displayDatabase(data) {
         window.currentDatabaseData = data.data;
         window.originalDatabaseData = data.data; // Save original data for filtering
     } else {
-        alert("Gagal memuat data: " + (data.message || 'Unknown error'));
+     showNotification("Gagal memuat data: " + (data.message || 'Unknown error'));
     }
 }
 
@@ -976,12 +976,12 @@ function showQuadLinkTypeSelection() {
     singleWBFSLinkCount = parseInt(document.getElementById("singleWBFSLinkCount").value) || 0;
     
     if (singleCISOLinkCount < 1 && singleISOLinkCount < 1 && singleRVZLinkCount < 1 && singleWBFSLinkCount < 1) {
-        alert("Masukkan minimal 1 link untuk salah satu tipe (CISO, ISO, RVZ atau WBFS)");
+     showNotification("Masukkan minimal 1 link untuk salah satu tipe (CISO, ISO, RVZ atau WBFS)");
         return;
     }
     
     if (singleCISOLinkCount > 10 || singleISOLinkCount > 10 || singleRVZLinkCount > 10 || singleWBFSLinkCount > 10) {
-        alert("Maksimal 10 link per kategori");
+     showNotification("Maksimal 10 link per kategori");
         return;
     }
     
@@ -1147,44 +1147,44 @@ function proceedToQuadGenerator() {
     // Validate selections - must match exactly
     if (singleCISOLinkCount > 0) {
         if (totalSingleCISOSelected === 0) {
-            alert("Pilih jenis link untuk Single CISO Link");
+         showNotification("Pilih jenis link untuk Single CISO Link");
             return;
         }
         if (totalSingleCISOSelected !== singleCISOLinkCount) {
-            alert(`Anda harus memilih tepat ${singleCISOLinkCount} jenis link untuk Single CISO Link (sekarang ${totalSingleCISOSelected})`);
+         showNotification(`Anda harus memilih tepat ${singleCISOLinkCount} jenis link untuk Single CISO Link (sekarang ${totalSingleCISOSelected})`);
             return;
         }
     }
     
     if (singleISOLinkCount > 0) {
         if (totalSingleISOSSelected === 0) {
-            alert("Pilih jenis link untuk Single ISO Link");
+         showNotification("Pilih jenis link untuk Single ISO Link");
             return;
         }
         if (totalSingleISOSSelected !== singleISOLinkCount) {
-            alert(`Anda harus memilih tepat ${singleISOLinkCount} jenis link untuk Single ISO Link (sekarang ${totalSingleISOSSelected})`);
+         showNotification(`Anda harus memilih tepat ${singleISOLinkCount} jenis link untuk Single ISO Link (sekarang ${totalSingleISOSSelected})`);
             return;
         }
     }
     
     if (singleRVZLinkCount > 0) {
         if (totalSingleRVZSelected === 0) {
-            alert("Pilih jenis link untuk Single RVZ Link");
+         showNotification("Pilih jenis link untuk Single RVZ Link");
             return;
         }
         if (totalSingleRVZSelected !== singleRVZLinkCount) {
-            alert(`Anda harus memilih tepat ${singleRVZLinkCount} jenis link untuk Single RVZ Link (sekarang ${totalSingleRVZSelected})`);
+            showNotification(`Anda harus memilih tepat ${singleRVZLinkCount} jenis link untuk Single RVZ Link (sekarang ${totalSingleRVZSelected})`);
             return;
         }
     }
     
     if (singleWBFSLinkCount > 0) {
         if (totalSingleWBFSSelected === 0) {
-            alert("Pilih jenis link untuk Single WBFS Link");
+            showNotification("Pilih jenis link untuk Single WBFS Link");
             return;
         }
         if (totalSingleWBFSSelected !== singleWBFSLinkCount) {
-            alert(`Anda harus memilih tepat ${singleWBFSLinkCount} jenis link untuk Single WBFS Link (sekarang ${totalSingleWBFSSelected})`);
+            showNotification(`Anda harus memilih tepat ${singleWBFSLinkCount} jenis link untuk Single WBFS Link (sekarang ${totalSingleWBFSSelected})`);
             return;
         }
     }
@@ -1329,7 +1329,7 @@ function copyCode() {
 
     setTimeout(() => {
     if (generatedHtml.trim() === "") {
-        alert("Maaf Codingannya Belum Dibuat");
+        showNotification("Maaf Codingannya Belum Dibuat");
         return;
     }
 
@@ -1339,10 +1339,35 @@ function copyCode() {
     tempTextarea.select();
     document.execCommand("copy");
     document.body.removeChild(tempTextarea); 
-    alert("Codingan Berhasil Disalin!");
+    generatedHtml.disabled = false;
+    showNotification("Codingan Berhasil Disalin!");
 },1000);}
 
 
+// Notification function
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+    ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
 
 const textarea = document.getElementById('myTextarea');
 const form = document.getElementById('myForm');
@@ -2712,7 +2737,7 @@ function viewDatabase() {
         .then(data => displayDatabase(data))
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat memuat data');
+            showNotification('Terjadi kesalahan saat memuat data');
         });
 }
 
@@ -2845,15 +2870,15 @@ function deleteGame(gameId) {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Game berhasil dihapus!');
+                showNotification('Game berhasil dihapus!');
                 viewDatabase(); // Refresh tampilan database
             } else {
-                alert('Gagal menghapus game: ' + (data.message || 'Unknown error'));
+                showNotification('Gagal menghapus game: ' + (data.message || 'Unknown error'));
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat menghapus game');
+            showNotification('Terjadi kesalahan saat menghapus game');
         });
     }
 }
@@ -2861,7 +2886,7 @@ function deleteGame(gameId) {
 // Fungsi untuk export ke CSV
 function exportToCSV() {
     if (!window.currentDatabaseData || window.currentDatabaseData.length === 0) {
-        alert('Tidak ada data untuk di-export');
+        showNotification('Tidak ada data untuk di-export');
         return;
     }
     
@@ -2914,7 +2939,7 @@ function exportToCSV() {
 function editGame(gameId) {
     const game = window.currentDatabaseData.find(g => g.id === gameId);
     if (!game) {
-        alert('Game tidak ditemukan!');
+        showNotification('Game tidak ditemukan!');
         return;
     }
 
@@ -3066,11 +3091,11 @@ function editGame(gameId) {
                 submitButton.className = 'btn btn-warning';
             }
 
-            alert('Data game berhasil dimuat untuk diedit!');
+            showNotification('Data game berhasil dimuat untuk diedit!');
             
         } catch (error) {
             console.error('Error in editGame:', error);
-            alert('Terjadi kesalahan saat memuat data untuk edit: ' + error.message);
+            showNotification('Terjadi kesalahan saat memuat data untuk edit: ' + error.message);
         }
     }, 500); // Wait for modal to close
 }
@@ -3089,7 +3114,7 @@ function viewGameDetails(gameId) {
     // Cari game dari database
     const game = window.currentDatabaseData.find(g => g.id === gameId);
     if (!game) {
-        alert('Game tidak ditemukan!');
+     showNotification('Game tidak ditemukan!');
         return;
     }
 
@@ -3430,7 +3455,7 @@ function saveLinkSettings() {
         (singleISOLinkCount > 0 && selectedSingleISOLinksOrder.length !== singleISOLinkCount) ||
         (singleRVZLinkCount > 0 && selectedSingleRVZLinksOrder.length !== singleRVZLinkCount) ||
         (singleWBFSLinkCount > 0 && selectedSingleWBFSLinksOrder.length !== singleWBFSLinkCount)) {
-        alert("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
+     showNotification("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
         return;
     }
 
@@ -3442,7 +3467,7 @@ function saveLinkSettings() {
 function confirmSaveSettings() {
     const settingsName = document.getElementById('settingsName').value.trim();
     if (!settingsName) {
-        alert("Harap isi nama settingan");
+     showNotification("Harap isi nama settingan");
         return;
     }
 
@@ -3473,7 +3498,7 @@ function confirmSaveSettings() {
     document.getElementById('settingsName').value = '';
     bootstrap.Modal.getInstance(document.getElementById('saveSettingsModal')).hide();
     
-    alert(`Settingan "${settingsName}" berhasil disimpan!`);
+ showNotification(`Settingan "${settingsName}" berhasil disimpan!`);
 }
 
 // Ganti nama fungsi dari loadLinkSettings() menjadi loadLinkSettingsModal()
@@ -3482,7 +3507,7 @@ function loadLinkSettingsModal() {
     const savedSettings = JSON.parse(localStorage.getItem('linkSettingsWiiGHTML') || []);
     
     if (savedSettings.length === 0) {
-        alert("Belum ada settingan yang disimpan");
+     showNotification("Belum ada settingan yang disimpan");
         return;
     }
 
@@ -3525,7 +3550,7 @@ function applyLinkSettings(index) {
         const savedSettings = JSON.parse(localStorage.getItem('linkSettingsWiiGHTML')) || [];
         
         if (index < 0 || index >= savedSettings.length) {
-            alert("Settingan tidak ditemukan");
+         showNotification("Settingan tidak ditemukan");
             return;
         }
         
@@ -3590,7 +3615,7 @@ function applyLinkSettings(index) {
         
     } catch (error) {
         console.error("Error applying settings:", error);
-        alert("Terjadi error saat memuat settingan: " + error.message);
+     showNotification("Terjadi error saat memuat settingan: " + error.message);
     }
 }
 
@@ -3612,7 +3637,7 @@ function deleteLinkSettings(index) {
     // Refresh daftar settingan
     loadLinkSettingsModal();
     
-    alert(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
+ showNotification(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
 }
 
 </script>
