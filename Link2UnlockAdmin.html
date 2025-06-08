@@ -586,10 +586,121 @@ body.dark-mode .tab-button:hover {
     font-size: 0.9rem;
   }
 }
+
+
+/* Table Styles */
+.table-responsive {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #4a94bb, #3a7bd5);
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 1rem 0.75rem;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(74, 148, 187, 0.1);
+    transform: translateY(-1px);
+}
+
+.table tbody td {
+    padding: 1rem 0.75rem;
+    border-color: #e2e8f0;
+    vertical-align: middle;
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    margin: 0 2px;
+}
+
+/* Dark theme table */
+body.dark-theme .table thead th {
+    background: linear-gradient(135deg, #2d3748, #1a202c);
+}
+
+body.dark-theme .table tbody tr:hover {
+    background-color: rgba(74, 148, 187, 0.2);
+}
+
+body.dark-theme .table tbody td {
+    border-color: var(--border-dark);
+    color: var(--text-primary-dark);
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #4a94bb, #3a7bd5);
+    color: white;
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+body.dark-theme .modal-content {
+    background: var(--card-bg-dark);
+    color: var(--text-primary-dark);
+}
+
+body.dark-theme .modal-header {
+    background: linear-gradient(135deg, #2d3748, #1a202c);
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    margin: 0 2px;
+}
+
+.btn-group {
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        margin-bottom: 0.25rem;
+    }
+}
 	</style>
 </head>
 <body>
-    <div class="tab-navigation">
+<div class="tab-navigation">
+    <a href="#" class="tab-button active" id="bulkGeneratorTab">
+        <i class="bi bi-collection"></i> Bulk Generator
+    </a>
+    <a href="#" class="tab-button" id="linkListTab">
+        <i class="bi bi-list-ul"></i> Daftar Link
+    </a>
     <a href="Noted2UnlockAdmin" class="tab-button">
         <i class="fas fa-pen"></i> Noted2Unlock Admin
     </a>
@@ -627,6 +738,7 @@ Link2Unlock Admin - Bulk Generator By INDapk</div>
 <div class="count-display">Total Games: <span id="gameCount">1</span></div>
 <button class="btn btn-success" id="addGameBtn" type="button">Tambah Game</button></div>
 
+
 <form id="bulkLinkForm">
 <div id="gamesContainer">
 <div class="game-item" data-index="0">
@@ -656,9 +768,128 @@ Link2Unlock Admin - Bulk Generator By INDapk</div>
 </div>
 </div>
 </div>
+
+
+<!-- Link List Container Daftar Link -->
+<div class="card main-card" id="linkListContainer" style="display: none;">
+    <div class="card-header">
+        <h3>
+            <div class="icon"><i class="bi bi-list-ul"></i></div>
+            Daftar Link yang Dibuat
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="count-display">Total Link: <span id="totalLinksCount">0</span></div>
+               <div class="btn-group">
+        <button class="btn btn-success" id="exportAllBtn" type="button">
+            <i class="bi bi-file-earmark-excel"></i> Export All Excel
+        </button>
+        <button class="btn btn-primary" id="refreshLinksBtn" type="button">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+    </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script><script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqLXCVli_8yvOTWqI0ZgeDiq7y4jMx4Hi89w_NEFsgS2k8Yzxsni_V0a95g_evvpM/exec';
+        </div>
+        
+        <div id="linksTableContainer">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Game</th>
+                            <th>Link Tujuan</th>
+                            <th>Tanggal Dibuat</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="linksTableBody">
+                        <!-- Links will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="emptyState" style="display: none;">
+            <div class="text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <h5 class="mt-3 text-muted">Belum ada link yang dibuat</h5>
+                <p class="text-muted">Mulai dengan membuat link di tab Bulk Generator</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+  <!-- Detail Modal -->
+<div class="modal fade" id="linkDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Detail Link
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editLinkForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nama Game</label>
+                            <input type="text" class="form-control" id="editNamaGame" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Link Tujuan</label>
+                            <input type="url" class="form-control" id="editLinkTujuan" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Shareable Link</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="editShareableLink" readonly>
+                            <button class="btn btn-outline-secondary" type="button" id="copyShareableLinkBtn">
+                                <i class="bi bi-clipboard"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tanggal Dibuat</label>
+                            <input type="text" class="form-control" id="editTanggalDibuat" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Status</label>
+                            <input type="text" class="form-control" id="editStatus" readonly>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="saveEditBtn">
+                    <i class="bi bi-save"></i> Simpan Perubahan
+                </button>
+                <button type="button" class="btn btn-info" id="exportExcelBtn">
+                    <i class="bi bi-file-earmark-excel"></i> Export Excel
+                </button>
+                <button type="button" class="btn btn-danger" id="deleteLinkBtn">
+                    <i class="bi bi-trash"></i> Hapus
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWb2XDiZW9kIFgtSLzu33RMzJd5u4wcLkQpX77idw71UmsgYKdJ7YgQaCvywD6CFQ/exec';
     let gameIndex = 1;
     
     
@@ -1079,5 +1310,321 @@ document.head.appendChild(themeStyleSheet);
     
     // Initialize
     updateRemoveButtons();
-  </script></body>
+
+
+
+    // Tab Management
+let currentTab = 'bulkGenerator';
+let currentEditingLinkId = null;
+
+// Initialize tab functionality
+document.getElementById('bulkGeneratorTab').addEventListener('click', function(e) {
+    e.preventDefault();
+    switchTab('bulkGenerator');
+});
+
+document.getElementById('linkListTab').addEventListener('click', function(e) {
+    e.preventDefault();
+    switchTab('linkList');
+});
+
+function switchTab(tab) {
+    currentTab = tab;
+    
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    if (tab === 'bulkGenerator') {
+        document.getElementById('bulkGeneratorTab').classList.add('active');
+        document.querySelector('.main-card').style.display = 'block';
+        document.getElementById('linkListContainer').style.display = 'none';
+    } else if (tab === 'linkList') {
+        document.getElementById('linkListTab').classList.add('active');
+        document.querySelector('.main-card').style.display = 'none';
+        document.getElementById('linkListContainer').style.display = 'block';
+        loadLinksList();
+    }
+}
+
+// Load links list
+async function loadLinksList() {
+    try {
+        const response = await fetch(SCRIPT_URL + '?action=list');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            displayLinksList(data.data);
+        } else {
+            showEmptyState();
+        }
+    } catch (error) {
+        console.error('Error loading links:', error);
+        showEmptyState();
+    }
+}
+
+// Display links list
+function displayLinksList(links) {
+    const tbody = document.getElementById('linksTableBody');
+    const totalCount = document.getElementById('totalLinksCount');
+    const emptyState = document.getElementById('emptyState');
+    const tableContainer = document.getElementById('linksTableContainer');
+    
+    totalCount.textContent = links.length;
+    
+    if (links.length === 0) {
+        showEmptyState();
+        return;
+    }
+    
+    emptyState.style.display = 'none';
+    tableContainer.style.display = 'block';
+    
+    tbody.innerHTML = '';
+    
+    links.forEach((link, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><strong>${link.nama_game}</strong></td>
+            <td><span class="text-truncate d-inline-block" style="max-width: 200px;" title="${link.link_tujuan}">${link.link_tujuan}</span></td>
+            <td>${formatDate(link.created_at)}</td>
+<td>
+    <div class="btn-group btn-group-sm">
+        <button class="btn btn-primary btn-sm" onclick="showLinkDetail('${link.id}')">
+            <i class="bi bi-eye"></i> Detail
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="deleteLinkConfirm('${link.id}', '${link.nama_game}')">
+            <i class="bi bi-trash"></i> Hapus
+        </button>
+    </div>
+</td>
+
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Show empty state
+function showEmptyState() {
+    document.getElementById('linksTableContainer').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('totalLinksCount').textContent = '0';
+}
+
+
+
+// Export All to Excel
+document.getElementById('exportAllBtn').addEventListener('click', async function() {
+    try {
+        const response = await fetch(SCRIPT_URL + '?action=list');
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.data.length > 0) {
+            exportAllToExcel(data.data);
+        } else {
+            showNotification('Tidak ada data untuk diexport!', 'error');
+        }
+    } catch (error) {
+        showNotification('Error exporting data: ' + error.message, 'error');
+    }
+});
+
+// Function to export all data to Excel
+function exportAllToExcel(links) {
+    // Create CSV header
+    let csvContent = 'No,Nama Game,Link Tujuan,Shareable Link,Tanggal Dibuat,Status\n';
+    
+    // Add data rows
+    links.forEach((link, index) => {
+        const row = [
+            index + 1,
+            `"${link.nama_game}"`,
+            `"${link.link_tujuan}"`,
+            `"${link.shareable_link}"`,
+            `"${formatDate(link.created_at)}"`,
+            `"${link.status || 'Aktif'}"`
+        ].join(',');
+        csvContent += row + '\n';
+    });
+    
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `All_Links_Data_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    
+    showNotification(`${links.length} data berhasil diexport!`, 'success');
+}
+
+// Delete confirmation function
+function deleteLinkConfirm(linkId, namaGame) {
+    if (confirm(`Apakah Anda yakin ingin menghapus link "${namaGame}"?`)) {
+        deleteLinkById(linkId);
+    }
+}
+
+
+// Show link detail modal
+async function showLinkDetail(linkId) {
+    try {
+        const response = await fetch(SCRIPT_URL + `?action=get&id=${linkId}`);
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const link = data.data;
+            currentEditingLinkId = linkId;
+            
+            document.getElementById('editNamaGame').value = link.nama_game;
+            document.getElementById('editLinkTujuan').value = link.link_tujuan;
+            document.getElementById('editShareableLink').value = link.shareable_link;
+            document.getElementById('editTanggalDibuat').value = formatDate(link.created_at);
+            document.getElementById('editStatus').value = link.status || 'Aktif';
+            
+            new bootstrap.Modal(document.getElementById('linkDetailModal')).show();
+        }
+    } catch (error) {
+        showNotification('Error loading link detail: ' + error.message, 'error');
+    }
+}
+
+// Save edited link
+document.getElementById('saveEditBtn').addEventListener('click', async function() {
+    const namaGame = document.getElementById('editNamaGame').value;
+    const linkTujuan = document.getElementById('editLinkTujuan').value;
+    
+    if (!namaGame || !linkTujuan) {
+        showNotification('Mohon isi semua field!', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'update',
+                id: currentEditingLinkId,
+                nama_game: namaGame,
+                link_tujuan: linkTujuan
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            showNotification('Link berhasil diupdate!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('linkDetailModal')).hide();
+            loadLinksList();
+        } else {
+            showNotification('Error: ' + data.message, 'error');
+        }
+    } catch (error) {
+        showNotification('Error updating link: ' + error.message, 'error');
+    }
+});
+
+// Copy shareable link
+document.getElementById('copyShareableLinkBtn').addEventListener('click', function() {
+    const link = document.getElementById('editShareableLink').value;
+    copyToClipboard(link, this);
+});
+
+// Export to Excel
+document.getElementById('exportExcelBtn').addEventListener('click', function() {
+    exportToExcel();
+});
+
+// Delete link
+document.getElementById('deleteLinkBtn').addEventListener('click', function() {
+    if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
+        deleteLinkById(currentEditingLinkId);
+    }
+});
+
+// Delete link function
+async function deleteLinkById(linkId) {
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'delete',
+                id: linkId
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            showNotification('Link berhasil dihapus!', 'success');
+            
+            // Close modal if open
+            const modal = bootstrap.Modal.getInstance(document.getElementById('linkDetailModal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Refresh the links list
+            loadLinksList();
+        } else {
+            showNotification('Error: ' + data.message, 'error');
+        }
+    } catch (error) {
+        showNotification('Error deleting link: ' + error.message, 'error');
+    }
+}
+
+// Export to Excel function
+function exportToExcel() {
+    // Simple CSV export (you can enhance this with a proper Excel library)
+    const link = {
+        nama_game: document.getElementById('editNamaGame').value,
+        link_tujuan: document.getElementById('editLinkTujuan').value,
+        shareable_link: document.getElementById('editShareableLink').value,
+        created_at: document.getElementById('editTanggalDibuat').value
+    };
+    
+    const csvContent = `Nama Game,Link Tujuan,Shareable Link,Tanggal Dibuat\n${link.nama_game},${link.link_tujuan},${link.shareable_link},${link.created_at}`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${link.nama_game}_link_data.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    
+    showNotification('Data berhasil diexport!', 'success');
+}
+
+// Refresh links
+document.getElementById('refreshLinksBtn').addEventListener('click', function() {
+    loadLinksList();
+    showNotification('Data berhasil direfresh!', 'success');
+});
+
+// Format date helper
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+  </script>
+
+</body>
 </html>
