@@ -1327,6 +1327,7 @@ function copyCode() {
     const resultDiv = document.getElementById("result");
     const generatedHtml = resultDiv.innerText;
 
+    setTimeout(() => {
     if (generatedHtml.trim() === "") {
         alert("Maaf Codingannya Belum Dibuat");
         return;
@@ -1339,7 +1340,9 @@ function copyCode() {
     document.execCommand("copy");
     document.body.removeChild(tempTextarea); 
     alert("Codingan Berhasil Disalin!");
-}
+},1000);}
+
+
 
 const textarea = document.getElementById('myTextarea');
 const form = document.getElementById('myForm');
