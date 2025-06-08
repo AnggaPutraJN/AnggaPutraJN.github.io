@@ -1342,6 +1342,7 @@
                             <select id="jenis_emulator" name="jenis_emulator" required>
                                 <option value="">Pilih Emulator</option>
                                 <option value="Switch">Switch</option>
+                                <option value="Nintendo 3ds">Nintendo 3ds</option>
                                 <option value="Wii">Wii</option>
                                 <option value="Wii U">Wii U</option>
                                 <option value="Gamecube">Gamecube</option>
@@ -1510,15 +1511,20 @@
                         <span>Nintendo Wii</span>
                         <span class="category-count" id="count-wii">0</span>
                     </div>
-                    <div class="dropdown-item" onclick="selectCategory('Wii U', 'Nintendo Wii U')">
-                        <i class="fas fa-gamepad"></i>
-                        <span>Nintendo Wii-U</span>
-                        <span class="category-count" id="count-WiiU">0</span>
-                    </div>
                     <div class="dropdown-item" onclick="selectCategory('Gamecube', 'GameCube')">
                         <i class="fas fa-cube"></i>
                         <span>GameCube</span>
                         <span class="category-count" id="count-gamecube">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('Nintendo 3ds', 'Nintendo 3ds')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Nintendo 3ds</span>
+                        <span class="category-count" id="count-3ds">0</span>
+                    </div>
+                    <div class="dropdown-item" onclick="selectCategory('Wii U', 'Nintendo Wii U')">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Nintendo Wii-U</span>
+                        <span class="category-count" id="count-WiiU">0</span>
                     </div>
                     <div class="dropdown-item" onclick="selectCategory('SNES', 'Super Nintendo')">
                         <i class="fas fa-gamepad"></i>
@@ -1991,6 +1997,7 @@ function submitAdminForm(type) {
                 'Gamecube': data.filter(item => item.jenis_emulator === 'Gamecube').length,
                 'SNES': data.filter(item => item.jenis_emulator === 'SNES').length,
                 'NES': data.filter(item => item.jenis_emulator === 'NES').length,
+                'Nintendo 3ds': data.filter(item => item.jenis_emulator === 'Nintendo 3ds').length,
                 'Sega Genesis': data.filter(item => item.jenis_emulator === 'Sega Genesis').length
             };
             
@@ -2008,6 +2015,7 @@ function submitAdminForm(type) {
             document.getElementById('count-gamecube').textContent = categories.Gamecube;
             document.getElementById('count-snes').textContent = categories.SNES;
             document.getElementById('count-nes').textContent = categories.NES;
+            document.getElementById('count-3ds').textContent = categories['Nintendo 3ds'];
             document.getElementById('count-sega').textContent = categories['Sega Genesis'];
         }
 
