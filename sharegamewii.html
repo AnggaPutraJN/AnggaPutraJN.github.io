@@ -419,6 +419,12 @@ label {
             SHARE GAME WII
         </label>
     </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="uploadulang" value="upload">
+        <label class="form-check-label" for="uploadulang">
+            UPLOAD ULANG GAME WII
+        </label>
+    </div>
 <label for="myTextarea">Masukkan Detail Game Wii (satu per baris):</label>
 <textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game...&#10;Contoh:&#10;Super Mario Galaxy&#10;2.1 GB&#10;4.3 GB&#10;3.8 GB&#10;4.2 GB&#10;Action/Adventure&#10;NTSC-U&#10;https://example.com/download"></textarea>
 </div>
@@ -708,7 +714,36 @@ https://indapk.com/report.html
 082286344446
 
 NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
-        }
+        } if (postType === 'ipload') {
+            generatedHtml = `UPLOAD ULANG GAME WII
+🎮Update Game Wii:
+Nama Game: ${inputName}
+Ukuran Game CISO: ${inputSizeCISO}
+Ukuran Game ISO: ${inputSizeISO}
+Ukuran Game RVZ: ${inputSizeRVZ}
+Ukuran Game WBFS: ${inputSizeWBFS}
+Category: ${inputCategory}
+Region: ${inputRegion}
+Emulator: Dolphin (Android/Windows), Wii Console
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: CISO, ISO, RVZ, dan WBFS
+
+🌐Link Game:
+${inputLink}
+
+================
+⚠️ REQUEST GAME BISA DISINI:
+https://indapk.com/request.html
+
+⚠️ REPORT LINK BISA DISINI:
+https://indapk.com/report.html
+
+💵Donate Dana/Shopeepay/Gopay:
+082286344446
+
+NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
+        } 
 
         // Display the generated HTML
         document.getElementById("result").innerText = generatedHtml;
