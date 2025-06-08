@@ -1,430 +1,206 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link2Unlock System</title>
+    <title>Link2Unlock by INDapk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
+            background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
         }
-
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 800px;
+            margin-top: 50px;
         }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
         .card {
-            background: white;
             border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
         }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .result.success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-
-        .result.error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-
-        .link-output {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-            margin-top: 15px;
-            word-break: break-all;
-        }
-
-        .copy-btn {
-            background: #28a745;
-            margin-top: 10px;
-            font-size: 14px;
-            padding: 8px 20px;
-        }
-
-        .copy-btn:hover {
-            background: #218838;
-        }
-
-        .links-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .links-table th,
-        .links-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .links-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .links-table tr:hover {
-            background: #f8f9fa;
-        }
-
-        .delete-btn {
-            background: #dc3545;
+        .card-header {
+            background-color: #4a94bb;
             color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .delete-btn:hover {
-            background: #c82333;
-        }
-
-        .loading {
-            display: none;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
             text-align: center;
-            color: #667eea;
-            font-weight: 600;
         }
-
-        .refresh-btn {
-            background: #17a2b8;
-            margin-bottom: 20px;
+        .btn-primary {
+            background-color: #4a94bb;
+            border: none;
+            padding: 10px 25px;
         }
-
-        .refresh-btn:hover {
-            background: #138496;
+        .btn-primary:hover {
+            background-color: #3a7b9b;
         }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .links-table {
-                font-size: 14px;
-            }
+        .form-control:focus {
+            border-color: #4a94bb;
+            box-shadow: 0 0 0 0.25rem rgba(74, 148, 187, 0.25);
+        }
+        .result-container {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .copy-btn {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+        .telegram-icon {
+            color: #0088cc;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🔗 Link2Unlock System</h1>
-            <p>Buat link yang memerlukan follow Telegram untuk dibuka</p>
-        </div>
-
-        <!-- Form Buat Link Baru -->
         <div class="card">
-            <h2>🎮 Buat Link Baru</h2>
-            <form id="createForm">
-                <div class="form-group">
-                    <label for="namaGame">Nama Game/Konten:</label>
-                    <input type="text" id="namaGame" name="nama_game" required placeholder="Contoh: GTA V Mod, Minecraft Shader, dll">
-                </div>
-                
-                <div class="form-group">
-                    <label for="linkTujuan">Link Tujuan:</label>
-                    <input type="url" id="linkTujuan" name="link_tujuan" required placeholder="https://example.com/download">
-                </div>
-                
-                <button type="submit" class="btn" id="submitBtn">
-                    <span id="submitText">🚀 Buat Link</span>
-                    <span id="submitLoading" class="loading">⏳ Membuat...</span>
-                </button>
-            </form>
+            <div class="card-header py-3">
+                <h3>Link2Unlock by INDapk</h3>
+                <p class="mb-0">Buat link yang memerlukan follow Telegram sebelum mengakses</p>
+            </div>
+            <div class="card-body">
+                <form id="linkForm">
+                    <div class="mb-3">
+                        <label for="namaGame" class="form-label">Nama Game/Aplikasi</label>
+                        <input type="text" class="form-control" id="namaGame" required placeholder="Contoh: Free Fire, Mobile Legends, dll">
+                    </div>
+                    <div class="mb-3">
+                        <label for="linkTujuan" class="form-label">Link Tujuan</label>
+                        <input type="url" class="form-control" id="linkTujuan" required placeholder="https://">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span id="submitText">Buat Link Unlock</span>
+                            <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </button>
+                    </div>
+                </form>
 
-            <div id="result" class="result">
-                <div id="resultMessage"></div>
-                <div id="linkOutput" class="link-output" style="display: none;">
-                    <strong>Link yang bisa dibagikan:</strong><br>
-                    <span id="shareableLink"></span>
-                    <br>
-                    <button class="btn copy-btn" onclick="copyLink()">📋 Copy Link</button>
+                <div class="result-container" id="resultContainer">
+                    <div class="alert alert-success mt-4">
+                        <h5 class="alert-heading">Link Berhasil Dibuat!</h5>
+                        <p>Bagikan link berikut ke pengguna:</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="generatedLink" readonly>
+                            <button class="btn btn-outline-secondary copy-btn" type="button" id="copyBtn" title="Salin ke clipboard">
+                                <i class="bi bi-clipboard"></i> Salin
+                            </button>
+                        </div>
+                        <hr>
+                        <p class="mb-0">Pengguna harus follow Telegram <a href="https://t.me/iindapk" target="_blank">@iindapk</a> terlebih dahulu sebelum bisa mengakses link tujuan.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Daftar Link yang Sudah Dibuat -->
-        <div class="card">
-            <h2>📋 Daftar Link</h2>
-            <button class="btn refresh-btn" onclick="loadLinks()">🔄 Refresh</button>
-            
-            <div id="linksLoading" class="loading">⏳ Memuat data...</div>
-            
-            <div id="linksContainer">
-                <table class="links-table" id="linksTable" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama Game</th>
-                            <th>Link Tujuan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="linksTableBody">
-                    </tbody>
-                </table>
+            <div class="card-footer text-muted text-center">
+                <small>© 2023 Link2Unlock by INDapk | <i class="bi bi-telegram telegram-icon"></i> <a href="https://t.me/iindapk" target="_blank">@iindapk</a></small>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4uBD_5VwDkrQyCiXidz4XD9pcik5OCxaAkFExmf6hcKUurzHPYJBQIKvyuoCmZvE/exec';
-
-        // Form submission
-        document.getElementById('createForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby5tvWycqduUEfKnlFqQ4q7oqVrBMxd3v4jMqEJyZtaSK3be0S8vEefDDbGpCBAiPo/exec';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('linkForm');
             const submitBtn = document.getElementById('submitBtn');
             const submitText = document.getElementById('submitText');
-            const submitLoading = document.getElementById('submitLoading');
-            const result = document.getElementById('result');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const resultContainer = document.getElementById('resultContainer');
+            const generatedLink = document.getElementById('generatedLink');
+            const copyBtn = document.getElementById('copyBtn');
             
-            // Show loading state
-            submitBtn.disabled = true;
-            submitText.style.display = 'none';
-            submitLoading.style.display = 'inline';
-            
-            try {
-                const formData = new FormData(this);
-                formData.append('action', 'create');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
                 
-                const response = await fetch(SCRIPT_URL, {
+                const namaGame = document.getElementById('namaGame').value;
+                const linkTujuan = document.getElementById('linkTujuan').value;
+                
+                // Show loading state
+                submitText.textContent = 'Memproses...';
+                loadingSpinner.style.display = 'inline-block';
+                submitBtn.disabled = true;
+                
+                // Create data object
+                const data = {
+                    action: 'create',
+                    nama_game: namaGame,
+                    link_tujuan: linkTujuan
+                };
+                
+                // Send data to Google Apps Script
+                fetch(SCRIPT_URL, {
                     method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    showResult('success', data.message);
-                    document.getElementById('shareableLink').textContent = data.shareableUrl;
-                    document.getElementById('linkOutput').style.display = 'block';
-                    this.reset();
-                    loadLinks(); // Refresh the links list
-                } else {
-                    showResult('error', data.message || 'Terjadi kesalahan');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showResult('error', 'Terjadi kesalahan saat mengirim data');
-            } finally {
-                // Reset button state
-                submitBtn.disabled = false;
-                submitText.style.display = 'inline';
-                submitLoading.style.display = 'none';
-            }
-        });
-
-        function showResult(type, message) {
-            const result = document.getElementById('result');
-            const resultMessage = document.getElementById('resultMessage');
-            
-            result.className = `result ${type}`;
-            resultMessage.textContent = message;
-            result.style.display = 'block';
-            
-            if (type === 'error') {
-                document.getElementById('linkOutput').style.display = 'none';
-            }
-        }
-
-        function copyLink() {
-            const linkText = document.getElementById('shareableLink').textContent;
-            navigator.clipboard.writeText(linkText).then(() => {
-                const copyBtn = document.querySelector('.copy-btn');
-                const originalText = copyBtn.innerHTML;
-                copyBtn.innerHTML = '✅ Tersalin!';
-                setTimeout(() => {
-                    copyBtn.innerHTML = originalText;
-                }, 2000);
-            });
-        }
-
-        async function loadLinks() {
-            const loading = document.getElementById('linksLoading');
-            const table = document.getElementById('linksTable');
-            const tbody = document.getElementById('linksTableBody');
-            
-            loading.style.display = 'block';
-            table.style.display = 'none';
-            
-            try {
-                const formData = new FormData();
-                formData.append('action', 'read');
-                
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    tbody.innerHTML = '';
-                    
-                    if (data.data.length > 0) {
-                        data.data.forEach(link => {
-                            const row = document.createElement('tr');
-                            const date = new Date(link.timestamp).toLocaleDateString('id-ID');
-                            
-                            row.innerHTML = `
-                                <td>${date}</td>
-                                <td>${link.nama_game}</td>
-                                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${link.link_tujuan}">
-                                    ${link.link_tujuan}
-                                </td>
-                                <td>
-                                    <button class="delete-btn" onclick="deleteLink(${link.id})">🗑️ Hapus</button>
-                                </td>
-                            `;
-                            
-                            tbody.appendChild(row);
-                        });
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Show success result
+                        const fullUrl = window.location.origin + window.location.pathname.replace('index.html', '') + 'unlock.html?id=' + data.data.linkId;
+                        generatedLink.value = fullUrl;
+                        resultContainer.style.display = 'block';
                         
-                        table.style.display = 'table';
+                        // Scroll to result
+                        resultContainer.scrollIntoView({ behavior: 'smooth' });
                     } else {
-                        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #666;">Belum ada link yang dibuat</td></tr>';
-                        table.style.display = 'table';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: data.message || 'Terjadi kesalahan saat membuat link'
+                        });
                     }
-                } else {
-                    console.error('Error loading links:', data.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        async function deleteLink(id) {
-            if (!confirm('Yakin ingin menghapus link ini?')) {
-                return;
-            }
-            
-            try {
-                const formData = new FormData();
-                formData.append('action', 'delete');
-                formData.append('id', id);
-                
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: formData
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terjadi kesalahan saat menghubungkan ke server'
+                    });
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitText.textContent = 'Buat Link Unlock';
+                    loadingSpinner.style.display = 'none';
+                    submitBtn.disabled = false;
                 });
+            });
+            
+            // Copy to clipboard functionality
+            copyBtn.addEventListener('click', function() {
+                generatedLink.select();
+                document.execCommand('copy');
                 
-                const data = await response.json();
+                // Show tooltip feedback
+                const originalTitle = copyBtn.title;
+                copyBtn.title = 'Tersalin!';
+                setTimeout(() => {
+                    copyBtn.title = originalTitle;
+                }, 2000);
                 
-                if (data.status === 'success') {
-                    loadLinks(); // Refresh the list
-                } else {
-                    alert('Gagal menghapus link: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghapus link');
-            }
-        }
-
-        // Load links when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            loadLinks();
+                // Optional: Show SweetAlert notification
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Link berhasil disalin',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
         });
     </script>
 </body>
