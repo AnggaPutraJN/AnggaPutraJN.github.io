@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Noted2Unlock Admin - Bulk Generator</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+	<style type="text/css">@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    body.dark-theme {
+      background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="40" cy="60" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="60" cy="80" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    body.dark-theme::before {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="%23000000" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="%23000000" opacity="0.1"/><circle cx="40" cy="60" r="1" fill="%23000000" opacity="0.1"/><circle cx="60" cy="80" r="1" fill="%23000000" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    }
+    
+    .container {
+      max-width: 900px;
+    }
+    
+    .main-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      animation: slideUp 0.8s ease-out;
+    }
+    
+    body.dark-theme .main-card {
+      background: rgba(30, 30, 45, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, #4a94bb, #3a7bd5);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
+    }
+    
+    .card-header h3 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .card-header .icon {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.5rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .card-body {
+      padding: 2.5rem;
+    }
+    
+    .form-label {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    body.dark-theme .form-label {
+      color: #e2e8f0;
+    }
+    
+    .form-control {
+      border: 2px solid #e2e8f0;
+      border-radius: 15px;
+      padding: 1rem 1.25rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+    
+    body.dark-theme .form-control {
+      border-color: #4a5568;
+      background: rgba(45, 55, 72, 0.8);
+      color: #f7fafc;
+    }
+    
+    .form-control:focus {
+      border-color: #4a94bb;
+      box-shadow: 0 0 0 0.2rem rgba(74, 148, 187, 0.25);
+      background: rgba(255, 255, 255, 0.95);
+      transform: translateY(-2px);
+    }
+    
+    body.dark-theme .form-control:focus {
+      background: rgba(45, 55, 72, 0.95);
+      box-shadow: 0 0 0 0.2rem rgba(74, 148, 187, 0.25);
+    }
+    
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #4a94bb, #3a7bd5);
+      border: none;
+      border-radius: 15px;
+      padding: 1rem 2rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(74, 148, 187, 0.4);
+      background: linear-gradient(135deg, #3a7bd5, #4a94bb);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(-1px);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+    }
+    
+    .note-item {
+      background: rgba(255, 255, 255, 0.7);
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease-out;
+    }
+    
+    body.dark-theme .note-item {
+      background: rgba(30, 30, 45, 0.7);
+      border-color: #4a5568;
+    }
+    
+    .note-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border-color: #4a94bb;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .result-container {
+      display: none;
+      margin-top: 2rem;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .success-title {
+      color: #059669;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .result-item {
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    body.dark-theme .result-item {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .result-item h6 {
+      color: #059669;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .input-group {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark-theme .input-group {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .input-group .form-control {
+      border-radius: 0;
+      border-right: none;
+      background: #f8fafc;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+    
+    body.dark-theme .input-group .form-control {
+      background: #2d3748;
+      color: #f7fafc;
+    }
+    
+    .btn-outline-secondary {
+      border-color: #cbd5e0;
+      color: #4a5568;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border-radius: 0;
+    }
+    
+    body.dark-theme .btn-outline-secondary {
+      border-color: #4a5568;
+      color: #e2e8f0;
+      background-color: #2d3748;
+    }
+    
+    .btn-outline-secondary:hover {
+      background: #4a94bb;
+      border-color: #4a94bb;
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .alert-info {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 15px;
+      color: #1e40af;
+      backdrop-filter: blur(10px);
+    }
+    
+    body.dark-theme .alert-info {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+      border-color: rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+    }
+    
+    .divider {
+      margin: 2rem 0;
+      border: none;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    }
+    
+    body.dark-theme .divider {
+      background: linear-gradient(90deg, transparent, #4a5568, transparent);
+    }
+    
+    .floating-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .floating-element {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    body.dark-theme .floating-element {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .floating-element:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    
+    .floating-element:nth-child(2) {
+      width: 60px;
+      height: 60px;
+      top: 60%;
+      right: 15%;
+      animation-delay: 2s;
+    }
+    
+    .floating-element:nth-child(3) {
+      width: 40px;
+      height: 40px;
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 4s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+    }
+    
+    .count-display {
+      background: linear-gradient(135deg, #4a94bb, #3a7bd5);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    
+    /* Theme Switch Button */
+    .theme-switch-wrapper {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      z-index: 100;
+    }
+    
+    .theme-switch {
+      display: inline-block;
+      height: 34px;
+      position: relative;
+      width: 60px;
+    }
+    
+    .theme-switch input {
+      display: none;
+    }
+    
+    .slider {
+      background-color: #2d3748;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    
+    .slider:before {
+      background-color: #fff;
+      bottom: 4px;
+      content: "";
+      height: 26px;
+      left: 4px;
+      position: absolute;
+      transition: .4s;
+      width: 26px;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: #4a94bb;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .slider i {
+      position: absolute;
+      color: #fff;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .slider .bi-sun {
+      left: 8px;
+      opacity: 0;
+    }
+    
+    .slider .bi-moon {
+      right: 8px;
+    }
+    
+    input:checked + .slider .bi-sun {
+      opacity: 1;
+    }
+    
+    input:checked + .slider .bi-moon {
+      opacity: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1rem;
+      }
+      
+      .card-body {
+        padding: 1.5rem;
+      }
+      
+      .card-header {
+        padding: 1.5rem;
+      }
+      
+      .note-item {
+        padding: 1rem;
+      }
+      
+      .theme-switch-wrapper {
+        top: 15px;
+        right: 15px;
+      }
+    }
+
+
+    /* Tab Navigation Styles */
+.tab-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.tab-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+body.dark-mode .tab-button {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+body.dark-mode .tab-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tab-button.active {
+  background: linear-gradient(135deg, #4a94bb, #3a7bd5);
+  border-color: #4a94bb;
+  box-shadow: 0 5px 15px rgba(74, 148, 187, 0.3);
+}
+
+@media (max-width: 768px) {
+  .tab-navigation {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .tab-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+	</style>
+</head>
+<body>
+    <div class="tab-navigation">
+    <a href="Link22UnlockAdmin" class="tab-button">
+        <i class="fas fa-pen"></i> Link22Unlock Admin
+    </a>
+    <a href="index" class="tab-button">
+        <i class="fas fa-home"></i> Kembali Ke Home
+    </a>
+</div>
+<div class="floating-elements">
+<div class="floating-element"></div>
+
+<div class="floating-element"></div>
+
+<div class="floating-element"></div>
+</div>
+<!-- Theme Switch Button -->
+
+<div class="theme-switch-wrapper"><label class="theme-switch" for="checkbox"><input id="checkbox" type="checkbox" /> </label>
+
+<div class="slider round"></div>
+<label class="theme-switch" for="checkbox"> </label></div>
+
+<div class="container">
+<div class="card main-card">
+<div class="card-header">
+<h3></h3>
+
+<div class="icon"></div>
+Noted2Unlock Admin - Bulk Generator</div>
+
+<div class="card-body">
+<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="count-display">Total Notes: <span id="noteCount">1</span></div>
+<button class="btn btn-success" id="addNoteBtn" type="button">Tambah Note</button></div>
+
+<form id="bulkNoteForm">
+<div id="notesContainer">
+<div class="note-item" data-index="0">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h6 class="mb-0 text-primary">Note #1</h6>
+<button class="btn btn-danger btn-sm remove-note-btn" style="display: none;" type="button"></button></div>
+
+<div class="row">
+<div class="col-md-12 mb-3"><label class="form-label">Nama Note </label> <input class="form-control nama-note" placeholder="Masukkan nama note..." required="" type="text" /></div>
+
+<div class="col-md-12 mb-3"><label class="form-label">Konten Note </label><textarea class="form-control note-content" placeholder="Masukkan konten note..." required=""></textarea></div>
+</div>
+</div>
+</div>
+<button class="btn btn-primary w-100" type="submit">Generate Semua Note Link</button></form>
+
+<div class="result-container" id="resultContainer">
+<hr class="divider" />
+<h5 class="success-title">Note berhasil dibuat!</h5>
+
+<p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
+
+<div id="resultsContainer"></div>
+
+<div class="alert alert-info"><small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small></div>
+</div>
+</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script><script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyS6G-Y_h9w5oYunatsu0Wihhds_hJ6QfZT2tMdclasP9R9HEfKeiAQsTTPPCRLZOg/exec';
+    let noteIndex = 1;
+    
+    // Theme switch functionality
+    const toggleSwitch = document.querySelector('#checkbox');
+    const currentTheme = localStorage.getItem('theme');
+    
+    if (currentTheme) {
+      document.body.classList.add(currentTheme);
+      if (currentTheme === 'dark-theme') {
+        toggleSwitch.checked = true;
+      }
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark-theme');
+      toggleSwitch.checked = true;
+      localStorage.setItem('theme', 'dark-theme');
+    }
+    
+    function switchTheme(e) {
+      if (e.target.checked) {
+        document.body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+        localStorage.setItem('theme', 'light-theme');
+      }
+    }
+    
+    toggleSwitch.addEventListener('change', switchTheme, false);
+    
+    // Add new note form
+    document.getElementById('addNoteBtn').addEventListener('click', function() {
+      const container = document.getElementById('notesContainer');
+      const newNoteItem = createNoteItem(noteIndex);
+      container.appendChild(newNoteItem);
+      noteIndex++;
+      updateNoteCount();
+      updateRemoveButtons();
+      
+      // Animate the new item
+      newNoteItem.style.opacity = '0';
+      newNoteItem.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        newNoteItem.style.transition = 'all 0.5s ease';
+        newNoteItem.style.opacity = '1';
+        newNoteItem.style.transform = 'translateY(0)';
+      }, 10);
+    });
+    
+    // Create note item
+    function createNoteItem(index) {
+      const noteItem = document.createElement('div');
+      noteItem.className = 'note-item';
+      noteItem.setAttribute('data-index', index);
+      noteItem.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="mb-0 text-primary">
+            <i class="bi bi-sticky me-2"></i>
+            Note #${index + 1}
+          </h6>
+          <button type="button" class="btn btn-danger btn-sm remove-note-btn">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label">
+              <i class="bi bi-tag text-primary"></i>
+              Nama Note
+            </label>
+            <input type="text" class="form-control nama-note" placeholder="Masukkan nama note..." required>
+          </div>
+          <div class="col-md-12 mb-3">
+            <label class="form-label">
+              <i class="bi bi-pencil text-primary"></i>
+              Konten Note
+            </label>
+            <textarea class="form-control note-content" placeholder="Masukkan konten note..." required></textarea>
+          </div>
+        </div>
+      `;
+      
+
+      
+      // Add remove functionality
+      noteItem.querySelector('.remove-note-btn').addEventListener('click', function() {
+        noteItem.style.transition = 'all 0.3s ease';
+        noteItem.style.opacity = '0';
+        noteItem.style.transform = 'translateX(-100%)';
+        setTimeout(() => {
+          noteItem.remove();
+          updateNoteCount();
+          updateRemoveButtons();
+          updateNoteNumbers();
+        }, 300);
+      });
+      
+      return noteItem;
+    }
+    
+    // Update note count
+    function updateNoteCount() {
+      const count = document.querySelectorAll('.note-item').length;
+      document.getElementById('noteCount').textContent = count;
+    }
+    
+    // Update remove buttons visibility
+    function updateRemoveButtons() {
+      const noteItems = document.querySelectorAll('.note-item');
+      const removeButtons = document.querySelectorAll('.remove-note-btn');
+      
+      if (noteItems.length <= 1) {
+        removeButtons.forEach(btn => btn.style.display = 'none');
+      } else {
+        removeButtons.forEach(btn => btn.style.display = 'block');
+      }
+    }
+    
+    // Update note numbers
+    function updateNoteNumbers() {
+      const noteItems = document.querySelectorAll('.note-item');
+      noteItems.forEach((item, index) => {
+        const title = item.querySelector('h6');
+        title.innerHTML = `
+          <i class="bi bi-sticky me-2"></i>
+          Note #${index + 1}
+        `;
+      });
+    }
+    
+    // Form submission
+    document.getElementById('bulkNoteForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const noteItems = document.querySelectorAll('.note-item');
+      const notes = [];
+      
+      // Collect all note data
+      noteItems.forEach(item => {
+        const namaNote = item.querySelector('.nama-note').value;
+        const noteContent = item.querySelector('.note-content').value;
+        
+        if (namaNote && noteContent) {
+          notes.push({
+            nama_note: namaNote,
+            note_content: noteContent
+          });
+        }
+      });
+      
+      if (notes.length === 0) {
+        showNotification('Mohon isi minimal satu note!', 'error');
+        return;
+      }
+      
+      // Show loading state
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalHTML = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
+      
+      try {
+        const results = [];
+        
+        // Process each note
+        for (let i = 0; i < notes.length; i++) {
+          const note = notes[i];
+          const payload = {
+            action: 'create',
+            nama_note: note.nama_note,
+            note_content: note.note_content
+          };
+          
+          try {
+            const response = await fetch(SCRIPT_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: new URLSearchParams(payload)
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+              results.push({
+                nama_note: note.nama_note,
+                shareableLink: data.data.shareableLink,
+                success: true
+              });
+            } else {
+              results.push({
+                nama_note: note.nama_note,
+                error: data.message,
+                success: false
+              });
+            }
+          } catch (error) {
+            results.push({
+              nama_note: note.nama_note,
+              error: error.message,
+              success: false
+            });
+          }
+          
+          // Update progress
+          submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses... (${i + 1}/${notes.length})`;
+        }
+        
+        // Display results
+        displayResults(results);
+        
+        // Reset form
+        document.getElementById('bulkNoteForm').reset();
+        
+        // Show success notification
+        const successCount = results.filter(r => r.success).length;
+        const errorCount = results.filter(r => !r.success).length;
+        
+        if (successCount > 0) {
+          showNotification(`${successCount} note berhasil dibuat${errorCount > 0 ? `, ${errorCount} gagal` : ''}!`, 'success');
+        }
+        if (errorCount > 0 && successCount === 0) {
+          showNotification(`Semua note gagal dibuat!`, 'error');
+        }
+        
+      } catch (error) {
+        showNotification('Terjadi kesalahan: ' + error.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalHTML;
+      }
+    });
+    
+    // Display results
+    function displayResults(results) {
+      const resultContainer = document.getElementById('resultContainer');
+      const resultsContainer = document.getElementById('resultsContainer');
+      
+      resultsContainer.innerHTML = '';
+      
+      results.forEach((result, index) => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        
+        if (result.success) {
+          resultItem.innerHTML = `
+            <h6><i class="bi bi-sticky me-2"></i>${result.nama_note}</h6>
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" value="${result.shareableLink}" readonly>
+              <button class="btn btn-outline-secondary copy-btn" type="button" data-link="${result.shareableLink}">
+                <i class="bi bi-clipboard"></i>
+                Copy
+              </button>
+            </div>
+          `;
+        } else {
+          resultItem.className += ' border-danger';
+          resultItem.style.background = 'rgba(239, 68, 68, 0.05)';
+          resultItem.innerHTML = `
+            <h6 class="text-danger"><i class="bi bi-sticky me-2"></i>${result.nama_note}</h6>
+            <div class="alert alert-danger mb-0">
+              <i class="bi bi-x-circle me-2"></i>
+              Error: ${result.error}
+            </div>
+          `;
+        }
+        
+        resultsContainer.appendChild(resultItem);
+      });
+      
+      // Add copy functionality
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const link = this.getAttribute('data-link');
+          copyToClipboard(link, this);
+        });
+      });
+      
+      resultContainer.style.display = 'block';
+      resultContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Copy to clipboard
+    function copyToClipboard(text, button) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          showCopyFeedback(button);
+        });
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showCopyFeedback(button);
+      }
+    }
+    
+    // Show copy feedback
+    function showCopyFeedback(button) {
+      const originalHTML = button.innerHTML;
+      button.innerHTML = '<i class="bi bi-check"></i> Copied!';
+      button.classList.remove('btn-outline-secondary');
+      button.classList.add('btn-success');
+      
+      setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.classList.remove('btn-success');
+        button.classList.add('btn-outline-secondary');
+      }, 2000);
+      
+      showNotification('Link berhasil disalin!', 'success');
+    }
+    
+    // Notification function
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed`;
+      notification.style.cssText = `
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.5s ease-out;
+      `;
+      notification.innerHTML = `
+        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info-circle'} me-2"></i>
+        ${message}
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.5s ease-in';
+        setTimeout(() => notification.remove(), 500);
+      }, 3000);
+    }
+    
+    // Add CSS for notifications
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize
+    updateRemoveButtons();
+  </script></body>
+</html>
