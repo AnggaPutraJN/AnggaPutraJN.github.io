@@ -2,7 +2,7 @@
 <html>
 <head>
 <script src="https://apis.google.com/js/api.js"></script>
- <title>Generator Kode HTML</title>
+ <title>Generator Kode HTML PSVita</title>
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"> 
 
@@ -507,18 +507,6 @@ button:hover, .btn:hover {
     <a href="index" class="nav-btn btn-gradient-bg3">
       <i class="fas fa-code"></i>Generator HTML Switch
     </a>
-    <a href="shortingswitch" class="nav-btn btn-gradient-bg1">
-      <i class="fas fa-gamepad"></i>Shorting Game Switch
-    </a>
-    <a href="shortingswitchpartonly" class="nav-btn btn-gradient-bg2">
-      <i class="fas fa-puzzle-piece"></i>Parts Only
-    </a>
-    <a href="pageparts" class="nav-btn btn-gradient-bg4">
-      <i class="fas fa-file-alt"></i>Shorting Page Parts 3
-    </a>
-    <a href="psvita" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-gamepad"></i>Generator HTML PSvita
-    </a>
     <a href="sharegamepsvita" class="nav-btn btn-gradient-bg5">
       <i class="fas fa-gamepad"></i>Share GamePSvita NoNpdrm
     </a>
@@ -708,18 +696,45 @@ function saveToSpreadsheet() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert('Data berhasil disimpan ke database!');
+            showNotification('Data berhasil disimpan ke database!');
             viewDatabase();
         } else {
-            alert('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
+            showNotification('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan saat menyimpan data');
+        showNotification('Terjadi kesalahan saat menyimpan data');
     });
 }
 
+
+
+
+// Notification function
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+    ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
 // Fungsi untuk melihat data di database
 function viewDatabase() {
     fetch('https://script.google.com/macros/s/AKfycbwOiuaoSrQcbf6_q53laM-jkcq8Q18qhlCggU4aWhfLTq7g9gNdEq2D5aqMCEV0MJk/exec?action=read')
@@ -727,7 +742,7 @@ function viewDatabase() {
         .then(data => displayDatabase(data))
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat memuat data');
+            showNotification('Terjadi kesalahan saat memuat data');
         });
 }
 
@@ -846,7 +861,7 @@ function displayDatabase(data) {
         window.currentDatabaseData = data.data;
         window.originalDatabaseData = data.data; // Save original data for filtering
     } else {
-        alert("Gagal memuat data: " + (data.message || 'Unknown error'));
+        showNotification("Gagal memuat data: " + (data.message || 'Unknown error'));
     }
 }
 
@@ -929,15 +944,15 @@ function deleteGame(gameId) {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Game berhasil dihapus!');
+                showNotification('Game berhasil dihapus!');
                 viewDatabase(); // Refresh tampilan database
             } else {
-                alert('Gagal menghapus game: ' + (data.message || 'Unknown error'));
+                showNotification('Gagal menghapus game: ' + (data.message || 'Unknown error'));
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat menghapus game');
+            showNotification('Terjadi kesalahan saat menghapus game');
         });
     }
 }
@@ -945,7 +960,7 @@ function deleteGame(gameId) {
 // Fungsi untuk export ke CSV
 function exportToCSV() {
     if (!window.currentDatabaseData || window.currentDatabaseData.length === 0) {
-        alert('Tidak ada data untuk di-export');
+        showNotification('Tidak ada data untuk di-export');
         return;
     }
     
@@ -983,7 +998,7 @@ function exportToCSV() {
 function editGame(gameId) {
     const game = window.currentDatabaseData.find(g => g.id === gameId);
     if (!game) {
-        alert('Game tidak ditemukan!');
+        showNotification('Game tidak ditemukan!');
         return;
     }
 
@@ -1065,7 +1080,7 @@ function editGame(gameId) {
 
         } catch (error) {
             console.error('Error in editGame:', error);
-            alert('Terjadi kesalahan saat memuat data game untuk diedit');
+            showNotification('Terjadi kesalahan saat memuat data game untuk diedit');
         }
     }, 300);
 }
@@ -1077,7 +1092,7 @@ function editGame(gameId) {
 function viewGameDetails(gameId) {
     const game = window.currentDatabaseData.find(g => g.id === gameId);
     if (!game) {
-        alert('Game tidak ditemukan!');
+        showNotification('Game tidak ditemukan!');
         return;
     }
 
@@ -1441,12 +1456,12 @@ function showTripleLinkTypeSelection() {
     singleNoNpdrmLinkCount = parseInt(document.getElementById("singleNoNpdrmLinkCount").value) || 0;
     
     if (singleNoNpdrmLinkCount < 1) {
-        alert("Masukkan minimal 1 link untuk NoNpdrm");
+        showNotification("Masukkan minimal 1 link untuk NoNpdrm");
         return;
     }
     
     if (singleNoNpdrmLinkCount > 10) {
-        alert("Maksimal 10 link");
+        showNotification("Maksimal 10 link");
         return;
     }
     
@@ -1540,11 +1555,11 @@ function proceedToTripleGenerator() {
     // Validate selections - must match exactly
     if (singleNoNpdrmLinkCount > 0) {
         if (totalSingleNoNpdrmSelected === 0) {
-            alert("Pilih jenis link untuk NoNpdrm");
+            showNotification("Pilih jenis link untuk NoNpdrm");
             return;
         }
         if (totalSingleNoNpdrmSelected !== singleNoNpdrmLinkCount) {
-            alert(`Anda harus memilih tepat ${singleNoNpdrmLinkCount} jenis link untuk NoNpdrm (sekarang ${totalSingleNoNpdrmSelected})`);
+            showNotification(`Anda harus memilih tepat ${singleNoNpdrmLinkCount} jenis link untuk NoNpdrm (sekarang ${totalSingleNoNpdrmSelected})`);
             return;
         }
     }
@@ -1616,7 +1631,7 @@ function copyCode() {
     const generatedHtml = resultDiv.innerText;
 
     if (generatedHtml.trim() === "") {
-        alert("Maaf Codingannya Belum Dibuat");
+        showNotification("Maaf Codingannya Belum Dibuat");
         return;
     }
 
@@ -1626,7 +1641,7 @@ function copyCode() {
     tempTextarea.select();
     document.execCommand("copy");
     document.body.removeChild(tempTextarea); 
-    alert("Codingan Berhasil Disalin!");
+    showNotification("Codingan Berhasil Disalin!");
 }
 
 const textarea = document.getElementById('myTextarea');
@@ -2686,7 +2701,7 @@ ${inputEND3}
 function saveLinkSettings() {
     // Validasi dulu apakah sudah memilih sesuai jumlah yang ditentukan
     if (singleNoNpdrmLinkCount > 0 && selectedSingleNoNpdrmLinksOrder.length !== singleNoNpdrmLinkCount) {
-        alert("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
+        showNotification("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
         return;
     }
 
@@ -2698,7 +2713,7 @@ function saveLinkSettings() {
 function confirmSaveSettings() {
     const settingsName = document.getElementById('settingsName').value.trim();
     if (!settingsName) {
-        alert("Harap isi nama settingan");
+        showNotification("Harap isi nama settingan");
         return;
     }
 
@@ -2723,7 +2738,7 @@ function confirmSaveSettings() {
     document.getElementById('settingsName').value = '';
     bootstrap.Modal.getInstance(document.getElementById('saveSettingsModal')).hide();
     
-    alert(`Settingan "${settingsName}" berhasil disimpan!`);
+    showNotification(`Settingan "${settingsName}" berhasil disimpan!`);
 }
 
 // Ganti nama fungsi dari loadLinkSettings() menjadi loadLinkSettingsModal()
@@ -2732,7 +2747,7 @@ function loadLinkSettingsModal() {
     const savedSettings = JSON.parse(localStorage.getItem('linkSettingsPSvita') || []);
     
     if (savedSettings.length === 0) {
-        alert("Belum ada settingan yang disimpan");
+        showNotification("Belum ada settingan yang disimpan");
         return;
     }
 
@@ -2772,7 +2787,7 @@ function applyLinkSettings(index) {
         const savedSettings = JSON.parse(localStorage.getItem('linkSettingsPSvita')) || [];
         
         if (index < 0 || index >= savedSettings.length) {
-            alert("Settingan tidak ditemukan");
+            showNotification("Settingan tidak ditemukan");
             return;
         }
         
@@ -2804,7 +2819,7 @@ function applyLinkSettings(index) {
         
     } catch (error) {
         console.error("Error applying settings:", error);
-        alert("Terjadi error saat memuat settingan: " + error.message);
+        showNotification("Terjadi error saat memuat settingan: " + error.message);
     }
 }
 
@@ -2826,7 +2841,7 @@ function deleteLinkSettings(index) {
     // Refresh daftar settingan
     loadLinkSettingsModal();
     
-    alert(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
+    showNotification(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
 }
 
 </script>
