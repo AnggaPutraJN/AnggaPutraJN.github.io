@@ -1,177 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unlock Link - <?= namaGame ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .container {
-            max-width: 600px;
-            margin-top: 50px;
-        }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
-        .card-header {
-            background-color: #4a94bb;
-            color: white;
-            border-radius: 15px 15px 0 0 !important;
-            font-weight: bold;
-            text-align: center;
-        }
-        .btn-primary {
-            background-color: #4a94bb;
-            border: none;
-            padding: 10px 25px;
-        }
-        .btn-primary:hover {
-            background-color: #3a7b9b;
-        }
-        .telegram-btn {
-            background-color: #0088cc;
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        .telegram-btn:hover {
-            background-color: #0077b3;
-            color: white;
-            transform: translateY(-2px);
-        }
-        .telegram-icon {
-            margin-right: 8px;
-            font-size: 1.2rem;
-        }
-        .unlock-icon {
-            font-size: 3rem;
-            color: #4a94bb;
-            margin-bottom: 20px;
-        }
-        .loading-spinner {
-            display: none;
-            width: 1.5rem;
-            height: 1.5rem;
-            margin-left: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link2Unlock</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 2rem;
+    }
+    .container {
+      max-width: 500px;
+    }
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      background-color: #4a94bb;
+      color: white;
+      border-radius: 15px 15px 0 0 !important;
+    }
+    .btn-primary {
+      background-color: #4a94bb;
+      border-color: #4a94bb;
+    }
+    .telegram-btn {
+      background-color: #0088cc;
+      color: white;
+    }
+    .telegram-btn:hover {
+      background-color: #0077b3;
+      color: white;
+    }
+    .spinner-border {
+      display: none;
+    }
+    #unlockButton[disabled] .spinner-border {
+      display: inline-block;
+    }
+    #unlockButton[disabled] .button-text {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="card-header py-3">
-                <h3>Unlock Link</h3>
-                <p class="mb-0"><?= namaGame ?></p>
-            </div>
-            <div class="card-body text-center">
-                <div class="unlock-icon">
-                    <i class="bi bi-lock-fill"></i>
-                </div>
-                <h4>Link Dikunci</h4>
-                <p class="text-muted">Untuk membuka link ini, Anda harus follow channel Telegram kami terlebih dahulu.</p>
-                
-                <div class="d-flex flex-column align-items-center mb-4">
-                    <a href="https://t.me/iindapk" target="_blank" class="telegram-btn mb-3">
-                        <i class="bi bi-telegram telegram-icon"></i>
-                        Follow @iindapk
-                    </a>
-                    <small class="text-muted">Klik tombol di atas untuk membuka Telegram</small>
-                </div>
-                
-                <p>Setelah follow, klik tombol di bawah ini untuk membuka link:</p>
-                
-                <button class="btn btn-primary" id="unlockBtn">
-                    <span id="unlockText">Buka Link</span>
-                    <span class="spinner-border spinner-border-sm loading-spinner" id="unlockSpinner" role="status" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="card-footer text-muted text-center">
-                <small>© 2023 Link2Unlock by INDapk</small>
-            </div>
+  <div class="container">
+    <div class="card">
+      <div class="card-header text-center">
+        <h3 id="gameTitle">Link2Unlock</h3>
+      </div>
+      <div class="card-body text-center">
+        <div id="unlockContent">
+          <p>Untuk membuka link ini, silakan follow Telegram kami terlebih dahulu:</p>
+          <a href="https://t.me/iindapk" class="btn telegram-btn mb-3" target="_blank">
+            <i class="bi bi-telegram"></i> Follow @iindapk
+          </a>
+          <p>Setelah follow, klik tombol di bawah untuk membuka link:</p>
+          
+          <button id="unlockButton" class="btn btn-primary w-100">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="button-text">Buka Link</span>
+          </button>
+          
+          <div class="alert alert-warning mt-3">
+            <small>Link akan terkunci jika diakses dari IP yang berbeda</small>
+          </div>
         </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby5tvWycqduUEfKnlFqQ4q7oqVrBMxd3v4jMqEJyZtaSK3be0S8vEefDDbGpCBAiPo/exec';
         
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const linkId = urlParams.get('id');
-            const unlockBtn = document.getElementById('unlockBtn');
-            const unlockText = document.getElementById('unlockText');
-            const unlockSpinner = document.getElementById('unlockSpinner');
+        <div id="successContent" style="display: none;">
+          <div class="alert alert-success">
+            <h4 class="alert-heading">Verifikasi Berhasil!</h4>
+            <p>Anda akan diarahkan ke link tujuan dalam <span id="countdown">5</span> detik...</p>
+          </div>
+          <a id="directLink" href="#" class="btn btn-primary w-100">Atau klik di sini untuk langsung menuju</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqLXCVli_8yvOTWqI0ZgeDiq7y4jMx4Hi89w_NEFsgS2k8Yzxsni_V0a95g_evvpM/exec';
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      
+      if (!id) {
+        alert('Link tidak valid');
+        return;
+      }
+      
+      // Get IP address (simplified - in production you might want a more reliable method)
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(ipData => {
+          const userIp = ipData.ip;
+          
+          // Set up unlock button
+          document.getElementById('unlockButton').addEventListener('click', function() {
+            this.disabled = true;
             
-            if (!linkId) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Link Tidak Valid',
-                    text: 'Link unlock tidak valid atau sudah kadaluarsa',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = 'index.html';
-                });
-                return;
-            }
+            const payload = {
+              action: 'verify',
+              id: id,
+              ip: userIp
+            };
             
-            unlockBtn.addEventListener('click', function() {
-                unlockText.textContent = 'Memverifikasi...';
-                unlockSpinner.style.display = 'inline-block';
-                unlockBtn.disabled = true;
+            fetch(SCRIPT_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: new URLSearchParams(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                // Show success content
+                document.getElementById('unlockContent').style.display = 'none';
+                document.getElementById('successContent').style.display = 'block';
                 
-                // Send unlock request
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        action: 'unlock',
-                        linkId: linkId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // Redirect to target URL
-                        window.location.href = data.redirectUrl;
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal Unlock',
-                            text: data.message || 'Pastikan Anda sudah follow channel Telegram kami',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Terjadi kesalahan saat menghubungkan ke server'
-                    });
-                })
-                .finally(() => {
-                    unlockText.textContent = 'Buka Link';
-                    unlockSpinner.style.display = 'none';
-                    unlockBtn.disabled = false;
-                });
+                // Update game title
+                document.getElementById('gameTitle').textContent = data.data.nama_game || 'Link2Unlock';
+                
+                // Set up redirect
+                const directLink = document.getElementById('directLink');
+                directLink.href = data.data.link_tujuan;
+                
+                // Countdown and redirect
+                let seconds = 5;
+                const countdownElement = document.getElementById('countdown');
+                const countdownInterval = setInterval(() => {
+                  seconds--;
+                  countdownElement.textContent = seconds;
+                  
+                  if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = data.data.link_tujuan;
+                  }
+                }, 1000);
+              } else {
+                alert('Verifikasi gagal: ' + data.message);
+                this.disabled = false;
+              }
+            })
+            .catch(error => {
+              alert('Terjadi kesalahan: ' + error.message);
+              this.disabled = false;
             });
+          });
+        })
+        .catch(error => {
+          console.error('Error getting IP:', error);
+          // Continue without IP (not recommended for production)
+          document.getElementById('unlockButton').addEventListener('click', function() {
+            alert('Sistem tidak dapat mendeteksi IP Anda. Silakan coba lagi.');
+          });
         });
-    </script>
+    });
+  </script>
 </body>
 </html>
