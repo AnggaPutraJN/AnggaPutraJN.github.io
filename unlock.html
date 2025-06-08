@@ -1,431 +1,176 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unlock Link</title>
+    <title>Unlock Link - <?= namaGame ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
+            background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
         }
-
-        .unlock-container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
         }
-
-        .unlock-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        .content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .lock-icon {
-            font-size: 4rem;
-            color: #667eea;
-            margin-bottom: 20px;
-            display: block;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .game-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .description {
-            color: #666;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .telegram-section {
-            background: linear-gradient(135deg, #0088cc 0%, #0066aa 100%);
-            color: white;
-            padding: 25px;
+        .card {
             border-radius: 15px;
-            margin-bottom: 25px;
-        }
-
-        .telegram-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .telegram-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .follow-btn {
-            background: white;
-            color: #0088cc;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-
-        .follow-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-
-        .unlock-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        .card-header {
+            background-color: #4a94bb;
             color: white;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #4a94bb;
             border: none;
-            padding: 15px 40px;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            opacity: 0.5;
-            cursor: not-allowed;
-            display: block;
-            width: 100%;
-            margin-top: 20px;
+            padding: 10px 25px;
         }
-
-        .unlock-btn.active {
-            opacity: 1;
-            cursor: pointer;
+        .btn-primary:hover {
+            background-color: #3a7b9b;
         }
-
-        .unlock-btn.active:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-        }
-
-        .steps {
-            text-align: left;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 0.95rem;
-        }
-
-        .step:last-child {
-            margin-bottom: 0;
-        }
-
-        .step-number {
-            background: #667eea;
+        .telegram-btn {
+            background-color: #0088cc;
             color: white;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-right: 12px;
-            flex-shrink: 0;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
         }
-
-        .verification-status {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            display: none;
+        .telegram-btn:hover {
+            background-color: #0077b3;
+            color: white;
+            transform: translateY(-2px);
         }
-
-        .verification-status.show {
-            display: block;
-        }
-
-        .success-message {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            display: none;
-        }
-
-        .countdown {
+        .telegram-icon {
+            margin-right: 8px;
             font-size: 1.2rem;
-            font-weight: 600;
-            color: #667eea;
-            margin: 15px 0;
         }
-
-        @media (max-width: 768px) {
-            .unlock-container {
-                padding: 30px 20px;
-                margin: 10px;
-            }
-            
-            .game-title {
-                font-size: 1.5rem;
-            }
-            
-            .lock-icon {
-                font-size: 3rem;
-            }
+        .unlock-icon {
+            font-size: 3rem;
+            color: #4a94bb;
+            margin-bottom: 20px;
+        }
+        .loading-spinner {
+            display: none;
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="unlock-container">
-        <div class="content">
-            <div class="lock-icon">🔐</div>
-            
-            <h1 class="game-title" id="gameTitle">Loading...</h1>
-            
-            <p class="description">
-                Untuk mengakses link download, Anda perlu follow Telegram channel kami terlebih dahulu. 
-                Ini gratis dan mudah!
-            </p>
-
-            <div class="telegram-section">
-                <div class="telegram-icon">📱</div>
-                <div class="telegram-text">Follow Telegram Channel</div>
-                <a href="https://t.me/iindapk" target="_blank" class="follow-btn" id="followBtn">
-                    🚀 Follow @iindapk
-                </a>
+    <div class="container">
+        <div class="card">
+            <div class="card-header py-3">
+                <h3>Unlock Link</h3>
+                <p class="mb-0"><?= namaGame ?></p>
             </div>
-
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div>Klik tombol "Follow @iindapk" di atas</div>
+            <div class="card-body text-center">
+                <div class="unlock-icon">
+                    <i class="bi bi-lock-fill"></i>
                 </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div>Follow/Subscribe channel Telegram kami</div>
+                <h4>Link Dikunci</h4>
+                <p class="text-muted">Untuk membuka link ini, Anda harus follow channel Telegram kami terlebih dahulu.</p>
+                
+                <div class="d-flex flex-column align-items-center mb-4">
+                    <a href="https://t.me/iindapk" target="_blank" class="telegram-btn mb-3">
+                        <i class="bi bi-telegram telegram-icon"></i>
+                        Follow @iindapk
+                    </a>
+                    <small class="text-muted">Klik tombol di atas untuk membuka Telegram</small>
                 </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div>Kembali ke halaman ini dan klik "Buka Link"</div>
-                </div>
+                
+                <p>Setelah follow, klik tombol di bawah ini untuk membuka link:</p>
+                
+                <button class="btn btn-primary" id="unlockBtn">
+                    <span id="unlockText">Buka Link</span>
+                    <span class="spinner-border spinner-border-sm loading-spinner" id="unlockSpinner" role="status" aria-hidden="true"></span>
+                </button>
             </div>
-
-            <div class="verification-status" id="verificationStatus">
-                ⏳ Memverifikasi status follow Anda...
-            </div>
-
-            <div class="success-message" id="successMessage" style="display: none;">
-                ✅ Terima kasih sudah follow! Link akan dibuka dalam <span id="countdown">3</span> detik...
-            </div>
-
-            <button class="unlock-btn" id="unlockBtn" onclick="verifyAndUnlock()">
-                🔓 Buka Link Download
-            </button>
-
-            <div style="margin-top: 30px; font-size: 0.9rem; color: #666;">
-                <p>🔒 Sistem keamanan untuk mencegah spam dan bot</p>
-                <p>💡 Follow sekali saja, berlaku untuk semua link</p>
+            <div class="card-footer text-muted text-center">
+                <small>© 2023 Link2Unlock by INDapk</small>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Get data from URL parameters or global variables set by Apps Script
-        let gameTitle = 'Unknown Game';
-        let targetLink = '#';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby5tvWycqduUEfKnlFqQ4q7oqVrBMxd3v4jMqEJyZtaSK3be0S8vEefDDbGpCBAiPo/exec';
         
-        // Check if data is available from Apps Script
-        if (typeof window.namaGame !== 'undefined') {
-            gameTitle = window.namaGame;
-        }
-        if (typeof window.linkTujuan !== 'undefined') {
-            targetLink = window.linkTujuan;
-        }
-        
-        // Fallback: try to get from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('game')) {
-            gameTitle = decodeURIComponent(urlParams.get('game'));
-        }
-        if (urlParams.get('link')) {
-            targetLink = decodeURIComponent(urlParams.get('link'));
-        }
-
-        // Set the game title
-        document.getElementById('gameTitle').textContent = gameTitle;
-        document.title = 'Unlock Link - ' + gameTitle;
-
-        let hasFollowed = false;
-        let verificationAttempts = 0;
-        const maxVerificationAttempts = 3;
-
-        // Check if user has already followed (using simple localStorage check)
-        function checkFollowStatus() {
-            // Simple check - in real implementation, you might want to use Telegram Bot API
-            // For now, we'll use a combination of localStorage and time-based verification
-            const followKey = 'telegram_follow_iindapk';
-            const lastFollowCheck = localStorage.getItem(followKey);
-            
-            if (lastFollowCheck) {
-                const timeDiff = Date.now() - parseInt(lastFollowCheck);
-                // If checked within last hour, assume still following
-                if (timeDiff < 3600000) { // 1 hour
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Mark as followed
-        function markAsFollowed() {
-            localStorage.setItem('telegram_follow_iindapk', Date.now().toString());
-            hasFollowed = true;
-        }
-
-        // Verify follow status and unlock
-        function verifyAndUnlock() {
-            const unlockBtn = document.getElementById('unlockBtn');
-            const verificationStatus = document.getElementById('verificationStatus');
-            const successMessage = document.getElementById('successMessage');
-            
-            verificationAttempts++;
-            
-            // Show verification status
-            verificationStatus.classList.add('show');
-            unlockBtn.style.opacity = '0.5';
-            unlockBtn.style.cursor = 'not-allowed';
-            
-            // Simulate verification process
-            setTimeout(() => {
-                // Check if user has followed (simplified check)
-                const hasRecentlyFollowed = checkFollowStatus();
-                
-                if (hasRecentlyFollowed || verificationAttempts >= 2) {
-                    // Success - user has followed or has made multiple attempts
-                    markAsFollowed();
-                    verificationStatus.style.display = 'none';
-                    successMessage.style.display = 'block';
-                    
-                    // Countdown and redirect
-                    let countdown = 3;
-                    const countdownEl = document.getElementById('countdown');
-                    
-                    const countdownInterval = setInterval(() => {
-                        countdown--;
-                        countdownEl.textContent = countdown;
-                        
-                        if (countdown <= 0) {
-                            clearInterval(countdownInterval);
-                            // Open the target link
-                            window.open(targetLink, '_blank');
-                            // Also redirect current page
-                            window.location.href = targetLink;
-                        }
-                    }, 1000);
-                    
-                } else {
-                    // User needs to follow first
-                    verificationStatus.innerHTML = '❌ Belum terdeteksi follow. Pastikan Anda sudah follow @iindapk di Telegram, lalu coba lagi.';
-                    unlockBtn.style.opacity = '1';
-                    unlockBtn.style.cursor = 'pointer';
-                    
-                    // Auto-hide verification status after 3 seconds
-                    setTimeout(() => {
-                        verificationStatus.classList.remove('show');
-                    }, 3000);
-                }
-            }, 2000); // 2 second verification delay
-        }
-
-        // Track follow button click
-        document.getElementById('followBtn').addEventListener('click', function() {
-            // Mark that user clicked follow button
-            setTimeout(() => {
-                markAsFollowed();
-                document.getElementById('unlockBtn').classList.add('active');
-            }, 1000);
-        });
-
-        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user has already followed
-            if (checkFollowStatus()) {
-                hasFollowed = true;
-                document.getElementById('unlockBtn').classList.add('active');
+            const urlParams = new URLSearchParams(window.location.search);
+            const linkId = urlParams.get('id');
+            const unlockBtn = document.getElementById('unlockBtn');
+            const unlockText = document.getElementById('unlockText');
+            const unlockSpinner = document.getElementById('unlockSpinner');
+            
+            if (!linkId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Link Tidak Valid',
+                    text: 'Link unlock tidak valid atau sudah kadaluarsa',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = 'index.html';
+                });
+                return;
             }
             
-            // Add some delay before enabling the unlock button
-            setTimeout(() => {
-                document.getElementById('unlockBtn').classList.add('active');
-            }, 3000);
-        });
-
-        // Prevent right-click and some keyboard shortcuts (optional security)
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        document.addEventListener('keydown', function(e) {
-            // Prevent F12, Ctrl+Shift+I, Ctrl+U
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-                (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-            }
+            unlockBtn.addEventListener('click', function() {
+                unlockText.textContent = 'Memverifikasi...';
+                unlockSpinner.style.display = 'inline-block';
+                unlockBtn.disabled = true;
+                
+                // Send unlock request
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'unlock',
+                        linkId: linkId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Redirect to target URL
+                        window.location.href = data.redirectUrl;
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Unlock',
+                            text: data.message || 'Pastikan Anda sudah follow channel Telegram kami',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terjadi kesalahan saat menghubungkan ke server'
+                    });
+                })
+                .finally(() => {
+                    unlockText.textContent = 'Buka Link';
+                    unlockSpinner.style.display = 'none';
+                    unlockBtn.disabled = false;
+                });
+            });
         });
     </script>
 </body>
