@@ -451,6 +451,12 @@ label {
             SHARE GAME PS2
         </label>
     </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="uploadulang" value="upload">
+        <label class="form-check-label" for="uploadulang">
+            Upload Ulang GAME PS2
+        </label>
+    </div>
 <label for="myTextarea">Masukkan Detail Game PS2 (satu per baris):</label>
 <textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game...&#10;Contoh:&#10;God of War&#10;2.5 GB&#10;4.2 GB&#10;Action&#10;NTSC-U&#10;https://example.com/download"></textarea>
 </div>
@@ -692,10 +698,10 @@ ${inputLink}
 
 ================
 ⚠️ REQUEST GAME BISA DISINI:
-https://indapk.com/request-game/
+https://indapk.com/request.html
 
 ⚠️ REPORT LINK BISA DISINI:
-https://indapk.com/report/
+https://indapk.com/report.html
 
 💵Donate Dana/Shopeepay/Gopay:
 082286344446
@@ -719,10 +725,37 @@ ${inputLink}
 
 ================
 ⚠️ REQUEST GAME BISA DISINI:
-https://indapk.com/request-game/
+https://indapk.com/request.html
 
 ⚠️ REPORT LINK BISA DISINI:
-https://indapk.com/report/
+https://indapk.com/report.html
+
+💵Donate Dana/Shopeepay/Gopay:
+082286344446
+
+NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
+        } if (postType === 'upload') {
+            generatedHtml = `Upload Ulang GAME PS2
+🎮Update Game PS2:
+Nama Game: ${inputName}
+Ukuran Game CHD: ${inputSingleSizeCHD}
+Ukuran Game ISO: ${inputSingleSizeISO}
+Category: ${inputCategory}
+Region: ${inputRegion}
+Emulator: AetherSX2 (Android), PCSX2 (Windows)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: CHD dan ISO
+
+🌐Link Game:
+${inputLink}
+
+================
+⚠️ REQUEST GAME BISA DISINI:
+https://indapk.com/request.html
+
+⚠️ REPORT LINK BISA DISINI:
+https://indapk.com/report.html
 
 💵Donate Dana/Shopeepay/Gopay:
 082286344446
