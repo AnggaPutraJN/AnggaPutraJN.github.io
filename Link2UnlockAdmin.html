@@ -693,6 +693,7 @@ body.dark-theme .modal-header {
 }
 	</style>
 </head>
+
 <body>
 <div class="tab-navigation">
     <a href="#" class="tab-button active" id="bulkGeneratorTab">
@@ -701,140 +702,114 @@ body.dark-theme .modal-header {
     <a href="#" class="tab-button" id="linkListTab">
         <i class="bi bi-list-ul"></i> Daftar Link
     </a>
-    <a href="Noted2UnlockAdmin" class="tab-button">
-        <i class="fas fa-pen"></i> Noted2Unlock Admin
-    </a>
-    <a href="index" class="tab-button">
-        <i class="fas fa-home"></i> Kembali Ke Home
-    </a>
-</div>
-<div class="floating-elements">
-<div class="floating-element"></div>
-
-<div class="floating-element"></div>
-
-<div class="floating-element"></div>
 </div>
 
 <div class="container">
-<div class="theme-switch">
-  <button class="theme-switch-btn active" id="lightThemeBtn" title="Light Theme">
-    <i class="bi bi-sun-fill"></i>
-  </button>
-  <button class="theme-switch-btn" id="darkThemeBtn" title="Dark Theme">
-    <i class="bi bi-moon-fill"></i>
-  </button>
-</div>
-<div class="card main-card">
-<div class="card-header">
-<h3></h3>
-
-<div class="icon"></div>
-Link2Unlock Admin - Bulk Generator By INDapk</div>
-
-
-<div class="card-body">
-<div class="d-flex justify-content-between align-items-center mb-4">
-<div class="count-display">Total Games: <span id="gameCount">1</span></div>
-<button class="btn btn-success" id="addGameBtn" type="button">Tambah Game</button></div>
-
-
-<form id="bulkLinkForm">
-<div id="gamesContainer">
-<div class="game-item" data-index="0">
-<div class="d-flex justify-content-between align-items-center mb-3">
-<h6 class="mb-0 text-primary">Game #1</h6>
-<button class="btn btn-danger btn-sm remove-game-btn" style="display: none;" type="button"></button></div>
-
-
-<div class="row">
-<div class="col-md-6 mb-3"><label class="form-label">Nama Game </label> <input class="form-control nama-game" placeholder="Masukkan nama game..." required="" type="text" /></div>
-
-<div class="col-md-6 mb-3"><label class="form-label">Link Tujuan </label> <input class="form-control link-tujuan" placeholder="https://example.com" required="" type="url" /></div>
-</div>
-</div>
-</div>
-<button class="btn btn-primary w-100" type="submit">Generate Semua Link</button></form>
-
-<div class="result-container" id="resultContainer">
-<hr class="divider" />
-<h5 class="success-title">Link berhasil dibuat!</h5>
-
-<p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
-
-<div id="resultsContainer"></div>
-
-<div class="alert alert-info"><small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small></div>
-</div>
-</div>
-</div>
-
-
-<!-- Link List Container Daftar Link -->
-<div class="card main-card" id="linkListContainer" style="display: none;">
-    <div class="card-header">
-        <h3>
-            <div class="icon"><i class="bi bi-list-ul"></i></div>
-            Daftar Link yang Dibuat
-        </h3>
-    </div>
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div class="count-display">Total Link: <span id="totalLinksCount">0</span></div>
-               <div class="btn-group">
-        <button class="btn btn-success" id="exportAllBtn" type="button">
-            <i class="bi bi-file-earmark-excel"></i> Export All Excel
+    <div class="theme-switch">
+        <button class="theme-switch-btn active" id="lightThemeBtn" title="Light Theme">
+            <i class="bi bi-sun-fill"></i>
         </button>
-        <button class="btn btn-primary" id="refreshLinksBtn" type="button">
-            <i class="bi bi-arrow-clockwise"></i> Refresh
+        <button class="theme-switch-btn" id="darkThemeBtn" title="Dark Theme">
+            <i class="bi bi-moon-fill"></i>
         </button>
     </div>
-</div>
+    
+    <div class="card main-card">
+        <div class="card-header">
+            <h3><div class="icon"></div>Link2Unlock Admin - Bulk Generator By INDapk</h3>
         </div>
         
-        <div id="linksTableContainer">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Game</th>
-                            <th>Link Tujuan</th>
-                            <th>Tanggal Dibuat</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="linksTableBody">
-                        <!-- Links will be loaded here -->
-                    </tbody>
-                </table>
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="count-display">Total Games: <span id="gameCount">1</span></div>
+                <button class="btn btn-success" id="addGameBtn" type="button">Tambah Game</button>
+            </div>
+            
+            <form id="bulkLinkForm">
+                <div id="gamesContainer">
+                    <div class="game-item" data-index="0">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0 text-primary">Game #1</h6>
+                            <button class="btn btn-danger btn-sm remove-game-btn" style="display: none;" type="button"></button>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nama Game</label>
+                                <input class="form-control nama-game" placeholder="Masukkan nama game..." required type="text">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Link Tujuan</label>
+                                <input class="form-control link-tujuan" placeholder="https://example.com" required type="url">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Generate Semua Link</button>
+            </form>
+            
+            <div class="result-container" id="resultContainer" style="display: none;">
+                <hr class="divider">
+                <h5 class="success-title">Link berhasil dibuat!</h5>
+                <p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
+                <div id="resultsContainer"></div>
+                <div class="alert alert-info"><small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small></div>
             </div>
         </div>
-        
-        <div id="emptyState" style="display: none;">
-            <div class="text-center py-5">
-                <i class="bi bi-inbox display-1 text-muted"></i>
-                <h5 class="mt-3 text-muted">Belum ada link yang dibuat</h5>
-                <p class="text-muted">Mulai dengan membuat link di tab Bulk Generator</p>
+    </div>
+    
+    <!-- Link List Container Daftar Link -->
+    <div class="card main-card" id="linkListContainer" style="display: none;">
+        <div class="card-header">
+            <h3><div class="icon"><i class="bi bi-list-ul"></i></div>Daftar Link yang Dibuat</h3>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="count-display">Total Link: <span id="totalLinksCount">0</span></div>
+                <div class="btn-group">
+                    <button class="btn btn-success" id="exportAllBtn" type="button">
+                        <i class="bi bi-file-earmark-excel"></i> Export All Excel
+                    </button>
+                    <button class="btn btn-primary" id="refreshLinksBtn" type="button">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div id="linksTableContainer">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Game</th>
+                                <th>Link Tujuan</th>
+                                <th>Tanggal Dibuat</th>
+                                <th>Klik</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linksTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="emptyState" style="display: none;">
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <h5 class="mt-3 text-muted">Belum ada link yang dibuat</h5>
+                    <p class="text-muted">Mulai dengan membuat link di tab Bulk Generator</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-
-
-
-
-
-  <!-- Detail Modal -->
+<!-- Detail Modal -->
 <div class="modal fade" id="linkDetailModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-info-circle me-2"></i>
-                    Detail Link
-                </h5>
+                <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Detail Link</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -868,6 +843,14 @@ Link2Unlock Admin - Bulk Generator By INDapk</div>
                             <input type="text" class="form-control" id="editStatus" readonly>
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total Klik</label>
+                        <input type="text" class="form-control" id="editClickCount" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Detail Klik</label>
+                        <div class="click-details-container" id="clickDetailsContainer" style="max-height: 200px; overflow-y: auto;"></div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -886,745 +869,536 @@ Link2Unlock Admin - Bulk Generator By INDapk</div>
     </div>
 </div>
 
-</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykngtLi3tcPvuM-PNisYk-lWGNmVzheE2R57y5iCODBk-ZKej7b983GDASRrZNZi4/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxfoirqPo3rmbs23G_kFVXj-zF27QEuaAYtBp6NTyVkG7sPgVfpzyc1MbJRa3KNZI/exec';
     let gameIndex = 1;
+    let currentEditingLinkId = null;
     
-    
-// Theme Management
-class ThemeManager {
-  constructor() {
-    this.currentTheme = localStorage.getItem('theme') || 'light';
-    this.lightBtn = document.getElementById('lightThemeBtn');
-    this.darkBtn = document.getElementById('darkThemeBtn');
-    
-    this.init();
-  }
-  
-  init() {
-    // Apply saved theme
-    this.applyTheme(this.currentTheme);
-    
-    // Add event listeners
-    this.lightBtn.addEventListener('click', () => this.switchTheme('light'));
-    this.darkBtn.addEventListener('click', () => this.switchTheme('dark'));
-  }
-  
-  switchTheme(theme) {
-    this.currentTheme = theme;
-    this.applyTheme(theme);
-    localStorage.setItem('theme', theme);
-    this.showThemeNotification(theme);
-  }
-  
-  applyTheme(theme) {
-    const body = document.body;
-    
-    if (theme === 'dark') {
-      body.classList.add('dark-theme');
-      this.darkBtn.classList.add('active');
-      this.lightBtn.classList.remove('active');
-    } else {
-      body.classList.remove('dark-theme');
-      this.lightBtn.classList.add('active');
-      this.darkBtn.classList.remove('active');
+    // Initialize theme manager
+    class ThemeManager {
+        constructor() {
+            this.currentTheme = localStorage.getItem('theme') || 'light';
+            this.lightBtn = document.getElementById('lightThemeBtn');
+            this.darkBtn = document.getElementById('darkThemeBtn');
+            this.init();
+        }
+        
+        init() {
+            this.applyTheme(this.currentTheme);
+            this.lightBtn.addEventListener('click', () => this.switchTheme('light'));
+            this.darkBtn.addEventListener('click', () => this.switchTheme('dark'));
+        }
+        
+        switchTheme(theme) {
+            this.currentTheme = theme;
+            this.applyTheme(theme);
+            localStorage.setItem('theme', theme);
+        }
+        
+        applyTheme(theme) {
+            const body = document.body;
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                this.darkBtn.classList.add('active');
+                this.lightBtn.classList.remove('active');
+            } else {
+                body.classList.remove('dark-theme');
+                this.lightBtn.classList.add('active');
+                this.darkBtn.classList.remove('active');
+            }
+        }
     }
-    
-    // Add smooth transition
-    body.style.transition = 'all 0.3s ease';
-    setTimeout(() => {
-      body.style.transition = '';
-    }, 300);
-  }
-  
-  showThemeNotification(theme) {
-    const message = theme === 'dark' ? 'Tema gelap diaktifkan' : 'Tema terang diaktifkan';
-    const icon = theme === 'dark' ? 'moon-fill' : 'sun-fill';
-    
-    const notification = document.createElement('div');
-    notification.className = 'alert alert-info position-fixed';
-    notification.style.cssText = `
-      top: 80px;
-      right: 20px;
-      z-index: 9999;
-      min-width: 250px;
-      animation: slideInRight 0.5s ease-out;
-      backdrop-filter: blur(10px);
-    `;
-    notification.innerHTML = `
-      <i class="bi bi-${icon} me-2"></i>
-      ${message}
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      notification.style.animation = 'slideOutRight 0.5s ease-in';
-      setTimeout(() => notification.remove(), 500);
-    }, 2000);
-  }
-}
+    const themeManager = new ThemeManager();
 
-// Initialize theme manager
-const themeManager = new ThemeManager();
-
-// Add theme transition animations
-const additionalStyles = `
-  * {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  }
-  
-  .form-control, .game-item, .result-item, .main-card {
-    transition: all 0.3s ease;
-  }
-`;
-
-const themeStyleSheet = document.createElement('style');
-themeStyleSheet.textContent = additionalStyles;
-document.head.appendChild(themeStyleSheet);
-
-    // Add new game form
-    document.getElementById('addGameBtn').addEventListener('click', function() {
-      const container = document.getElementById('gamesContainer');
-      const newGameItem = createGameItem(gameIndex);
-      container.appendChild(newGameItem);
-      gameIndex++;
-      updateGameCount();
-      updateRemoveButtons();
-      
-      // Animate the new item
-      newGameItem.style.opacity = '0';
-      newGameItem.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        newGameItem.style.transition = 'all 0.5s ease';
-        newGameItem.style.opacity = '1';
-        newGameItem.style.transform = 'translateY(0)';
-      }, 10);
+    // Tab Management
+    document.getElementById('bulkGeneratorTab').addEventListener('click', function(e) {
+        e.preventDefault();
+        switchTab('bulkGenerator');
+    });
+    document.getElementById('linkListTab').addEventListener('click', function(e) {
+        e.preventDefault();
+        switchTab('linkList');
     });
     
-    // Create game item
-    function createGameItem(index) {
-      const gameItem = document.createElement('div');
-      gameItem.className = 'game-item';
-      gameItem.setAttribute('data-index', index);
-      gameItem.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="mb-0 text-primary">
-            <i class="bi bi-controller me-2"></i>
-            Game #${index + 1}
-          </h6>
-          <button type="button" class="btn btn-danger btn-sm remove-game-btn">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">
-              <i class="bi bi-tag text-primary"></i>
-              Nama Game
-            </label>
-            <input type="text" class="form-control nama-game" placeholder="Masukkan nama game..." required>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">
-              <i class="bi bi-globe text-primary"></i>
-              Link Tujuan
-            </label>
-            <input type="url" class="form-control link-tujuan" placeholder="https://example.com" required>
-          </div>
-        </div>
-      `;
-      
-      // Add remove functionality
-      gameItem.querySelector('.remove-game-btn').addEventListener('click', function() {
-        gameItem.style.transition = 'all 0.3s ease';
-        gameItem.style.opacity = '0';
-        gameItem.style.transform = 'translateX(-100%)';
-        setTimeout(() => {
-          gameItem.remove();
-          updateGameCount();
-          updateRemoveButtons();
-          updateGameNumbers();
-        }, 300);
-      });
-      
-      return gameItem;
-    }
-    
-    // Update game count
-    function updateGameCount() {
-      const count = document.querySelectorAll('.game-item').length;
-      document.getElementById('gameCount').textContent = count;
-    }
-    
-    // Update remove buttons visibility
-    function updateRemoveButtons() {
-      const gameItems = document.querySelectorAll('.game-item');
-      const removeButtons = document.querySelectorAll('.remove-game-btn');
-      
-      if (gameItems.length <= 1) {
-        removeButtons.forEach(btn => btn.style.display = 'none');
-      } else {
-        removeButtons.forEach(btn => btn.style.display = 'block');
-      }
-    }
-    
-    // Update game numbers
-    function updateGameNumbers() {
-      const gameItems = document.querySelectorAll('.game-item');
-      gameItems.forEach((item, index) => {
-        const title = item.querySelector('h6');
-        title.innerHTML = `
-          <i class="bi bi-controller me-2"></i>
-          Game #${index + 1}
-        `;
-      });
-    }
-    
-    // Form submission
-    document.getElementById('bulkLinkForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const gameItems = document.querySelectorAll('.game-item');
-      const games = [];
-      
-      // Collect all game data
-      gameItems.forEach(item => {
-        const namaGame = item.querySelector('.nama-game').value;
-        const linkTujuan = item.querySelector('.link-tujuan').value;
-        
-        if (namaGame && linkTujuan) {
-          games.push({
-            nama_game: namaGame,
-            link_tujuan: linkTujuan
-          });
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        if (tab === 'bulkGenerator') {
+            document.getElementById('bulkGeneratorTab').classList.add('active');
+            document.querySelector('.main-card').style.display = 'block';
+            document.getElementById('linkListContainer').style.display = 'none';
+        } else {
+            document.getElementById('linkListTab').classList.add('active');
+            document.querySelector('.main-card').style.display = 'none';
+            document.getElementById('linkListContainer').style.display = 'block';
+            loadLinksList();
         }
-      });
-      
-      if (games.length === 0) {
-        showNotification('Mohon isi minimal satu game!', 'error');
-        return;
-      }
-      
-      // Show loading state
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      const originalHTML = submitBtn.innerHTML;
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
-      
-      try {
-        const results = [];
+    }
+
+    // Game Management
+    document.getElementById('addGameBtn').addEventListener('click', function() {
+        const container = document.getElementById('gamesContainer');
+        const newGameItem = createGameItem(gameIndex);
+        container.appendChild(newGameItem);
+        gameIndex++;
+        updateGameCount();
+        updateRemoveButtons();
+    });
+    
+    function createGameItem(index) {
+        const gameItem = document.createElement('div');
+        gameItem.className = 'game-item';
+        gameItem.setAttribute('data-index', index);
+        gameItem.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0 text-primary">Game #${index + 1}</h6>
+                <button type="button" class="btn btn-danger btn-sm remove-game-btn">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nama Game</label>
+                    <input type="text" class="form-control nama-game" placeholder="Masukkan nama game..." required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Link Tujuan</label>
+                    <input type="url" class="form-control link-tujuan" placeholder="https://example.com" required>
+                </div>
+            </div>
+        `;
         
-        // Process each game
-        for (let i = 0; i < games.length; i++) {
-          const game = games[i];
-          const payload = {
-            action: 'create',
-            nama_game: game.nama_game,
-            link_tujuan: game.link_tujuan
-          };
-          
-          try {
+        gameItem.querySelector('.remove-game-btn').addEventListener('click', function() {
+            gameItem.remove();
+            updateGameCount();
+            updateRemoveButtons();
+            updateGameNumbers();
+        });
+        
+        return gameItem;
+    }
+    
+    function updateGameCount() {
+        const count = document.querySelectorAll('.game-item').length;
+        document.getElementById('gameCount').textContent = count;
+    }
+    
+    function updateRemoveButtons() {
+        const gameItems = document.querySelectorAll('.game-item');
+        const removeButtons = document.querySelectorAll('.remove-game-btn');
+        if (gameItems.length <= 1) {
+            removeButtons.forEach(btn => btn.style.display = 'none');
+        } else {
+            removeButtons.forEach(btn => btn.style.display = 'block');
+        }
+    }
+    
+    function updateGameNumbers() {
+        const gameItems = document.querySelectorAll('.game-item');
+        gameItems.forEach((item, index) => {
+            const title = item.querySelector('h6');
+            title.textContent = `Game #${index + 1}`;
+        });
+    }
+
+    // Form Submission
+    document.getElementById('bulkLinkForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const gameItems = document.querySelectorAll('.game-item');
+        const games = [];
+        
+        gameItems.forEach(item => {
+            const namaGame = item.querySelector('.nama-game').value;
+            const linkTujuan = item.querySelector('.link-tujuan').value;
+            if (namaGame && linkTujuan) {
+                games.push({ nama_game: namaGame, link_tujuan: linkTujuan });
+            }
+        });
+        
+        if (games.length === 0) {
+            showNotification('Mohon isi minimal satu game!', 'error');
+            return;
+        }
+        
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalHTML = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
+        
+        try {
+            const results = [];
+            for (let i = 0; i < games.length; i++) {
+                const game = games[i];
+                const payload = { action: 'create', nama_game: game.nama_game, link_tujuan: game.link_tujuan };
+                
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams(payload)
+                    });
+                    const data = await response.json();
+                    results.push(data.status === 'success' ? 
+                        { nama_game: game.nama_game, shareableLink: data.data.shareableLink, success: true } : 
+                        { nama_game: game.nama_game, error: data.message, success: false });
+                } catch (error) {
+                    results.push({ nama_game: game.nama_game, error: error.message, success: false });
+                }
+                submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses... (${i + 1}/${games.length})`;
+            }
+            
+            displayResults(results);
+            document.getElementById('bulkLinkForm').reset();
+            const successCount = results.filter(r => r.success).length;
+            const errorCount = results.filter(r => !r.success).length;
+            if (successCount > 0) showNotification(`${successCount} link berhasil dibuat${errorCount > 0 ? `, ${errorCount} gagal` : ''}!`, 'success');
+            if (errorCount > 0 && successCount === 0) showNotification(`Semua link gagal dibuat!`, 'error');
+        } catch (error) {
+            showNotification('Terjadi kesalahan: ' + error.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalHTML;
+        }
+    });
+    
+    function displayResults(results) {
+        const resultContainer = document.getElementById('resultContainer');
+        const resultsContainer = document.getElementById('resultsContainer');
+        resultsContainer.innerHTML = '';
+        
+        results.forEach(result => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            if (result.success) {
+                resultItem.innerHTML = `
+                    <h6><i class="bi bi-controller me-2"></i>${result.nama_game}</h6>
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" value="${result.shareableLink}" readonly>
+                        <button class="btn btn-outline-secondary copy-btn" type="button" data-link="${result.shareableLink}">
+                            <i class="bi bi-clipboard"></i> Copy
+                        </button>
+                    </div>
+                `;
+            } else {
+                resultItem.className += ' border-danger';
+                resultItem.style.background = 'rgba(239, 68, 68, 0.05)';
+                resultItem.innerHTML = `
+                    <h6 class="text-danger"><i class="bi bi-controller me-2"></i>${result.nama_game}</h6>
+                    <div class="alert alert-danger mb-0">
+                        <i class="bi bi-x-circle me-2"></i> Error: ${result.error}
+                    </div>
+                `;
+            }
+            resultsContainer.appendChild(resultItem);
+        });
+        
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const link = this.getAttribute('data-link');
+                copyToClipboard(link, this);
+            });
+        });
+        
+        resultContainer.style.display = 'block';
+        resultContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Link List Management
+    async function loadLinksList() {
+        try {
+            const response = await fetch(SCRIPT_URL + '?action=list');
+            const data = await response.json();
+            if (data.status === 'success') displayLinksList(data.data);
+            else showEmptyState();
+        } catch (error) {
+            showEmptyState();
+        }
+    }
+    
+    function displayLinksList(links) {
+        const tbody = document.getElementById('linksTableBody');
+        const totalCount = document.getElementById('totalLinksCount');
+        const emptyState = document.getElementById('emptyState');
+        const tableContainer = document.getElementById('linksTableContainer');
+        
+        totalCount.textContent = links.length;
+        if (links.length === 0) return showEmptyState();
+        
+        emptyState.style.display = 'none';
+        tableContainer.style.display = 'block';
+        tbody.innerHTML = '';
+        
+        links.forEach((link, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td><strong>${link.nama_game}</strong></td>
+                <td><span class="text-truncate d-inline-block" style="max-width: 200px;" title="${link.link_tujuan}">${link.link_tujuan}</span></td>
+                <td>${formatDate(link.created_at)}</td>
+                <td>${link.click_count || 0}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-primary btn-sm" onclick="showLinkDetail('${link.id}')">
+                            <i class="bi bi-eye"></i> Detail
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteLinkConfirm('${link.id}', '${link.nama_game}')">
+                            <i class="bi bi-trash"></i> Hapus
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+    
+    function showEmptyState() {
+        document.getElementById('linksTableContainer').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('totalLinksCount').textContent = '0';
+    }
+
+    // Link Detail Management
+    async function showLinkDetail(linkId) {
+        try {
+            const response = await fetch(SCRIPT_URL + `?action=get&id=${linkId}`);
+            const data = await response.json();
+            if (data.status === 'success') {
+                const link = data.data;
+                currentEditingLinkId = linkId;
+                
+                document.getElementById('editNamaGame').value = link.nama_game;
+                document.getElementById('editLinkTujuan').value = link.link_tujuan;
+                document.getElementById('editShareableLink').value = link.shareable_link;
+                document.getElementById('editTanggalDibuat').value = formatDate(link.created_at);
+                document.getElementById('editStatus').value = link.status || 'Aktif';
+                document.getElementById('editClickCount').value = link.click_count || 0;
+                displayClickDetails(link.click_data || []);
+                
+                new bootstrap.Modal(document.getElementById('linkDetailModal')).show();
+            }
+        } catch (error) {
+            showNotification('Error loading link detail: ' + error.message, 'error');
+        }
+    }
+    
+    function displayClickDetails(clicks) {
+        const container = document.getElementById('clickDetailsContainer');
+        container.innerHTML = '';
+        
+        if (!clicks || clicks.length === 0) {
+            container.innerHTML = '<div class="alert alert-info">Belum ada data klik</div>';
+            return;
+        }
+        
+        const table = document.createElement('table');
+        table.className = 'table table-sm';
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Waktu</th>
+                    <th>IP</th>
+                    <th>User Agent</th>
+                </tr>
+            </thead>
+            <tbody id="clickDetailsBody"></tbody>
+        `;
+        
+        container.appendChild(table);
+        const tbody = document.getElementById('clickDetailsBody');
+        
+        clicks.forEach((click, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${click.timestamp || '-'}</td>
+                <td>${click.ip || '-'}</td>
+                <td><small>${click.userAgent || '-'}</small></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Button Actions
+    document.getElementById('saveEditBtn').addEventListener('click', async function() {
+        const namaGame = document.getElementById('editNamaGame').value;
+        const linkTujuan = document.getElementById('editLinkTujuan').value;
+        
+        if (!namaGame || !linkTujuan) {
+            showNotification('Mohon isi semua field!', 'error');
+            return;
+        }
+        
+        try {
             const response = await fetch(SCRIPT_URL, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              body: new URLSearchParams(payload)
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    action: 'update',
+                    id: currentEditingLinkId,
+                    nama_game: namaGame,
+                    link_tujuan: linkTujuan
+                })
             });
             
             const data = await response.json();
-            
             if (data.status === 'success') {
-              results.push({
-                nama_game: game.nama_game,
-                shareableLink: data.data.shareableLink,
-                success: true
-              });
+                showNotification('Link berhasil diupdate!', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('linkDetailModal')).hide();
+                loadLinksList();
             } else {
-              results.push({
-                nama_game: game.nama_game,
-                error: data.message,
-                success: false
-              });
+                showNotification('Error: ' + data.message, 'error');
             }
-          } catch (error) {
-            results.push({
-              nama_game: game.nama_game,
-              error: error.message,
-              success: false
-            });
-          }
-          
-          // Update progress
-          submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses... (${i + 1}/${games.length})`;
+        } catch (error) {
+            showNotification('Error updating link: ' + error.message, 'error');
         }
-        
-        // Display results
-        displayResults(results);
-        
-        // Reset form
-        document.getElementById('bulkLinkForm').reset();
-        
-        // Show success notification
-        const successCount = results.filter(r => r.success).length;
-        const errorCount = results.filter(r => !r.success).length;
-        
-        if (successCount > 0) {
-          showNotification(`${successCount} link berhasil dibuat${errorCount > 0 ? `, ${errorCount} gagal` : ''}!`, 'success');
-        }
-        if (errorCount > 0 && successCount === 0) {
-          showNotification(`Semua link gagal dibuat!`, 'error');
-        }
-        
-      } catch (error) {
-        showNotification('Terjadi kesalahan: ' + error.message, 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalHTML;
-      }
     });
     
-    // Display results
-    function displayResults(results) {
-      const resultContainer = document.getElementById('resultContainer');
-      const resultsContainer = document.getElementById('resultsContainer');
-      
-      resultsContainer.innerHTML = '';
-      
-      results.forEach((result, index) => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
-        
-        if (result.success) {
-          resultItem.innerHTML = `
-            <h6><i class="bi bi-controller me-2"></i>${result.nama_game}</h6>
-            <div class="input-group mb-2">
-              <input type="text" class="form-control" value="${result.shareableLink}" readonly>
-              <button class="btn btn-outline-secondary copy-btn" type="button" data-link="${result.shareableLink}">
-                <i class="bi bi-clipboard"></i>
-                Copy
-              </button>
-            </div>
-          `;
-        } else {
-          resultItem.className += ' border-danger';
-          resultItem.style.background = 'rgba(239, 68, 68, 0.05)';
-          resultItem.innerHTML = `
-            <h6 class="text-danger"><i class="bi bi-controller me-2"></i>${result.nama_game}</h6>
-            <div class="alert alert-danger mb-0">
-              <i class="bi bi-x-circle me-2"></i>
-              Error: ${result.error}
-            </div>
-          `;
+    document.getElementById('copyShareableLinkBtn').addEventListener('click', function() {
+        const link = document.getElementById('editShareableLink').value;
+        copyToClipboard(link, this);
+    });
+    
+    document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
+    document.getElementById('deleteLinkBtn').addEventListener('click', function() {
+        if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
+            deleteLinkById(currentEditingLinkId);
         }
+    });
+    
+    document.getElementById('exportAllBtn').addEventListener('click', async function() {
+        try {
+            const response = await fetch(SCRIPT_URL + '?action=list');
+            const data = await response.json();
+            if (data.status === 'success' && data.data.length > 0) {
+                exportAllToExcel(data.data);
+            } else {
+                showNotification('Tidak ada data untuk diexport!', 'error');
+            }
+        } catch (error) {
+            showNotification('Error exporting data: ' + error.message, 'error');
+        }
+    });
+    
+    document.getElementById('refreshLinksBtn').addEventListener('click', function() {
+        loadLinksList();
+        showNotification('Data berhasil direfresh!', 'success');
+    });
+
+    // Utility Functions
+    function deleteLinkConfirm(linkId, namaGame) {
+        if (confirm(`Apakah Anda yakin ingin menghapus link "${namaGame}"?`)) {
+            deleteLinkById(linkId);
+        }
+    }
+    
+    async function deleteLinkById(linkId) {
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ action: 'delete', id: linkId })
+            });
+            
+            const data = await response.json();
+            if (data.status === 'success') {
+                showNotification('Link berhasil dihapus!', 'success');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('linkDetailModal'));
+                if (modal) modal.hide();
+                loadLinksList();
+            } else {
+                showNotification('Error: ' + data.message, 'error');
+            }
+        } catch (error) {
+            showNotification('Error deleting link: ' + error.message, 'error');
+        }
+    }
+    
+    function exportToExcel() {
+        const link = {
+            nama_game: document.getElementById('editNamaGame').value,
+            link_tujuan: document.getElementById('editLinkTujuan').value,
+            shareable_link: document.getElementById('editShareableLink').value,
+            created_at: document.getElementById('editTanggalDibuat').value
+        };
         
-        resultsContainer.appendChild(resultItem);
-      });
-      
-      // Add copy functionality
-      document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const link = this.getAttribute('data-link');
-          copyToClipboard(link, this);
-        });
-      });
-      
-      resultContainer.style.display = 'block';
-      resultContainer.scrollIntoView({ behavior: 'smooth' });
+        const csvContent = `Nama Game,Link Tujuan,Shareable Link,Tanggal Dibuat\n${link.nama_game},${link.link_tujuan},${link.shareable_link},${link.created_at}`;
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${link.nama_game}_link_data.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        showNotification('Data berhasil diexport!', 'success');
     }
     
-    // Copy to clipboard
+    function exportAllToExcel(links) {
+        let csvContent = 'No,Nama Game,Link Tujuan,Shareable Link,Tanggal Dibuat,Status,Klik\n';
+        links.forEach((link, index) => {
+            const row = [
+                index + 1,
+                `"${link.nama_game}"`,
+                `"${link.link_tujuan}"`,
+                `"${link.shareable_link}"`,
+                `"${formatDate(link.created_at)}"`,
+                `"${link.status || 'Aktif'}"`,
+                link.click_count || 0
+            ].join(',');
+            csvContent += row + '\n';
+        });
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `All_Links_Data_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        showNotification(`${links.length} data berhasil diexport!`, 'success');
+    }
+    
     function copyToClipboard(text, button) {
-      if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
-          showCopyFeedback(button);
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-check"></i> Copied!';
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-success');
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-secondary');
+            }, 2000);
+            showNotification('Link berhasil disalin!', 'success');
         });
-      } else {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showCopyFeedback(button);
-      }
     }
     
-    // Show copy feedback
-    function showCopyFeedback(button) {
-      const originalHTML = button.innerHTML;
-      button.innerHTML = '<i class="bi bi-check"></i> Copied!';
-      button.classList.remove('btn-outline-secondary');
-      button.classList.add('btn-success');
-      
-      setTimeout(() => {
-        button.innerHTML = originalHTML;
-        button.classList.remove('btn-success');
-        button.classList.add('btn-outline-secondary');
-      }, 2000);
-      
-      showNotification('Link berhasil disalin!', 'success');
-    }
-    
-    // Notification function
     function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
-      notification.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed`;
-      notification.style.cssText = `
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        min-width: 300px;
-        animation: slideInRight 0.5s ease-out;
-      `;
-      notification.innerHTML = `
-        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info-circle'} me-2"></i>
-        ${message}
-      `;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.5s ease-in';
-        setTimeout(() => notification.remove(), 500);
-      }, 3000);
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info-circle'} me-2"></i>
+            ${message}
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
     }
     
-    // Add CSS for notifications
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
-    
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
     // Initialize
     updateRemoveButtons();
-
-
-
-    // Tab Management
-let currentTab = 'bulkGenerator';
-let currentEditingLinkId = null;
-
-// Initialize tab functionality
-document.getElementById('bulkGeneratorTab').addEventListener('click', function(e) {
-    e.preventDefault();
-    switchTab('bulkGenerator');
-});
-
-document.getElementById('linkListTab').addEventListener('click', function(e) {
-    e.preventDefault();
-    switchTab('linkList');
-});
-
-function switchTab(tab) {
-    currentTab = tab;
-    
-    // Update tab buttons
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    if (tab === 'bulkGenerator') {
-        document.getElementById('bulkGeneratorTab').classList.add('active');
-        document.querySelector('.main-card').style.display = 'block';
-        document.getElementById('linkListContainer').style.display = 'none';
-    } else if (tab === 'linkList') {
-        document.getElementById('linkListTab').classList.add('active');
-        document.querySelector('.main-card').style.display = 'none';
-        document.getElementById('linkListContainer').style.display = 'block';
-        loadLinksList();
-    }
-}
-
-// Load links list
-async function loadLinksList() {
-    try {
-        const response = await fetch(SCRIPT_URL + '?action=list');
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-            displayLinksList(data.data);
-        } else {
-            showEmptyState();
-        }
-    } catch (error) {
-        console.error('Error loading links:', error);
-        showEmptyState();
-    }
-}
-
-// Display links list
-function displayLinksList(links) {
-    const tbody = document.getElementById('linksTableBody');
-    const totalCount = document.getElementById('totalLinksCount');
-    const emptyState = document.getElementById('emptyState');
-    const tableContainer = document.getElementById('linksTableContainer');
-    
-    totalCount.textContent = links.length;
-    
-    if (links.length === 0) {
-        showEmptyState();
-        return;
-    }
-    
-    emptyState.style.display = 'none';
-    tableContainer.style.display = 'block';
-    
-    tbody.innerHTML = '';
-    
-    links.forEach((link, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td><strong>${link.nama_game}</strong></td>
-            <td><span class="text-truncate d-inline-block" style="max-width: 200px;" title="${link.link_tujuan}">${link.link_tujuan}</span></td>
-            <td>${formatDate(link.created_at)}</td>
-<td>
-    <div class="btn-group btn-group-sm">
-        <button class="btn btn-primary btn-sm" onclick="showLinkDetail('${link.id}')">
-            <i class="bi bi-eye"></i> Detail
-        </button>
-        <button class="btn btn-danger btn-sm" onclick="deleteLinkConfirm('${link.id}', '${link.nama_game}')">
-            <i class="bi bi-trash"></i> Hapus
-        </button>
-    </div>
-</td>
-
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// Show empty state
-function showEmptyState() {
-    document.getElementById('linksTableContainer').style.display = 'none';
-    document.getElementById('emptyState').style.display = 'block';
-    document.getElementById('totalLinksCount').textContent = '0';
-}
-
-
-
-// Export All to Excel
-document.getElementById('exportAllBtn').addEventListener('click', async function() {
-    try {
-        const response = await fetch(SCRIPT_URL + '?action=list');
-        const data = await response.json();
-        
-        if (data.status === 'success' && data.data.length > 0) {
-            exportAllToExcel(data.data);
-        } else {
-            showNotification('Tidak ada data untuk diexport!', 'error');
-        }
-    } catch (error) {
-        showNotification('Error exporting data: ' + error.message, 'error');
-    }
-});
-
-// Function to export all data to Excel
-function exportAllToExcel(links) {
-    // Create CSV header
-    let csvContent = 'No,Nama Game,Link Tujuan,Shareable Link,Tanggal Dibuat,Status\n';
-    
-    // Add data rows
-    links.forEach((link, index) => {
-        const row = [
-            index + 1,
-            `"${link.nama_game}"`,
-            `"${link.link_tujuan}"`,
-            `"${link.shareable_link}"`,
-            `"${formatDate(link.created_at)}"`,
-            `"${link.status || 'Aktif'}"`
-        ].join(',');
-        csvContent += row + '\n';
-    });
-    
-    // Create and download file
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `All_Links_Data_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    
-    showNotification(`${links.length} data berhasil diexport!`, 'success');
-}
-
-// Delete confirmation function
-function deleteLinkConfirm(linkId, namaGame) {
-    if (confirm(`Apakah Anda yakin ingin menghapus link "${namaGame}"?`)) {
-        deleteLinkById(linkId);
-    }
-}
-
-
-// Show link detail modal
-async function showLinkDetail(linkId) {
-    try {
-        const response = await fetch(SCRIPT_URL + `?action=get&id=${linkId}`);
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-            const link = data.data;
-            currentEditingLinkId = linkId;
-            
-            document.getElementById('editNamaGame').value = link.nama_game;
-            document.getElementById('editLinkTujuan').value = link.link_tujuan;
-            document.getElementById('editShareableLink').value = link.shareable_link;
-            document.getElementById('editTanggalDibuat').value = formatDate(link.created_at);
-            document.getElementById('editStatus').value = link.status || 'Aktif';
-            
-            new bootstrap.Modal(document.getElementById('linkDetailModal')).show();
-        }
-    } catch (error) {
-        showNotification('Error loading link detail: ' + error.message, 'error');
-    }
-}
-
-// Save edited link
-document.getElementById('saveEditBtn').addEventListener('click', async function() {
-    const namaGame = document.getElementById('editNamaGame').value;
-    const linkTujuan = document.getElementById('editLinkTujuan').value;
-    
-    if (!namaGame || !linkTujuan) {
-        showNotification('Mohon isi semua field!', 'error');
-        return;
-    }
-    
-    try {
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                action: 'update',
-                id: currentEditingLinkId,
-                nama_game: namaGame,
-                link_tujuan: linkTujuan
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-            showNotification('Link berhasil diupdate!', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('linkDetailModal')).hide();
-            loadLinksList();
-        } else {
-            showNotification('Error: ' + data.message, 'error');
-        }
-    } catch (error) {
-        showNotification('Error updating link: ' + error.message, 'error');
-    }
-});
-
-// Copy shareable link
-document.getElementById('copyShareableLinkBtn').addEventListener('click', function() {
-    const link = document.getElementById('editShareableLink').value;
-    copyToClipboard(link, this);
-});
-
-// Export to Excel
-document.getElementById('exportExcelBtn').addEventListener('click', function() {
-    exportToExcel();
-});
-
-// Delete link
-document.getElementById('deleteLinkBtn').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
-        deleteLinkById(currentEditingLinkId);
-    }
-});
-
-// Delete link function
-async function deleteLinkById(linkId) {
-    try {
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                action: 'delete',
-                id: linkId
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-            showNotification('Link berhasil dihapus!', 'success');
-            
-            // Close modal if open
-            const modal = bootstrap.Modal.getInstance(document.getElementById('linkDetailModal'));
-            if (modal) {
-                modal.hide();
-            }
-            
-            // Refresh the links list
-            loadLinksList();
-        } else {
-            showNotification('Error: ' + data.message, 'error');
-        }
-    } catch (error) {
-        showNotification('Error deleting link: ' + error.message, 'error');
-    }
-}
-
-// Export to Excel function
-function exportToExcel() {
-    // Simple CSV export (you can enhance this with a proper Excel library)
-    const link = {
-        nama_game: document.getElementById('editNamaGame').value,
-        link_tujuan: document.getElementById('editLinkTujuan').value,
-        shareable_link: document.getElementById('editShareableLink').value,
-        created_at: document.getElementById('editTanggalDibuat').value
-    };
-    
-    const csvContent = `Nama Game,Link Tujuan,Shareable Link,Tanggal Dibuat\n${link.nama_game},${link.link_tujuan},${link.shareable_link},${link.created_at}`;
-    
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${link.nama_game}_link_data.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    
-    showNotification('Data berhasil diexport!', 'success');
-}
-
-// Refresh links
-document.getElementById('refreshLinksBtn').addEventListener('click', function() {
-    loadLinksList();
-    showNotification('Data berhasil direfresh!', 'success');
-});
-
-// Format date helper
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-  </script>
-
+</script>
 </body>
 </html>
