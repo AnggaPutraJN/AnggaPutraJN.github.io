@@ -648,17 +648,8 @@ h1 {
                 <a href="index" class="nav-btn btn-gradient-bg3">
                     <i class="fas fa-code"></i>Generator HTML Switch
                 </a>
-                <a href="shortingswitch" class="nav-btn btn-gradient-bg1">
-                    <i class="fas fa-gamepad"></i>Shorting Game Switch
-                </a>
                 <a href="shortingswitchpartonly" class="nav-btn btn-gradient-bg2">
                     <i class="fas fa-puzzle-piece"></i>Parts Only
-                </a>
-                <a href="pageparts" class="nav-btn btn-gradient-bg4">
-                    <i class="fas fa-file-alt"></i>Shorting Page Parts
-                </a>
-                <a href="psvita" class="nav-btn btn-gradient-bg5">
-                    <i class="fas fa-gamepad"></i>Generator HTML PSvita
                 </a>
             </div>
         </div>
@@ -947,7 +938,7 @@ function isUrl(str) {
                 (singleXCICount > 0 && singleXCILinks.length !== singleXCICount) || 
                 (partNSPLinkCount > 0 && partNSPLinks.length !== partNSPLinkCount) ||
                 (partXCILinkCount > 0 && partXCILinks.length !== partXCILinkCount)) {
-                alert("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
+                showNotification("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
                 return;
             }
             
@@ -964,7 +955,7 @@ function isUrl(str) {
 function confirmSaveSettings() {
     const settingsName = document.getElementById('settingsName').value.trim();
     if (!settingsName) {
-        alert("Harap isi nama settingan");
+        showNotification("Harap isi nama settingan");
         return;
     }
     
@@ -1004,7 +995,7 @@ function confirmSaveSettings() {
     document.getElementById('settingsName').value = '';
     bootstrap.Modal.getInstance(document.getElementById('saveSettingsModal')).hide();
     
-    alert(`Settingan "${settingsName}" berhasil disimpan!`);
+    showNotification(`Settingan "${settingsName}" berhasil disimpan!`);
 }
 
 function getAllInputValues() {
@@ -1023,7 +1014,7 @@ function getAllInputValues() {
             const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6') || '[]');
             
             if (savedSettings.length === 0) {
-                alert("Belum ada settingan yang disimpan");
+                showNotification("Belum ada settingan yang disimpan");
                 return;
             }
             
@@ -1063,7 +1054,7 @@ function applyLinkSettings(index) {
     try {
         const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6')) || [];
         if (index < 0 || index >= savedSettings.length) {
-            alert("Settingan tidak ditemukan");
+            showNotification("Settingan tidak ditemukan");
             return;
         }
         
@@ -1120,7 +1111,7 @@ function applyLinkSettings(index) {
         
     } catch (error) {
         console.error("Error applying settings:", error);
-        alert("Terjadi error saat memuat settingan: " + error.message);
+        showNotification("Terjadi error saat memuat settingan: " + error.message);
     }
 }
 
@@ -1155,7 +1146,7 @@ function updateTextareaFromInputs() {
             // Refresh settings list
             loadLinkSettingsModal();
             
-            alert(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
+            showNotification(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
         }
         
         // Main functionality
@@ -1464,7 +1455,7 @@ function generateInputFields() {
 document.getElementById('copyResultBtn').addEventListener('click', function() {
     const gameName = document.getElementById('gameName').value.trim();
     if (!gameName) {
-        alert('Harap masukkan nama game');
+        showNotification('Harap masukkan nama game');
         return;
     }
     
@@ -1515,13 +1506,13 @@ document.getElementById('copyResultBtn').addEventListener('click', function() {
         const resultDiv = document.getElementById('result');
         resultDiv.textContent = resultText;
         resultDiv.classList.remove('hidden');
-        alert('Hasil shorting telah disalin ke clipboard!');
+        showNotification('Hasil shorting telah disalin ke clipboard!');
     }).catch(err => {
         console.error('Failed to copy:', err);
         const resultDiv = document.getElementById('result');
         resultDiv.textContent = resultText;
         resultDiv.classList.remove('hidden');
-        alert('Gagal menyalin ke clipboard. Silahkan copy manual dari text area.');
+        showNotification('Gagal menyalin ke clipboard. Silahkan copy manual dari text area.');
     });
 });
         
@@ -1605,7 +1596,7 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQOjr9ZrTF-w
 async function saveToGoogleSheets() {
     const gameName = document.getElementById('gameName').value.trim();
     if (!gameName) {
-        alert('Harap masukkan nama game');
+        showNotification('Harap masukkan nama game');
         return;
     }
 
@@ -1672,14 +1663,14 @@ async function saveToGoogleSheets() {
         const result = await response.json();
         
         if (result.status === 'success') {
-            alert('Data berhasil disimpan ke Google Sheets!');
+            showNotification('Data berhasil disimpan ke Google Sheets!');
             console.log('Response:', result);
         } else {
             throw new Error(result.message || 'Gagal menyimpan data');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Gagal menyimpan data: ' + error.message);
+        showNotification('Gagal menyimpan data: ' + error.message);
     }
 }
 
@@ -1696,7 +1687,7 @@ async function loadFromGoogleSheets() {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Gagal memuat data: ' + error.message);
+        showNotification('Gagal memuat data: ' + error.message);
     }
 }
 
@@ -1724,7 +1715,7 @@ async function showGameDetail(index) {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Gagal memuat detail game: ' + error.message);
+        showNotification('Gagal memuat detail game: ' + error.message);
     }
 }
 
@@ -1794,7 +1785,7 @@ function displayGameDetail(gameData) {
         resultText = resultText.trim();
 
         if (resultText === gameName) {
-            alert('Tidak ada link yang bisa disalin');
+            showNotification('Tidak ada link yang bisa disalin');
             return;
         }
 
@@ -1828,7 +1819,7 @@ function displayGameDetail(gameData) {
             textarea.setSelectionRange(0, 99999);
             document.execCommand('copy');
             document.body.removeChild(textarea);
-            alert('Semua link berhasil disalin (menggunakan metode fallback)');
+            showNotification('Semua link berhasil disalin (menggunakan metode fallback)');
         });
     }
 
@@ -2029,7 +2020,7 @@ async function copyToClipboard(elementId) {
             // Fallback untuk browser lama
             element.select();
             document.execCommand('copy');
-            alert('Link berhasil disalin!');
+            showNotification('Link berhasil disalin!');
         }
     }
 }
@@ -2136,13 +2127,13 @@ async function loadGameData(index) {
             // Scroll ke form
             document.getElementById('resultSection').scrollIntoView();
             
-            alert(`Data "${gameData.nama_game}" telah dimuat. Silahkan edit jika perlu.`);
+            showNotification(`Data "${gameData.nama_game}" telah dimuat. Silahkan edit jika perlu.`);
         } else {
             throw new Error('Data tidak ditemukan');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Gagal memuat data game: ' + error.message);
+        showNotification('Gagal memuat data game: ' + error.message);
     }
 }
 
@@ -2163,13 +2154,13 @@ async function loadGameData(index) {
             // Scroll ke form
             document.getElementById('resultSection').scrollIntoView();
             
-            alert(`Data "${gameData.nama_game}" telah dimuat. Silahkan edit jika perlu.`);
+            showNotification(`Data "${gameData.nama_game}" telah dimuat. Silahkan edit jika perlu.`);
         } else {
             throw new Error('Data tidak ditemukan');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Gagal memuat data game: ' + error.message);
+        showNotification('Gagal memuat data game: ' + error.message);
     }
 }
 
@@ -2194,7 +2185,7 @@ async function deleteGameData(id) {
         const result = await response.json();
         
         if (result.status === 'success') {
-            alert('Data berhasil dihapus!');
+            showNotification('Data berhasil dihapus!');
             // Refresh tampilan data
             loadFromGoogleSheets();
         } else {
@@ -2202,7 +2193,7 @@ async function deleteGameData(id) {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Gagal menghapus data: ' + error.message);
+        showNotification('Gagal menghapus data: ' + error.message);
     }
 }
 
@@ -2248,6 +2239,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Notification function
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+    ${type === 'success' ? 'background: linear-gradient(45deg, #7cc6ed, #9dd5f0);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
 
     </script>
 </body>
