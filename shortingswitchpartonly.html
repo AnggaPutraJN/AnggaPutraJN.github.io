@@ -979,7 +979,7 @@
             // Validate selections
             if ((partNSPLinkCount > 0 && partNSPLinks.length !== partNSPLinkCount) ||
                 (partXCILinkCount > 0 && partXCILinks.length !== partXCILinkCount)) {
-                alert("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
+                showNotification("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
                 return;
             }
             
@@ -988,6 +988,32 @@
             modal.show();
         }
         
+
+// Notification function
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+    ${type === 'success' ? 'background: linear-gradient(45deg, #7cc6ed, #9dd5f0);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
         function getSelectedLinks(containerId) {
             const checkboxes = document.getElementById(containerId).querySelectorAll('input:checked');
             return Array.from(checkboxes).map(cb => cb.value);
@@ -996,7 +1022,7 @@
         function confirmSaveSettings() {
             const settingsName = document.getElementById('settingsName').value.trim();
             if (!settingsName) {
-                alert("Harap isi nama settingan");
+                showNotification("Harap isi nama settingan");
                 return;
             }
             
@@ -1032,7 +1058,7 @@
             document.getElementById('settingsName').value = '';
             bootstrap.Modal.getInstance(document.getElementById('saveSettingsModal')).hide();
             
-            alert(`Settingan "${settingsName}" berhasil disimpan!`);
+            showNotification(`Settingan "${settingsName}" berhasil disimpan!`);
         }
 
         function getAllInputValues() {
@@ -1051,7 +1077,7 @@
             const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6') || '[]');
             
             if (savedSettings.length === 0) {
-                alert("Belum ada settingan yang disimpan");
+                showNotification("Belum ada settingan yang disimpan");
                 return;
             }
             
@@ -1089,7 +1115,7 @@
             try {
                 const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6')) || [];
                 if (index < 0 || index >= savedSettings.length) {
-                    alert("Settingan tidak ditemukan");
+                    showNotification("Settingan tidak ditemukan");
                     return;
                 }
                 
@@ -1140,7 +1166,7 @@
                 
             } catch (error) {
                 console.error("Error applying settings:", error);
-                alert("Terjadi error saat memuat settingan: " + error.message);
+                showNotification("Terjadi error saat memuat settingan: " + error.message);
             }
         }
 
@@ -1176,7 +1202,7 @@
             // Refresh settings list
             loadLinkSettingsModal();
             
-            alert(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
+            showNotification(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
         }
         
         // Main functionality
@@ -1518,7 +1544,7 @@
   document.getElementById('copyResultBtn').addEventListener('click', function() {
         const gameName = document.getElementById('gameName').value.trim();
         if (!gameName) {
-            alert('Harap masukkan nama game');
+            showNotification('Harap masukkan nama game');
             return;
         }
         
@@ -1587,13 +1613,13 @@
             const resultDiv = document.getElementById('result');
             resultDiv.textContent = resultText;
             resultDiv.classList.remove('hidden');
-            alert('Hasil shorting telah disalin ke clipboard!');
+            showNotification('Hasil shorting telah disalin ke clipboard!');
         }).catch(err => {
             console.error('Failed to copy:', err);
             const resultDiv = document.getElementById('result');
             resultDiv.textContent = resultText;
             resultDiv.classList.remove('hidden');
-            alert('Gagal menyalin ke clipboard. Silahkan copy manual dari text area.');
+            showNotification('Gagal menyalin ke clipboard. Silahkan copy manual dari text area.');
         });
     });
 
