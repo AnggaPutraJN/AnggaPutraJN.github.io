@@ -1,2126 +1,1788 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Noted2Unlock Admin - Bulk Generator</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
-	<style type="text/css">@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    * {
-      font-family: 'Inter', sans-serif;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
-    }
-    
-    body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 2rem 0;
-      position: relative;
-      overflow-x: hidden;
-    }
-    
-    body.dark-theme {
-      background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
-    }
-    
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="40" cy="60" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="60" cy="80" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-      pointer-events: none;
-      z-index: -1;
-    }
-    
-    body.dark-theme::before {
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="%23000000" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="%23000000" opacity="0.1"/><circle cx="40" cy="60" r="1" fill="%23000000" opacity="0.1"/><circle cx="60" cy="80" r="1" fill="%23000000" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-    }
-    
-    .container {
-      max-width: 900px;
-    }
-    
-    .main-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border-radius: 25px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05);
-      overflow: hidden;
-      animation: slideUp 0.8s ease-out;
-    }
-    
-    body.dark-theme .main-card {
-      background: rgba(30, 30, 45, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    }
-    
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .card-header {
-      background: linear-gradient(135deg, #4a94bb, #3a7bd5);
-      color: white;
-      padding: 2rem;
-      text-align: center;
-      position: relative;
-    }
-    
-    .card-header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
-      animation: shimmer 3s infinite;
-    }
-    
-    @keyframes shimmer {
-      0%, 100% { transform: translateX(-100%); }
-      50% { transform: translateX(100%); }
-    }
-    
-    .card-header h3 {
-      margin: 0;
-      font-weight: 700;
-      font-size: 1.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    
-    .card-header .icon {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 0.5rem;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-    }
-    
-    .card-body {
-      padding: 2.5rem;
-    }
-    
-    .form-label {
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    body.dark-theme .form-label {
-      color: #e2e8f0;
-    }
-    
-    .form-control {
-      border: 2px solid #e2e8f0;
-      border-radius: 15px;
-      padding: 1rem 1.25rem;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-    }
-    
-    body.dark-theme .form-control {
-      border-color: #4a5568;
-      background: rgba(45, 55, 72, 0.8);
-      color: #f7fafc;
-    }
-    
-    .form-control:focus {
-      border-color: #4a94bb;
-      box-shadow: 0 0 0 0.2rem rgba(74, 148, 187, 0.25);
-      background: rgba(255, 255, 255, 0.95);
-      transform: translateY(-2px);
-    }
-    
-    body.dark-theme .form-control:focus {
-      background: rgba(45, 55, 72, 0.95);
-      box-shadow: 0 0 0 0.2rem rgba(74, 148, 187, 0.25);
-    }
-    
-    textarea.form-control {
-      min-height: 120px;
-      resize: vertical;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #4a94bb, #3a7bd5);
-      border: none;
-      border-radius: 15px;
-      padding: 1rem 2rem;
-      font-weight: 600;
-      font-size: 1.1rem;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .btn-primary::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: left 0.5s;
-    }
-    
-    .btn-primary:hover::before {
-      left: 100%;
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(74, 148, 187, 0.4);
-      background: linear-gradient(135deg, #3a7bd5, #4a94bb);
-    }
-    
-    .btn-primary:active {
-      transform: translateY(-1px);
-    }
-    
-    .btn-success {
-      background: linear-gradient(135deg, #10b981, #059669);
-      border: none;
-      border-radius: 10px;
-      padding: 0.5rem 1rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-success:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
-    }
-    
-    .btn-danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      border: none;
-      border-radius: 10px;
-      padding: 0.5rem 1rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-danger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
-    }
-    
-    .note-item {
-      background: rgba(255, 255, 255, 0.7);
-      border: 2px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      transition: all 0.3s ease;
-      animation: fadeInUp 0.5s ease-out;
-    }
-    
-    body.dark-theme .note-item {
-      background: rgba(30, 30, 45, 0.7);
-      border-color: #4a5568;
-    }
-    
-    .note-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      border-color: #4a94bb;
-    }
-    
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .result-container {
-      display: none;
-      margin-top: 2rem;
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .success-title {
-      color: #059669;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .result-item {
-      background: rgba(16, 185, 129, 0.05);
-      border: 1px solid rgba(16, 185, 129, 0.2);
-      border-radius: 15px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    body.dark-theme .result-item {
-      background: rgba(16, 185, 129, 0.1);
-      border-color: rgba(16, 185, 129, 0.3);
-    }
-    
-    .result-item h6 {
-      color: #059669;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    
-    .input-group {
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    body.dark-theme .input-group {
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-    
-    .input-group .form-control {
-      border-radius: 0;
-      border-right: none;
-      background: #f8fafc;
-      font-family: 'Monaco', 'Courier New', monospace;
-      font-size: 0.9rem;
-    }
-    
-    body.dark-theme .input-group .form-control {
-      background: #2d3748;
-      color: #f7fafc;
-    }
-    
-    .btn-outline-secondary {
-      border-color: #cbd5e0;
-      color: #4a5568;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      border-radius: 0;
-    }
-    
-    body.dark-theme .btn-outline-secondary {
-      border-color: #4a5568;
-      color: #e2e8f0;
-      background-color: #2d3748;
-    }
-    
-    .btn-outline-secondary:hover {
-      background: #4a94bb;
-      border-color: #4a94bb;
-      color: white;
-      transform: scale(1.05);
-    }
-    
-    .alert-info {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      border-radius: 15px;
-      color: #1e40af;
-      backdrop-filter: blur(10px);
-    }
-    
-    body.dark-theme .alert-info {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-      border-color: rgba(59, 130, 246, 0.3);
-      color: #93c5fd;
-    }
-    
-    .divider {
-      margin: 2rem 0;
-      border: none;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
-    }
-    
-    body.dark-theme .divider {
-      background: linear-gradient(90deg, transparent, #4a5568, transparent);
-    }
-    
-    .floating-elements {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
-    
-    .floating-element {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      animation: float 6s ease-in-out infinite;
-    }
-    
-    body.dark-theme .floating-element {
-      background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .floating-element:nth-child(1) {
-      width: 80px;
-      height: 80px;
-      top: 20%;
-      left: 10%;
-      animation-delay: 0s;
-    }
-    
-    .floating-element:nth-child(2) {
-      width: 60px;
-      height: 60px;
-      top: 60%;
-      right: 15%;
-      animation-delay: 2s;
-    }
-    
-    .floating-element:nth-child(3) {
-      width: 40px;
-      height: 40px;
-      bottom: 20%;
-      left: 20%;
-      animation-delay: 4s;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(180deg); }
-    }
-    
-    .spinner-border-sm {
-      width: 1rem;
-      height: 1rem;
-    }
-    
-    .count-display {
-      background: linear-gradient(135deg, #4a94bb, #3a7bd5);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: 600;
-      display: inline-block;
-      margin-bottom: 1rem;
-    }
-    
-/* Theme Switch Button */
-.theme-switch-wrapper {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  z-index: 100;
-}
-
-.theme-switch {
-  display: inline-block;
-  height: 34px;
-  position: relative;
-  width: 60px;
-}
-
-.theme-switch input {
-  display: none;
-}
-
-.slider {
-  background-color: #cbd5e0;
-  bottom: 0;
-  cursor: pointer;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: .4s;
-  border-radius: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 8px;
-}
-
-.slider:before {
-  background-color: #fff;
-  bottom: 4px;
-  content: "";
-  height: 26px;
-  left: 4px;
-  position: absolute;
-  transition: .4s;
-  width: 26px;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-input:checked + .slider {
-  background-color: #4a94bb;
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.slider .bi-sun {
-  color: #fbbf24;
-  font-size: 14px;
-  opacity: 1;
-}
-
-.slider .bi-moon {
-  color: #60a5fa;
-  font-size: 14px;
-  opacity: 0;
-}
-
-input:checked + .slider .bi-sun {
-  opacity: 0;
-}
-
-input:checked + .slider .bi-moon {
-  opacity: 1;
-}
-    
-    @media (max-width: 768px) {
-      .container {
-        padding: 0 1rem;
-      }
-      
-      .card-body {
-        padding: 1.5rem;
-      }
-      
-      .card-header {
-        padding: 1.5rem;
-      }
-      
-      .note-item {
-        padding: 1rem;
-      }
-      
-      .theme-switch-wrapper {
-        top: 15px;
-        right: 15px;
-      }
-    }
-
-
-    /* Tab Navigation Styles */
-.tab-navigation {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
-}
-
-.tab-button {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-body.dark-mode .tab-button {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.tab-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-}
-
-body.dark-mode .tab-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.tab-button.active {
-  background: linear-gradient(135deg, #4a94bb, #3a7bd5);
-  border-color: #4a94bb;
-  box-shadow: 0 5px 15px rgba(74, 148, 187, 0.3);
-}
-
-@media (max-width: 768px) {
-  .tab-navigation {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .tab-button {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-/* Tambahan CSS untuk section daftar noted */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.noted-item {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #e2e8f0;
-  border-radius: 15px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-body.dark-theme .noted-item {
-  background: rgba(30, 30, 45, 0.9);
-  border-color: #4a5568;
-}
-
-.noted-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  border-color: #4a94bb;
-}
-
-.noted-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-}
-
-.noted-item-title {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #2d3748;
-  margin: 0;
-}
-
-body.dark-theme .noted-item-title {
-  color: #f7fafc;
-}
-
-.noted-item-date {
-  font-size: 0.85rem;
-  color: #718096;
-  background: rgba(74, 148, 187, 0.1);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-}
-
-body.dark-theme .noted-item-date {
-  color: #a0aec0;
-  background: rgba(74, 148, 187, 0.2);
-}
-
-.noted-item-content {
-  color: #4a5568;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-  max-height: 100px;
-  overflow: hidden;
-  position: relative;
-}
-
-body.dark-theme .noted-item-content {
-  color: #cbd5e0;
-}
-
-.noted-item-content::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.9));
-}
-
-body.dark-theme .noted-item-content::after {
-  background: linear-gradient(to bottom, transparent, rgba(30, 30, 45, 0.9));
-}
-
-.noted-item-actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.btn-sm {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  border-radius: 8px;
-}
-
-@media (max-width: 768px) {
-  .section-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .noted-item-header {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .noted-item-actions {
-    justify-content: center;
-  }
-}
-
-/* Toggle Button untuk Daftar Noted */
-.toggle-section-btn {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border: none;
-  border-radius: 15px;
-  padding: 1rem 2rem;
-  color: white;
-  font-weight: 600;
-  margin: 2rem 0 1rem 0;
-  width: 100%;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-body.dark-theme .toggle-section-btn {
-  background: linear-gradient(135deg, #2c3e50, #1a1a2e);
-}
-
-.toggle-section-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-}
-
-.toggle-section-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s;
-}
-
-.toggle-section-btn:hover::before {
-  left: 100%;
-}
-
-.noted-section {
-  transition: all 0.5s ease;
-  overflow: hidden;
-}
-
-.noted-section.collapsed {
-  max-height: 0;
-  opacity: 0;
-  margin: 0;
-  padding: 0;
-}
-
-.noted-section.expanded {
-  max-height: none;
-  opacity: 1;
-}
-/* Enhanced Noted List Styles */
-.noted-section {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  margin-top: 1rem;
-  transition: all 0.5s ease;
-  overflow: hidden;
-}
-
-body.dark-theme .noted-section {
-  background: rgba(20, 20, 35, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-}
-
-.section-header {
-  background: linear-gradient(135deg, rgba(74, 148, 187, 0.1), rgba(58, 123, 213, 0.1));
-  border-radius: 15px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid rgba(74, 148, 187, 0.2);
-}
-
-body.dark-theme .section-header {
-  background: linear-gradient(135deg, rgba(74, 148, 187, 0.2), rgba(58, 123, 213, 0.2));
-  border-color: rgba(74, 148, 187, 0.3);
-}
-
-.section-header h4 {
-  margin: 0;
-  background: linear-gradient(135deg, #4a94bb, #3a7bd5);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 700;
-}
-
-.noted-item {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
-  border: 1px solid rgba(226, 232, 240, 0.5);
-  border-radius: 20px;
-  padding: 2rem;
-  margin-bottom: 1.5rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-}
-
-body.dark-theme .noted-item {
-  background: linear-gradient(145deg, rgba(25, 25, 40, 0.9), rgba(30, 30, 45, 0.9));
-  border-color: rgba(74, 85, 104, 0.5);
-}
-
-.noted-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #4a94bb, #3a7bd5, #667eea);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.noted-item:hover::before {
-  opacity: 1;
-}
-
-.noted-item:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(74, 148, 187, 0.2);
-  border-color: #4a94bb;
-}
-
-.noted-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-}
-
-body.dark-theme .noted-item-header {
-  border-bottom-color: rgba(74, 85, 104, 0.5);
-}
-
-.noted-item-title {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #2d3748;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-body.dark-theme .noted-item-title {
-  color: #f7fafc;
-}
-
-.noted-item-title i {
-  color: #4a94bb;
-  font-size: 1.1rem;
-}
-
-.noted-item-date {
-  font-size: 0.85rem;
-  color: #718096;
-  background: linear-gradient(135deg, rgba(74, 148, 187, 0.1), rgba(58, 123, 213, 0.1));
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  border: 1px solid rgba(74, 148, 187, 0.2);
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-body.dark-theme .noted-item-date {
-  color: #a0aec0;
-  background: linear-gradient(135deg, rgba(74, 148, 187, 0.2), rgba(58, 123, 213, 0.2));
-  border-color: rgba(74, 148, 187, 0.3);
-}
-
-.noted-item-content {
-  color: #4a5568;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
-  max-height: 120px;
-  overflow: hidden;
-  position: relative;
-  background: rgba(248, 250, 252, 0.5);
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px solid rgba(226, 232, 240, 0.5);
-}
-
-body.dark-theme .noted-item-content {
-  color: #cbd5e0;
-  background: rgba(20, 20, 35, 0.5);
-  border-color: rgba(74, 85, 104, 0.5);
-}
-
-.noted-item-content::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30px;
-  background: linear-gradient(to bottom, transparent, rgba(248, 250, 252, 0.9));
-  border-radius: 0 0 12px 12px;
-}
-
-body.dark-theme .noted-item-content::after {
-  background: linear-gradient(to bottom, transparent, rgba(20, 20, 35, 0.9));
-}
-
-.noted-item-actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
-
-.noted-item-actions .btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  border-radius: 10px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.noted-item-actions .btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.5s;
-}
-
-.noted-item-actions .btn:hover::before {
-  left: 100%;
-}
-
-.noted-item-actions .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.noted-item-actions .btn-primary {
-  background: linear-gradient(135deg, #4a94bb, #3a7bd5);
-  border: none;
-}
-
-.noted-item-actions .btn-warning {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  border: none;
-}
-
-.noted-item-actions .btn-danger {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  border: none;
-}
-
-/* Enhanced Loading and Empty States */
-#loadingNotes {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  padding: 3rem;
-  text-align: center;
-}
-
-body.dark-theme #loadingNotes {
-  background: rgba(20, 20, 35, 0.8);
-}
-
-#emptyState {
-  background: rgba(248, 250, 252, 0.5);
-  border: 2px dashed #cbd5e0;
-  border-radius: 20px;
-  padding: 4rem 2rem;
-  text-align: center;
-}
-
-body.dark-theme #emptyState {
-  background: rgba(20, 20, 35, 0.5);
-  border-color: #4a5568;
-}
-
-#emptyState i {
-  color: #a0aec0;
-  margin-bottom: 1rem;
-}
-
-#emptyState h5 {
-  color: #718096;
-  font-weight: 600;
-}
-
-body.dark-theme #emptyState h5 {
-  color: #a0aec0;
-}
-
-#emptyState p {
-  color: #a0aec0;
-  margin: 0;
-}
-
-/* Enhanced Buttons */
-.section-header .btn {
-  border-radius: 12px;
-  padding: 0.6rem 1.2rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.section-header .btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.5s;
-}
-
-.section-header .btn:hover::before {
-  left: 100%;
-}
-
-.section-header .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.btn-outline-primary {
-  border: 2px solid rgba(74, 148, 187, 0.5);
-  color: #4a94bb;
-  background: rgba(74, 148, 187, 0.1);
-}
-
-.btn-outline-primary:hover {
-  background: linear-gradient(135deg, #4a94bb, #3a7bd5);
-  border-color: #4a94bb;
-  color: white;
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #10b981, #059669);
-  border: none;
-}
-
-/* Animation Improvements */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.noted-item {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-.noted-item:nth-child(even) {
-  animation-delay: 0.1s;
-}
-
-.noted-item:nth-child(3n) {
-  animation-delay: 0.2s;
-}
-
-/* Responsive Improvements */
-@media (max-width: 768px) {
-  .noted-section {
-    padding: 1.5rem;
-    margin: 1rem;
-    border-radius: 15px;
-  }
-  
-  .section-header {
-    padding: 1rem;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-  
-  .noted-item {
-    padding: 1.5rem;
-    border-radius: 15px;
-  }
-  
-  .noted-item-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-  
-  .noted-item-actions {
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  
-  .noted-item-actions .btn {
-    flex: 1;
-    min-width: 80px;
-    font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .noted-item-actions {
-    flex-direction: column;
-  }
-  
-  .noted-item-actions .btn {
-    width: 100%;
-  }
-}
-	</style>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noted2Unlock Admin - Bulk Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary-color: #f093fb;
+            --accent-color: #4facfe;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --danger-color: #f56565;
+            --info-color: #4299e1;
+            
+            /* Light theme */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --text-muted: #a0aec0;
+            --border-color: #e2e8f0;
+            --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-tertiary: #4a5568;
+            --text-primary: #f7fafc;
+            --text-secondary: #e2e8f0;
+            --text-muted: #a0aec0;
+            --border-color: #4a5568;
+            --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --shadow-heavy: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Header Navigation */
+        .admin-header {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-light);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .tab-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-light);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            color: white;
+        }
+
+        .tab-button.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: var(--border-color);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-light);
+        }
+
+        [data-theme="dark"] .theme-toggle-switch {
+            background: var(--primary-color);
+        }
+
+        [data-theme="dark"] .theme-toggle-switch::after {
+            transform: translateX(25px);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Cards */
+        .admin-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><linearGradient id="shimmer" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0);stop-opacity:1" /><stop offset="50%" style="stop-color:rgba(255,255,255,0.1);stop-opacity:1" /><stop offset="100%" style="stop-color:rgba(255,255,255,0);stop-opacity:1" /></linearGradient></defs><rect width="100" height="20" fill="url(%23shimmer)" /></svg>') repeat-x;
+            animation: shimmer 3s infinite;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body-custom {
+            padding: 2rem;
+        }
+
+        /* Form Elements */
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            background: var(--bg-secondary);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .btn-custom {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, var(--success-color), #38a169);
+            color: white;
+        }
+
+        .btn-danger-custom {
+            background: linear-gradient(135deg, var(--danger-color), #e53e3e);
+            color: white;
+        }
+
+        .btn-info-custom {
+            background: linear-gradient(135deg, var(--info-color), #3182ce);
+            color: white;
+        }
+
+        .btn-warning-custom {
+            background: linear-gradient(135deg, var(--warning-color), #dd6b20);
+            color: white;
+        }
+
+        /* Note Items */
+        .note-item {
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        .note-item:hover {
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .note-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        /* Count Display */
+        .count-display {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Results */
+        .result-container {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-medium);
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .result-item {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--success-color);
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Toggle Section */
+        .toggle-section-btn {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-section-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .noted-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .noted-section.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+
+        .noted-section.expanded {
+            max-height: 2000px;
+            opacity: 1;
+            margin-bottom: 2rem;
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        .noted-item {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .noted-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Modals */
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 16px 16px 0 0;
+            border-bottom: none;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            color: var(--text-primary);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Loading States */
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tab-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-left {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .tab-button {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .main-container {
+                padding: 0 0.5rem;
+            }
+
+            .card-body-custom {
+                padding: 1rem;
+            }
+
+            .note-item {
+                padding: 1rem;
+            }
+        }
+
+        /* Alert Improvements */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(66, 153, 225, 0.1), rgba(66, 153, 225, 0.05));
+            color: var(--text-primary);
+            border-left: 4px solid var(--info-color);
+        }
+
+        /* Input Group Improvements */
+        .input-group .form-control {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .input-group .btn {
+            border-radius: 0 12px 12px 0;
+            border-left: none;
+        }
+
+        /* Copy Button Feedback */
+        .btn-success-feedback {
+            background: linear-gradient(135deg, var(--success-color), #38a169) !important;
+            transform: scale(1.05);
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-header h4 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Floating Animation for Background */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.03) 0%, transparent 50%);
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: rotate(0deg) translate(0, 0); }
+            100% { transform: rotate(360deg) translate(0, 0); }
+        }
+    </style>
 </head>
 <body>
-    <div class="tab-navigation">
-    <a href="Link2UnlockAdmin" class="tab-button">
-        <i class="fas fa-pen"></i> Link2Unlock Admin
-    </a>
-    <a href="index" class="tab-button">
-        <i class="fas fa-home"></i> Kembali Ke Home
-    </a>
-</div>
-<div class="floating-elements">
-<div class="floating-element"></div>
-
-<div class="floating-element"></div>
-
-<div class="floating-element"></div>
-</div>
-<!-- Theme Switch Button -->
-<div class="theme-switch-wrapper">
-  <label class="theme-switch" for="checkbox">
-    <input id="checkbox" type="checkbox" />
-    <span class="slider">
-      <i class="bi bi-sun"></i>
-      <i class="bi bi-moon"></i>
-    </span>
-  </label>
-</div>
-
-<div class="container">
-<div class="card main-card">
-<div class="card-header">
-<h3></h3>
-
-<div class="icon"></div>
-Noted2Unlock Admin - Bulk Generator</div>
-
-<div class="card-body">
-<div class="d-flex justify-content-between align-items-center mb-4">
-<div class="count-display">Total Notes: <span id="noteCount">1</span></div>
-<button class="btn btn-success" id="addNoteBtn" type="button">Tambah Note</button></div>
-
-<form id="bulkNoteForm">
-<div id="notesContainer">
-<div class="note-item" data-index="0">
-<div class="d-flex justify-content-between align-items-center mb-3">
-<h6 class="mb-0 text-primary">Note #1</h6>
-<button class="btn btn-danger btn-sm remove-note-btn" style="display: none;" type="button"></button></div>
-
-<div class="row">
-<div class="col-md-12 mb-3"><label class="form-label">Nama Note </label> <input class="form-control nama-note" placeholder="Masukkan nama note..." required="" type="text" /></div>
-
-<div class="col-md-12 mb-3"><label class="form-label">Konten Note </label><textarea class="form-control note-content" placeholder="Masukkan konten note..." required=""></textarea></div>
-</div>
-</div>
-</div>
-<button class="btn btn-primary w-100" type="submit">Generate Semua Note Link</button></form>
-
-<div class="result-container" id="resultContainer">
-<hr class="divider" />
-<h5 class="success-title">Note berhasil dibuat!</h5>
-
-<p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
-
-<div id="resultsContainer"></div>
-
-<div class="d-flex gap-2 mb-3">
-  <button class="btn btn-info flex-grow-1" id="copyAllLinksBtn">
-    <i class="bi bi-clipboard"></i> Copy All Links
-  </button>
-  <button class="btn btn-info flex-grow-1" id="copyAllLinksWithNameBtn">
-    <i class="bi bi-clipboard-plus"></i> Copy All Links with Name
-  </button>
-</div>
-
-<div class="alert alert-info"><small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small></div>
-</div>
-</div>
-
-</div>
-<button type="button" class="toggle-section-btn" id="toggleNotedSection">
-  <i class="bi bi-list-ul me-2"></i>
-  <span id="toggleText">Tampilkan Daftar Noted</span>
-  <i class="bi bi-chevron-down ms-2" id="toggleIcon"></i>
-</button>
-<div class="noted-section collapsed" id="notedSection">
-<!-- Daftar Noted Section -->
-<div class="section-header mb-4">
-  <h4 class="text-primary">
-    <i class="bi bi-list-ul me-2"></i>
-    Daftar Noted
-  </h4>
-  <div class="d-flex gap-2 flex-wrap">
-    <button type="button" class="btn btn-outline-primary" id="refreshDataBtn">
-      <i class="bi bi-arrow-clockwise"></i> Refresh Data
-    </button>
-    <button type="button" class="btn btn-success" id="exportAllBtn">
-      <i class="bi bi-file-earmark-excel"></i> Export Semua Data
-    </button>
-  </div>
-</div>
-
-<div id="notedListContainer">
-  <div class="text-center py-4" id="loadingNotes">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-    <p class="mt-2 text-muted">Memuat daftar noted...</p>
-  </div>
-  
-  <div id="notedList" style="display: none;">
-    <!-- Daftar noted akan dimuat di sini -->
-  </div>
-  
-  <div id="emptyState" style="display: none;">
-    <div class="text-center py-5">
-      <i class="bi bi-clipboard-x text-muted" style="font-size: 3rem;"></i>
-      <h5 class="text-muted mt-3">Belum ada noted</h5>
-      <p class="text-muted">Buat noted pertama Anda menggunakan form di atas</p>
-    </div>
-  </div>
-</div>
-
-<!-- Modal untuk Detail Noted -->
-<div class="modal fade" id="noteDetailModal" tabindex="-1" aria-labelledby="noteDetailModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="noteDetailModalLabel">
-          <i class="bi bi-sticky me-2"></i>
-          Detail Noted
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="noteDetailContent">
-          <!-- Content akan dimuat via JavaScript -->
-        </div>
-      </div>
-      <div class="modal-footer">
-        <div class="d-flex gap-2 w-100">
-          <button type="button" class="btn btn-primary" id="editNoteBtn">
-            <i class="bi bi-pencil"></i> Edit
-          </button>
-          <button type="button" class="btn btn-info" id="copyLinkBtn">
-            <i class="bi bi-link-45deg"></i> Salin Link
-          </button>
-          <button type="button" class="btn btn-success" id="exportSingleBtn">
-            <i class="bi bi-file-earmark-excel"></i> Export
-          </button>
-          <button type="button" class="btn btn-danger" id="deleteNoteBtn">
-            <i class="bi bi-trash"></i> Hapus
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal untuk Edit Noted -->
-<div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editNoteModalLabel">
-          <i class="bi bi-pencil me-2"></i>
-          Edit Noted
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editNoteForm">
-          <input type="hidden" id="editNoteId" />
-          <div class="mb-3">
-            <label for="editNamaNote" class="form-label">
-              <i class="bi bi-tag text-primary"></i>
-              Nama Note
-            </label>
-            <input type="text" class="form-control" id="editNamaNote" required>
-          </div>
-          <div class="mb-3">
-            <label for="editNoteContent" class="form-label">
-              <i class="bi bi-pencil text-primary"></i>
-              Konten Note
-            </label>
-            <textarea class="form-control" id="editNoteContent" rows="6" required></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary" id="saveEditBtn">
-          <i class="bi bi-check-lg"></i> Simpan Perubahan
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script><script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsfXmIrB9S-9-KUrxK5ZWDK8ZyIMCkJi2pZ_GgZRpJ3rTZfp1UDyx8rKEGoF-ptxs/exec';
-    let noteIndex = 1;
-    let generatedLinks = []; // Store generated links for copying
+    <div class="floating-bg"></div>
     
-    // JavaScript untuk Daftar Noted
-    let currentNoteId = null;
-    let currentNoteData = null;
-    
-    // Theme switch functionality
-    const toggleSwitch = document.querySelector('#checkbox');
-    const currentTheme = localStorage.getItem('theme');
-    
-    if (currentTheme) {
-      document.body.classList.add(currentTheme);
-      if (currentTheme === 'dark-theme') {
-        toggleSwitch.checked = true;
-      }
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.body.classList.add('dark-theme');
-      toggleSwitch.checked = true;
-      localStorage.setItem('theme', 'dark-theme');
-    }
-    
-    function switchTheme(e) {
-      if (e.target.checked) {
-        document.body.classList.add('dark-theme');
-        localStorage.setItem('theme', 'dark-theme');
-      } else {
-        document.body.classList.remove('dark-theme');
-        localStorage.setItem('theme', 'light-theme');
-      }
-    }
-    
-    toggleSwitch.addEventListener('change', switchTheme, false);
-    
-    // Add new note form
-    document.getElementById('addNoteBtn').addEventListener('click', function() {
-      const container = document.getElementById('notesContainer');
-      const newNoteItem = createNoteItem(noteIndex);
-      container.appendChild(newNoteItem);
-      noteIndex++;
-      updateNoteCount();
-      updateRemoveButtons();
-      
-      // Animate the new item
-      newNoteItem.style.opacity = '0';
-      newNoteItem.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        newNoteItem.style.transition = 'all 0.5s ease';
-        newNoteItem.style.opacity = '1';
-        newNoteItem.style.transform = 'translateY(0)';
-      }, 10);
-    });
-
-    // Copy All Links functionality
-    document.getElementById('copyAllLinksBtn').addEventListener('click', function() {
-      if (generatedLinks.length === 0) {
-        showNotification('Tidak ada link yang tersedia untuk disalin', 'error');
-        return;
-      }
-      
-      const allLinks = generatedLinks.map(link => link.shareableLink).join('\n');
-      copyToClipboard(allLinks);
-      showNotification('Semua link berhasil disalin!', 'success');
-    });
-    
-    // Copy All Links with Name functionality
-    document.getElementById('copyAllLinksWithNameBtn').addEventListener('click', function() {
-      if (generatedLinks.length === 0) {
-        showNotification('Tidak ada link yang tersedia untuk disalin', 'error');
-        return;
-      }
-      
-      const allLinksWithName = generatedLinks.map(link => `${link.nama_note}: ${link.shareableLink}`).join('\n');
-      copyToClipboard(allLinksWithName);
-      showNotification('Semua link dengan nama berhasil disalin!', 'success');
-    });
-
-    //Fitur Lihat Detail, Export Excell Dll
-
-    // Toggle Daftar Noted Section
-document.getElementById('toggleNotedSection').addEventListener('click', function() {
-  const section = document.getElementById('notedSection');
-  const toggleText = document.getElementById('toggleText');
-  const toggleIcon = document.getElementById('toggleIcon');
-  
-  if (section.classList.contains('collapsed')) {
-    // Expand
-    section.classList.remove('collapsed');
-    section.classList.add('expanded');
-    toggleText.textContent = 'Sembunyikan Daftar Noted';
-    toggleIcon.classList.remove('bi-chevron-down');
-    toggleIcon.classList.add('bi-chevron-up');
-    
-    // Load data saat pertama kali dibuka
-    if (!section.hasAttribute('data-loaded')) {
-      loadNotedList();
-      section.setAttribute('data-loaded', 'true');
-    }
-  } else {
-    // Collapse
-    section.classList.remove('expanded');
-    section.classList.add('collapsed');
-    toggleText.textContent = 'Tampilkan Daftar Noted';
-    toggleIcon.classList.remove('bi-chevron-up');
-    toggleIcon.classList.add('bi-chevron-down');
-  }
-});
-    // Load daftar noted saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function() {
-  // Data akan dimuat saat section dibuka
-  console.log('Page loaded - Daftar noted akan dimuat saat dibutuhkan');
-});
-
-// Event listener untuk refresh data
-document.getElementById('refreshDataBtn').addEventListener('click', function() {
-  loadNotedList();
-});
-
-// Event listener untuk export semua data
-document.getElementById('exportAllBtn').addEventListener('click', function() {
-  exportAllData();
-});
-
-// Fungsi untuk load daftar noted
-async function loadNotedList() {
-  const loadingElement = document.getElementById('loadingNotes');
-  const listElement = document.getElementById('notedList');
-  const emptyElement = document.getElementById('emptyState');
-  
-  // Show loading
-  loadingElement.style.display = 'block';
-  listElement.style.display = 'none';
-  emptyElement.style.display = 'none';
-  
-  try {
-    const response = await fetch(SCRIPT_URL + '?action=list');
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      if (data.data && data.data.length > 0) {
-        displayNotedList(data.data);
-        listElement.style.display = 'block';
-      } else {
-        emptyElement.style.display = 'block';
-      }
-    } else {
-      showNotification('Gagal memuat daftar noted: ' + data.message, 'error');
-      emptyElement.style.display = 'block';
-    }
-  } catch (error) {
-    showNotification('Terjadi kesalahan: ' + error.message, 'error');
-    emptyElement.style.display = 'block';
-  } finally {
-    loadingElement.style.display = 'none';
-  }
-}
-
-// Fungsi untuk menampilkan daftar noted
-function displayNotedList(notes) {
-  const container = document.getElementById('notedList');
-  container.innerHTML = '';
-  
-  notes.forEach((note, index) => {
-    const noteItem = document.createElement('div');
-    noteItem.className = 'noted-item';
-    noteItem.style.animationDelay = `${index * 0.1}s`;
-    
-    // Truncate content untuk preview
-    const previewContent = note.note_content.length > 200 
-      ? note.note_content.substring(0, 200) + '...' 
-      : note.note_content;
-    
-    noteItem.innerHTML = `
-      <div class="noted-item-header">
-        <h6 class="noted-item-title">
-          <i class="bi bi-sticky"></i>
-          ${note.nama_note}
-        </h6>
-        <div class="noted-item-date">
-          <i class="bi bi-calendar3"></i>
-          ${formatDate(note.created_at)}
-        </div>
-      </div>
-      <div class="noted-item-content">
-        ${previewContent.replace(/\n/g, '<br>')}
-      </div>
-      <div class="noted-item-actions">
-        <button class="btn btn-primary btn-sm" onclick="viewNoteDetail('${note.id}')">
-          <i class="bi bi-eye me-1"></i> Detail
-        </button>
-        <button class="btn btn-warning btn-sm" onclick="editNote('${note.id}')">
-          <i class="bi bi-pencil me-1"></i> Edit
-        </button>
-        <button class="btn btn-danger btn-sm" onclick="deleteNoteConfirm('${note.id}', '${note.nama_note.replace(/'/g, "\\'")}')">
-          <i class="bi bi-trash me-1"></i> Hapus
-        </button>
-      </div>
-    `;
-    
-    container.appendChild(noteItem);
-  });
-}
-
-// Fungsi untuk melihat detail noted
-async function viewNoteDetail(noteId) {
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        action: 'detail',
-        id: noteId
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      currentNoteId = noteId;
-      currentNoteData = data.data;
-      
-      // Populate modal
-      document.getElementById('noteDetailContent').innerHTML = `
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label fw-bold">Nama Note:</label>
-            <div class="form-control-plaintext">${data.data.nama_note}</div>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label fw-bold">Tanggal Dibuat:</label>
-            <div class="form-control-plaintext">${formatDate(data.data.timestamp)}</div>
-          </div>
-          <div class="col-12 mb-3">
-            <label class="form-label fw-bold">Konten Note:</label>
-            <div class="form-control" style="height: auto; min-height: 100px; white-space: pre-wrap;">${data.data.note_content}</div>
-          </div>
-          <div class="col-12">
-            <label class="form-label fw-bold">Shareable Link:</label>
-            <div class="input-group">
-              <input type="text" class="form-control" value="${data.data.shareableLink}" readonly id="shareableLinkInput">
-              <button class="btn btn-outline-secondary" type="button" onclick="copyShareableLink()">
-                <i class="bi bi-clipboard"></i>
-              </button>
+    <!-- Header Navigation -->
+    <div class="admin-header">
+        <div class="tab-navigation">
+            <div class="nav-left">
+                <a href="Link2UnlockAdmin" class="tab-button">
+                    <i class="bi bi-link-45deg"></i>
+                    Link2Unlock Admin
+                </a>
+                <a href="index" class="tab-button secondary">
+                    <i class="bi bi-house"></i>
+                    Kembali Ke Home
+                </a>
             </div>
-          </div>
-        </div>
-      `;
-      
-      // Show modal
-      const modal = new bootstrap.Modal(document.getElementById('noteDetailModal'));
-      modal.show();
-    } else {
-      showNotification('Gagal memuat detail noted: ' + data.message, 'error');
-    }
-  } catch (error) {
-    showNotification('Terjadi kesalahan: ' + error.message, 'error');
-  }
-}
-
-// Event listeners untuk modal actions
-document.getElementById('editNoteBtn').addEventListener('click', function() {
-  if (currentNoteData) {
-    // Close detail modal
-    bootstrap.Modal.getInstance(document.getElementById('noteDetailModal')).hide();
-    
-    // Open edit modal
-    openEditModal(currentNoteData);
-  }
-});
-
-document.getElementById('copyLinkBtn').addEventListener('click', function() {
-  copyShareableLink();
-});
-
-document.getElementById('deleteNoteBtn').addEventListener('click', function() {
-  if (currentNoteData) {
-    deleteNoteConfirm(currentNoteId, currentNoteData.nama_note);
-  }
-});
-
-// Fungsi untuk copy shareable link
-function copyShareableLink() {
-  const input = document.getElementById('shareableLinkInput');
-  if (input) {
-    copyToClipboard(input.value);
-    showNotification('Link berhasil disalin!', 'success');
-  } else if (currentNoteData) {
-    copyToClipboard(currentNoteData.shareableLink);
-    showNotification('Link berhasil disalin!', 'success');
-  }
-}
-
-// Fungsi untuk membuka modal edit
-function openEditModal(noteData) {
-  document.getElementById('editNoteId').value = noteData.id;
-  document.getElementById('editNamaNote').value = noteData.nama_note;
-  document.getElementById('editNoteContent').value = noteData.note_content;
-  
-  const modal = new bootstrap.Modal(document.getElementById('editNoteModal'));
-  modal.show();
-}
-
-// Event listener untuk edit note
-function editNote(noteId) {
-  viewNoteDetail(noteId);
-}
-
-// Event listener untuk save edit
-document.getElementById('saveEditBtn').addEventListener('click', async function() {
-  const id = document.getElementById('editNoteId').value;
-  const namaNote = document.getElementById('editNamaNote').value;
-  const noteContent = document.getElementById('editNoteContent').value;
-  
-  if (!namaNote || !noteContent) {
-    showNotification('Mohon isi semua field!', 'error');
-    return;
-  }
-  
-  const btn = this;
-  const originalHTML = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
-  
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        action: 'update',
-        id: id,
-        nama_note: namaNote,
-        note_content: noteContent
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      showNotification('Note berhasil diupdate!', 'success');
-      bootstrap.Modal.getInstance(document.getElementById('editNoteModal')).hide();
-      loadNotedList(); // Refresh list
-    } else {
-      showNotification('Gagal mengupdate note: ' + data.message, 'error');
-    }
-  } catch (error) {
-    showNotification('Terjadi kesalahan: ' + error.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalHTML;
-  }
-});
-
-// Fungsi untuk konfirmasi hapus
-function deleteNoteConfirm(noteId, noteName) {
-  if (confirm(`Apakah Anda yakin ingin menghapus noted "${noteName}"?`)) {
-    deleteNoteById(noteId);
-  }
-}
-
-// Fungsi untuk menghapus note
-async function deleteNoteById(noteId) {
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        action: 'delete',
-        id: noteId
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      showNotification('Note berhasil dihapus!', 'success');
-      
-      // Close modal if open
-      const detailModal = bootstrap.Modal.getInstance(document.getElementById('noteDetailModal'));
-      if (detailModal) {
-        detailModal.hide();
-      }
-      
-      loadNotedList(); // Refresh list
-    } else {
-      showNotification('Gagal menghapus note: ' + data.message, 'error');
-    }
-  } catch (error) {
-    showNotification('Terjadi kesalahan: ' + error.message, 'error');
-  }
-}
-
-// Fungsi untuk export semua data
-async function exportAllData() {
-  const btn = document.getElementById('exportAllBtn');
-  const originalHTML = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Exporting...';
-  
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        action: 'export_all'
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      // Download file
-      const link = document.createElement('a');
-      link.href = data.data.exportUrl;
-      link.download = data.data.fileName + '.xlsx';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      showNotification('Export berhasil! File sedang diunduh...', 'success');
-    } else {
-      showNotification('Gagal export data: ' + data.message, 'error');
-    }
-  } catch (error) {
-    showNotification('Terjadi kesalahan: ' + error.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalHTML;
-  }
-}
-
-// Fungsi untuk format tanggal
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('id-ID', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-}
-
-
-    
-    // Create note item
-    function createNoteItem(index) {
-      const noteItem = document.createElement('div');
-      noteItem.className = 'note-item';
-      noteItem.setAttribute('data-index', index);
-      noteItem.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="mb-0 text-primary">
-            <i class="bi bi-sticky me-2"></i>
-            Note #${index + 1}
-          </h6>
-          <button type="button" class="btn btn-danger btn-sm remove-note-btn">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-        <div class="row">
-          <div class="col-md-12 mb-3">
-            <label class="form-label">
-              <i class="bi bi-tag text-primary"></i>
-              Nama Note
-            </label>
-            <input type="text" class="form-control nama-note" placeholder="Masukkan nama note..." required>
-          </div>
-          <div class="col-md-12 mb-3">
-            <label class="form-label">
-              <i class="bi bi-pencil text-primary"></i>
-              Konten Note
-            </label>
-            <textarea class="form-control note-content" placeholder="Masukkan konten note..." required></textarea>
-          </div>
-        </div>
-      `;
-      
-
-      
-      // Add remove functionality
-      noteItem.querySelector('.remove-note-btn').addEventListener('click', function() {
-        noteItem.style.transition = 'all 0.3s ease';
-        noteItem.style.opacity = '0';
-        noteItem.style.transform = 'translateX(-100%)';
-        setTimeout(() => {
-          noteItem.remove();
-          updateNoteCount();
-          updateRemoveButtons();
-          updateNoteNumbers();
-        }, 300);
-      });
-      
-      return noteItem;
-    }
-    
-    // Update note count
-    function updateNoteCount() {
-      const count = document.querySelectorAll('.note-item').length;
-      document.getElementById('noteCount').textContent = count;
-    }
-    
-    // Update remove buttons visibility
-    function updateRemoveButtons() {
-      const noteItems = document.querySelectorAll('.note-item');
-      const removeButtons = document.querySelectorAll('.remove-note-btn');
-      
-      if (noteItems.length <= 1) {
-        removeButtons.forEach(btn => btn.style.display = 'none');
-      } else {
-        removeButtons.forEach(btn => btn.style.display = 'block');
-      }
-    }
-    
-    // Update note numbers
-    function updateNoteNumbers() {
-      const noteItems = document.querySelectorAll('.note-item');
-      noteItems.forEach((item, index) => {
-        const title = item.querySelector('h6');
-        title.innerHTML = `
-          <i class="bi bi-sticky me-2"></i>
-          Note #${index + 1}
-        `;
-      });
-    }
-    
-    // Form submission
-    document.getElementById('bulkNoteForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const noteItems = document.querySelectorAll('.note-item');
-      const notes = [];
-      
-      // Collect all note data
-      noteItems.forEach(item => {
-        const namaNote = item.querySelector('.nama-note').value;
-        const noteContent = item.querySelector('.note-content').value;
-        
-        if (namaNote && noteContent) {
-          notes.push({
-            nama_note: namaNote,
-            note_content: noteContent
-          });
-        }
-      });
-      
-      if (notes.length === 0) {
-        showNotification('Mohon isi minimal satu note!', 'error');
-        return;
-      }
-      
-      // Show loading state
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      const originalHTML = submitBtn.innerHTML;
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
-      
-      try {
-        const results = [];
-        generatedLinks = []; // Reset generated links
-        
-        // Process each note
-        for (let i = 0; i < notes.length; i++) {
-          const note = notes[i];
-          const payload = {
-            action: 'create',
-            nama_note: note.nama_note,
-            note_content: note.note_content
-          };
-          
-          try {
-            const response = await fetch(SCRIPT_URL, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              body: new URLSearchParams(payload)
-            });
             
-            const data = await response.json();
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <i class="bi bi-sun"></i>
+                <div class="theme-toggle-switch"></div>
+                <i class="bi bi-moon"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Main Card -->
+        <div class="admin-card">
+            <div class="card-header-custom">
+                <div class="card-title">
+                    <i class="bi bi-journals"></i>
+                    Noted2Unlock Admin - Bulk Generator
+                </div>
+            </div>
             
-            if (data.status === 'success') {
-              results.push({
-                nama_note: note.nama_note,
-                shareableLink: data.data.shareableLink,
-                success: true
-              });
-              generatedLinks.push({
-                nama_note: note.nama_note,
-                shareableLink: data.data.shareableLink
-              });
+            <div class="card-body-custom">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="count-display">
+                        <i class="bi bi-file-text"></i>
+                        Total Notes: <span id="noteCount">1</span>
+                    </div>
+                    <button class="btn-custom btn-success-custom" id="addNoteBtn" type="button">
+                        <i class="bi bi-plus-circle"></i>
+                        Tambah Note
+                    </button>
+                </div>
+
+                <form id="bulkNoteForm">
+                    <div id="notesContainer">
+                        <div class="note-item" data-index="0">
+                            <div class="note-header">
+                                <h6 class="note-title">
+                                    <i class="bi bi-sticky"></i>
+                                    Note #1
+                                </h6>
+                                <button class="btn-custom btn-danger-custom btn-sm remove-note-btn" style="display: none;" type="button">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-tag text-primary"></i>
+                                        Nama Note
+                                    </label>
+                                    <input class="form-control nama-note" placeholder="Masukkan nama note..." required type="text" />
+                                </div>
+                                
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-pencil text-primary"></i>
+                                        Konten Note
+                                    </label>
+                                    <textarea class="form-control note-content" placeholder="Masukkan konten note..." required rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-custom btn-primary-custom w-100" type="submit">
+                        <i class="bi bi-magic"></i>
+                        Generate Semua Note Link
+                    </button>
+                </form>
+
+                <!-- Results Container -->
+                <div class="result-container" id="resultContainer">
+                    <hr style="border-color: var(--border-color); margin: 2rem 0;" />
+                    <h5 style="color: var(--success-color); margin-bottom: 1rem;">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Note berhasil dibuat!
+                    </h5>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        Bagikan link-link berikut kepada pengguna:
+                    </p>
+                    
+                    <div id="resultsContainer"></div>
+                    
+                    <div class="d-flex gap-2 mb-3">
+                        <button class="btn-custom btn-info-custom flex-grow-1" id="copyAllLinksBtn">
+                            <i class="bi bi-clipboard"></i>
+                            Copy All Links
+                        </button>
+                        <button class="btn-custom btn-info-custom flex-grow-1" id="copyAllLinksWithNameBtn">
+                            <i class="bi bi-clipboard-plus"></i>
+                            Copy All Links with Name
+                        </button>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle Noted Section -->
+        <button type="button" class="toggle-section-btn" id="toggleNotedSection">
+            <i class="bi bi-list-ul me-2"></i>
+            <span id="toggleText">Tampilkan Daftar Noted</span>
+            <i class="bi bi-chevron-down ms-2" id="toggleIcon"></i>
+        </button>
+
+        <div class="noted-section collapsed" id="notedSection">
+            <div class="section-content">
+                <!-- Section Header -->
+                <div class="section-header">
+                    <h4>
+                        <i class="bi bi-list-ul me-2"></i>
+                        Daftar Noted
+                    </h4>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" class="btn-custom btn-primary-custom" id="refreshDataBtn">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            Refresh Data
+                        </button>
+                        <button type="button" class="btn-custom btn-success-custom" id="exportAllBtn">
+                            <i class="bi bi-file-earmark-excel"></i>
+                            Export Semua Data
+                        </button>
+                    </div>
+                </div>
+
+                <div id="notedListContainer">
+                    <div class="text-center py-4 loading" id="loadingNotes">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2" style="color: var(--text-muted);">Memuat daftar noted...</p>
+                    </div>
+                    
+                    <div id="notedList" style="display: none;">
+                        <!-- Daftar noted akan dimuat di sini -->
+                    </div>
+                    
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <i class="bi bi-clipboard-x"></i>
+                        <h5>Belum ada noted</h5>
+                        <p>Buat noted pertama Anda menggunakan form di atas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals (unchanged but with updated classes) -->
+    <div class="modal fade" id="noteDetailModal" tabindex="-1" aria-labelledby="noteDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="noteDetailModalLabel">
+                        <i class="bi bi-sticky me-2"></i>
+                        Detail Noted
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="noteDetailContent">
+                        <!-- Content akan dimuat via JavaScript -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex gap-2 w-100">
+                        <button type="button" class="btn-custom btn-primary-custom" id="editNoteBtn">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button type="button" class="btn-custom btn-info-custom" id="copyLinkBtn">
+                            <i class="bi bi-link-45deg"></i> Salin Link
+                        </button>
+                        <button type="button" class="btn-custom btn-success-custom" id="exportSingleBtn">
+                            <i class="bi bi-file-earmark-excel"></i> Export
+                        </button>
+                        <button type="button" class="btn-custom btn-danger-custom" id="deleteNoteBtn">
+                            <i class="bi bi-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editNoteModalLabel">
+                        <i class="bi bi-pencil me-2"></i>
+                        Edit Noted
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editNoteForm">
+                        <input type="hidden" id="editNoteId" />
+                        <div class="mb-3">
+                            <label for="editNamaNote" class="form-label">
+                                <i class="bi bi-tag text-primary"></i>
+                                Nama Note
+                            </label>
+                            <input type="text" class="form-control" id="editNamaNote" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editNoteContent" class="form-label">
+                                <i class="bi bi-pencil text-primary"></i>
+                                Konten Note
+                            </label>
+                            <textarea class="form-control" id="editNoteContent" rows="6" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-custom btn-danger-custom" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn-custom btn-success-custom" id="saveEditBtn">
+                        <i class="bi bi-check-lg"></i> Simpan Perubahan
+                    </button>
+                </div>
+                            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby57JJ0IdU7b06XiJ82mAXjQy4OuWr7QIjZf_h27aJJx_M_aUAIgRgkux6ChUtWDeg/exec';
+        let noteIndex = 1;
+        let generatedLinks = []; // Store generated links for copying
+        
+        // JavaScript untuk Daftar Noted
+        let currentNoteId = null;
+        let currentNoteData = null;
+        
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
             } else {
-              results.push({
-                nama_note: note.nama_note,
-                error: data.message,
-                success: false
-              });
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
             }
-          } catch (error) {
-            results.push({
-              nama_note: note.nama_note,
-              error: error.message,
-              success: false
-            });
-          }
-          
-          // Update progress
-          submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses... (${i + 1}/${notes.length})`;
         }
+        
+        // Set initial theme from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+            }
+            
+            // Data akan dimuat saat section dibuka
+            console.log('Page loaded - Daftar noted akan dimuat saat dibutuhkan');
+        });
+
+        // Add new note form
+        document.getElementById('addNoteBtn').addEventListener('click', function() {
+            const container = document.getElementById('notesContainer');
+            const newNoteItem = createNoteItem(noteIndex);
+            container.appendChild(newNoteItem);
+            noteIndex++;
+            updateNoteCount();
+            updateRemoveButtons();
+            
+            // Animate the new item
+            newNoteItem.style.opacity = '0';
+            newNoteItem.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                newNoteItem.style.transition = 'all 0.5s ease';
+                newNoteItem.style.opacity = '1';
+                newNoteItem.style.transform = 'translateY(0)';
+            }, 10);
+        });
+
+        // Copy All Links functionality
+        document.getElementById('copyAllLinksBtn').addEventListener('click', function() {
+            if (generatedLinks.length === 0) {
+                showNotification('Tidak ada link yang tersedia untuk disalin', 'error');
+                return;
+            }
+            
+            const allLinks = generatedLinks.map(link => link.shareableLink).join('\n');
+            copyToClipboard(allLinks);
+            showNotification('Semua link berhasil disalin!', 'success');
+        });
+        
+        // Copy All Links with Name functionality
+        document.getElementById('copyAllLinksWithNameBtn').addEventListener('click', function() {
+            if (generatedLinks.length === 0) {
+                showNotification('Tidak ada link yang tersedia untuk disalin', 'error');
+                return;
+            }
+            
+            const allLinksWithName = generatedLinks.map(link => `${link.nama_note}: ${link.shareableLink}`).join('\n');
+            copyToClipboard(allLinksWithName);
+            showNotification('Semua link dengan nama berhasil disalin!', 'success');
+        });
+
+        // Toggle Daftar Noted Section
+        document.getElementById('toggleNotedSection').addEventListener('click', function() {
+            const section = document.getElementById('notedSection');
+            const toggleText = document.getElementById('toggleText');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (section.classList.contains('collapsed')) {
+                // Expand
+                section.classList.remove('collapsed');
+                section.classList.add('expanded');
+                toggleText.textContent = 'Sembunyikan Daftar Noted';
+                toggleIcon.classList.remove('bi-chevron-down');
+                toggleIcon.classList.add('bi-chevron-up');
+                
+                // Load data saat pertama kali dibuka
+                if (!section.hasAttribute('data-loaded')) {
+                    loadNotedList();
+                    section.setAttribute('data-loaded', 'true');
+                }
+            } else {
+                // Collapse
+                section.classList.remove('expanded');
+                section.classList.add('collapsed');
+                toggleText.textContent = 'Tampilkan Daftar Noted';
+                toggleIcon.classList.remove('bi-chevron-up');
+                toggleIcon.classList.add('bi-chevron-down');
+            }
+        });
+
+        // Event listener untuk refresh data
+        document.getElementById('refreshDataBtn').addEventListener('click', function() {
+            loadNotedList();
+        });
+
+        // Event listener untuk export semua data
+        document.getElementById('exportAllBtn').addEventListener('click', function() {
+            exportAllData();
+        });
+
+// 1. FUNGSI LOAD NOTED LIST - DENGAN DEBUGGING DAN MULTIPLE FALLBACK
+async function loadNotedList() {
+    const loadingElement = document.getElementById('loadingNotes');
+    const listElement = document.getElementById('notedList');
+    const emptyElement = document.getElementById('emptyState');
+    
+    // Show loading
+    loadingElement.style.display = 'block';
+    listElement.style.display = 'none';
+    emptyElement.style.display = 'none';
+    
+    try {
+        const response = await fetch(SCRIPT_URL + '?action=list');
+        const data = await response.json();
+        
+        console.log('📊 API Response:', data);
+        
+        if (data.status === 'success') {
+            if (data.data && data.data.length > 0) {
+                // Debug setiap note
+                data.data.forEach((note, index) => {
+                    console.log(`🔍 Note ${index + 1}:`, {
+                        id: note.id,
+                        nama: note.nama_note,
+                        view_count: note.view_count,
+                        viewCount: note.viewCount,
+                        views: note.views,
+                        count: note.count,
+                        allFields: Object.keys(note)
+                    });
+                });
+                
+                displayNotedList(data.data);
+                listElement.style.display = 'block';
+            } else {
+                emptyElement.style.display = 'block';
+            }
+        } else {
+            showNotification('Gagal memuat daftar noted: ' + data.message, 'error');
+            emptyElement.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('❌ Error loading notes:', error);
+        showNotification('Terjadi kesalahan: ' + error.message, 'error');
+        emptyElement.style.display = 'block';
+    } finally {
+        loadingElement.style.display = 'none';
+    }
+}
+
+
+// FUNGSI DISPLAY NOTED LIST - DENGAN MULTIPLE FALLBACK UNTUK VIEW COUNT
+function displayNotedList(notes) {
+    const container = document.getElementById('notedList');
+    container.innerHTML = '';
+    
+    notes.forEach((note, index) => {
+        const noteItem = document.createElement('div');
+        noteItem.className = 'noted-item';
+        noteItem.style.animationDelay = `${index * 0.1}s`;
+        
+        // 🔧 PERBAIKAN: Multiple fallback untuk view count
+        let viewCount = 0;
+        
+        // Coba berbagai kemungkinan field name
+        if (typeof note.view_count !== 'undefined' && note.view_count !== null) {
+            viewCount = parseInt(note.view_count) || 0;
+        } else if (typeof note.viewCount !== 'undefined' && note.viewCount !== null) {
+            viewCount = parseInt(note.viewCount) || 0;
+        } else if (typeof note.views !== 'undefined' && note.views !== null) {
+            viewCount = parseInt(note.views) || 0;
+        } else if (typeof note.count !== 'undefined' && note.count !== null) {
+            viewCount = parseInt(note.count) || 0;
+        } else if (typeof note.visit_count !== 'undefined' && note.visit_count !== null) {
+            viewCount = parseInt(note.visit_count) || 0;
+        } else if (typeof note.access_count !== 'undefined' && note.access_count !== null) {
+            viewCount = parseInt(note.access_count) || 0;
+        }
+        
+        console.log(`📈 Note "${note.nama_note}" view count: ${viewCount}`);
+        
+        // Format tanggal
+        const noteDate = note.timestamp || note.created_at || note.date_created;
+        const formattedDate = formatDate(noteDate);
+        
+        // Truncate content untuk preview
+        const previewContent = note.note_content && note.note_content.length > 200 
+            ? note.note_content.substring(0, 200) + '...' 
+            : (note.note_content || 'No content');
+        
+        noteItem.innerHTML = `
+            <div class="noted-item-header">
+                <h6 class="noted-item-title">
+                    <i class="bi bi-sticky"></i>
+                    ${note.nama_note || 'Untitled'}
+                </h6>
+                <div class="noted-item-date">
+                    <i class="bi bi-eye"></i> <span class="view-count-display">${viewCount}</span> views • 
+                    <i class="bi bi-calendar3"></i>
+                    ${formattedDate}
+                </div>
+            </div>
+            <div class="noted-item-content">
+                ${previewContent.replace(/\n/g, '<br>')}
+            </div>
+            <div class="noted-item-actions">
+                <button class="btn-custom btn-primary-custom btn-sm" onclick="viewNoteDetail('${note.id}')">
+                    <i class="bi bi-eye me-1"></i> Detail
+                </button>
+                <button class="btn-custom btn-warning-custom btn-sm" onclick="editNote('${note.id}')">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </button>
+                <button class="btn-custom btn-danger-custom btn-sm" onclick="deleteNoteConfirm('${note.id}', '${(note.nama_note || '').replace(/'/g, "\\'")}')">
+                    <i class="bi bi-trash me-1"></i> Hapus
+                </button>
+            </div>
+        `;
+        
+        container.appendChild(noteItem);
+    });
+}
+
+//  FUNGSI VIEW NOTE DETAIL - DENGAN PERBAIKAN VIEW COUNT
+async function viewNoteDetail(noteId) {
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'detail',
+                id: noteId
+            })
+        });
+        
+        const data = await response.json();
+        console.log('🔍 Detail Response:', data);
+        
+        if (data.status === 'success') {
+            currentNoteId = noteId;
+            currentNoteData = data.data;
+            
+            // 🔧 PERBAIKAN: Extract view count dengan multiple fallback
+            let viewCount = 0;
+            if (typeof data.data.view_count !== 'undefined' && data.data.view_count !== null) {
+                viewCount = parseInt(data.data.view_count) || 0;
+            } else if (typeof data.data.viewCount !== 'undefined' && data.data.viewCount !== null) {
+                viewCount = parseInt(data.data.viewCount) || 0;
+            } else if (typeof data.data.views !== 'undefined' && data.data.views !== null) {
+                viewCount = parseInt(data.data.views) || 0;
+            } else if (typeof data.data.count !== 'undefined' && data.data.count !== null) {
+                viewCount = parseInt(data.data.count) || 0;
+            }
+            
+            console.log('📊 Detail view count:', viewCount);
+            
+            // Populate modal
+            document.getElementById('noteDetailContent').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Nama Note:</label>
+                        <div class="form-control-plaintext">${data.data.nama_note || 'Untitled'}</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">View Count:</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" value="${viewCount}" id="viewCountInput" min="0">
+                            <button class="btn-custom btn-primary-custom" type="button" onclick="updateViewCount()">
+                                <i class="bi bi-arrow-clockwise"></i> Update
+                            </button>
+                        </div>
+                        <small class="text-muted">Current: ${viewCount} views</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Tanggal Dibuat:</label>
+                        <div class="form-control-plaintext">${formatDate(data.data.timestamp || data.data.created_at)}</div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fw-bold">Konten Note:</label>
+                        <div class="form-control" style="height: auto; min-height: 100px; white-space: pre-wrap;">${data.data.note_content || 'No content'}</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Shareable Link:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="${data.data.shareableLink || ''}" readonly id="shareableLinkInput">
+                            <button class="btn-custom btn-primary-custom" type="button" onclick="copyShareableLink()">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('noteDetailModal'));
+            modal.show();
+        } else {
+            showNotification('Gagal memuat detail noted: ' + data.message, 'error');
+        }
+    } catch (error) {
+        console.error('❌ Error loading detail:', error);
+        showNotification('Terjadi kesalahan: ' + error.message, 'error');
+    }
+}
+
+        // Event listeners untuk modal actions
+        document.getElementById('editNoteBtn').addEventListener('click', function() {
+            if (currentNoteData) {
+                // Close detail modal
+                bootstrap.Modal.getInstance(document.getElementById('noteDetailModal')).hide();
+                
+                // Open edit modal
+                openEditModal(currentNoteData);
+            }
+        });
+
+        document.getElementById('copyLinkBtn').addEventListener('click', function() {
+            copyShareableLink();
+        });
+
+        document.getElementById('deleteNoteBtn').addEventListener('click', function() {
+            if (currentNoteData) {
+                deleteNoteConfirm(currentNoteId, currentNoteData.nama_note);
+            }
+        });
+
+        // Fungsi untuk copy shareable link
+        function copyShareableLink() {
+            const input = document.getElementById('shareableLinkInput');
+            if (input) {
+                copyToClipboard(input.value);
+                showNotification('Link berhasil disalin!', 'success');
+            } else if (currentNoteData) {
+                copyToClipboard(currentNoteData.shareableLink);
+                showNotification('Link berhasil disalin!', 'success');
+            }
+        }
+
+        // Fungsi untuk membuka modal edit
+        function openEditModal(noteData) {
+            document.getElementById('editNoteId').value = noteData.id;
+            document.getElementById('editNamaNote').value = noteData.nama_note;
+            document.getElementById('editNoteContent').value = noteData.note_content;
+            
+            const modal = new bootstrap.Modal(document.getElementById('editNoteModal'));
+            modal.show();
+        }
+
+        // Event listener untuk edit note
+        function editNote(noteId) {
+            viewNoteDetail(noteId);
+        }
+
+        // Event listener untuk save edit
+        document.getElementById('saveEditBtn').addEventListener('click', async function() {
+            const id = document.getElementById('editNoteId').value;
+            const namaNote = document.getElementById('editNamaNote').value;
+            const noteContent = document.getElementById('editNoteContent').value;
+            
+            if (!namaNote || !noteContent) {
+                showNotification('Mohon isi semua field!', 'error');
+                return;
+            }
+            
+            const btn = this;
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'update',
+                        id: id,
+                        nama_note: namaNote,
+                        note_content: noteContent
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showNotification('Note berhasil diupdate!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('editNoteModal')).hide();
+                    loadNotedList(); // Refresh list
+                } else {
+                    showNotification('Gagal mengupdate note: ' + data.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Terjadi kesalahan: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        });
+
+
+// FUNGSI UPDATE VIEW COUNT - DENGAN REFRESH OTOMATIS
+async function updateViewCount() {
+    const viewCountInput = document.getElementById('viewCountInput');
+    const newCount = parseInt(viewCountInput.value);
+    
+    if (isNaN(newCount) || newCount < 0) {
+        showNotification('View count harus berupa angka positif', 'error');
+        return;
+    }
+    
+    const updateBtn = event.target;
+    const originalHTML = updateBtn.innerHTML;
+    updateBtn.disabled = true;
+    updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Updating...';
+    
+    try {
+        // Coba berbagai parameter untuk update
+        const updateParams = new URLSearchParams({
+            action: 'update',
+            id: currentNoteId,
+            view_count: newCount
+        });
+        
+        // Tambah parameter alternatif untuk memastikan
+        updateParams.append('viewCount', newCount);
+        updateParams.append('views', newCount);
+        updateParams.append('count', newCount);
+        
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: updateParams
+        });
+        
+        const data = await response.json();
+        console.log('📝 Update Response:', data);
+        
+        if (data.status === 'success') {
+            showNotification('View count berhasil diupdate!', 'success');
+            
+            // Update current note data
+            if (currentNoteData) {
+                currentNoteData.view_count = newCount;
+                currentNoteData.viewCount = newCount;
+                currentNoteData.views = newCount;
+            }
+            
+            // Refresh daftar noted list
+            setTimeout(() => {
+                loadNotedList();
+            }, 1000);
+            
+            // Update display di modal
+            const currentDisplay = document.querySelector('#viewCountInput').parentElement.nextElementSibling;
+            if (currentDisplay) {
+                currentDisplay.textContent = `Current: ${newCount} views`;
+            }
+            
+        } else {
+            showNotification('Gagal mengupdate view count: ' + data.message, 'error');
+        }
+    } catch (error) {
+        console.error('❌ Error updating view count:', error);
+        showNotification('Terjadi kesalahan: ' + error.message, 'error');
+    } finally {
+        updateBtn.disabled = false;
+        updateBtn.innerHTML = originalHTML;
+    }
+}
+
+
+        // Fungsi untuk konfirmasi hapus
+        function deleteNoteConfirm(noteId, noteName) {
+            if (confirm(`Apakah Anda yakin ingin menghapus noted "${noteName}"?`)) {
+                deleteNoteById(noteId);
+            }
+        }
+
+        // Fungsi untuk menghapus note
+        async function deleteNoteById(noteId) {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'delete',
+                        id: noteId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showNotification('Note berhasil dihapus!', 'success');
+                    
+                    // Close modal if open
+                    const detailModal = bootstrap.Modal.getInstance(document.getElementById('noteDetailModal'));
+                    if (detailModal) {
+                        detailModal.hide();
+                    }
+                    
+                    loadNotedList(); // Refresh list
+                } else {
+                    showNotification('Gagal menghapus note: ' + data.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Terjadi kesalahan: ' + error.message, 'error');
+            }
+        }
+
+        // Fungsi untuk export semua data
+        async function exportAllData() {
+            const btn = document.getElementById('exportAllBtn');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Exporting...';
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'export_all'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Download file
+                    const link = document.createElement('a');
+                    link.href = data.data.exportUrl;
+                    link.download = data.data.fileName + '.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    showNotification('Export berhasil! File sedang diunduh...', 'success');
+                } else {
+                    showNotification('Gagal export data: ' + data.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Terjadi kesalahan: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+
+// FUNGSI FORMAT DATE - DENGAN ERROR HANDLING
+function formatDate(dateString) {
+    if (!dateString) return 'Unknown date';
+    
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return 'Invalid date';
+        }
+        
+        return date.toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return 'Date error';
+    }
+}
+
+// FUNGSI REFRESH VIEW COUNT MANUAL (TAMBAHAN)
+function refreshViewCounts() {
+    console.log('🔄 Refreshing view counts...');
+    loadNotedList();
+    showNotification('Sedang refresh data view count...', 'info');
+}
+
+
+        // Create note item
+        function createNoteItem(index) {
+            const noteItem = document.createElement('div');
+            noteItem.className = 'note-item';
+            noteItem.setAttribute('data-index', index);
+            noteItem.innerHTML = `
+                <div class="note-header">
+                    <h6 class="note-title">
+                        <i class="bi bi-sticky me-2"></i>
+                        Note #${index + 1}
+                    </h6>
+                    <button type="button" class="btn-custom btn-danger-custom btn-sm remove-note-btn">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-tag text-primary"></i>
+                            Nama Note
+                        </label>
+                        <input type="text" class="form-control nama-note" placeholder="Masukkan nama note..." required>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-pencil text-primary"></i>
+                            Konten Note
+                        </label>
+                        <textarea class="form-control note-content" placeholder="Masukkan konten note..." required></textarea>
+                    </div>
+                </div>
+            `;
+            
+            // Add remove functionality
+            noteItem.querySelector('.remove-note-btn').addEventListener('click', function() {
+                noteItem.style.transition = 'all 0.3s ease';
+                noteItem.style.opacity = '0';
+                noteItem.style.transform = 'translateX(-100%)';
+                setTimeout(() => {
+                    noteItem.remove();
+                    updateNoteCount();
+                    updateRemoveButtons();
+                    updateNoteNumbers();
+                }, 300);
+            });
+            
+            return noteItem;
+        }
+        
+        // Update note count
+        function updateNoteCount() {
+            const count = document.querySelectorAll('.note-item').length;
+            document.getElementById('noteCount').textContent = count;
+        }
+        
+        // Update remove buttons visibility
+        function updateRemoveButtons() {
+            const noteItems = document.querySelectorAll('.note-item');
+            const removeButtons = document.querySelectorAll('.remove-note-btn');
+            
+            if (noteItems.length <= 1) {
+                removeButtons.forEach(btn => btn.style.display = 'none');
+            } else {
+                removeButtons.forEach(btn => btn.style.display = 'block');
+            }
+        }
+        
+        // Update note numbers
+        function updateNoteNumbers() {
+            const noteItems = document.querySelectorAll('.note-item');
+            noteItems.forEach((item, index) => {
+                const title = item.querySelector('h6');
+                title.innerHTML = `
+                    <i class="bi bi-sticky me-2"></i>
+                    Note #${index + 1}
+                `;
+            });
+        }
+        
+        // Form submission
+        document.getElementById('bulkNoteForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const noteItems = document.querySelectorAll('.note-item');
+            const notes = [];
+            
+            // Collect all note data
+            noteItems.forEach(item => {
+                const namaNote = item.querySelector('.nama-note').value;
+                const noteContent = item.querySelector('.note-content').value;
+                
+                if (namaNote && noteContent) {
+                    notes.push({
+                        nama_note: namaNote,
+                        note_content: noteContent
+                    });
+                }
+            });
+            
+            if (notes.length === 0) {
+                showNotification('Mohon isi minimal satu note!', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
+            
+            try {
+                const results = [];
+                generatedLinks = []; // Reset generated links
+                
+                // Process each note
+                for (let i = 0; i < notes.length; i++) {
+                    const note = notes[i];
+                    const payload = {
+                        action: 'create',
+                        nama_note: note.nama_note,
+                        note_content: note.note_content
+                    };
+                    
+                    try {
+                        const response = await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: new URLSearchParams(payload)
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            results.push({
+                                nama_note: note.nama_note,
+                                shareableLink: data.data.shareableLink,
+                                success: true
+                            });
+                            generatedLinks.push({
+                                nama_note: note.nama_note,
+                                shareableLink: data.data.shareableLink
+                            });
+                        } else {
+                            results.push({
+                                nama_note: note.nama_note,
+                                error: data.message,
+                                success: false
+                            });
+                        }
+                    } catch (error) {
+                        results.push({
+                            nama_note: note.nama_note,
+                            error: error.message,
+                            success: false
+                        });
+                    }
+                    
+                    // Update progress
+                    submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses... (${i + 1}/${notes.length})`;
+                }
+                
+                // Display results
+                displayResults(results);
+                
+                // Reset form
+                document.getElementById('bulkNoteForm').reset();
+                
+                // Show success notification
+                const successCount = results.filter(r => r.success).length;
+                const errorCount = results.filter(r => !r.success).length;
+                
+                if (successCount > 0) {
+                    showNotification(`${successCount} note berhasil dibuat${errorCount > 0 ? `, ${errorCount} gagal` : ''}!`, 'success');
+                }
+                if (errorCount > 0 && successCount === 0) {
+                    showNotification(`Semua note gagal dibuat!`, 'error');
+                }
+                
+            } catch (error) {
+                showNotification('Terjadi kesalahan: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
+            }
+        });
         
         // Display results
-        displayResults(results);
-        
-        // Reset form
-        document.getElementById('bulkNoteForm').reset();
-        
-        // Show success notification
-        const successCount = results.filter(r => r.success).length;
-        const errorCount = results.filter(r => !r.success).length;
-        
-        if (successCount > 0) {
-          showNotification(`${successCount} note berhasil dibuat${errorCount > 0 ? `, ${errorCount} gagal` : ''}!`, 'success');
-        }
-        if (errorCount > 0 && successCount === 0) {
-          showNotification(`Semua note gagal dibuat!`, 'error');
-        }
-        
-      } catch (error) {
-        showNotification('Terjadi kesalahan: ' + error.message, 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalHTML;
-      }
-    });
-    
-    // Display results
-    function displayResults(results) {
-      const resultContainer = document.getElementById('resultContainer');
-      const resultsContainer = document.getElementById('resultsContainer');
-      
-      resultsContainer.innerHTML = '';
-      
-      results.forEach((result, index) => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
-        
-        if (result.success) {
-          resultItem.innerHTML = `
-            <h6><i class="bi bi-sticky me-2"></i>${result.nama_note}</h6>
-            <div class="input-group mb-2">
-              <input type="text" class="form-control" value="${result.shareableLink}" readonly>
-              <button class="btn btn-outline-secondary copy-btn" type="button" data-link="${result.shareableLink}">
-                <i class="bi bi-clipboard"></i>
-                Copy
-              </button>
-            </div>
-          `;
-        } else {
-          resultItem.className += ' border-danger';
-          resultItem.style.background = 'rgba(239, 68, 68, 0.05)';
-          resultItem.innerHTML = `
-            <h6 class="text-danger"><i class="bi bi-sticky me-2"></i>${result.nama_note}</h6>
-            <div class="alert alert-danger mb-0">
-              <i class="bi bi-x-circle me-2"></i>
-              Error: ${result.error}
-            </div>
-          `;
+        function displayResults(results) {
+            const resultContainer = document.getElementById('resultContainer');
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            resultsContainer.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                if (result.success) {
+                    resultItem.innerHTML = `
+                        <h6><i class="bi bi-sticky me-2"></i>${result.nama_note}</h6>
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" value="${result.shareableLink}" readonly>
+                            <button class="btn-custom btn-primary-custom copy-btn" type="button" data-link="${result.shareableLink}">
+                                <i class="bi bi-clipboard"></i>
+                                Copy
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    resultItem.className += ' border-danger';
+                    resultItem.style.background = 'rgba(239, 68, 68, 0.05)';
+                    resultItem.innerHTML = `
+                        <h6 class="text-danger"><i class="bi bi-sticky me-2"></i>${result.nama_note}</h6>
+                        <div class="alert alert-danger mb-0">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Error: ${result.error}
+                        </div>
+                    `;
+                }
+                
+                resultsContainer.appendChild(resultItem);
+            });
+            
+            // Add copy functionality
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const link = this.getAttribute('data-link');
+                    copyToClipboard(link, this);
+                });
+            });
+            
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
         }
         
-        resultsContainer.appendChild(resultItem);
-      });
-      
-      // Add copy functionality
-      document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const link = this.getAttribute('data-link');
-          copyToClipboard(link, this);
-        });
-      });
-      
-      resultContainer.style.display = 'block';
-      resultContainer.scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    // Copy to clipboard
-    function copyToClipboard(text, button) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-          if (button) showCopyFeedback(button);
-        });
-      } else {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        if (button) showCopyFeedback(button);
-      }
-    }
-    
-    // Show copy feedback
-    function showCopyFeedback(button) {
-      const originalHTML = button.innerHTML;
-      button.innerHTML = '<i class="bi bi-check"></i> Copied!';
-      button.classList.remove('btn-outline-secondary');
-      button.classList.add('btn-success');
-      
-      setTimeout(() => {
-        button.innerHTML = originalHTML;
-        button.classList.remove('btn-success');
-        button.classList.add('btn-outline-secondary');
-      }, 2000);
-      
-      showNotification('Link berhasil disalin!', 'success');
-    }
-    
-    // Notification function
-function showNotification(message, type = 'info') {
-  const notification = document.createElement('div');
-  notification.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed`;
-  notification.style.cssText = `
-    top: 100px;
-    right: 20px;
-    z-index: 9999;
-    min-width: 320px;
-    max-width: 400px;
-    animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 15px;
-    border: none;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  `;
-  
-  const icons = {
-    success: 'check-circle-fill',
-    error: 'exclamation-triangle-fill',
-    info: 'info-circle-fill',
-    warning: 'exclamation-circle-fill'
-  };
-  
-  notification.innerHTML = `
-    <div class="d-flex align-items-center">
-      <i class="bi bi-${icons[type] || icons.info} me-2" style="font-size: 1.2rem;"></i>
-      <div>${message}</div>
-      <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
-    </div>
-  `;
-  
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    if (notification.parentElement) {
-      notification.style.animation = 'slideOutRight 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-      setTimeout(() => notification.remove(), 500);
-    }
-  }, 4000);
-}
-    
-    // Add CSS for notifications
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    // Initialize
-    updateRemoveButtons();
-  </script></body>
+        // Copy to clipboard
+        function copyToClipboard(text, button) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    if (button) showCopyFeedback(button);
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                if (button) showCopyFeedback(button);
+            }
+        }
+        
+        // Show copy feedback
+        function showCopyFeedback(button) {
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-check"></i> Copied!';
+            button.classList.remove('btn-primary-custom');
+            button.classList.add('btn-success-feedback');
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.remove('btn-success-feedback');
+                button.classList.add('btn-primary-custom');
+            }, 2000);
+            
+            showNotification('Link berhasil disalin!', 'success');
+        }
+        
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed`;
+            notification.style.cssText = `
+                top: 100px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 320px;
+                max-width: 400px;
+                animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                border-radius: 15px;
+                border: none;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            `;
+            
+            const icons = {
+                success: 'check-circle-fill',
+                error: 'exclamation-triangle-fill',
+                info: 'info-circle-fill',
+                warning: 'exclamation-circle-fill'
+            };
+            
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-${icons[type] || icons.info} me-2" style="font-size: 1.2rem;"></i>
+                    <div>${message}</div>
+                    <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.animation = 'slideOutRight 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 4000);
+        }
+        
+        // Add CSS for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialize
+        updateRemoveButtons();
+    </script>
+</body>
 </html>
