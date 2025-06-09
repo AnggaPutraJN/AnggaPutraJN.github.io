@@ -690,7 +690,14 @@ body.dark-theme .modal-header {
         width: 100%;
         margin-bottom: 0.25rem;
     }
-}
+}.copy-all-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .copy-all-buttons .btn {
+        flex: 1;
+    }
 	</style>
 </head>
 
@@ -760,6 +767,14 @@ body.dark-theme .modal-header {
                 <h5 class="success-title">Link berhasil dibuat!</h5>
                 <p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
                 <div id="resultsContainer"></div>
+                <div class="copy-all-buttons">
+                    <button class="btn btn-info" id="copyAllLinksBtn">
+                        <i class="bi bi-clipboard"></i> Copy All Link
+                    </button>
+                    <button class="btn btn-warning" id="copyAllLinksWithNameBtn">
+                        <i class="bi bi-clipboard-plus"></i> Copy All Link With Name
+                    </button>
+                </div>
                 <div class="alert alert-info"><small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small></div>
             </div>
         </div>
@@ -1291,6 +1306,42 @@ body.dark-theme .modal-header {
     document.getElementById('refreshLinksBtn').addEventListener('click', function() {
         loadLinksList();
         showNotification('Data berhasil direfresh!', 'success');
+    });
+
+    // Copy All Buttons Functionality
+    document.getElementById('copyAllLinksBtn').addEventListener('click', function() {
+        const links = [];
+        document.querySelectorAll('.result-item').forEach(item => {
+            const input = item.querySelector('input');
+            if (input) {
+                links.push(input.value);
+            }
+        });
+        
+        if (links.length === 0) {
+            showNotification('Tidak ada link yang bisa disalin!', 'error');
+            return;
+        }
+        
+        copyToClipboard(links.join('\n'), this);
+    });
+    
+    document.getElementById('copyAllLinksWithNameBtn').addEventListener('click', function() {
+        const linksWithNames = [];
+        document.querySelectorAll('.result-item').forEach(item => {
+            const name = item.querySelector('h6')?.textContent.replace('⛔', '').trim();
+            const input = item.querySelector('input');
+            if (name && input) {
+                linksWithNames.push(`${name}: ${input.value}`);
+            }
+        });
+        
+        if (linksWithNames.length === 0) {
+            showNotification('Tidak ada link yang bisa disalin!', 'error');
+            return;
+        }
+        
+        copyToClipboard(linksWithNames.join('\n\n'), this);
     });
 
     // Utility Functions
