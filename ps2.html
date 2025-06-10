@@ -1035,6 +1035,7 @@ function proceedToTripleGenerator() {
 }
 
 // Function to generate triple link inputs
+// Fungsi untuk menghasilkan input link
 function generateTripleLinkInputs() {
     const container = document.getElementById("linkInputsContainer");
     container.innerHTML = "";
@@ -1046,24 +1047,24 @@ function generateTripleLinkInputs() {
         divider.textContent = "INPUTAN SINGLE LINK VIA INDAPK";
         container.appendChild(divider);
         
-        // Generate Single CHD INDapk Links
+        // Generate Single CHD INDapk Links - dengan urutan yang sesuai
         if (singleCHDLinkCount > 0 && selectedSingleCHDLinksOrder.length > 0) {
             selectedSingleCHDLinksOrder.slice(0, singleCHDLinkCount).forEach((linkType, index) => {
                 const inputDiv = document.createElement("div");
                 inputDiv.innerHTML = `
-                    <label for="inputINDapkCHDSingleLink${linkType}">Single ${linkType} CHD INDapk:</label>
+                    <label for="inputINDapkCHDSingleLink${linkType}">Single ${linkType} CHD INDapk (${index + 1}):</label>
                     <input type="text" id="inputINDapkCHDSingleLink${linkType}" name="inputINDapkCHDSingleLink${linkType}"><br><br>
                 `;
                 container.appendChild(inputDiv);
             });
         }
         
-        // Generate Single ISO INDapk Links
+        // Generate Single ISO INDapk Links - dengan urutan yang sesuai
         if (singleISOLinkCount > 0 && selectedSingleISOLinksOrder.length > 0) {
             selectedSingleISOLinksOrder.slice(0, singleISOLinkCount).forEach((linkType, index) => {
                 const inputDiv = document.createElement("div");
                 inputDiv.innerHTML = `
-                    <label for="inputINDapkSingleLinkISO${linkType}">Single ${linkType} ISO INDapk:</label>
+                    <label for="inputINDapkSingleLinkISO${linkType}">Single ${linkType} ISO INDapk (${index + 1}):</label>
                     <input type="text" id="inputINDapkSingleLinkISO${linkType}" name="inputINDapkSingleLinkISO${linkType}"><br><br>
                 `;
                 container.appendChild(inputDiv);
@@ -1078,24 +1079,24 @@ function generateTripleLinkInputs() {
         divider.textContent = "INPUTAN SINGLE LINK VIA SEMAWUR";
         container.appendChild(divider);
         
-        // Generate Single CHD SEMAWUR Links
+        // Generate Single CHD SEMAWUR Links - dengan urutan yang sesuai
         if (singleCHDLinkCount > 0 && selectedSingleCHDLinksOrder.length > 0) {
             selectedSingleCHDLinksOrder.slice(0, singleCHDLinkCount).forEach((linkType, index) => {
                 const inputDiv = document.createElement("div");
                 inputDiv.innerHTML = `
-                    <label for="inputCHDSingleLink${linkType}">Single ${linkType} CHD SEMAWUR:</label>
+                    <label for="inputCHDSingleLink${linkType}">Single ${linkType} CHD SEMAWUR (${index + 1}):</label>
                     <input type="text" id="inputCHDSingleLink${linkType}" name="inputCHDSingleLink${linkType}"><br><br>
                 `;
                 container.appendChild(inputDiv);
             });
         }
         
-        // Generate Single ISO SEMAWUR Links
+        // Generate Single ISO SEMAWUR Links - dengan urutan yang sesuai
         if (singleISOLinkCount > 0 && selectedSingleISOLinksOrder.length > 0) {
             selectedSingleISOLinksOrder.slice(0, singleISOLinkCount).forEach((linkType, index) => {
                 const inputDiv = document.createElement("div");
                 inputDiv.innerHTML = `
-                    <label for="inputSingleLinkISO${linkType}">Single ${linkType} ISO SEMAWUR:</label>
+                    <label for="inputSingleLinkISO${linkType}">Single ${linkType} ISO SEMAWUR (${index + 1}):</label>
                     <input type="text" id="inputSingleLinkISO${linkType}" name="inputSingleLinkISO${linkType}"><br><br>
                 `;
                 container.appendChild(inputDiv);
@@ -3027,6 +3028,7 @@ function loadLinkSettingsModal() {
 }
 
 // Ganti juga nama fungsi applySavedSettings() menjadi applyLinkSettings()
+// Fungsi untuk menerapkan settingan yang dipilih
 function applyLinkSettings(index) {
     try {
         // Ambil settingan dari localStorage
@@ -3046,23 +3048,42 @@ function applyLinkSettings(index) {
         singleISOLinkCount = settings.singleISOLinkCount || 0;
         
         // Uncheck semua checkbox terlebih dahulu
-        document.querySelectorAll('input[name="singleCHDLinkType"]').forEach(cb => cb.checked = false);
-        document.querySelectorAll('input[name="singleISOLinkType"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('input[name="singleCHDLinkType"]').forEach(cb => {
+            cb.checked = false;
+            cb.dataset.checkedTime = ''; // Reset waktu check
+        });
+        document.querySelectorAll('input[name="singleISOLinkType"]').forEach(cb => {
+            cb.checked = false;
+            cb.dataset.checkedTime = ''; // Reset waktu check
+        });
         
-        // Check yang sesuai dengan settingan
+        // Check yang sesuai dengan settingan dan simpan urutan aslinya
         if (settings.singleCHDLinks) {
-            settings.singleCHDLinks.forEach(linkType => {
+            selectedSingleCHDLinksOrder = settings.singleCHDLinks;
+            settings.singleCHDLinks.forEach((linkType, index) => {
                 const checkbox = document.querySelector(`input[name="singleCHDLinkType"][value="${linkType}"]`);
-                if (checkbox) checkbox.checked = true;
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = index; // Simpan urutan asli
+                }
             });
         }
         
         if (settings.singleISOLinks) {
-            settings.singleISOLinks.forEach(linkType => {
+            selectedSingleISOLinksOrder = settings.singleISOLinks;
+            settings.singleISOLinks.forEach((linkType, index) => {
                 const checkbox = document.querySelector(`input[name="singleISOLinkType"][value="${linkType}"]`);
-                if (checkbox) checkbox.checked = true;
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = index; // Simpan urutan asli
+                }
             });
         }
+        
+        // Tampilkan section pemilihan link
+        document.getElementById("tripleLinkTypeSelection").classList.remove("hidden");
+        document.getElementById("singleCHDLinkSection").style.display = singleCHDLinkCount > 0 ? "block" : "none";
+        document.getElementById("singleISOLinkSection").style.display = singleISOLinkCount > 0 ? "block" : "none";
         
         // Update tampilan
         updateSelectedLinksDisplay('singleCHD');
