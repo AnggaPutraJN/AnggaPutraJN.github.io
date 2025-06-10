@@ -1541,43 +1541,70 @@ function showNotification(message, type) {
             updateInputsCollection();
         }
 
-  document.getElementById('copyResultBtn').addEventListener('click', function() {
-        const gameName = document.getElementById('gameName').value.trim();
-        if (!gameName) {
-            showNotification('Harap masukkan nama game');
-            return;
-        }
-        
-        let resultText = '';
-        
-        // Generate output untuk setiap jenis link NSP
-        if (selectedLinks.some(link => link.section === 'partNSP')) {
-            selectedLinks
-                .filter(link => link.section === 'partNSP')
-                .sort((a, b) => linkTypes.indexOf(a.type) - linkTypes.indexOf(b.type))
-                .forEach(link => {
-                    resultText += `NSP ${link.type}\n`;
-                    resultText += `${gameName} Part NSP ${link.type}\n`;
-                    
-                    // Tambahkan semua link part untuk jenis ini
-                    for (let i = 1; i <= partNSPCount; i++) {
-                        const input = document.getElementById(`partNSP${link.type.replace(/\s+/g, '')}${i}`);
-                        if (input && input.value) {
-                            resultText += `${input.value}\n`;
-                        }
+ document.getElementById('copyResultBtn').addEventListener('click', function() {
+    const gameName = document.getElementById('gameName').value.trim();
+    if (!gameName) {
+        showNotification('Harap masukkan nama game');
+        return;
+    }
+    
+    let resultText = '';
+    
+    // Generate output untuk setiap jenis link NSP
+    if (selectedLinks.some(link => link.section === 'partNSP')) {
+        selectedLinks
+            .filter(link => link.section === 'partNSP')
+            .sort((a, b) => linkTypes.indexOf(a.type) - linkTypes.indexOf(b.type))
+            .forEach(link => {
+                resultText += `${gameName} Part NSP ${link.type}\n`;
+                
+                // Tambahkan ukuran part terlebih dahulu
+                for (let i = 1; i <= partNSPCount; i++) {
+                    const sizeInput = document.getElementById(`partNSP-size-${i}`);
+                    if (sizeInput && sizeInput.value) {
+                        resultText += `${sizeInput.value}\n`;
                     }
-                    
-                    // Tambahkan ukuran part
-                    for (let i = 1; i <= partNSPCount; i++) {
-                        const sizeInput = document.getElementById(`partNSP-size-${i}`);
-                        if (sizeInput && sizeInput.value) {
-                            resultText += `${sizeInput.value}\n`;
-                        }
+                }
+                
+                // Baru tambahkan semua link part
+                for (let i = 1; i <= partNSPCount; i++) {
+                    const input = document.getElementById(`partNSP${link.type.replace(/\s+/g, '')}${i}`);
+                    if (input && input.value) {
+                        resultText += `${input.value}\n`;
                     }
-                    
-                    resultText += '\n';
-                });
-        }
+                }
+                
+                resultText += '\n';
+            });
+    }
+    
+    // Generate output untuk setiap jenis link XCI
+    if (selectedLinks.some(link => link.section === 'partXCI')) {
+        selectedLinks
+            .filter(link => link.section === 'partXCI')
+            .sort((a, b) => linkTypes.indexOf(a.type) - linkTypes.indexOf(b.type))
+            .forEach(link => {
+                resultText += `${gameName} Part XCI ${link.type}\n`;
+                
+                // Tambahkan ukuran part terlebih dahulu
+                for (let i = 1; i <= partXCICount; i++) {
+                    const sizeInput = document.getElementById(`partXCI-size-${i}`);
+                    if (sizeInput && sizeInput.value) {
+                        resultText += `${sizeInput.value}\n`;
+                    }
+                }
+                
+                // Baru tambahkan semua link part
+                for (let i = 1; i <= partXCICount; i++) {
+                    const input = document.getElementById(`partXCI${link.type.replace(/\s+/g, '')}${i}`);
+                    if (input && input.value) {
+                        resultText += `${input.value}\n`;
+                    }
+                }
+                
+                resultText += '\n';
+            });
+    }
         
         // Generate output untuk setiap jenis link XCI
         if (selectedLinks.some(link => link.section === 'partXCI')) {
