@@ -497,6 +497,100 @@ button:hover, .btn:hover {
     max-width: 300px;
   }
 }
+
+/* Dropdown Navigation Styles */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.nav-dropdown-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-dropdown-btn i.fa-chevron-down {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--card-bg);
+  min-width: 200px;
+  box-shadow: 0 8px 16px var(--shadow-color);
+  border-radius: 8px;
+  z-index: 1000;
+  padding: 5px 0;
+  border: 1px solid var(--border-color);
+}
+
+.nav-dropdown:hover .nav-dropdown-content {
+  display: block;
+}
+
+.nav-dropdown:hover .nav-dropdown-btn i.fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown-item {
+  color: var(--text-color);
+  padding: 10px 15px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.nav-dropdown-item:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .nav-dropdown {
+    width: 100%;
+    margin: 5px 0;
+  }
+  
+  .nav-dropdown-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .nav-dropdown-content {
+    position: static;
+    width: 100%;
+    box-shadow: none;
+    border: none;
+    border-top: 1px solid var(--border-color);
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .nav-dropdown:hover .nav-dropdown-content {
+    display: none;
+  }
+  
+  /* Show dropdown on click for mobile */
+  .nav-dropdown.active .nav-dropdown-content {
+    display: block;
+  }
+  
+  .nav-dropdown.active .nav-dropdown-btn i.fa-chevron-down {
+    transform: rotate(180deg);
+  }
+}
 </style>
 </head>
 
@@ -504,45 +598,68 @@ button:hover, .btn:hover {
 <!-- Navigation Section -->
 <div class="nav-section">
   <div class="nav-buttons">
-    <a href="index" class="nav-btn btn-gradient-bg3">
-      <i class="fas fa-code"></i>Generator HTML Switch
-    </a>
-    <a href="sharegameswitch" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-code"></i>Share Game Switch
-    </a>
-    <a href="psvita" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-code"></i>Generator HTML PSvita
-    </a>
-    <a href="ps2" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-code"></i>Generator HTML PS2
-    </a>
-    <a href="psp" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-code"></i>Generator HTML PSP
-    </a>
-    <a href="wii" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-code"></i>Generator HTML Wii
-    </a>
-    <a href="3ds" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-code"></i>Generator HTML 3ds
-    </a>
-    <a href="shortingswitch" class="nav-btn btn-gradient-bg1">
-      <i class="fas fa-gamepad"></i>Shorting Game Switch
-    </a>
-    <a href="shortingswitchpartonly" class="nav-btn btn-gradient-bg2">
-      <i class="fas fa-puzzle-piece"></i>Parts Only
-    </a>
-    <a href="pageparts" class="nav-btn btn-gradient-bg4">
-      <i class="fas fa-file-alt"></i>Shorting Page Parts
-    </a>
-    <a href="request" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-gamepad"></i>Admin Request Game & Report
-    </a>
-    <a href="Link2UnlockAdmin" class="nav-btn btn-gradient-bg2">
-      <i class="fas fa-puzzle-alt"></i>Link2Unlock Admin
-    </a>
-    <a href="Noted2UnlockAdmin" class="nav-btn btn-gradient-bg2">
-      <i class="fas fa-puzzle-alt"></i>Noted2Unlock Admin
-    </a>
+    <!-- PLAYSTATION Dropdown -->
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn btn-gradient-bg5">
+        <i class="fas fa-gamepad"></i> PLAYSTATION <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="nav-dropdown-content">
+        <a href="psvita" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> PS Vita
+        </a>
+        <a href="ps2" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> PS2
+        </a>
+        <a href="psp" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> PSP
+        </a>
+      </div>
+    </div>
+
+    <!-- NINTENDO Dropdown -->
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn btn-gradient-bg3">
+        <i class="fas fa-gamepad"></i> NINTENDO <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="nav-dropdown-content">
+        <a href="index" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> Switch
+        </a>
+        <a href="sharegameswitch" class="nav-dropdown-item">
+          <i class="fas fa-share-alt"></i> Share Game Switch
+        </a>
+        <a href="shortingswitch" class="nav-dropdown-item">
+          <i class="fas fa-list-ol"></i> Shorting Game Switch
+        </a>
+        <a href="shortingswitchpartonly" class="nav-dropdown-item">
+          <i class="fas fa-puzzle-piece"></i> Parts Only Switch
+        </a>
+        <a href="wii" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> Wii
+        </a>
+        <a href="3ds" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> 3DS
+        </a>
+      </div>
+    </div>
+
+    <!-- ADMIN Dropdown -->
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn btn-gradient-bg2">
+        <i class="fas fa-user-shield"></i> ADMIN <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="nav-dropdown-content">
+        <a href="request" class="nav-dropdown-item">
+          <i class="fas fa-comment-dots"></i> Request & Report
+        </a>
+        <a href="Link2UnlockAdmin" class="nav-dropdown-item">
+          <i class="fas fa-unlock-alt"></i> Link2Unlock
+        </a>
+        <a href="Noted2UnlockAdmin" class="nav-dropdown-item">
+          <i class="fas fa-sticky-note"></i> Noted2Unlock
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Theme switcher -->
@@ -828,6 +945,48 @@ button:hover, .btn:hover {
 
 <!--Script-->
 <script>
+
+  // Mobile dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdowns = document.querySelectorAll('.nav-dropdown');
+  
+  // For mobile devices, toggle dropdown on click
+  if (window.innerWidth <= 768) {
+    dropdowns.forEach(dropdown => {
+      const btn = dropdown.querySelector('.nav-dropdown-btn');
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        dropdown.classList.toggle('active');
+        
+        // Close other open dropdowns
+        dropdowns.forEach(otherDropdown => {
+          if (otherDropdown !== dropdown) {
+            otherDropdown.classList.remove('active');
+          }
+        });
+      });
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.nav-dropdown')) {
+        dropdowns.forEach(dropdown => {
+          dropdown.classList.remove('active');
+        });
+      }
+    });
+  }
+});
+
+// Handle window resize
+window.addEventListener('resize', function() {
+  const dropdowns = document.querySelectorAll('.nav-dropdown');
+  if (window.innerWidth > 768) {
+    dropdowns.forEach(dropdown => {
+      dropdown.classList.remove('active');
+    });
+  }
+});
 // Fungsi untuk menyimpan data ke spreadsheet
 // Enhanced saveToSpreadsheet function with comma-separated links
 function saveToSpreadsheet() {
