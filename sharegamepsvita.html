@@ -492,6 +492,9 @@ label {
 <label for="inputCategory"><i class="fas fa-list"></i> Category:</label>
 <input type="text" id="inputCategory" name="inputCategory" placeholder="Contoh: RPG, Adventure, Puzzle">
 
+<label for="inputGameID"><i class="fas fa-id-card"></i> Game ID:</label>
+<input type="text" id="inputGameID" name="inputGameID" placeholder="Masukkan ID game...">
+
 <label for="inputRegion"><i class="fas fa-globe"></i> Region:</label>
 <input type="text" id="inputRegion" name="inputRegion" placeholder="Contoh: EUR, USA, JPN">
 
@@ -666,6 +669,7 @@ function generateCode() {
         const inputName = document.getElementById("inputName").value;
         const inputSingleSize = document.getElementById("inputSingleSize").value;
         const inputCategory = document.getElementById("inputCategory").value;
+        const inputGameID = document.getElementById("inputGameID").value;
         const inputRegion = document.getElementById("inputRegion").value;
         const inputLink = document.getElementById("inputLink").value;
         
@@ -680,6 +684,7 @@ function generateCode() {
 Nama Game: ${inputName}
 Ukuran Game: ${inputSingleSize} (NoNpDrm)
 Category: ${inputCategory}
+Game ID: ${inputGameID}
 Region: ${inputRegion}
 Platform: PS Vita
 Connection: Offline
@@ -706,6 +711,7 @@ NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
 Nama Game: ${inputName}
 Ukuran Game: ${inputSingleSize} (NoNpDrm)
 Category: ${inputCategory}
+Game ID: ${inputGameID}
 Region: ${inputRegion}
 Platform: PS Vita 
 Connection: Offline
@@ -732,6 +738,7 @@ NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
 Nama Game: ${inputName}
 Ukuran Game: ${inputSingleSize} (NoNpDrm)
 Category: ${inputCategory}
+Game ID: ${inputGameID}
 Region: ${inputRegion}
 Platform: PS Vita
 Connection: Offline
