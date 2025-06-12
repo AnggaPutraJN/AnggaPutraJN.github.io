@@ -106,7 +106,6 @@ body {
     margin-left: 0;
     margin-bottom: 20px;
   }
-}
 
 
 /* Scrollbar Styling */
@@ -128,7 +127,7 @@ body {
 }
 
 /* Typography */
-h2, h3, h5 {
+h2, h3, h5, h6 {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
 }
@@ -532,7 +531,8 @@ textarea.form-control {
 }
 
 .text-muted {
-  color: var(--secondary-color) !important;
+    
+  color: var(--accent-color) !important;
 }
 
 /* Smooth transitions */
@@ -3994,7 +3994,7 @@ function loadLinkSettingsModal() {
         settingItem.className = 'list-group-item';
         settingItem.innerHTML = `
             <div class="d-flex w-100 justify-content-between">
-                <h6 class="mb-1">${setting.name}</h6>
+                <h6 class="text-muted">${setting.name}</h6>
                 <small class="text-muted">${new Date(setting.timestamp).toLocaleString()}</small>
             </div>
             <div class="mb-2">
