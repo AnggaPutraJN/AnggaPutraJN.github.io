@@ -8,38 +8,38 @@
 
 <style>
 :root {
-  --primary-color: #007bff;
-  --secondary-color: #6c757d;
-  --danger-color: #dc3545;
-  --light-color: #f8f9fa;
-  --dark-color: #343a40;
-  --bg-color: #f4f4f4;
-  --text-color: #333;
-  --card-bg: #ffffff;
-  --input-bg: #ffffff;
-  --border-color: #ced4da;
-  --shadow-color: rgba(0,0,0,0.1);
+  --primary-bg: #0a0a0a;
+  --secondary-bg: #1a1a1a;
+  --card-bg: #2a2a2a;
+  --text-primary: #7CC6ED;
+  --text-secondary: #7CC6ED;
+  --accent-color: #00d4ff;
+  --accent-secondary: #ff006e;
+  --accent-green: #00ff88;
+  --border-color: #333;
+  --neon-glow: 0 0 20px;
+  --placeholder-color: #888;
 }
 
 [data-theme="dark"] {
-  --primary-color: #0d6efd;
-  --secondary-color: #6c757d;
-  --danger-color: #dc3545;
-  --light-color: #212529;
-  --dark-color: #f8f9fa;
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --card-bg: #1e1e1e;
-  --input-bg: #2d2d2d;
-  --border-color: #444;
-  --shadow-color: rgba(0,0,0,0.3);
+  --primary-bg: #f8f9fa;
+  --secondary-bg: #ffffff;
+  --card-bg: #ffffff;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --accent-color: #0066cc;
+  --accent-secondary: #dc3545;
+  --accent-green: #28a745;
+  --border-color: #dee2e6;
+  --neon-glow: 0 0 10px;
+  --placeholder-color: #6c757d;
 }
 
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  margin: 0;
+  background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
   transition: all 0.3s ease;
 }
 
@@ -78,12 +78,26 @@ body {
   }
 }
 
-/* Responsive design */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .col-md-4, .col-md-6, .col-md-8 {
-    flex: 0 0 auto;
-    width: 100%;
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
   }
+  
+  .container-fluid {
+    padding: 1rem;
+  }
+  
+  .triple-link-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .link-checkboxes {
+    grid-template-columns: 1fr;
+  }
+}
   .sidebar {
     height: auto;
     position: static;
@@ -92,6 +106,25 @@ body {
     margin-left: 0;
     margin-bottom: 20px;
   }
+}
+
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
 }
 
 /* Typography */
@@ -122,9 +155,10 @@ h2 {
 }
 
 label {
-  font-weight: 500;
-  margin-bottom: 5px;
-  color: var(--text-color);
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
 input[type="text"], input[type="number"] {
@@ -139,35 +173,81 @@ input[type="text"], input[type="number"] {
   transition: all 0.3s ease;
 }
 
-/* Buttons */
-button, .btn {
-  padding: 10px 20px;
+/* Button Styles */
+.btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-weight: 500;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  color: white;
 }
 
-button:hover, .btn:hover {
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px var(--shadow-color);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
+
+/* Form Styles */
+.form-control, input[type="text"], input[type="number"], textarea {
+  background: var(--secondary-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  padding: 12px 16px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
-.btn-secondary {
-  background-color: var(--secondary-color);
-  color: white;
+.form-control:focus, input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  background: var(--card-bg);
 }
 
-.btn-danger {
-  background-color: var(--danger-color);
-  color: white;
+
+/* Placeholder Styles */
+::placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 1;
 }
+
+:-ms-input-placeholder {
+  color: var(--placeholder-color) !important;
+}
+
+::-ms-input-placeholder {
+  color: var(--placeholder-color) !important;
+}
+
+textarea.form-control {
+  min-height: 200px;
+  resize: vertical;
+  font-family: 'Courier New', monospace;
+}
+
 
 /* Cards */
 .card {
@@ -179,82 +259,102 @@ button:hover, .btn:hover {
 }
 
 .card-header {
-  border-bottom: 1px solid var(--border-color);
-  border-radius: 10px 10px 0 0 !important;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+  color: white;
+  padding: 1.5rem;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+}
+
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Result area */
 #result {
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  background-color: var(--card-bg);
-}
-
-/* Link selection container */
-.link-selection-container {
-  background-color: var(--card-bg);
-  padding: 30px;
+  background: var(--card-bg);
+  border: 2px solid var(--accent-color);
   border-radius: 15px;
-  margin: 30px auto;
-  max-width: 900px;
-  box-shadow: 0 5px 15px var(--shadow-color);
+  padding: 20px;
+  margin-top: 20px;
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  color: var(--text-primary);
+  box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1);
+  min-height: 100px;
 }
 
-.link-selection-container h3 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: var(--primary-color);
+/* Link Selection Screen */
+.link-selection-container {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.triple-link-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.link-type-section {
+  background: var(--secondary-bg);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.link-count-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-primary);
 }
 
 .link-checkboxes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .link-checkbox-item {
   display: flex;
   align-items: center;
-  background: var(--light-color);
-  padding: 8px 15px;
-  border-radius: 20px;
+  padding: 0.5rem;
+  background: var(--card-bg);
+  border-radius: 8px;
   border: 1px solid var(--border-color);
   transition: all 0.2s ease;
 }
 
 .link-checkbox-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 5px var(--shadow-color);
+  background: rgba(0, 212, 255, 0.1);
+  border-color: var(--accent-color);
 }
 
-.link-checkbox-item input {
-  margin-right: 8px;
-}
-
-.link-count-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  margin-bottom: 15px;
-  background-color: var(--input-bg);
-  color: var(--text-color);
+.selected-links-list {
+  background: var(--secondary-bg);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px dashed var(--accent-color);
 }
 
 .hidden {
   display: none;
 }
 
-.selected-links-list {
-  background-color: var(--light-color);
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  list-style-position: inside;
-}
 
 .selected-links-list li {
   padding: 5px 0;
@@ -332,49 +432,61 @@ button:hover, .btn:hover {
   }
 }
 
-/* Gradient backgrounds */
+
+/* Card Styles */
 .gradient-bg {
-  background: linear-gradient(-45deg, var(--primary-color), var(--secondary-color), var(--danger-color), var(--primary-color));
-  background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite;
-  border-radius: 10px;
-  padding: 20px;
-  color: white;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.gradient-bg:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .btn-gradient-bg1 {
-  background: linear-gradient(-45deg, #176de9, #6c757f, #dd3546);
-  background-size: 400% 400%;
-  animation: gradientAnimation 10s ease infinite;
-  color: white;
+  background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+  box-shadow: var(--neon-glow) var(--accent-color);
 }
 
 .btn-gradient-bg2 {
-  background: linear-gradient(-45deg, #6c757f, #176de9, #dd3546);
-  background-size: 400% 400%;
-  animation: gradientAnimation 10s ease infinite;
-  color: white;
+  background: linear-gradient(45deg, var(--accent-secondary), var(--accent-color));
+  box-shadow: var(--neon-glow) var(--accent-secondary);
 }
 
 .btn-gradient-bg3 {
-  background: linear-gradient(-45deg, #dd3546, #6c757f, #176de9);
-  background-size: 400% 400%;
-  animation: gradientAnimation 10s ease infinite;
-  color: white;
+  background: linear-gradient(45deg, #6c757d, #495057);
 }
 
 .btn-gradient-bg4 {
-  background: linear-gradient(-45deg, #176de9, #dd3546, #6c757f);
-  background-size: 400% 400%;
-  animation: gradientAnimation 10s ease infinite;
-  color: white;
+  background: linear-gradient(45deg, #ff006e, #ff4757);
+  box-shadow: var(--neon-glow) var(--accent-secondary);
 }
 
 .btn-gradient-bg5 {
-  background: linear-gradient(-45deg, #6c757f, #dd3546, #176de9);
-  background-size: 400% 400%;
-  animation: gradientAnimation 10s ease infinite;
-  color: white;
+  background: linear-gradient(45deg, var(--accent-secondary), var(--accent-color));
+  box-shadow: var(--neon-glow) var(--accent-secondary);
 }
 
 @keyframes gradientAnimation {
@@ -445,40 +557,39 @@ button:hover, .btn:hover {
     border-left-color: var(--primary-color-dark);
 }
 
-/* Additional styling for navigation */
+/* Navigation Styles */
 .nav-section {
-  padding: 20px 0;
-  background: linear-gradient(135deg, var(--bg-color) 0%, var(--light-color) 100%);
-  border-bottom: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--accent-color);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .nav-buttons {
   display: flex;
   justify-content: center;
+  gap: 2rem;
   flex-wrap: wrap;
-  gap: 15px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
 }
 
 .nav-btn {
-  display: inline-flex;
-  align-items: center;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 25px;
   text-decoration: none;
+  color: white;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px var(--shadow-color);
-  min-width: 180px;
-  justify-content: center;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
 }
-
 .nav-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px var(--shadow-color);
-  text-decoration: none;
+  color: white;
+  box-shadow: var(--neon-glow) var(--accent-color), 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .nav-btn i {
@@ -2568,22 +2679,40 @@ function generateCode() {
         if (semawurXciPartLink) semawurXciPartLinks.push({type, link: semawurXciPartLink});
     });
 
-    // Function to generate HTML for download links section
     function generateDownloadLinksSection(links, size) {
-        let html = '';
-        
-        links.forEach(item => {
-            html += `
-                <div class="download-link">
-                    <a href="${item.link}" rel="nofollow">${item.type}</a>
-                    <span class="file-size">(${size})</span>
-                </div>
-            `;
-        });
-        
-        return html;
-    }
-
+    let html = '';
+    
+    // Pastikan kita menggunakan urutan yang sama dengan yang dipilih user
+    const orderedLinks = [];
+    const selectedOrder = links === indapkNspSingleLinks ? selectedSingleNSPLinksOrder :
+                         links === indapkXciSingleLinks ? selectedSingleXCILinksOrder :
+                         links === indapkNspPartLinks ? selectedPartNSPLinksOrder :
+                         links === indapkXciPartLinks ? selectedPartXCILinksOrder :
+                         links === semawurNspSingleLinks ? selectedSingleNSPLinksOrder :
+                         links === semawurXciSingleLinks ? selectedSingleXCILinksOrder :
+                         links === semawurNspPartLinks ? selectedPartNSPLinksOrder :
+                         selectedPartXCILinksOrder;
+    
+    // Urutkan link sesuai dengan urutan yang dipilih user
+    selectedOrder.forEach(linkType => {
+        const foundLink = links.find(link => link.type === linkType);
+        if (foundLink) {
+            orderedLinks.push(foundLink);
+        }
+    });
+    
+    // Generate HTML dengan urutan yang benar
+    orderedLinks.forEach(item => {
+        html += `
+            <div class="download-link">
+                <a href="${item.link}" rel="nofollow">${item.type}</a>
+                <span class="file-size">(${size})</span>
+            </div>
+        `;
+    });
+    
+    return html;
+}
     // Create more complete HTML string with template
     let generatedHtml = `
 <!DOCTYPE html>
@@ -3888,7 +4017,6 @@ function loadLinkSettingsModal() {
 // Ganti juga nama fungsi applySavedSettings() menjadi applyLinkSettings()
 function applyLinkSettings(index) {
     try {
-        // Ambil settingan dari localStorage
         const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2')) || [];
         
         if (index < 0 || index >= savedSettings.length) {
@@ -3898,15 +4026,23 @@ function applyLinkSettings(index) {
         
         const settings = savedSettings[index];
         
-        // Set jumlah link
+        // Set jumlah link dan update variabel global
         document.getElementById('singleNSPLinkCount').value = settings.singleNSPLinkCount || 0;
         document.getElementById('singleXCILinkCount').value = settings.singleXCILinkCount || 0;
         document.getElementById('partNSPLinkCount').value = settings.partNSPLinkCount || 0;
         document.getElementById('partXCILinkCount').value = settings.partXCILinkCount || 0;
+        
+        // Update variabel global
         singleNSPLinkCount = settings.singleNSPLinkCount || 0;
         singleXCILinkCount = settings.singleXCILinkCount || 0;
         partNSPLinkCount = settings.partNSPLinkCount || 0;
         partXCILinkCount = settings.partXCILinkCount || 0;
+        
+        // Update urutan link yang dipilih
+        selectedSingleNSPLinksOrder = settings.singleNSPLinks || [];
+        selectedSingleXCILinksOrder = settings.singleXCILinks || [];
+        selectedPartNSPLinksOrder = settings.partNSPLinks || [];
+        selectedPartXCILinksOrder = settings.partXCILinks || [];
         
         // Uncheck semua checkbox terlebih dahulu
         document.querySelectorAll('input[name="singleNSPLinkType"]').forEach(cb => cb.checked = false);
@@ -3914,36 +4050,53 @@ function applyLinkSettings(index) {
         document.querySelectorAll('input[name="partNSPLinkType"]').forEach(cb => cb.checked = false);
         document.querySelectorAll('input[name="partXCILinkType"]').forEach(cb => cb.checked = false);
         
-        // Check yang sesuai dengan settingan
+        // Check yang sesuai dengan settingan dan set timestamp
+        const now = Date.now();
         if (settings.singleNSPLinks) {
-            settings.singleNSPLinks.forEach(linkType => {
+            settings.singleNSPLinks.forEach((linkType, idx) => {
                 const checkbox = document.querySelector(`input[name="singleNSPLinkType"][value="${linkType}"]`);
-                if (checkbox) checkbox.checked = true;
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = now + idx; // Untuk mempertahankan urutan
+                }
             });
         }
         
+        // Lakukan hal yang sama untuk tipe link lainnya...
         if (settings.singleXCILinks) {
-            settings.singleXCILinks.forEach(linkType => {
+            settings.singleXCILinks.forEach((linkType, idx) => {
                 const checkbox = document.querySelector(`input[name="singleXCILinkType"][value="${linkType}"]`);
-                if (checkbox) checkbox.checked = true;
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = now + idx;
+                }
             });
         }
         
         if (settings.partNSPLinks) {
-            settings.partNSPLinks.forEach(linkType => {
+            settings.partNSPLinks.forEach((linkType, idx) => {
                 const checkbox = document.querySelector(`input[name="partNSPLinkType"][value="${linkType}"]`);
-                if (checkbox) checkbox.checked = true;
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = now + idx;
+                }
             });
         }
 
         if (settings.partXCILinks) {
-            settings.partXCILinks.forEach(linkType => {
+            settings.partXCILinks.forEach((linkType, idx) => {
                 const checkbox = document.querySelector(`input[name="partXCILinkType"][value="${linkType}"]`);
-                if (checkbox) checkbox.checked = true;
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = now + idx;
+                }
             });
         }
         
-        // Update tampilan
+        // Panggil showTripleLinkTypeSelection untuk menampilkan section yang sesuai
+        showTripleLinkTypeSelection();
+        
+        // Update tampilan link yang dipilih
         updateSelectedLinksDisplay('singleNSP');
         updateSelectedLinksDisplay('singleXCI');
         updateSelectedLinksDisplay('partNSP');
@@ -3954,6 +4107,8 @@ function applyLinkSettings(index) {
         if (modal) {
             modal.hide();
         }
+        
+        showNotification(`Settingan "${settings.name}" berhasil dimuat!`);
         
     } catch (error) {
         console.error("Error applying settings:", error);
