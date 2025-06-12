@@ -1103,63 +1103,85 @@ function showNotification(message, type) {
         }
 
         function applyLinkSettings(index) {
-            try {
-                const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6')) || [];
-                if (index < 0 || index >= savedSettings.length) {
-                    showNotification("Settingan tidak ditemukan");
-                    return;
-                }
-                
-                const settings = savedSettings[index];
-                
-                // Set basic counts
-                document.getElementById('partNSPCount').value = settings.partNSPCount || 0;
-                document.getElementById('partNSPLinkCount').value = settings.partNSPLinkCount || 0;
-                document.getElementById('partXCICount').value = settings.partXCICount || 0;
-                document.getElementById('partXCILinkCount').value = settings.partXCILinkCount || 0;
-                
-                // Close modal
-                bootstrap.Modal.getInstance(document.getElementById('loadSettingsModal')).hide();
-                
-                // Proceed through all steps automatically
-                document.getElementById('continueBtn').click();
-                
-                setTimeout(() => {
-                    // Check the checkboxes
-                    checkBoxes('partNSPCheckboxes', settings.partNSPLinks || []);
-                    checkBoxes('partXCICheckboxes', settings.partXCILinks || []);
-                    
-                    // Set fixed ordering
-                    sectionOrder = ['partNSP', 'partXCI'];
-                    linkOrders = {
-                        partNSP: settings.partNSPLinks || [],
-                        partXCI: settings.partXCILinks || []
-                    };
-                    
-                    // Go to order section and then to generator
-                    setTimeout(() => {
-                        document.getElementById('applyOrderBtn').click();
-                        
-                        // Fill inputs if available
-                        if (settings.inputs) {
-                            setTimeout(() => {
-                                for (const [id, value] of Object.entries(settings.inputs)) {
-                                    const input = document.getElementById(id);
-                                    if (input) {
-                                        input.value = value;
-                                    }
-                                }
-                                updateTextareaFromInputs();
-                            }, 100);
-                        }
-                    }, 100);
-                }, 100);
-                
-            } catch (error) {
-                console.error("Error applying settings:", error);
-                showNotification("Terjadi error saat memuat settingan: " + error.message);
-            }
+    try {
+        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6')) || [];
+        if (index < 0 || index >= savedSettings.length) {
+            showNotification("Settingan tidak ditemukan");
+            return;
         }
+        
+        const settings = savedSettings[index];
+        
+        // Set basic counts
+        document.getElementById('partNSPCount').value = settings.partNSPCount || 0;
+        document.getElementById('partNSPLinkCount').value = settings.partNSPLinkCount || 0;
+        document.getElementById('partXCICount').value = settings.partXCICount || 0;
+        document.getElementById('partXCILinkCount').value = settings.partXCILinkCount || 0;
+        
+        // Close modal
+        bootstrap.Modal.getInstance(document.getElementById('loadSettingsModal')).hide();
+        
+        // Proceed to link type selection
+        document.getElementById('continueBtn').click();
+        
+        setTimeout(() => {
+            // Check the checkboxes based on saved settings
+            if (settings.partNSPLinks) {
+                const nspContainer = document.getElementById('partNSPCheckboxes');
+                if (nspContainer) {
+                    settings.partNSPLinks.forEach(linkType => {
+                        const checkbox = nspContainer.querySelector(`input[value="${linkType}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+            }
+            
+            if (settings.partXCILinks) {
+                const xciContainer = document.getElementById('partXCICheckboxes');
+                if (xciContainer) {
+                    settings.partXCILinks.forEach(linkType => {
+                        const checkbox = xciContainer.querySelector(`input[value="${linkType}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+            }
+            
+            // Set ordering from saved settings
+            sectionOrder = settings.sectionOrder || ['partNSP', 'partXCI'];
+            linkOrders = settings.linkOrders || {
+                partNSP: settings.partNSPLinks || [],
+                partXCI: settings.partXCILinks || []
+            };
+            
+            // Proceed to order section
+            setTimeout(() => {
+                document.getElementById('generateOrderBtn').click();
+                
+                // Setelah sampai di order section, jangan langsung apply
+                // Biarkan user yang menentukan kapan mau apply order
+                // Isi input fields jika ada data yang disimpan
+                if (settings.inputs) {
+                    setTimeout(() => {
+                        generateInputFields(); // Generate dulu input fields-nya
+                        
+                        // Isi nilai-nilai yang disimpan
+                        for (const [id, value] of Object.entries(settings.inputs)) {
+                            const input = document.getElementById(id);
+                            if (input) {
+                                input.value = value;
+                            }
+                        }
+                        updateTextareaFromInputs();
+                    }, 100);
+                }
+            }, 100);
+        }, 100);
+        
+    } catch (error) {
+        console.error("Error applying settings:", error);
+        showNotification("Terjadi error saat memuat settingan: " + error.message);
+    }
+}
 
         function updateTextareaFromInputs() {
             const inputs = document.querySelectorAll('#generatedInputs input[type="text"]');
@@ -1394,143 +1416,103 @@ function showNotification(message, type) {
         });
         
         function generateInputFields() {
-            const container = document.getElementById('generatedInputs');
-            container.innerHTML = '';
+    const container = document.getElementById('generatedInputs');
+    container.innerHTML = '';
+    
+    const partOrderSection = document.getElementById('partOrderSection');
+    partOrderSection.innerHTML = '';
+    
+    // Tambahkan urutan part NSP jika ada
+    if (partNSPCount > 0) {
+        const nspOrderDiv = document.createElement('div');
+        nspOrderDiv.className = 'part-order-section';
+        nspOrderDiv.innerHTML = '<h5>Urutan Part NSP</h5>';
+        
+        for (let i = 1; i <= partNSPCount; i++) {
+            const div = document.createElement('div');
+            div.className = 'part-order-item';
             
-            const partOrderSection = document.getElementById('partOrderSection');
-            partOrderSection.innerHTML = '';
+            const label = document.createElement('label');
+            label.className = 'form-label';
+            label.textContent = `Part ${i}:`;
             
-            // Tambahkan urutan part NSP jika ada
-            if (partNSPCount > 0) {
-                const nspOrderDiv = document.createElement('div');
-                nspOrderDiv.className = 'part-order-section';
-                nspOrderDiv.innerHTML = '<h5>Urutan Part NSP</h5>';
-                
-                for (let i = 1; i <= partNSPCount; i++) {
-                    const div = document.createElement('div');
-                    div.className = 'part-order-item';
-                    
-                    const label = document.createElement('label');
-                    label.className = 'form-label';
-                    label.textContent = `Part ${i}:`;
-                    
-                    const sizeInput = document.createElement('input');
-                    sizeInput.type = 'text';
-                    sizeInput.className = 'form-control size-input';
-                    sizeInput.id = `partNSP-size-${i}`;
-                    sizeInput.placeholder = 'Ukuran';
-                    
-                    div.appendChild(label);
-                    div.appendChild(sizeInput);
-                    nspOrderDiv.appendChild(div);
-                }
-                
-                partOrderSection.appendChild(nspOrderDiv);
-            }
+            const sizeInput = document.createElement('input');
+            sizeInput.type = 'text';
+            sizeInput.className = 'form-control size-input';
+            sizeInput.id = `partNSP-size-${i}`;
+            sizeInput.placeholder = 'Ukuran';
             
-            // Tambahkan urutan part XCI jika ada
-            if (partXCICount > 0) {
-                const xciOrderDiv = document.createElement('div');
-                xciOrderDiv.className = 'part-order-section';
-                xciOrderDiv.innerHTML = '<h5>Urutan Part XCI</h5>';
-                
-                for (let i = 1; i <= partXCICount; i++) {
-                    const div = document.createElement('div');
-                    div.className = 'part-order-item';
-                    
-                    const label = document.createElement('label');
-                    label.className = 'form-label';
-                    label.textContent = `Part ${i}:`;
-                    
-                    const sizeInput = document.createElement('input');
-                    sizeInput.type = 'text';
-                    sizeInput.className = 'form-control size-input';
-                    sizeInput.id = `partXCI-size-${i}`;
-                    sizeInput.placeholder = 'Ukuran';
-                    
-                    div.appendChild(label);
-                    div.appendChild(sizeInput);
-                    xciOrderDiv.appendChild(div);
-                }
-                
-                partOrderSection.appendChild(xciOrderDiv);
-            }
-            
-            // Urutan jenis link yang tetap
-            const fixedLinkOrder = [
-                "Google Drive", "Mediafire", "VikingFile", "PixelDrain", 
-                "1Fichier", "Multiup", "Megaup", "Mega", "Qiwi", 
-                "Uploadhaven", "GoFile", "RapidGator", "UseNet", "FastUpload"
-            ];
-            
-            // Tambahkan section header untuk NSP
-            if (selectedLinks.some(link => link.section === 'partNSP')) {
-                const nspHeader = document.createElement('div');
-                nspHeader.className = 'section-header';
-                nspHeader.innerHTML = '<h4>Link Part NSP</h4>';
-                container.appendChild(nspHeader);
-                
-                // Generate inputs untuk NSP
-                fixedLinkOrder.forEach(linkType => {
-                    if (!selectedLinks.some(link => link.section === 'partNSP' && link.type === linkType)) return;
-                    
-                    const sanitizedType = linkType.replace(/\s+/g, '');
-                    
-                    for (let i = 1; i <= partNSPCount; i++) {
-                        const div = document.createElement('div');
-                        div.className = 'mb-3';
-                        
-                        const label = document.createElement('label');
-                        label.className = 'form-label';
-                        label.textContent = `${linkType} Part ${i}:`;
-                        
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.className = 'form-control';
-                        input.id = `partNSP${sanitizedType}${i}`;
-                        
-                        div.appendChild(label);
-                        div.appendChild(input);
-                        container.appendChild(div);
-                    }
-                });
-            }
-            
-            // Tambahkan section header untuk XCI
-            if (selectedLinks.some(link => link.section === 'partXCI')) {
-                const xciHeader = document.createElement('div');
-                xciHeader.className = 'section-header';
-                xciHeader.innerHTML = '<h4>Link Part XCI</h4>';
-                container.appendChild(xciHeader);
-                
-                // Generate inputs untuk XCI
-                fixedLinkOrder.forEach(linkType => {
-                    if (!selectedLinks.some(link => link.section === 'partXCI' && link.type === linkType)) return;
-                    
-                    const sanitizedType = linkType.replace(/\s+/g, '');
-                    
-                    for (let i = 1; i <= partXCICount; i++) {
-                        const div = document.createElement('div');
-                        div.className = 'mb-3';
-                        
-                        const label = document.createElement('label');
-                        label.className = 'form-label';
-                        label.textContent = `${linkType} Part ${i}:`;
-                        
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.className = 'form-control';
-                        input.id = `partXCI${sanitizedType}${i}`;
-                        
-                        div.appendChild(label);
-                        div.appendChild(input);
-                        container.appendChild(div);
-                    }
-                });
-            }
-            
-            updateInputsCollection();
+            div.appendChild(label);
+            div.appendChild(sizeInput);
+            nspOrderDiv.appendChild(div);
         }
+        
+        partOrderSection.appendChild(nspOrderDiv);
+    }
+    
+    // Tambahkan urutan part XCI jika ada
+    if (partXCICount > 0) {
+        const xciOrderDiv = document.createElement('div');
+        xciOrderDiv.className = 'part-order-section';
+        xciOrderDiv.innerHTML = '<h5>Urutan Part XCI</h5>';
+        
+        for (let i = 1; i <= partXCICount; i++) {
+            const div = document.createElement('div');
+            div.className = 'part-order-item';
+            
+            const label = document.createElement('label');
+            label.className = 'form-label';
+            label.textContent = `Part ${i}:`;
+            
+            const sizeInput = document.createElement('input');
+            sizeInput.type = 'text';
+            sizeInput.className = 'form-control size-input';
+            sizeInput.id = `partXCI-size-${i}`;
+            sizeInput.placeholder = 'Ukuran';
+            
+            div.appendChild(label);
+            div.appendChild(sizeInput);
+            xciOrderDiv.appendChild(div);
+        }
+        
+        partOrderSection.appendChild(xciOrderDiv);
+    }
+    
+    // Urutkan berdasarkan sectionOrder dan linkOrders yang sudah disimpan
+    sectionOrder.forEach(section => {
+        // Tambahkan section header
+        const sectionHeader = document.createElement('div');
+        sectionHeader.className = 'section-header';
+        sectionHeader.innerHTML = `<h4>${getSectionName(section)}</h4>`;
+        container.appendChild(sectionHeader);
+        
+        // Generate inputs sesuai urutan yang disimpan di linkOrders
+        linkOrders[section].forEach(linkType => {
+            const sanitizedType = linkType.replace(/\s+/g, '');
+            const partCount = section === 'partNSP' ? partNSPCount : partXCICount;
+            
+            for (let i = 1; i <= partCount; i++) {
+                const div = document.createElement('div');
+                div.className = 'mb-3';
+                
+                const label = document.createElement('label');
+                label.className = 'form-label';
+                label.textContent = `${linkType} Part ${i}:`;
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-control';
+                input.id = `${section}${sanitizedType}${i}`;
+                
+                div.appendChild(label);
+                div.appendChild(input);
+                container.appendChild(div);
+            }
+        });
+    });
+    
+    updateInputsCollection();
+}
 
  document.getElementById('copyResultBtn').addEventListener('click', function() {
     const gameName = document.getElementById('gameName').value.trim();
