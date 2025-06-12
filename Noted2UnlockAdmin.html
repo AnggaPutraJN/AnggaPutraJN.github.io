@@ -662,6 +662,19 @@
         justify-content: center;
       }
     }
+    /* Tambahkan di bagian CSS */
+#copyAllLinksBtn, #copyAllLinksWithNameBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+#copyAllLinksBtn:hover, #copyAllLinksWithNameBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
   </style>
 </head>
 <body data-theme="dark">
@@ -762,21 +775,30 @@
             </form>
             
             <div class="result-container" id="resultContainer">
-              <hr class="divider">
-              <h5 class="success-title">
-                <i class="bi bi-check-circle-fill"></i>
-                Note berhasil dibuat!
-              </h5>
-              
-              <p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
-              
-              <div id="resultsContainer"></div>
-              
-              <div class="alert alert-info mt-4">
-                <i class="bi bi-info-circle me-2"></i>
-                <small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small>
-              </div>
-            </div>
+  <hr class="divider">
+  <h5 class="success-title">
+    <i class="bi bi-check-circle-fill"></i>
+    Note berhasil dibuat!
+  </h5>
+  
+  <p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
+  
+  <div class="d-flex gap-2 mb-3">
+    <button class="btn btn-primary" id="copyAllLinksBtn">
+      <i class="bi bi-clipboard"></i> Copy All Links
+    </button>
+    <button class="btn btn-info" id="copyAllLinksWithNameBtn">
+      <i class="bi bi-clipboard-plus"></i> Copy All Links With Name
+    </button>
+  </div>
+  
+  <div id="resultsContainer"></div>
+  
+  <div class="alert alert-info mt-4">
+    <i class="bi bi-info-circle me-2"></i>
+    <small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small>
+  </div>
+</div>
           </div>
         </div>
       </div>
@@ -792,20 +814,39 @@
           </div>
           
           <div class="card-body">
-            <div class="section-header mb-4">
-              <h4 class="text-primary">
-                <i class="bi bi-list-ul me-2"></i>
-                Daftar Noted
-              </h4>
-              <div class="d-flex gap-2 flex-wrap">
-                <button type="button" class="btn btn-outline-primary" id="refreshDataBtn">
-                  <i class="bi bi-arrow-clockwise"></i> Refresh Data
-                </button>
-                <button type="button" class="btn btn-success" id="exportAllBtn">
-                  <i class="bi bi-file-earmark-excel"></i> Export Semua Data
-                </button>
-              </div>
-            </div>
+<div class="section-header mb-4">
+  <h4 class="text-primary">
+    <i class="bi bi-list-ul me-2"></i>
+    Daftar Noted
+  </h4>
+  <div class="d-flex gap-2 flex-wrap">
+    <!-- Tambahkan dropdown sorting di sini -->
+    <div class="dropdown">
+      <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-sort-down me-1"></i>
+        <span id="sortLabel">Tanggal Dibuat</span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+        <li><a class="dropdown-item" href="#" data-sort="date" data-label="Tanggal Dibuat">
+          <i class="bi bi-calendar3 me-2"></i>Tanggal Dibuat
+        </a></li>
+        <li><a class="dropdown-item" href="#" data-sort="name" data-label="Nama (A-Z)">
+          <i class="bi bi-sort-alpha-down me-2"></i>Nama (A-Z)
+        </a></li>
+        <li><a class="dropdown-item" href="#" data-sort="view" data-label="Jumlah View">
+          <i class="bi bi-eye me-2"></i>Jumlah View
+        </a></li>
+      </ul>
+    </div>
+    <button type="button" class="btn btn-outline-primary" id="refreshDataBtn">
+      <i class="bi bi-arrow-clockwise"></i> Refresh Data
+    </button>
+    <button type="button" class="btn btn-success" id="exportAllBtn">
+      <i class="bi bi-file-earmark-excel"></i> Export Semua Data
+    </button>
+  </div>
+</div>
+
             
             <div id="notedListContainer">
               <div class="loading-state" id="loadingNotes">
@@ -913,6 +954,8 @@
     let noteIndex = 1;
     let currentNoteId = null;
     let currentNoteData = null;
+    let notedData = [];
+    let currentSort = 'date'; // default sorting
     
     // Theme switch functionality
     const toggleSwitch = document.querySelector('#checkbox');
@@ -933,6 +976,42 @@
     }
     
     toggleSwitch.addEventListener('change', switchTheme, false);
+
+    // Fungsi untuk copy semua link
+document.getElementById('copyAllLinksBtn').addEventListener('click', function() {
+  const links = [];
+  document.querySelectorAll('.result-item input[type="text"]').forEach(input => {
+    links.push(input.value);
+  });
+  
+  if (links.length > 0) {
+    copyToClipboard(links.join('\n'));
+    showNotification('Semua link berhasil disalin!', 'success');
+  } else {
+    showNotification('Tidak ada link yang bisa disalin', 'error');
+  }
+});
+
+// Fungsi untuk copy semua link dengan nama
+document.getElementById('copyAllLinksWithNameBtn').addEventListener('click', function() {
+  const linksWithNames = [];
+  document.querySelectorAll('.result-item').forEach(item => {
+    const name = item.querySelector('h6').textContent.replace('🔗', '').trim();
+    const link = item.querySelector('input[type="text"]')?.value;
+    if (link) {
+      linksWithNames.push(`${name}: ${link}`);
+    }
+  });
+  
+  if (linksWithNames.length > 0) {
+    copyToClipboard(linksWithNames.join('\n'));
+    showNotification('Semua link dengan nama berhasil disalin!', 'success');
+  } else {
+    showNotification('Tidak ada link yang bisa disalin', 'error');
+  }
+});
+
+
     
     // Add new note form
     document.getElementById('addNoteBtn').addEventListener('click', function() {
@@ -968,39 +1047,85 @@
       exportAllData();
     });
 
-    // Fungsi untuk load daftar noted
-    async function loadNotedList() {
-      const loadingElement = document.getElementById('loadingNotes');
-      const listElement = document.getElementById('notedList');
-      const emptyElement = document.getElementById('emptyState');
+   // Event listener untuk dropdown sorting
+document.addEventListener('DOMContentLoaded', function() {
+  const sortDropdown = document.querySelectorAll('#sortDropdown + .dropdown-menu .dropdown-item');
+  
+  sortDropdown.forEach(item => {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      const sortType = this.getAttribute('data-sort');
+      const sortLabel = this.getAttribute('data-label');
       
-      // Show loading
-      loadingElement.style.display = 'flex';
-      listElement.style.display = 'none';
-      emptyElement.style.display = 'none';
+      // Update dropdown label
+      document.getElementById('sortLabel').textContent = sortLabel;
       
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=list');
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-          if (data.data && data.data.length > 0) {
-            displayNotedList(data.data);
-            listElement.style.display = 'block';
-          } else {
-            emptyElement.style.display = 'block';
-          }
-        } else {
-          showNotification('Gagal memuat daftar noted: ' + data.message, 'error');
-          emptyElement.style.display = 'block';
-        }
-      } catch (error) {
-        showNotification('Terjadi kesalahan: ' + error.message, 'error');
+      // Update current sort
+      currentSort = sortType;
+      
+      // Sort and display data
+      sortAndDisplayNotes();
+    });
+  });
+});
+
+// Modifikasi fungsi loadNotedList untuk menyimpan data
+async function loadNotedList() {
+  const loadingElement = document.getElementById('loadingNotes');
+  const listElement = document.getElementById('notedList');
+  const emptyElement = document.getElementById('emptyState');
+  
+  // Show loading
+  loadingElement.style.display = 'flex';
+  listElement.style.display = 'none';
+  emptyElement.style.display = 'none';
+  
+  try {
+    const response = await fetch(SCRIPT_URL + '?action=list');
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      if (data.data && data.data.length > 0) {
+        // Simpan data ke variable global
+        notedData = data.data;
+        // Sort dan display
+        sortAndDisplayNotes();
+        listElement.style.display = 'block';
+      } else {
+        notedData = [];
         emptyElement.style.display = 'block';
-      } finally {
-        loadingElement.style.display = 'none';
       }
+    } else {
+      showNotification('Gagal memuat daftar noted: ' + data.message, 'error');
+      emptyElement.style.display = 'block';
     }
+  } catch (error) {
+    showNotification('Terjadi kesalahan: ' + error.message, 'error');
+    emptyElement.style.display = 'block';
+  } finally {
+    loadingElement.style.display = 'none';
+  }
+}
+
+// Fungsi baru untuk sorting dan display
+function sortAndDisplayNotes() {
+  let sortedData = [...notedData];
+  
+  switch(currentSort) {
+    case 'name':
+      sortedData.sort((a, b) => a.nama_note.localeCompare(b.nama_note));
+      break;
+    case 'view':
+      sortedData.sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
+      break;
+    case 'date':
+    default:
+      sortedData.sort((a, b) => new Date(b.created_at || b.timestamp) - new Date(a.created_at || a.timestamp));
+      break;
+  }
+  
+  displayNotedList(sortedData);
+}
 
     // Fungsi untuk menampilkan daftar noted
     function displayNotedList(notes) {
@@ -1495,16 +1620,16 @@
         resultItem.className = 'result-item';
         
         if (result.success) {
-          resultItem.innerHTML = `
-            <h6><i class="bi bi-sticky me-2"></i>${result.nama_note}</h6>
-            <div class="input-group mb-2">
-              <input type="text" class="form-control" value="${result.shareableLink}" readonly>
-              <button class="btn btn-outline-secondary copy-btn" type="button" data-link="${result.shareableLink}">
-                <i class="bi bi-clipboard"></i>
-                Copy
-              </button>
-            </div>
-          `;
+resultItem.innerHTML = `
+  <h6><i class="bi bi-link-45deg me-2"></i>${result.nama_note}</h6>
+  <div class="input-group mb-2">
+    <input type="text" class="form-control" value="${result.shareableLink}" readonly>
+    <button class="btn btn-outline-secondary copy-btn" type="button" data-link="${result.shareableLink}">
+      <i class="bi bi-clipboard"></i>
+      Copy
+    </button>
+  </div>
+`;
         } else {
           resultItem.className += ' border-danger';
           resultItem.style.background = 'rgba(239, 68, 68, 0.05)';
