@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Link2Unlock Admin - Bulk Generator</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
-	<style type="text/css">@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  <title>Link2Unlock Admin - Bulk Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <style type="text/css">@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
     * {
       font-family: 'Inter', sans-serif;
@@ -638,10 +639,73 @@ body.dark-theme .table tbody tr:hover {
     background-color: rgba(74, 148, 187, 0.2);
 }
 
+/* Dark Theme Text Fixes */
 body.dark-theme .table tbody td {
     border-color: var(--border-dark);
     color: var(--text-primary-dark);
 }
+
+/* Fix untuk text truncate di mode gelap */
+body.dark-theme .text-truncate {
+    color: #60a5fa !important; /* Biru terang untuk visibility */
+}
+
+/* Fix untuk strong text di nama game */
+body.dark-theme .table tbody td strong {
+    color: #4a94bb !important; /* Biru brand untuk nama game */
+}
+
+/* Fix untuk angka dan text lainnya di tabel */
+body.dark-theme .table tbody td {
+    color: var(--text-primary-dark) !important;
+}
+
+/* Pastikan semua text di dalam tabel terlihat */
+body.dark-theme .table tbody tr td {
+    color: #e2e8f0;
+}
+
+/* Khusus untuk link yang di-truncate */
+body.dark-theme .table tbody tr td .text-truncate {
+    color: #60a5fa !important;
+}
+
+/* Untuk nama game yang menggunakan strong */
+body.dark-theme .table tbody tr td strong {
+    color: #4a94bb !important;
+    font-weight: 600;
+}
+
+/* Untuk angka click count dan nomor urut */
+body.dark-theme .table tbody tr td:first-child,
+body.dark-theme .table tbody tr td:nth-child(5) {
+    color: #a0aec0 !important;
+    font-weight: 500;
+}
+
+/* Untuk tanggal */
+body.dark-theme .table tbody tr td:nth-child(4) {
+    color: #cbd5e0 !important;
+}
+
+/* Fix untuk tooltip title di mode gelap */
+body.dark-theme [title] {
+    position: relative;
+}
+
+/* Tambahan untuk memastikan visibility yang baik */
+body.dark-theme .table tbody tr:hover td {
+    color: #f7fafc !important;
+}
+
+body.dark-theme .table tbody tr:hover td .text-truncate {
+    color: #90cdf4 !important;
+}
+
+body.dark-theme .table tbody tr:hover td strong {
+    color: #63b3ed !important;
+}
+
 
 /* Modal Styles */
 .modal-content {
@@ -698,7 +762,51 @@ body.dark-theme .modal-header {
     .copy-all-buttons .btn {
         flex: 1;
     }
-	</style>
+    /* Sort Dropdown Styles */
+.form-select {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.form-select:focus {
+    border-color: #4a94bb;
+    box-shadow: 0 0 0 0.2rem rgba(74, 148, 187, 0.25);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.form-select:hover {
+    border-color: #4a94bb;
+    transform: translateY(-1px);
+}
+
+/* Dark theme dropdown */
+body.dark-theme .form-select {
+    background: rgba(45, 55, 72, 0.9);
+    border-color: var(--border-dark);
+    color: var(--text-primary-dark);
+}
+
+body.dark-theme .form-select:focus {
+    background: rgba(45, 55, 72, 0.95);
+    border-color: #4a94bb;
+    color: var(--text-primary-dark);
+}
+
+body.dark-theme .form-select option {
+    background: #2d3748;
+    color: var(--text-primary-dark);
+}
+  </style>
 </head>
 
 <body>
@@ -787,16 +895,26 @@ body.dark-theme .modal-header {
         </div>
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="count-display">Total Link: <span id="totalLinksCount">0</span></div>
-                <div class="btn-group">
-                    <button class="btn btn-success" id="exportAllBtn" type="button">
-                        <i class="bi bi-file-earmark-excel"></i> Export All Excel
-                    </button>
-                    <button class="btn btn-primary" id="refreshLinksBtn" type="button">
-                        <i class="bi bi-arrow-clockwise"></i> Refresh
-                    </button>
-                </div>
-            </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="count-display">Total Link: <span id="totalLinksCount">0</span></div>
+        <div class="d-flex align-items-center">
+            <label class="form-label me-2 mb-0">Urutkan:</label>
+            <select class="form-select" id="sortDropdown" style="width: auto;">
+                <option value="date">Tanggal Dibuat</option>
+                <option value="name">Nama Game (A-Z)</option>
+                <option value="clicks">Jumlah Klik</option>
+            </select>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-success" id="exportAllBtn" type="button">
+            <i class="bi bi-file-earmark-excel"></i> Export All Excel
+        </button>
+        <button class="btn btn-primary" id="refreshLinksBtn" type="button">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+    </div>
+</div>
             
             <div id="linksTableContainer">
                 <div class="table-responsive">
@@ -897,6 +1015,7 @@ body.dark-theme .modal-header {
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxfoirqPo3rmbs23G_kFVXj-zF27QEuaAYtBp6NTyVkG7sPgVfpzyc1MbJRa3KNZI/exec';
     let gameIndex = 1;
     let currentEditingLinkId = null;
+
     
     // Initialize theme manager
     class ThemeManager {
@@ -933,6 +1052,36 @@ body.dark-theme .modal-header {
         }
     }
     const themeManager = new ThemeManager();
+
+// Sort dropdown event listener
+document.getElementById('sortDropdown').addEventListener('change', function() {
+    const sortBy = this.value;
+    sortLinksList(sortBy);
+});
+
+let currentLinksData = []; // Variable untuk menyimpan data links
+
+function sortLinksList(sortBy) {
+    if (currentLinksData.length === 0) return;
+    
+    let sortedLinks = [...currentLinksData];
+    
+    switch(sortBy) {
+        case 'name':
+            sortedLinks.sort((a, b) => a.nama_game.localeCompare(b.nama_game));
+            break;
+        case 'clicks':
+            sortedLinks.sort((a, b) => (b.click_count || 0) - (a.click_count || 0));
+            break;
+        case 'date':
+        default:
+            sortedLinks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            break;
+    }
+    
+    displayLinksList(sortedLinks);
+}
+
 
     // Tab Management
     document.getElementById('bulkGeneratorTab').addEventListener('click', function(e) {
@@ -1127,52 +1276,60 @@ body.dark-theme .modal-header {
     }
 
     // Link List Management
-    async function loadLinksList() {
-        try {
-            const response = await fetch(SCRIPT_URL + '?action=list');
-            const data = await response.json();
-            if (data.status === 'success') displayLinksList(data.data);
-            else showEmptyState();
-        } catch (error) {
+async function loadLinksList() {
+    try {
+        const response = await fetch(SCRIPT_URL + '?action=list');
+        const data = await response.json();
+        if (data.status === 'success') {
+            // Sort berdasarkan tanggal dibuat (default)
+            const sortedData = data.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            displayLinksList(sortedData);
+        } else {
             showEmptyState();
         }
+    } catch (error) {
+        showEmptyState();
     }
+}
     
     function displayLinksList(links) {
-        const tbody = document.getElementById('linksTableBody');
-        const totalCount = document.getElementById('totalLinksCount');
-        const emptyState = document.getElementById('emptyState');
-        const tableContainer = document.getElementById('linksTableContainer');
-        
-        totalCount.textContent = links.length;
-        if (links.length === 0) return showEmptyState();
-        
-        emptyState.style.display = 'none';
-        tableContainer.style.display = 'block';
-        tbody.innerHTML = '';
-        
-        links.forEach((link, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td><strong>${link.nama_game}</strong></td>
-                <td><span class="text-truncate d-inline-block" style="max-width: 200px;" title="${link.link_tujuan}">${link.link_tujuan}</span></td>
-                <td>${formatDate(link.created_at)}</td>
-                <td>${link.click_count || 0}</td>
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-primary btn-sm" onclick="showLinkDetail('${link.id}')">
-                            <i class="bi bi-eye"></i> Detail
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteLinkConfirm('${link.id}', '${link.nama_game}')">
-                            <i class="bi bi-trash"></i> Hapus
-                        </button>
-                    </div>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
+    // Simpan data untuk sorting
+    currentLinksData = links;
+    
+    const tbody = document.getElementById('linksTableBody');
+    const totalCount = document.getElementById('totalLinksCount');
+    const emptyState = document.getElementById('emptyState');
+    const tableContainer = document.getElementById('linksTableContainer');
+    
+    totalCount.textContent = links.length;
+    if (links.length === 0) return showEmptyState();
+    
+    emptyState.style.display = 'none';
+    tableContainer.style.display = 'block';
+    tbody.innerHTML = '';
+    
+    links.forEach((link, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><strong>${link.nama_game}</strong></td>
+            <td><span class="text-truncate d-inline-block" style="max-width: 200px;" title="${link.link_tujuan}">${link.link_tujuan}</span></td>
+            <td>${formatDate(link.created_at)}</td>
+            <td>${link.click_count || 0}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-primary btn-sm" onclick="showLinkDetail('${link.id}')">
+                        <i class="bi bi-eye"></i> Detail
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteLinkConfirm('${link.id}', '${link.nama_game}')">
+                        <i class="bi bi-trash"></i> Hapus
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
     
     function showEmptyState() {
         document.getElementById('linksTableContainer').style.display = 'none';
