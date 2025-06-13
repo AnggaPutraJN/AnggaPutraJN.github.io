@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Shorting Game PS2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --text-color: #2d3436;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --border-color: #dfe6e9;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --error-color: #d63031;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #a29bfe;
+            --secondary-color: #6c5ce7;
+            --accent-color: #ff7675;
+            --text-color: #f5f6fa;
+            --bg-color: #1e272e;
+            --card-bg: #2d3436;
+            --input-bg: #3d484f;
+            --border-color: #57606f;
+            --success-color: #55efc4;
+            --warning-color: #ffeaa7;
+            --error-color: #ff7675;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .form-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section h3 i {
+            font-size: 1.3rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #5a4bd1;
+            border-color: #5a4bd1;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #8c7ae6;
+            border-color: #8c7ae6;
+        }
+
+        .settings-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .result-text {
+            background-color: var(--input-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 999;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .game-input-group {
+            background-color: var(--input-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .game-input-group:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .link-input-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .settings-buttons {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .link-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for buttons */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-animate {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--input-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-gamepad"></i> Generator Shorting Game PS2</h1>
+            <p>Generate formatted game listings with CHD and ISO download links</p>
+        </div>
+
+        <div id="configSection" class="form-section">
+            <h3><i class="fas fa-cog"></i> Konfigurasi Game</h3>
+            
+            <div class="mb-4">
+                <label for="gameCount" class="form-label"><i class="fas fa-list-ol"></i> Silahkan Masukkan Jumlah Game</label>
+                <input type="number" class="form-control" id="gameCount" min="1" value="1">
+            </div>
+            
+            <div class="settings-buttons">
+                <button id="generateBtn" class="btn btn-primary btn-animate">
+                    <i class="fas fa-magic"></i> Generate Input Fields
+                </button>
+            </div>
+        </div>
+        
+        <div id="inputSection" class="form-section hidden">
+            <h3><i class="fas fa-edit"></i> Masukkan Detail Game</h3>
+            
+            <div class="mb-4">
+                <label class="form-label"><i class="fas fa-paste"></i> Paste Link Data (Otomatis mengisi input):</label>
+                <textarea id="linkDataTextarea" class="form-control" rows="4" placeholder="Paste semua data Anda di sini (satu per baris) untuk mengisi form secara otomatis"></textarea>
+            </div>
+            
+            <div id="gameInputs"></div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <button id="backToConfigBtn" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Config
+                </button>
+                <button id="generateResultBtn" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Generate Result
+                </button>
+            </div>
+        </div>
+        
+        <div id="resultSection" class="form-section hidden">
+            <h3><i class="fas fa-clipboard-check"></i> Hasil Shorting Game</h3>
+            <div class="result-text" id="resultContent"></div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <button id="copyResultBtn" class="btn btn-success">
+                    <i class="fas fa-copy"></i> Copy Result
+                </button>
+                <button id="newShortingBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Buat Shorting Baru
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or use preferred color scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                htmlElement.setAttribute('data-theme', 'dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                if (htmlElement.getAttribute('data-theme') === 'dark') {
+                    htmlElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                } else {
+                    htmlElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                }
+            });
+            
+            // DOM elements
+            const gameCountInput = document.getElementById('gameCount');
+            const generateBtn = document.getElementById('generateBtn');
+            const inputSection = document.getElementById('inputSection');
+            const gameInputs = document.getElementById('gameInputs');
+            const generateResultBtn = document.getElementById('generateResultBtn');
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+            const copyResultBtn = document.getElementById('copyResultBtn');
+            const newShortingBtn = document.getElementById('newShortingBtn');
+            const linkDataTextarea = document.getElementById('linkDataTextarea');
+            const backToConfigBtn = document.getElementById('backToConfigBtn');
+            const configSection = document.getElementById('configSection');
+            
+            // Generate input fields based on configuration
+            generateBtn.addEventListener('click', function() {
+                const gameCount = parseInt(gameCountInput.value);
+                
+                if (isNaN(gameCount)) {
+                    showNotification('Masukkan jumlah game yang valid');
+                    return;
+                }
+                
+                // Generate input fields
+                gameInputs.innerHTML = '';
+                
+                for (let i = 1; i <= gameCount; i++) {
+                    const gameGroup = document.createElement('div');
+                    gameGroup.className = 'game-input-group';
+                    gameGroup.innerHTML = `
+                        <h5 class="mb-3"><i class="fas fa-gamepad"></i> Game ${i}</h5>
+                        <div class="mb-3">
+                            <label for="gameName${i}" class="form-label">Nama Game</label>
+                            <input type="text" class="form-control" id="gameName${i}" placeholder="Contoh: Yakuza: Restored">
+                        </div>
+                        <div class="mb-3">
+                            <label for="chdSize${i}" class="form-label">Ukuran Game CHD</label>
+                            <input type="text" class="form-control" id="chdSize${i}" placeholder="Contoh: 3.01 GB">
+                        </div>
+                        <div class="mb-3">
+                            <label for="isoSize${i}" class="form-label">Ukuran Game ISO</label>
+                            <input type="text" class="form-control" id="isoSize${i}" placeholder="Contoh: 4.11 GB">
+                        </div>
+                        <div class="mb-3">
+                            <label for="gdChdLink${i}" class="form-label">Google Drive CHD Link</label>
+                            <input type="text" class="form-control" id="gdChdLink${i}" placeholder="Google Drive CHD URL">
+                        </div>
+                        <div class="mb-3">
+                            <label for="gdIsoLink${i}" class="form-label">Google Drive ISO Link</label>
+                            <input type="text" class="form-control" id="gdIsoLink${i}" placeholder="Google Drive ISO URL">
+                        </div>
+                        <div class="mb-3">
+                            <label for="mfChdLink${i}" class="form-label">Mediafire CHD Link</label>
+                            <input type="text" class="form-control" id="mfChdLink${i}" placeholder="Mediafire CHD URL">
+                        </div>
+                        <div class="mb-3">
+                            <label for="mfIsoLink${i}" class="form-label">Mediafire ISO Link</label>
+                            <input type="text" class="form-control" id="mfIsoLink${i}" placeholder="Mediafire ISO URL">
+                        </div>
+                    `;
+                    
+                    gameInputs.appendChild(gameGroup);
+                }
+                
+                // Show input section
+                inputSection.classList.remove('hidden');
+                configSection.classList.add('hidden');
+                
+                // Setup textarea autofill
+                setupTextareaAutofill(gameCount);
+            });
+            
+            // Setup textarea to autofill inputs
+            function setupTextareaAutofill(gameCount) {
+                linkDataTextarea.addEventListener('input', function() {
+                    const lines = this.value.split('\n').filter(line => line.trim() !== '');
+                    if (lines.length === 0) return;
+                    
+                    let lineIndex = 0;
+                    
+                    // Fill game names
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`gameName${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                    
+                    // Fill CHD sizes
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`chdSize${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                    
+                    // Fill ISO sizes
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`isoSize${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                    
+                    // Fill GD CHD links
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`gdChdLink${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                    
+                    // Fill GD ISO links
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`gdIsoLink${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                    
+                    // Fill MF CHD links
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`mfChdLink${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                    
+                    // Fill MF ISO links
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`mfIsoLink${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                });
+            }
+            
+            // Generate result from inputs
+            generateResultBtn.addEventListener('click', function() {
+                const gameCount = parseInt(gameCountInput.value);
+                let resultText = '';
+                
+                for (let i = 1; i <= gameCount; i++) {
+                    const gameName = document.getElementById(`gameName${i}`).value || `Game ${i}`;
+                    const chdSize = document.getElementById(`chdSize${i}`).value || '-';
+                    const isoSize = document.getElementById(`isoSize${i}`).value || '-';
+                    const gdChdLink = document.getElementById(`gdChdLink${i}`).value;
+                    const gdIsoLink = document.getElementById(`gdIsoLink${i}`).value;
+                    const mfChdLink = document.getElementById(`mfChdLink${i}`).value;
+                    const mfIsoLink = document.getElementById(`mfIsoLink${i}`).value;
+                    
+                    // Generate the CHD section
+                    resultText += `${gameName} PS2 CHD/ISO (Google Drive & MediaFire) (Tanpa Ekstrak) (USA) (Aethersx2 / PCSX2)\n`;
+                    resultText += `${gameName}\n`;
+                    resultText += `${chdSize}\n`;
+                    resultText += `${isoSize}\n`;
+                    
+                    if (gdChdLink) {
+                        resultText += `${gdChdLink}\n`;
+                    }
+                    if (mfChdLink) {
+                        resultText += `${mfChdLink}\n`;
+                    }
+                    
+                    resultText += '\n';
+                    
+                    // Generate the ISO section
+                    resultText += `${gameName} PS2 CHD/ISO (Google Drive & MediaFire) (Tanpa Ekstrak) (USA) (Aethersx2 / PCSX2)\n`;
+                    resultText += `${gameName}\n`;
+                    resultText += `${chdSize}\n`;
+                    resultText += `${isoSize}\n`;
+                    
+                    if (gdIsoLink) {
+                        resultText += `${gdIsoLink}\n`;
+                    }
+                    if (mfIsoLink) {
+                        resultText += `${mfIsoLink}\n`;
+                    }
+                    
+                    resultText += '\n';
+                }
+                
+                resultContent.textContent = resultText;
+                resultSection.classList.remove('hidden');
+                inputSection.classList.add('hidden');
+                
+                // Scroll to result section
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Copy result to clipboard
+            copyResultBtn.addEventListener('click', function() {
+                const resultText = resultContent.textContent;
+                
+                navigator.clipboard.writeText(resultText).then(() => {
+                    showNotification('Hasil telah disalin ke clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    showNotification('Gagal menyalin ke clipboard. Silahkan copy manual.');
+                });
+            });
+            
+            // Start new shorting
+            newShortingBtn.addEventListener('click', function() {
+                // Reset form
+                gameCountInput.value = '1';
+                gameInputs.innerHTML = '';
+                resultContent.textContent = '';
+                linkDataTextarea.value = '';
+                
+                // Show config section
+                configSection.classList.remove('hidden');
+                resultSection.classList.add('hidden');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Back to config button
+            backToConfigBtn.addEventListener('click', function() {
+                inputSection.classList.add('hidden');
+                configSection.classList.remove('hidden');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Helper function to show notifications
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                
+                // Set color based on type
+                if (type === 'success') {
+                    notification.style.backgroundColor = 'var(--success-color)';
+                } else if (type === 'error') {
+                    notification.style.backgroundColor = 'var(--error-color)';
+                } else if (type === 'warning') {
+                    notification.style.backgroundColor = 'var(--warning-color)';
+                    notification.style.color = 'var(--text-color)';
+                }
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideIn 0.3s ease reverse';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+
+
+    <script src="https://www.gstatic.com/firebasejs/10.x.x/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.x.x/firebase-messaging.js"></script>
+<script>
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js');
+
+firebase.initializeApp({
+  apiKey: "AIzaSyD3XhDO5LOGskkdt09ijSd8htWgyptM3YU",
+  authDomain: "indapk-web.firebaseapp.com",
+  projectId: "indapk-web",
+  storageBucket: "indapk-web.firebasestorage.app",
+  messagingSenderId: "697435854630",
+  appId: "1:697435854630:web:423222086bae6a962313e7",
+  measurementId: "G-QT208VPJ4B"
+});
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage(function(payload) {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: '/icon.png' // opsional
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3XhDO5LOGskkdt09ijSd8htWgyptM3YU",
+      authDomain: "indapk-web.firebaseapp.com",
+      projectId: "indapk-web",
+      storageBucket: "indapk-web.firebasestorage.app",
+      messagingSenderId: "697435854630",
+      appId: "1:697435854630:web:423222086bae6a962313e7",
+      measurementId: "G-QT208VPJ4B"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    // Minta izin untuk notifikasi
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        const currentToken = await getToken(messaging, {
+          vapidKey: "BIjnEcOc5em1Yni54E4sDczvI_EVrlmCsQsceGwaliyyf2Ntry3aw6h3plmHAnN19P1sLIcx44D3SlonLqSBRXs"
+        });
+
+        if (currentToken) {
+          console.log("Token perangkat:", currentToken);
+          // Simpan token ke server jika perlu
+        } else {
+          console.warn("Tidak mendapatkan token. Pastikan izin diberikan dan VAPID key benar.");
+        }
+      } else {
+        console.warn("Izin notifikasi tidak diberikan.");
+      }
+    } catch (error) {
+      console.error("Gagal meminta izin notifikasi atau mengambil token:", error);
+    }
+
+    // Saat pesan diterima dan web sedang aktif
+    onMessage(messaging, (payload) => {
+      console.log("Pesan diterima:", payload);
+      const { title, body } = payload.notification;
+      new Notification(title, {
+        body,
+        icon: '/icon.png' // optional icon
+      });
+    });
+  });
+</script>
+
+
+</body>
+</html>
