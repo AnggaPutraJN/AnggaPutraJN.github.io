@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -806,6 +805,75 @@ body.dark-theme .form-select option {
     background: #2d3748;
     color: var(--text-primary-dark);
 }
+
+/* Bulk Generator Textarea Styles */
+.bulk-textarea-container {
+    margin-bottom: 1.5rem;
+}
+
+.bulk-textarea {
+    min-height: 200px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.bulk-parse-btn {
+    margin-bottom: 1.5rem;
+}
+
+/* Bulk Generator Results */
+.bulk-results-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-theme .bulk-results-container {
+    background: rgba(45, 55, 72, 0.7);
+    border-color: var(--border-dark);
+}
+
+.bulk-result-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+body.dark-theme .bulk-result-item {
+    border-bottom-color: var(--border-dark);
+}
+
+.bulk-result-item:last-child {
+    border-bottom: none;
+}
+
+.bulk-result-item h6 {
+    margin-bottom: 0.5rem;
+    color: #4a94bb;
+}
+
+body.dark-theme .bulk-result-item h6 {
+    color: #4a94bb;
+}
+
+.bulk-result-link {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    word-break: break-all;
+}
+
+.bulk-result-count {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #4a94bb;
+}
+
+body.dark-theme .bulk-result-count {
+    color: #4a94bb;
+}
   </style>
 </head>
 
@@ -845,9 +913,42 @@ body.dark-theme .form-select option {
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="count-display">Total Games: <span id="gameCount">1</span></div>
-                <button class="btn btn-success" id="addGameBtn" type="button">Tambah Game</button>
+                <div>
+                    <button class="btn btn-success" id="addGameBtn" type="button">Tambah Game</button>
+                    <button class="btn btn-primary" id="switchToBulkBtn" type="button">Bulk Mode</button>
+                </div>
             </div>
             
+            <!-- Bulk Generator Section -->
+            <div id="bulkGeneratorSection" style="display: none;">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> Paste daftar game dan link dalam format: Nama Game di baris pertama, Link di baris berikutnya
+                </div>
+                
+                <div class="bulk-textarea-container">
+                    <label class="form-label">Bulk Input</label>
+                    <textarea class="form-control bulk-textarea" id="bulkInput" placeholder="Yu-Gi-Oh! 5D's Tag Force 5 [Japanese Voice Enabled] PSP CHD [NAMA DOMAIN]
+https://drive.google.com/file/d/11CGsfOz-LMf-cM4Yb9yDwCLifP-U2Bpd/view?usp=sharing
+Yu-Gi-Oh! 5D's Tag Force 5 [Japanese Voice Enabled] PSP CHD [NAMA DOMAIN]
+https://www.mediafire.com/file/97ixayqjt2srw24/%255BINDapk.com%255D_Yu-Gi-Oh%2521_5Ds_-_Tag_Force_5_%2528USA%2529%255BJP_Voice_enabled%255D.chd/file"></textarea>
+                </div>
+                
+                <button class="btn btn-primary w-100 bulk-parse-btn" id="parseBulkBtn" type="button">
+                    <i class="bi bi-gear"></i> Parse Bulk Input
+                </button>
+                
+                <div class="bulk-results-container" id="bulkResultsContainer" style="display: none;">
+                    <h5 class="success-title"><i class="bi bi-check-circle me-2"></i> Parsing Results</h5>
+                    <div id="bulkResultsContent"></div>
+                    <div class="bulk-result-count" id="bulkResultCount"></div>
+                </div>
+                
+                <button class="btn btn-success w-100" id="generateBulkBtn" type="button" style="display: none;">
+                    <i class="bi bi-magic"></i> Generate All Links
+                </button>
+            </div>
+            
+            <!-- Regular Form Section -->
             <form id="bulkLinkForm">
                 <div id="gamesContainer">
                     <div class="game-item" data-index="0">
@@ -1015,8 +1116,8 @@ body.dark-theme .form-select option {
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxfoirqPo3rmbs23G_kFVXj-zF27QEuaAYtBp6NTyVkG7sPgVfpzyc1MbJRa3KNZI/exec';
     let gameIndex = 1;
     let currentEditingLinkId = null;
+    let parsedGames = [];
 
-    
     // Initialize theme manager
     class ThemeManager {
         constructor() {
@@ -1053,35 +1154,34 @@ body.dark-theme .form-select option {
     }
     const themeManager = new ThemeManager();
 
-// Sort dropdown event listener
-document.getElementById('sortDropdown').addEventListener('change', function() {
-    const sortBy = this.value;
-    sortLinksList(sortBy);
-});
+    // Sort dropdown event listener
+    document.getElementById('sortDropdown').addEventListener('change', function() {
+        const sortBy = this.value;
+        sortLinksList(sortBy);
+    });
 
-let currentLinksData = []; // Variable untuk menyimpan data links
+    let currentLinksData = []; // Variable untuk menyimpan data links
 
-function sortLinksList(sortBy) {
-    if (currentLinksData.length === 0) return;
-    
-    let sortedLinks = [...currentLinksData];
-    
-    switch(sortBy) {
-        case 'name':
-            sortedLinks.sort((a, b) => a.nama_game.localeCompare(b.nama_game));
-            break;
-        case 'clicks':
-            sortedLinks.sort((a, b) => (b.click_count || 0) - (a.click_count || 0));
-            break;
-        case 'date':
-        default:
-            sortedLinks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            break;
+    function sortLinksList(sortBy) {
+        if (currentLinksData.length === 0) return;
+        
+        let sortedLinks = [...currentLinksData];
+        
+        switch(sortBy) {
+            case 'name':
+                sortedLinks.sort((a, b) => a.nama_game.localeCompare(b.nama_game));
+                break;
+            case 'clicks':
+                sortedLinks.sort((a, b) => (b.click_count || 0) - (a.click_count || 0));
+                break;
+            case 'date':
+            default:
+                sortedLinks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                break;
+        }
+        
+        displayLinksList(sortedLinks);
     }
-    
-    displayLinksList(sortedLinks);
-}
-
 
     // Tab Management
     document.getElementById('bulkGeneratorTab').addEventListener('click', function(e) {
@@ -1106,6 +1206,207 @@ function sortLinksList(sortBy) {
             loadLinksList();
         }
     }
+
+    // Bulk Generator Functionality
+    document.getElementById('switchToBulkBtn').addEventListener('click', function() {
+        const bulkSection = document.getElementById('bulkGeneratorSection');
+        const regularForm = document.getElementById('bulkLinkForm');
+        
+        if (bulkSection.style.display === 'none') {
+            bulkSection.style.display = 'block';
+            regularForm.style.display = 'none';
+            this.textContent = 'Regular Mode';
+            document.getElementById('bulkInput').focus();
+        } else {
+            bulkSection.style.display = 'none';
+            regularForm.style.display = 'block';
+            this.textContent = 'Bulk Mode';
+        }
+    });
+
+    document.getElementById('parseBulkBtn').addEventListener('click', function() {
+        const bulkInput = document.getElementById('bulkInput').value.trim();
+        if (!bulkInput) {
+            showNotification('Mohon masukkan data bulk!', 'error');
+            return;
+        }
+        
+        parsedGames = parseBulkInput(bulkInput);
+        displayBulkResults(parsedGames);
+    });
+
+document.getElementById('generateBulkBtn').addEventListener('click', async function() {
+    if (parsedGames.length === 0) {
+        showNotification('Tidak ada game yang bisa digenerate!', 'error');
+        return;
+    }
+    
+    const submitBtn = this;
+    const originalHTML = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
+    
+    try {
+        const results = [];
+        for (let i = 0; i < parsedGames.length; i++) {
+            const game = parsedGames[i];
+            // Format nama game dengan domain
+            let gameName = game.nama_game;
+            if (game.domain) {
+                gameName = `${gameName} [${game.domain}]`;
+            }
+            
+            const payload = { 
+                action: 'create', 
+                nama_game: gameName, 
+                link_tujuan: game.link_tujuan 
+            };
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(payload)
+                });
+                const data = await response.json();
+                results.push(data.status === 'success' ? 
+                    { 
+                        nama_game: gameName, 
+                        shareableLink: data.data.shareableLink, 
+                        success: true 
+                    } : 
+                    { 
+                        nama_game: gameName, 
+                        error: data.message, 
+                        success: false 
+                    });
+            } catch (error) {
+                results.push({ 
+                    nama_game: gameName, 
+                    error: error.message, 
+                    success: false 
+                });
+            }
+            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses... (${i + 1}/${parsedGames.length})`;
+        }
+        
+        displayResults(results);
+        document.getElementById('bulkInput').value = '';
+        document.getElementById('bulkResultsContainer').style.display = 'none';
+        document.getElementById('generateBulkBtn').style.display = 'none';
+        const successCount = results.filter(r => r.success).length;
+        const errorCount = results.filter(r => !r.success).length;
+        if (successCount > 0) showNotification(`${successCount} link berhasil dibuat${errorCount > 0 ? `, ${errorCount} gagal` : ''}!`, 'success');
+        if (errorCount > 0 && successCount === 0) showNotification(`Semua link gagal dibuat!`, 'error');
+    } catch (error) {
+        showNotification('Terjadi kesalahan: ' + error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalHTML;
+    }
+});
+
+
+
+function extractDomainName(url) {
+    if (!url) return '';
+    
+    try {
+        const domain = new URL(url).hostname.replace('www.', '');
+        const domainMap = {
+            'drive.google.com': 'Google Drive',
+            'mediafire.com': 'Mediafire',
+            'mega.nz': 'Mega',
+            'pixeldrain.com': 'PixelDrain',
+            'qiwi.gg': 'Qiwi',
+            'katfile.com': 'KatFile',
+            'bowfile.com': 'BowFile',
+            'mixdrop.is': 'MixDrop',
+            '1fichier.com': '1Fichier',
+            'multiup.io': 'MultiUp'
+        };
+        
+        return domainMap[domain] || domain;
+    } catch (e) {
+        return '';
+    }
+}
+
+    function parseBulkInput(input) {
+    const lines = input.split('\n').filter(line => line.trim() !== '');
+    const games = [];
+    let currentGame = null;
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        // Skip empty lines
+        if (!line) continue;
+        
+        // Check if line is a URL
+        if (line.startsWith('http://') || line.startsWith('https://')) {
+            if (currentGame) {
+                currentGame.link_tujuan = line;
+                currentGame.domain = extractDomainName(line);
+                games.push(currentGame);
+                currentGame = null;
+            }
+        } else {
+            // This is a game name
+            if (currentGame) {
+                // If we already have a game name without a URL, push it first
+                games.push(currentGame);
+            }
+            currentGame = { 
+                nama_game: line.replace(/\[NAMA DOMAIN\]/g, '').trim(), 
+                link_tujuan: '',
+                domain: '' 
+            };
+        }
+    }
+    
+    // Push the last game if it exists
+    if (currentGame) {
+        games.push(currentGame);
+    }
+    
+    return games;
+}
+
+function displayBulkResults(games) {
+    const container = document.getElementById('bulkResultsContent');
+    const countDisplay = document.getElementById('bulkResultCount');
+    container.innerHTML = '';
+    
+    if (games.length === 0) {
+        container.innerHTML = '<div class="alert alert-warning">Tidak ada game yang ditemukan dalam format yang benar</div>';
+        document.getElementById('bulkResultsContainer').style.display = 'block';
+        document.getElementById('generateBulkBtn').style.display = 'none';
+        return;
+    }
+    
+    games.forEach((game, index) => {
+        const item = document.createElement('div');
+        item.className = 'bulk-result-item';
+        
+        // Format nama game dengan domain jika ada
+        let displayedName = game.nama_game;
+        if (game.domain) {
+            // Hapus [NAMA DOMAIN] jika ada dan tambahkan domain
+            displayedName = `${displayedName} [${game.domain}]`;
+        }
+        
+        item.innerHTML = `
+            <h6><i class="bi bi-controller me-2"></i>${displayedName}</h6>
+            <div class="bulk-result-link">${game.link_tujuan || '<span class="text-danger">Link tidak ditemukan</span>'}</div>
+        `;
+        container.appendChild(item);
+    });
+    
+    countDisplay.textContent = `Total ${games.length} game ditemukan`;
+    document.getElementById('bulkResultsContainer').style.display = 'block';
+    document.getElementById('generateBulkBtn').style.display = 'block';
+}
 
     // Game Management
     document.getElementById('addGameBtn').addEventListener('click', function() {
