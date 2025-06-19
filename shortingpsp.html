@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSP Game Shorting Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Light mode colors */
+            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-secondary: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: rgba(226, 232, 240, 0.8);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+            --accent-blue: #4299e1;
+            --accent-green: #48bb78;
+            --accent-purple: #9f7aea;
+            --accent-red: #f56565;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --input-border: rgba(203, 213, 224, 0.8);
+        }
+
+        .dark-mode {
+            /* Dark mode colors */
+            --bg-primary: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            --bg-secondary: #0f1419;
+            --bg-card: rgba(26, 32, 44, 0.95);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e0;
+            --text-muted: #a0aec0;
+            --border-color: rgba(74, 85, 104, 0.6);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
+            --accent-blue: #63b3ed;
+            --accent-green: #68d391;
+            --accent-purple: #b794f6;
+            --accent-red: #fc8181;
+            --input-bg: rgba(45, 55, 72, 0.8);
+            --input-border: rgba(74, 85, 104, 0.8);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            position: relative;
+            padding-top: 90px; /* Add padding for fixed navigation */
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-secondary);
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        /* Navigation Styles */
+        .nav-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            padding: 1rem 0;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.1);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .nav-btn i {
+            font-size: 16px;
+        }
+
+        /* Different gradient backgrounds for navigation buttons */
+        .btn-gradient-bg3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-gradient-bg5 {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+        }
+
+        .btn-gradient-bg2 {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #38a169 100%);
+        }
+
+        /* Responsive navigation */
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0 1rem;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+            
+            body {
+                padding-top: 200px; /* Adjust for mobile stacked navigation */
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 260px; /* More padding for smaller screens */
+            }
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            z-index: 1001; /* Higher than navigation */
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .theme-toggle i {
+            font-size: 20px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .selection-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 90px); /* Account for navigation height */
+            padding: 2rem;
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.5s ease;
+        }
+
+        .selection-screen.hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            position: absolute;
+        }
+
+        .selection-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .selection-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .selection-card h2 {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+
+        .modern-input {
+            width: 100%;
+            max-width: 200px;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .modern-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+            transform: scale(1.02);
+        }
+
+        .modern-btn {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.1);
+        }
+
+        .modern-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-green), #38a169);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent-red), #e53e3e);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--accent-blue), #3182ce);
+        }
+
+        .checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+            width: 100%;
+        }
+
+        .checkbox-item {
+            background: var(--input-bg);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-blue);
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .checkbox-item input:disabled + label {
+            opacity: 0.5;
+        }
+
+        .link-order-info {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 1rem;
+        }
+
+        .container-fluid {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--input-border);
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .textarea-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(20px);
+        }
+
+        .textarea-container h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .textarea-container textarea {
+            width: 100%;
+            min-height: 200px;
+            resize: vertical;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            padding: 16px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .textarea-container textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .result-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(20px);
+        }
+
+        .result-content {
+            background: var(--input-bg);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--input-bg);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-blue);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-purple);
+        }
+
+        /* Loading animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding: 1rem;
+            }
+            
+            .selection-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .checkbox-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .modern-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+        
+        .order-number {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-blue);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+        
+        .selected-links-display {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--input-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .selected-link-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        /* Enhanced Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            animation: modalBackdropFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalBackdropFadeIn {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0);
+            }
+            to {
+                opacity: 1;
+                backdrop-filter: blur(8px);
+            }
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            margin: 8% auto;
+            padding: 0;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-30px);
+            animation: modalSlideIn 0.3s ease-out forwards;
+            overflow: hidden;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-title i {
+            font-size: 1.1rem;
+        }
+
+        .close-modal {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            color: var(--text-primary);
+        }
+
+        .modal-body p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .modal-body .modern-input {
+            max-width: 100%;
+            text-align: left;
+            margin-bottom: 0;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            background: var(--bg-secondary);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .modal-footer .modern-btn {
+            min-width: 100px;
+            padding: 12px 20px;
+            font-size: 14px;
+        }
+
+        .settings-list {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--input-bg);
+        }
+
+        .setting-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-item:hover {
+            background: var(--bg-secondary);
+            transform: translateX(5px);
+        }
+
+        .setting-item .setting-name {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .setting-item .setting-name i {
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+        }
+
+        .setting-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .delete-setting, .load-setting {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .delete-setting {
+            background: linear-gradient(135deg, var(--accent-red), #e53e3e);
+            color: white;
+        }
+
+        .delete-setting:hover {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            transform: scale(1.05);
+        }
+
+        .load-setting {
+            background: linear-gradient(135deg, var(--accent-green), #38a169);
+            color: white;
+        }
+
+        .load-setting:hover {
+            background: linear-gradient(135deg, #38a169, #2f855a);
+            transform: scale(1.05);
+        }
+
+        .empty-settings {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .empty-settings i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Mobile responsiveness for modals */
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+
+            .modal-header {
+                padding: 1rem 1.5rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-footer {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+            }
+
+            .modal-footer .modern-btn {
+                width: 100%;
+            }
+
+            .setting-item {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+
+            .setting-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Section -->
+    <div class="nav-section">
+        <div class="nav-buttons">
+            <a href="index" class="nav-btn btn-gradient-bg3">
+                <i class="fas fa-home"></i>Home
+            </a>
+            <a href="psp" class="nav-btn btn-gradient-bg5">
+                <i class="fas fa-gamepad"></i>Generator HTML PSP
+            </a>
+            <a href="request" class="nav-btn btn-gradient-bg5">
+                <i class="fas fa-exclamation-triangle"></i>Admin Request Game & Report
+            </a>
+            <a href="Link2UnlockAdmin" class="nav-btn btn-gradient-bg5">
+                <i class="fas fa-lock"></i>Link2Unlock Admin
+            </a>
+        </div>
+    </div>
+
+<!-- Theme Toggle Button -->
+<div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon" id="themeIcon"></i>
+</div>
+
+<!-- Initial selection screen for number of games -->
+<div id="gameSelection" class="selection-screen">
+    <div class="selection-card fade-in">
+        <h2>Masukkan jumlah game yang ingin dishorting</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Maximum 10 game</p>
+        <input type="number" id="gameCountInput" min="1" max="10" placeholder="1-10" class="modern-input">
+        <button class="modern-btn" onclick="validateGameCount()">
+            <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            Lanjutkan
+        </button>
+        <div class="settings-buttons" style="margin-top: 20px;">
+            <button class="modern-btn btn-info" onclick="showLoadSettingsModal()">
+                <i class="fas fa-folder-open" style="margin-right: 8px;"></i>
+                Load Settings
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Selection screen for number of links -->
+<div id="linkSelection" class="selection-screen hidden">
+    <div class="selection-card fade-in">
+        <h2>Berapa Link yang akan digunakan?</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Pilih antara 1-100 link</p>
+        <input type="number" id="linkCountInput" min="1" max="100" placeholder="1-100" class="modern-input">
+        <button class="modern-btn" onclick="validateLinkCount()">
+            <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            Lanjutkan
+        </button>
+    </div>
+</div>
+
+<!-- Selection screen for link types -->
+<div id="linkTypeSelection" class="selection-screen hidden">
+    <div class="selection-card fade-in" style="max-width: 700px;">
+        <h2>Pilih <span id="linkCountDisplay">0</span> Jenis Link</h2>
+        <div class="checkbox-container" id="linkTypeCheckboxes">
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkGdrive" value="Gdrive">
+                <label for="checkGdrive">
+                    <i class="fab fa-google-drive" style="margin-right: 8px; color: var(--accent-green);"></i>
+                    Google Drive
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkMediafire" value="Mediafire">
+                <label for="checkMediafire">
+                    <i class="fas fa-fire" style="margin-right: 8px; color: var(--accent-red);"></i>
+                    Mediafire
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkVikingFile" value="VikingFile">
+                <label for="checkVikingFile">
+                    <i class="fas fa-ship" style="margin-right: 8px; color: var(--accent-purple);"></i>
+                    VikingFile
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkPixeldrain" value="Pixeldrain">
+                <label for="checkPixeldrain">
+                    <i class="fas fa-tint" style="margin-right: 8px; color: var(--accent-blue);"></i>
+                    PixelDrain
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="check1Fichier" value="1Fichier">
+                <label for="check1Fichier">
+                    <i class="fas fa-file" style="margin-right: 8px; color: var(--accent-blue);"></i>
+                    1Fichier
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkMultiup" value="Multiup">
+                <label for="checkMultiup">
+                    <i class="fas fa-upload" style="margin-right: 8px; color: var(--accent-purple);"></i>
+                    Multiup
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkQiwi" value="Qiwi">
+                <label for="checkQiwi">
+                    <i class="fas fa-wallet" style="margin-right: 8px; color: var(--accent-green);"></i>
+                    Qiwi
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkGofile" value="Gofile">
+                <label for="checkGofile">
+                    <i class="fas fa-file-upload" style="margin-right: 8px; color: var(--accent-blue);"></i>
+                    GoFile
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkMega" value="Mega">
+                <label for="checkMega">
+                    <i class="fas fa-folder-open" style="margin-right: 8px; color: var(--accent-red);"></i>
+                    Mega
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkMegaup" value="Megaup">
+                <label for="checkMegaup">
+                    <i class="fas fa-folder-plus" style="margin-right: 8px; color: var(--accent-purple);"></i>
+                    Megaup
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkKatFile" value="KatFile">
+                <label for="checkKatFile">
+                    <i class="fas fa-file-alt" style="margin-right: 8px; color: var(--accent-blue);"></i>
+                    KatFile
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkDupload" value="Dupload">
+                <label for="checkDupload">
+                    <i class="fas fa-cloud-upload-alt" style="margin-right: 8px; color: var(--accent-green);"></i>
+                    Dupload
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkBowFile" value="BowFile">
+                <label for="checkBowFile">
+                    <i class="fas fa-file-download" style="margin-right: 8px; color: var(--accent-purple);"></i>
+                    BowFile
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkWorkupload" value="Workupload">
+                <label for="checkWorkupload">
+                    <i class="fas fa-briefcase" style="margin-right: 8px; color: var(--accent-blue);"></i>
+                    Workupload
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkTerabox" value="Terabox">
+                <label for="checkTerabox">
+                    <i class="fas fa-box" style="margin-right: 8px; color: var(--accent-red);"></i>
+                    Terabox
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkMixDrop" value="MixDrop">
+                <label for="checkMixDrop">
+                    <i class="fas fa-tint" style="margin-right: 8px; color: var(--accent-blue);"></i>
+                    MixDrop
+                </label>
+            </div>
+        </div>
+            
+            <p class="link-order-info">Centang sesuai jumlah link yang dipilih (<span id="selectedCount">0</span>/<span id="maxLinks">0</span>)</p>
+            <div class="selected-links-display" id="selectedLinksDisplay">
+                <p style="color: var(--text-muted);">Belum ada link yang dipilih</p>
+            </div>
+            <div class="button-group">
+                <button class="modern-btn" onclick="validateLinkTypes()">
+                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    Konfirmasi Pilihan
+                </button>
+                <button class="modern-btn btn-info" onclick="showSaveSettingsModal()">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    Save Settings
+                </button>
+            </div>
+    </div>
+</div>
+
+<!-- Main content (hidden initially) -->
+<div id="mainContent" class="container-fluid hidden">
+    <div class="main-grid">
+        <div>
+            <div class="textarea-container">
+                <h2>
+                    <i class="fas fa-gamepad" style="margin-right: 10px; color: var(--accent-blue);"></i>
+                    Masukkan Detail Game PSP
+                </h2>
+                <textarea id="myTextarea" placeholder="Paste semua data game dan link disini (satu per baris)"></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button type="button" onclick="generateCode()" class="modern-btn">
+                    <i class="fas fa-cogs" style="margin-right: 8px;"></i>
+                    Generate Shorting
+                </button>
+                <button type="button" onclick="copyCode()" class="modern-btn btn-success">
+                    <i class="fas fa-copy" style="margin-right: 8px;"></i>
+                    Copy Hasil
+                </button>
+                <button type="button" onclick="clearCode()" class="modern-btn btn-danger">
+                    <i class="fas fa-trash" style="margin-right: 8px;"></i>
+                    Reset Form
+                </button>
+                <button type="button" onclick="showSaveSettingsModal()" class="modern-btn btn-info">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    Save Settings
+                </button>
+                <button type="button" onclick="showLoadSettingsModal()" class="modern-btn btn-info">
+                    <i class="fas fa-folder-open" style="margin-right: 8px;"></i>
+                    Load Settings
+                </button>
+            </div>
+            
+            <div class="result-container">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">
+                    <i class="fas fa-code" style="margin-right: 8px; color: var(--accent-green);"></i>
+                    Hasil Generate
+                </h3>
+                <div id="result" class="result-content"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 id="mainContentTitle">
+                    <i class="fas fa-list-alt" style="margin-right: 10px;"></i>
+                    Masukkan Detail Game
+                </h2>
+            </div>
+            <div class="card-body">
+                <form id="myForm">
+                    <!-- Dynamic form content will be inserted here -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Save Settings Modal -->
+<div id="saveSettingsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Save Settings</div>
+            <span class="close-modal" onclick="closeModal('saveSettingsModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Silahkan Masukkan Nama Setting:</p>
+            <input type="text" id="settingsNameInput" class="modern-input" placeholder="Nama Setting">
+        </div>
+        <div class="modal-footer">
+            <button class="modern-btn btn-danger" onclick="closeModal('saveSettingsModal')">Batal</button>
+            <button class="modern-btn btn-success" onclick="saveSettings()">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<!-- Load Settings Modal -->
+<div id="loadSettingsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Load Settings</div>
+            <span class="close-modal" onclick="closeModal('loadSettingsModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Pilih setting yang ingin dimuat:</p>
+            <div class="settings-list" id="settingsList">
+                <!-- Settings will be listed here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modern-btn btn-danger" onclick="closeModal('loadSettingsModal')">Batal</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global variables to store selections
+    let gameCount = 0;
+    let linkCount = 0;
+    let selectedLinkTypes = [];
+    const allLinkTypes = [
+        { id: 'checkGdrive', value: 'Gdrive', label: 'Google Drive' },
+        { id: 'checkMediafire', value: 'Mediafire', label: 'Mediafire' },
+        { id: 'checkVikingFile', value: 'VikingFile', label: 'VikingFile' },
+        { id: 'checkPixeldrain', value: 'Pixeldrain', label: 'PixelDrain' },
+        { id: 'check1Fichier', value: '1Fichier', label: '1Fichier' },
+        { id: 'checkMultiup', value: 'Multiup', label: 'Multiup' },
+        { id: 'checkQiwi', value: 'Qiwi', label: 'Qiwi' },
+        { id: 'checkGofile', value: 'Gofile', label: 'GoFile' },
+        { id: 'checkMega', value: 'Mega', label: 'Mega' },
+        { id: 'checkMegaup', value: 'Megaup', label: 'Megaup' },
+        { id: 'checkKatFile', value: 'KatFile', label: 'KatFile' },
+        { id: 'checkDupload', value: 'Dupload', label: 'Dupload' },
+        { id: 'checkBowFile', value: 'BowFile', label: 'BowFile' },
+        { id: 'checkWorkupload', value: 'Workupload', label: 'Workupload' },
+        { id: 'checkTerabox', value: 'Terabox', label: 'Terabox' },
+        { id: 'checkMixDrop', value: 'MixDrop', label: 'MixDrop' }
+    ];
+
+    // Modal functions
+    function showSaveSettingsModal() {
+        document.getElementById('saveSettingsModal').style.display = 'block';
+    }
+
+    function showLoadSettingsModal() {
+        document.getElementById('loadSettingsModal').style.display = 'block';
+        populateSettingsList();
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function populateSettingsList() {
+        const settingsList = document.getElementById('settingsList');
+        settingsList.innerHTML = '';
+        
+        const savedSettings = getAllSettings();
+        
+        if (Object.keys(savedSettings).length === 0) {
+            settingsList.innerHTML = '<p style="color: var(--text-muted);">Tidak ada settings yang tersimpan</p>';
+            return;
+        }
+        
+        Object.keys(savedSettings).forEach(settingName => {
+            const settingItem = document.createElement('div');
+            settingItem.className = 'setting-item';
+            
+            const settingNameSpan = document.createElement('span');
+            settingNameSpan.textContent = settingName;
+            settingNameSpan.onclick = () => loadSettings(settingName);
+            
+            const deleteBtn = document.createElement('span');
+            deleteBtn.className = 'delete-setting';
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (confirm(`Hapus setting "${settingName}"?`)) {
+                    deleteSetting(settingName);
+                    populateSettingsList();
+                }
+            };
+            
+            settingItem.appendChild(settingNameSpan);
+            settingItem.appendChild(deleteBtn);
+            settingsList.appendChild(settingItem);
+        });
+    }
+
+    // Settings management functions
+    function getAllSettings() {
+        const settings = localStorage.getItem('PSPGeneratorSettings');
+        return settings ? JSON.parse(settings) : {};
+    }
+
+    function saveSettings() {
+        const settingsName = document.getElementById('settingsNameInput').value.trim();
+        
+        if (!settingsName) {
+            alert('Nama setting tidak boleh kosong!');
+            return;
+        }
+        
+        const settings = {
+            gameCount: gameCount,
+            linkCount: linkCount,
+            selectedLinkTypes: selectedLinkTypes.map(lt => lt.id)
+        };
+        
+        const allSettings = getAllSettings();
+        allSettings[settingsName] = settings;
+        
+        localStorage.setItem('PSPGeneratorSettings', JSON.stringify(allSettings));
+        
+        alert(`Settings "${settingsName}" berhasil disimpan!`);
+        document.getElementById('settingsNameInput').value = '';
+        closeModal('saveSettingsModal');
+    }
+
+function loadSettings(settingsName) {
+    const allSettings = getAllSettings();
+    const settings = allSettings[settingsName];
+    
+    if (!settings) {
+        alert('Setting tidak ditemukan!');
+        return;
+    }
+    
+    // Set game count
+    gameCount = settings.gameCount;
+    document.getElementById('gameCountInput').value = gameCount;
+    
+    // Set link count
+    linkCount = settings.linkCount;
+    document.getElementById('linkCountInput').value = linkCount;
+    
+    // Reset all checkboxes first
+    allLinkTypes.forEach(lt => {
+        document.getElementById(lt.id).checked = false;
+    });
+    
+    // Set selected link types in the correct order
+    selectedLinkTypes = [];
+    settings.selectedLinkTypes.forEach(linkId => {
+        const linkType = allLinkTypes.find(lt => lt.id === linkId);
+        if (linkType) {
+            selectedLinkTypes.push(linkType);
+            document.getElementById(linkId).checked = true;
+        }
+    });
+    
+    // Update UI
+    document.getElementById('selectedCount').textContent = selectedLinkTypes.length;
+    document.getElementById('maxLinks').textContent = linkCount;
+    document.getElementById('linkCountDisplay').textContent = linkCount;
+    
+    // Show the link type selection screen
+    document.getElementById('gameSelection').classList.add('hidden');
+    document.getElementById('linkSelection').classList.add('hidden');
+    document.getElementById('linkTypeSelection').classList.remove('hidden');
+    document.getElementById('mainContent').classList.add('hidden');
+    
+    updateSelectedLinksDisplay();
+    updateCheckboxStates();
+    
+    alert(`Settings "${settingsName}" berhasil dimuat!`);
+    closeModal('loadSettingsModal');
+}
+
+    function deleteSetting(settingsName) {
+        const allSettings = getAllSettings();
+        delete allSettings[settingsName];
+        localStorage.setItem('PSPGeneratorSettings', JSON.stringify(allSettings));
+    }
+
+    // Function to update the selected links display
+    function updateSelectedLinksDisplay() {
+        const display = document.getElementById('selectedLinksDisplay');
+        display.innerHTML = '';
+        
+        if (selectedLinkTypes.length === 0) {
+            display.innerHTML = '<p style="color: var(--text-muted);">Belum ada link yang dipilih</p>';
+            return;
+        }
+        
+        const title = document.createElement('p');
+        title.textContent = 'Urutan Link yang Dipilih:';
+        title.style.fontWeight = 'bold';
+        title.style.marginBottom = '10px';
+        display.appendChild(title);
+        
+        selectedLinkTypes.forEach((linkType, index) => {
+            const item = document.createElement('div');
+            item.className = 'selected-link-item';
+            
+            const orderNumber = document.createElement('span');
+            orderNumber.className = 'order-number';
+            orderNumber.textContent = index + 1;
+            
+            const label = document.createElement('span');
+            label.textContent = linkType.label;
+            
+            item.appendChild(orderNumber);
+            item.appendChild(label);
+            display.appendChild(item);
+        });
+    }
+
+    // Function to lock/unlock checkboxes based on selection count
+    function updateCheckboxStates() {
+        const checkedCount = selectedLinkTypes.length;
+        
+        if (checkedCount >= linkCount) {
+            // Lock all unchecked checkboxes
+            allLinkTypes.forEach(lt => {
+                const checkbox = document.getElementById(lt.id);
+                if (!checkbox.checked) {
+                    checkbox.disabled = true;
+                    checkbox.parentElement.style.opacity = '0.5';
+                    checkbox.parentElement.style.pointerEvents = 'none';
+                }
+            });
+        } else {
+            // Unlock all checkboxes
+            allLinkTypes.forEach(lt => {
+                const checkbox = document.getElementById(lt.id);
+                checkbox.disabled = false;
+                checkbox.parentElement.style.opacity = '1';
+                checkbox.parentElement.style.pointerEvents = 'auto';
+            });
+        }
+    }
+
+    // Function to validate game count input
+    function validateGameCount() {
+        const input = document.getElementById('gameCountInput');
+        const count = parseInt(input.value);
+        
+        if (isNaN(count) || count < 1 || count > 10) {
+            alert('Masukkan angka antara 1-10');
+            input.focus();
+            return;
+        }
+        
+        selectGameCount(count);
+    }
+
+    // Function to handle game count selection
+    function selectGameCount(count) {
+        gameCount = count;
+        document.getElementById('gameSelection').classList.add('hidden');
+        document.getElementById('linkSelection').classList.remove('hidden');
+    }
+
+    // Function to validate link count input
+    function validateLinkCount() {
+        const input = document.getElementById('linkCountInput');
+        const count = parseInt(input.value);
+        
+        if (isNaN(count) || count < 1 || count > 100) {
+            alert('Masukkan angka antara 1-100');
+            input.focus();
+            return;
+        }
+        
+        linkCount = count;
+        document.getElementById('linkSelection').classList.add('hidden');
+        
+        // Setup link type selection
+        document.getElementById('linkCountDisplay').textContent = count;
+        document.getElementById('maxLinks').textContent = count;
+        document.getElementById('linkTypeSelection').classList.remove('hidden');
+        
+        // Reset checkboxes and selection
+        allLinkTypes.forEach(lt => {
+            const checkbox = document.getElementById(lt.id);
+            checkbox.checked = false;
+            checkbox.disabled = false;
+            checkbox.parentElement.style.opacity = '1';
+        });
+        selectedLinkTypes = [];
+        document.getElementById('selectedCount').textContent = '0';
+        updateSelectedLinksDisplay();
+    }
+
+    // Handle checkbox changes
+    document.getElementById('linkTypeCheckboxes').addEventListener('change', function(e) {
+        if (e.target.type === 'checkbox') {
+            const checkbox = e.target;
+            const linkType = allLinkTypes.find(lt => lt.id === checkbox.id);
+            
+            if (checkbox.checked) {
+                // Add to selectedLinkTypes if not already present
+                if (!selectedLinkTypes.some(lt => lt.id === linkType.id)) {
+                    selectedLinkTypes.push(linkType);
+                }
+            } else {
+                // Remove from selectedLinkTypes
+                selectedLinkTypes = selectedLinkTypes.filter(lt => lt.id !== linkType.id);
+            }
+            
+            const checkedCount = selectedLinkTypes.length;
+            document.getElementById('selectedCount').textContent = checkedCount;
+            
+            // Update the display
+            updateSelectedLinksDisplay();
+            updateCheckboxStates();
+        }
+    });
+
+    // Function to validate link type selection
+    function validateLinkTypes() {
+        const checkedCount = selectedLinkTypes.length;
+        
+        if (checkedCount !== linkCount) {
+            alert(`Harap pilih tepat ${linkCount} jenis link`);
+            return;
+        }
+        
+        document.getElementById('linkTypeSelection').classList.add('hidden');
+        document.getElementById('mainContent').classList.remove('hidden');
+        generateFormFields();
+    }
+
+    // Function to generate form fields based on selections
+    function generateFormFields() {
+        const form = document.getElementById('myForm');
+        form.innerHTML = '';
+
+        // Update the title
+        document.getElementById('mainContentTitle').textContent = `Masukkan Detail Game PSP (${gameCount} Game, ${linkCount} Link)`;
+
+        // Generate game name fields
+        for (let i = 1; i <= gameCount; i++) {
+            const gameNameLabel = document.createElement('label');
+            gameNameLabel.textContent = `Nama Game ${i}:`;
+            gameNameLabel.setAttribute('for', `inputNameGame${i}`);
+            form.appendChild(gameNameLabel);
+
+            const gameNameInput = document.createElement('input');
+            gameNameInput.type = 'text';
+            gameNameInput.id = `inputNameGame${i}`;
+            gameNameInput.name = `inputNameGame${i}`;
+            gameNameInput.className = 'form-control mb-3';
+            form.appendChild(gameNameInput);
+        }
+
+        // Generate size fields (2 per game)
+        for (let i = 1; i <= gameCount; i++) {
+            const sizeLabel1 = document.createElement('label');
+            sizeLabel1.textContent = `Ukuran Game ${i} (CHD):`;
+            sizeLabel1.setAttribute('for', `inputSizeGame${i}CHD`);
+            form.appendChild(sizeLabel1);
+
+            const sizeInput1 = document.createElement('input');
+            sizeInput1.type = 'text';
+            sizeInput1.id = `inputSizeGame${i}CHD`;
+            sizeInput1.name = `inputSizeGame${i}CHD`;
+            sizeInput1.className = 'form-control mb-3';
+            form.appendChild(sizeInput1);
+
+            const sizeLabel2 = document.createElement('label');
+            sizeLabel2.textContent = `Ukuran Game ${i} (ISO):`;
+            sizeLabel2.setAttribute('for', `inputSizeGame${i}ISO`);
+            form.appendChild(sizeLabel2);
+
+            const sizeInput2 = document.createElement('input');
+            sizeInput2.type = 'text';
+            sizeInput2.id = `inputSizeGame${i}ISO`;
+            sizeInput2.name = `inputSizeGame${i}ISO`;
+            sizeInput2.className = 'form-control mb-3';
+            form.appendChild(sizeInput2);
+        }
+
+        // Generate link fields based on selected link types (in the order they were checked)
+        selectedLinkTypes.forEach((linkType, index) => {
+            for (let i = 1; i <= gameCount; i++) {
+                // CHD link
+                const chdLinkLabel = document.createElement('label');
+                chdLinkLabel.textContent = `Link Game ${i} (${index + 1}. ${linkType.label}) CHD:`;
+                chdLinkLabel.setAttribute('for', `inputLinkGame${i}${linkType.value}CHD`);
+                form.appendChild(chdLinkLabel);
+
+                const chdLinkInput = document.createElement('input');
+                chdLinkInput.type = 'text';
+                chdLinkInput.id = `inputLinkGame${i}${linkType.value}CHD`;
+                chdLinkInput.name = `inputLinkGame${i}${linkType.value}CHD`;
+                chdLinkInput.className = 'form-control mb-3';
+                form.appendChild(chdLinkInput);
+
+                // ISO link
+                const isoLinkLabel = document.createElement('label');
+                isoLinkLabel.textContent = `Link Game ${i} (${index + 1}. ${linkType.label}) ISO:`;
+                isoLinkLabel.setAttribute('for', `inputLinkGame${i}${linkType.value}ISO`);
+                form.appendChild(isoLinkLabel);
+
+                const isoLinkInput = document.createElement('input');
+                isoLinkInput.type = 'text';
+                isoLinkInput.id = `inputLinkGame${i}${linkType.value}ISO`;
+                isoLinkInput.name = `inputLinkGame${i}${linkType.value}ISO`;
+                isoLinkInput.className = 'form-control mb-3';
+                form.appendChild(isoLinkInput);
+            }
+        });
+    }
+
+    function clearCode() {
+        document.getElementById("result").innerText = "";
+        document.getElementById("myTextarea").value = "";
+        const allInputs = document.querySelectorAll('input');
+        allInputs.forEach(input => {
+            input.value = '';
+        });
+    }
+
+    function copyCode() {
+        const resultDiv = document.getElementById("result");
+        const generatedText = resultDiv.innerText;
+
+        if (generatedText.trim() === "") {
+            alert("Tidak ada hasil yang bisa disalin!");
+            return;
+        }
+
+        navigator.clipboard.writeText(generatedText).then(() => {
+            alert("Hasil berhasil disalin ke clipboard!");
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            alert("Gagal menyalin ke clipboard. Silakan salin manual.");
+        });
+    }
+
+    // Initialize textarea and form
+    const textarea = document.getElementById('myTextarea');
+    const form = document.getElementById('myForm');
+
+    // Textarea input event handler
+    textarea.addEventListener('input', () => {
+        const text = textarea.value.trim();
+        const values = text.split('\n').filter(line => line.trim() !== '');
+        
+        // Fill game names
+        for (let i = 1; i <= gameCount; i++) {
+            if (values[i-1]) {
+                document.getElementById(`inputNameGame${i}`).value = values[i-1];
+            }
+        }
+        
+        // Fill sizes (assuming sizes come right after game names)
+        const sizeOffset = gameCount;
+        for (let i = 1; i <= gameCount; i++) {
+            if (values[sizeOffset + (i-1)*2]) {
+                document.getElementById(`inputSizeGame${i}CHD`).value = values[sizeOffset + (i-1)*2];
+            }
+            if (values[sizeOffset + (i-1)*2 + 1]) {
+                document.getElementById(`inputSizeGame${i}ISO`).value = values[sizeOffset + (i-1)*2 + 1];
+            }
+        }
+        
+        // Fill links (assuming links come after sizes)
+        const linkOffset = sizeOffset + gameCount * 2;
+        
+        let currentPosition = linkOffset;
+        selectedLinkTypes.forEach(linkType => {
+            for (let i = 1; i <= gameCount; i++) {
+                // CHD link
+                if (values[currentPosition]) {
+                    document.getElementById(`inputLinkGame${i}${linkType.value}CHD`).value = values[currentPosition];
+                }
+                currentPosition++;
+                
+                // ISO link
+                if (values[currentPosition]) {
+                    document.getElementById(`inputLinkGame${i}${linkType.value}ISO`).value = values[currentPosition];
+                }
+                currentPosition++;
+            }
+        });
+    });
+
+    // Generate code function
+    function generateCode() {
+        let generatedText = '';
+
+        // Get values for each game
+        for (let i = 1; i <= gameCount; i++) {
+            const gameName = document.getElementById(`inputNameGame${i}`).value;
+            const sizeCHD = document.getElementById(`inputSizeGame${i}CHD`).value;
+            const sizeISO = document.getElementById(`inputSizeGame${i}ISO`).value;
+
+            // Collect CHD links in the order they were selected
+            let chdLinks = [];
+            // Collect ISO links in the order they were selected
+            let isoLinks = [];
+
+            // Get selected links in the order they were checked
+            selectedLinkTypes.forEach(linkType => {
+                // Get CHD link if exists
+                const chdLink = document.getElementById(`inputLinkGame${i}${linkType.value}CHD`).value;
+                if (chdLink.trim() !== '') {
+                    chdLinks.push(chdLink);
+                }
+                
+                // Get ISO link if exists
+                const isoLink = document.getElementById(`inputLinkGame${i}${linkType.value}ISO`).value;
+                if (isoLink.trim() !== '') {
+                    isoLinks.push(isoLink);
+                }
+            });
+
+            // Generate CHD section
+            generatedText += `${gameName} PSP CHD/ISO [Google Drive & MediaFire] (Tanpa Ekstrak) (REGION) (PPSSPP)\n`;
+            generatedText += `${gameName}\n`;
+            generatedText += `${chdLinks.join('\n')}\n`;
+            generatedText += `${sizeCHD}\nCHD\n\n`;
+
+            // Generate ISO section
+            generatedText += `${gameName} PSP CHD/ISO [Google Drive & MediaFire] (Tanpa Ekstrak) (REGION) (PPSSPP)\n`;
+            generatedText += `${gameName}\n`;
+            generatedText += `${isoLinks.join('\n')}\n`;
+            generatedText += `${sizeISO}\nISO\n\n`;
+        }
+
+        // Display the generated text
+        document.getElementById("result").innerText = generatedText.trim();
+    }
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            themeIcon.classList.replace('fa-sun', 'fa-moon');
+        }
+    });
+
+    // Initialize the form when page loads
+    window.onload = function() {
+        // Initialize checkbox event listeners
+        document.getElementById('linkTypeCheckboxes').addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                const checkbox = e.target;
+                const linkType = allLinkTypes.find(lt => lt.id === checkbox.id);
+                
+                if (checkbox.checked) {
+                    // Add to selectedLinkTypes if not already present
+                    if (!selectedLinkTypes.some(lt => lt.id === linkType.id)) {
+                        selectedLinkTypes.push(linkType);
+                    }
+                } else {
+                    // Remove from selectedLinkTypes
+                    selectedLinkTypes = selectedLinkTypes.filter(lt => lt.id !== linkType.id);
+                }
+                
+                const checkedCount = selectedLinkTypes.length;
+                document.getElementById('selectedCount').textContent = checkedCount;
+                
+                // Update the display
+                updateSelectedLinksDisplay();
+                updateCheckboxStates();
+            }
+        });
+    };
+</script>
+</body>
+</html>
