@@ -597,6 +597,71 @@
       color: var(--text-muted);
     }
 
+    /* Bulk Mode Styles */
+    .mode-switcher {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--card-border);
+      background-color: var(--card-bg);
+    }
+
+    .mode-btn.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .bulk-textarea {
+      min-height: 200px;
+    }
+
+    .parse-result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: rgba(108, 92, 231, 0.1);
+      border: 1px dashed var(--primary);
+    }
+
+    .parse-result h5 {
+      color: var(--primary-light);
+      margin-bottom: 10px;
+    }
+
+    .parse-result-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .parse-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .parse-result-name {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    .parse-result-count {
+      background-color: var(--primary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+    }
+
     /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -736,7 +801,18 @@
               </button>
             </div>
             
-            <form id="bulkNoteForm">
+            <!-- Mode Switcher -->
+            <div class="mode-switcher mb-3">
+              <div class="mode-btn active" id="singleModeBtn">
+                <i class="bi bi-file-earmark-text me-2"></i>Single Mode
+              </div>
+              <div class="mode-btn" id="bulkModeBtn">
+                <i class="bi bi-collection me-2"></i>Bulk Mode
+              </div>
+            </div>
+            
+            <!-- Single Mode Form -->
+            <form id="bulkNoteForm" class="single-mode-form">
               <div id="notesContainer">
                 <div class="note-item" data-index="0">
                   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -774,31 +850,70 @@
               </button>
             </form>
             
+            <!-- Bulk Mode Form -->
+            <div class="bulk-mode-form" style="display: none;">
+              <div class="mb-3">
+                <label class="form-label">
+                  <i class="bi bi-pencil text-primary me-2"></i>
+                  Paste konten bulk note di sini
+                </label>
+                <textarea class="form-control bulk-textarea" id="bulkNoteTextarea" placeholder="Contoh format:
+MotoGP22 Part NSP Google Drive
+4.88 GB
+4.88 GB
+2.07 GB
+https://drive.google.com/file/d/1Qh1vWwkTM2poDPNCP9aDezbfOubeIjvw/view?usp=sharing
+https://drive.google.com/file/d/1jUIh9t9elxKyCDFD6Ub-ryHFLGNi1Oc8/view?usp=sharing
+https://drive.google.com/file/d/1UqJqPyLjTQmODvAG8dz3cbJO6LvyubzV/view?usp=sharing
+MotoGP22 Part NSP Mediafire
+4.88 GB
+4.88 GB
+2.07 GB
+https://www.mediafire.com/file/uxr128btz9q6oya/[INDapk.com]+[0100CF3016BBE000][USA][v0].part1.rar/file
+https://www.mediafire.com/file/i3m2bh3ekczseca/[INDapk.com]+[0100CF3016BBE000][USA][v0].part2.rar/file
+https://www.mediafire.com/file/jvuic5kark1ispo/[INDapk.com]+[0100CF3016BBE000][USA][v0].part3.rar/file"></textarea>
+              </div>
+              
+              <div class="d-flex gap-2 mb-3">
+                <button class="btn btn-primary" id="parseBulkBtn">
+                  <i class="bi bi-search me-2"></i> Parse Konten
+                </button>
+                <button class="btn btn-success" id="generateFromBulkBtn" disabled>
+                  <i class="bi bi-magic me-2"></i> Generate Note
+                </button>
+              </div>
+              
+              <div class="parse-result" id="parseResult" style="display: none;">
+                <h5><i class="bi bi-list-check me-2"></i>Parsing Result</h5>
+                <div id="parseResultContent"></div>
+              </div>
+            </div>
+            
             <div class="result-container" id="resultContainer">
-  <hr class="divider">
-  <h5 class="success-title">
-    <i class="bi bi-check-circle-fill"></i>
-    Note berhasil dibuat!
-  </h5>
-  
-  <p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
-  
-  <div class="d-flex gap-2 mb-3">
-    <button class="btn btn-primary" id="copyAllLinksBtn">
-      <i class="bi bi-clipboard"></i> Copy All Links
-    </button>
-    <button class="btn btn-info" id="copyAllLinksWithNameBtn">
-      <i class="bi bi-clipboard-plus"></i> Copy All Links With Name
-    </button>
-  </div>
-  
-  <div id="resultsContainer"></div>
-  
-  <div class="alert alert-info mt-4">
-    <i class="bi bi-info-circle me-2"></i>
-    <small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small>
-  </div>
-</div>
+              <hr class="divider">
+              <h5 class="success-title">
+                <i class="bi bi-check-circle-fill"></i>
+                Note berhasil dibuat!
+              </h5>
+              
+              <p class="text-muted mb-3">Bagikan link-link berikut kepada pengguna:</p>
+              
+              <div class="d-flex gap-2 mb-3">
+                <button class="btn btn-primary" id="copyAllLinksBtn">
+                  <i class="bi bi-clipboard"></i> Copy All Links
+                </button>
+                <button class="btn btn-info" id="copyAllLinksWithNameBtn">
+                  <i class="bi bi-clipboard-plus"></i> Copy All Links With Name
+                </button>
+              </div>
+              
+              <div id="resultsContainer"></div>
+              
+              <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <small>User harus follow Telegram @iindapk dan akan terkunci jika berbeda IP</small>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -814,39 +929,38 @@
           </div>
           
           <div class="card-body">
-<div class="section-header mb-4">
-  <h4 class="text-primary">
-    <i class="bi bi-list-ul me-2"></i>
-    Daftar Noted
-  </h4>
-  <div class="d-flex gap-2 flex-wrap">
-    <!-- Tambahkan dropdown sorting di sini -->
-    <div class="dropdown">
-      <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-sort-down me-1"></i>
-        <span id="sortLabel">Tanggal Dibuat</span>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-        <li><a class="dropdown-item" href="#" data-sort="date" data-label="Tanggal Dibuat">
-          <i class="bi bi-calendar3 me-2"></i>Tanggal Dibuat
-        </a></li>
-        <li><a class="dropdown-item" href="#" data-sort="name" data-label="Nama (A-Z)">
-          <i class="bi bi-sort-alpha-down me-2"></i>Nama (A-Z)
-        </a></li>
-        <li><a class="dropdown-item" href="#" data-sort="view" data-label="Jumlah View">
-          <i class="bi bi-eye me-2"></i>Jumlah View
-        </a></li>
-      </ul>
-    </div>
-    <button type="button" class="btn btn-outline-primary" id="refreshDataBtn">
-      <i class="bi bi-arrow-clockwise"></i> Refresh Data
-    </button>
-    <button type="button" class="btn btn-success" id="exportAllBtn">
-      <i class="bi bi-file-earmark-excel"></i> Export Semua Data
-    </button>
-  </div>
-</div>
-
+            <div class="section-header mb-4">
+              <h4 class="text-primary">
+                <i class="bi bi-list-ul me-2"></i>
+                Daftar Noted
+              </h4>
+              <div class="d-flex gap-2 flex-wrap">
+                <!-- Tambahkan dropdown sorting di sini -->
+                <div class="dropdown">
+                  <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-sort-down me-1"></i>
+                    <span id="sortLabel">Tanggal Dibuat</span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item" href="#" data-sort="date" data-label="Tanggal Dibuat">
+                      <i class="bi bi-calendar3 me-2"></i>Tanggal Dibuat
+                    </a></li>
+                    <li><a class="dropdown-item" href="#" data-sort="name" data-label="Nama (A-Z)">
+                      <i class="bi bi-sort-alpha-down me-2"></i>Nama (A-Z)
+                    </a></li>
+                    <li><a class="dropdown-item" href="#" data-sort="view" data-label="Jumlah View">
+                      <i class="bi bi-eye me-2"></i>Jumlah View
+                    </a></li>
+                  </ul>
+                </div>
+                <button type="button" class="btn btn-outline-primary" id="refreshDataBtn">
+                  <i class="bi bi-arrow-clockwise"></i> Refresh Data
+                </button>
+                <button type="button" class="btn btn-success" id="exportAllBtn">
+                  <i class="bi bi-file-earmark-excel"></i> Export Semua Data
+                </button>
+              </div>
+            </div>
             
             <div id="notedListContainer">
               <div class="loading-state" id="loadingNotes">
@@ -956,6 +1070,7 @@
     let currentNoteData = null;
     let notedData = [];
     let currentSort = 'date'; // default sorting
+    let parsedNotes = []; // Untuk menyimpan hasil parsing bulk mode
     
     // Theme switch functionality
     const toggleSwitch = document.querySelector('#checkbox');
@@ -978,40 +1093,191 @@
     toggleSwitch.addEventListener('change', switchTheme, false);
 
     // Fungsi untuk copy semua link
-document.getElementById('copyAllLinksBtn').addEventListener('click', function() {
-  const links = [];
-  document.querySelectorAll('.result-item input[type="text"]').forEach(input => {
-    links.push(input.value);
-  });
-  
-  if (links.length > 0) {
-    copyToClipboard(links.join('\n'));
-    showNotification('Semua link berhasil disalin!', 'success');
-  } else {
-    showNotification('Tidak ada link yang bisa disalin', 'error');
-  }
-});
+    document.getElementById('copyAllLinksBtn').addEventListener('click', function() {
+      const links = [];
+      document.querySelectorAll('.result-item input[type="text"]').forEach(input => {
+        links.push(input.value);
+      });
+      
+      if (links.length > 0) {
+        copyToClipboard(links.join('\n'));
+        showNotification('Semua link berhasil disalin!', 'success');
+      } else {
+        showNotification('Tidak ada link yang bisa disalin', 'error');
+      }
+    });
 
-// Fungsi untuk copy semua link dengan nama
-document.getElementById('copyAllLinksWithNameBtn').addEventListener('click', function() {
-  const linksWithNames = [];
-  document.querySelectorAll('.result-item').forEach(item => {
-    const name = item.querySelector('h6').textContent.replace('🔗', '').trim();
-    const link = item.querySelector('input[type="text"]')?.value;
-    if (link) {
-      linksWithNames.push(`${name}: ${link}`);
+    // Fungsi untuk copy semua link dengan nama
+    document.getElementById('copyAllLinksWithNameBtn').addEventListener('click', function() {
+      const linksWithNames = [];
+      document.querySelectorAll('.result-item').forEach(item => {
+        const name = item.querySelector('h6').textContent.replace('🔗', '').trim();
+        const link = item.querySelector('input[type="text"]')?.value;
+        if (link) {
+          linksWithNames.push(`${name}: ${link}`);
+        }
+      });
+      
+      if (linksWithNames.length > 0) {
+        copyToClipboard(linksWithNames.join('\n'));
+        showNotification('Semua link dengan nama berhasil disalin!', 'success');
+      } else {
+        showNotification('Tidak ada link yang bisa disalin', 'error');
+      }
+    });
+
+    // Mode switcher functionality
+    document.getElementById('singleModeBtn').addEventListener('click', function() {
+      document.getElementById('singleModeBtn').classList.add('active');
+      document.getElementById('bulkModeBtn').classList.remove('active');
+      document.querySelector('.single-mode-form').style.display = 'block';
+      document.querySelector('.bulk-mode-form').style.display = 'none';
+      document.getElementById('resultContainer').style.display = 'none';
+    });
+
+    document.getElementById('bulkModeBtn').addEventListener('click', function() {
+      document.getElementById('bulkModeBtn').classList.add('active');
+      document.getElementById('singleModeBtn').classList.remove('active');
+      document.querySelector('.single-mode-form').style.display = 'none';
+      document.querySelector('.bulk-mode-form').style.display = 'block';
+      document.getElementById('resultContainer').style.display = 'none';
+    });
+
+    // Parse bulk content
+    document.getElementById('parseBulkBtn').addEventListener('click', function() {
+      const bulkContent = document.getElementById('bulkNoteTextarea').value.trim();
+      if (!bulkContent) {
+        showNotification('Mohon masukkan konten bulk note terlebih dahulu', 'error');
+        return;
+      }
+
+      // Parse the content
+      parsedNotes = parseBulkContent(bulkContent);
+      
+      if (parsedNotes.length === 0) {
+        showNotification('Tidak dapat menemukan format note yang valid', 'error');
+        document.getElementById('parseResult').style.display = 'none';
+        document.getElementById('generateFromBulkBtn').disabled = true;
+        return;
+      }
+
+      // Display parse result
+      displayParseResult(parsedNotes);
+      document.getElementById('parseResult').style.display = 'block';
+      document.getElementById('generateFromBulkBtn').disabled = false;
+    });
+
+    // Generate notes from bulk content
+    document.getElementById('generateFromBulkBtn').addEventListener('click', function() {
+      if (parsedNotes.length === 0) {
+        showNotification('Tidak ada note yang bisa digenerate', 'error');
+        return;
+      }
+
+      // Clear existing notes in single mode
+      const notesContainer = document.getElementById('notesContainer');
+      notesContainer.innerHTML = '';
+
+      // Create note items for each parsed note
+      parsedNotes.forEach((note, index) => {
+        const noteItem = createNoteItem(index);
+        noteItem.querySelector('.nama-note').value = note.name;
+        noteItem.querySelector('.note-content').value = note.content;
+        notesContainer.appendChild(noteItem);
+      });
+
+      // Update counters
+      noteIndex = parsedNotes.length;
+      updateNoteCount();
+      updateRemoveButtons();
+      updateNoteNumbers();
+
+      // Switch back to single mode
+      document.getElementById('singleModeBtn').click();
+
+      showNotification(`${parsedNotes.length} note berhasil diparsing dan siap digenerate!`, 'success');
+    });
+
+    // Function to parse bulk content
+// Function to parse bulk content
+function parseBulkContent(content) {
+  const lines = content.split('\n');
+  const notes = [];
+  let currentNote = null;
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    // Skip empty lines
+    if (!line) continue;
+    
+    // Check if line is a note name (doesn't look like a URL or size)
+    if (!line.match(/http|\.com|\.net|\.org|\.id|\.co|\.xyz|\.io|\.me|\.info|GB|MB|KB/i)) {
+      // If we have a current note and it has content, save it
+      if (currentNote && currentNote.content.trim()) {
+        notes.push(currentNote);
+      }
+      
+      // Start a new note
+      currentNote = {
+        name: line,
+        size: '', // Initialize size
+        content: ''
+      };
+    } 
+    // Check if line is a size (contains GB/MB/KB)
+    else if (line.match(/GB|MB|KB/i) && currentNote && !currentNote.size) {
+      currentNote.size = line;
     }
+    else if (currentNote) {
+      // Add line to current note's content (links)
+      if (currentNote.content) {
+        currentNote.content += '\n' + line;
+      } else {
+        currentNote.content = line;
+      }
+    }
+  }
+  
+  // Add the last note if it exists
+  if (currentNote && currentNote.content.trim()) {
+    notes.push(currentNote);
+  }
+  
+  // Format the content with size and links
+  notes.forEach(note => {
+    note.content = `${note.name}\n${note.size}\n${note.content}\n\n⚠️ DOWNLOAD APLIKASI INDapk:\n🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing\n🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file\n🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet`;
   });
   
-  if (linksWithNames.length > 0) {
-    copyToClipboard(linksWithNames.join('\n'));
-    showNotification('Semua link dengan nama berhasil disalin!', 'success');
-  } else {
-    showNotification('Tidak ada link yang bisa disalin', 'error');
-  }
-});
+  return notes;
+}
 
-
+// Function to display parse result
+function displayParseResult(notes) {
+  const resultContainer = document.getElementById('parseResultContent');
+  resultContainer.innerHTML = '';
+  
+  notes.forEach(note => {
+    const item = document.createElement('div');
+    item.className = 'parse-result-item';
+    
+    // Count links in content (subtract 1 for size line)
+    const lineCount = note.content.split('\n').filter(l => l.trim()).length - 1;
+    
+    item.innerHTML = `
+      <div class="parse-result-name">
+        <i class="bi bi-sticky me-2"></i>
+        ${note.name}
+        <small class="text-muted d-block">${note.size}</small>
+      </div>
+      <div class="parse-result-count">
+        ${lineCount} links
+      </div>
+    `;
+    
+    resultContainer.appendChild(item);
+  });
+}
     
     // Add new note form
     document.getElementById('addNoteBtn').addEventListener('click', function() {
@@ -1047,85 +1313,85 @@ document.getElementById('copyAllLinksWithNameBtn').addEventListener('click', fun
       exportAllData();
     });
 
-   // Event listener untuk dropdown sorting
-document.addEventListener('DOMContentLoaded', function() {
-  const sortDropdown = document.querySelectorAll('#sortDropdown + .dropdown-menu .dropdown-item');
-  
-  sortDropdown.forEach(item => {
-    item.addEventListener('click', function(e) {
-      e.preventDefault();
-      const sortType = this.getAttribute('data-sort');
-      const sortLabel = this.getAttribute('data-label');
+    // Event listener untuk dropdown sorting
+    document.addEventListener('DOMContentLoaded', function() {
+      const sortDropdown = document.querySelectorAll('#sortDropdown + .dropdown-menu .dropdown-item');
       
-      // Update dropdown label
-      document.getElementById('sortLabel').textContent = sortLabel;
-      
-      // Update current sort
-      currentSort = sortType;
-      
-      // Sort and display data
-      sortAndDisplayNotes();
+      sortDropdown.forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          const sortType = this.getAttribute('data-sort');
+          const sortLabel = this.getAttribute('data-label');
+          
+          // Update dropdown label
+          document.getElementById('sortLabel').textContent = sortLabel;
+          
+          // Update current sort
+          currentSort = sortType;
+          
+          // Sort and display data
+          sortAndDisplayNotes();
+        });
+      });
     });
-  });
-});
 
-// Modifikasi fungsi loadNotedList untuk menyimpan data
-async function loadNotedList() {
-  const loadingElement = document.getElementById('loadingNotes');
-  const listElement = document.getElementById('notedList');
-  const emptyElement = document.getElementById('emptyState');
-  
-  // Show loading
-  loadingElement.style.display = 'flex';
-  listElement.style.display = 'none';
-  emptyElement.style.display = 'none';
-  
-  try {
-    const response = await fetch(SCRIPT_URL + '?action=list');
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      if (data.data && data.data.length > 0) {
-        // Simpan data ke variable global
-        notedData = data.data;
-        // Sort dan display
-        sortAndDisplayNotes();
-        listElement.style.display = 'block';
-      } else {
-        notedData = [];
+    // Modifikasi fungsi loadNotedList untuk menyimpan data
+    async function loadNotedList() {
+      const loadingElement = document.getElementById('loadingNotes');
+      const listElement = document.getElementById('notedList');
+      const emptyElement = document.getElementById('emptyState');
+      
+      // Show loading
+      loadingElement.style.display = 'flex';
+      listElement.style.display = 'none';
+      emptyElement.style.display = 'none';
+      
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=list');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+          if (data.data && data.data.length > 0) {
+            // Simpan data ke variable global
+            notedData = data.data;
+            // Sort dan display
+            sortAndDisplayNotes();
+            listElement.style.display = 'block';
+          } else {
+            notedData = [];
+            emptyElement.style.display = 'block';
+          }
+        } else {
+          showNotification('Gagal memuat daftar noted: ' + data.message, 'error');
+          emptyElement.style.display = 'block';
+        }
+      } catch (error) {
+        showNotification('Terjadi kesalahan: ' + error.message, 'error');
         emptyElement.style.display = 'block';
+      } finally {
+        loadingElement.style.display = 'none';
       }
-    } else {
-      showNotification('Gagal memuat daftar noted: ' + data.message, 'error');
-      emptyElement.style.display = 'block';
     }
-  } catch (error) {
-    showNotification('Terjadi kesalahan: ' + error.message, 'error');
-    emptyElement.style.display = 'block';
-  } finally {
-    loadingElement.style.display = 'none';
-  }
-}
 
-// Fungsi baru untuk sorting dan display
-function sortAndDisplayNotes() {
-  let sortedData = [...notedData];
-  
-  switch(currentSort) {
-    case 'name':
-      sortedData.sort((a, b) => a.nama_note.localeCompare(b.nama_note));
-      break;
-    case 'view':
-      sortedData.sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
-      break;
-    case 'date':
-    default:
-      sortedData.sort((a, b) => new Date(b.created_at || b.timestamp) - new Date(a.created_at || a.timestamp));
-      break;
-  }
-  
-  displayNotedList(sortedData);
-}
+    // Fungsi baru untuk sorting dan display
+    function sortAndDisplayNotes() {
+      let sortedData = [...notedData];
+      
+      switch(currentSort) {
+        case 'name':
+          sortedData.sort((a, b) => a.nama_note.localeCompare(b.nama_note));
+          break;
+        case 'view':
+          sortedData.sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
+          break;
+        case 'date':
+        default:
+          sortedData.sort((a, b) => new Date(b.created_at || b.timestamp) - new Date(a.created_at || a.timestamp));
+          break;
+      }
+      
+      displayNotedList(sortedData);
+    }
 
     // Fungsi untuk menampilkan daftar noted
     function displayNotedList(notes) {
@@ -1620,16 +1886,16 @@ function sortAndDisplayNotes() {
         resultItem.className = 'result-item';
         
         if (result.success) {
-resultItem.innerHTML = `
-  <h6><i class="bi bi-link-45deg me-2"></i>${result.nama_note}</h6>
-  <div class="input-group mb-2">
-    <input type="text" class="form-control" value="${result.shareableLink}" readonly>
-    <button class="btn btn-outline-secondary copy-btn" type="button" data-link="${result.shareableLink}">
-      <i class="bi bi-clipboard"></i>
-      Copy
-    </button>
-  </div>
-`;
+          resultItem.innerHTML = `
+            <h6><i class="bi bi-link-45deg me-2"></i>${result.nama_note}</h6>
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" value="${result.shareableLink}" readonly>
+              <button class="btn btn-outline-secondary copy-btn" type="button" data-link="${result.shareableLink}">
+                <i class="bi bi-clipboard"></i>
+                Copy
+              </button>
+            </div>
+          `;
         } else {
           resultItem.className += ' border-danger';
           resultItem.style.background = 'rgba(239, 68, 68, 0.05)';
@@ -1677,16 +1943,18 @@ resultItem.innerHTML = `
     
     // Show copy feedback
     function showCopyFeedback(button) {
-      const originalHTML = button.innerHTML;
-      button.innerHTML = '<i class="bi bi-check"></i> Copied!';
-      button.classList.remove('btn-outline-secondary');
-      button.classList.add('btn-success');
-      
-      setTimeout(() => {
-        button.innerHTML = originalHTML;
-        button.classList.remove('btn-success');
-        button.classList.add('btn-outline-secondary');
-      }, 2000);
+      if (button) {
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check"></i> Copied!';
+        button.classList.remove('btn-outline-secondary');
+        button.classList.add('btn-success');
+        
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.classList.remove('btn-success');
+          button.classList.add('btn-outline-secondary');
+        }, 2000);
+      }
       
       showNotification('Link berhasil disalin!', 'success');
     }
