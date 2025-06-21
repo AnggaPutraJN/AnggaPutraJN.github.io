@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1741,16 +1742,27 @@ function loadSettings(settingsName) {
             });
 
             // Generate CHD section
+            generatedText += `CHD\n`;
             generatedText += `${gameName} PS2 CHD/ISO (Google Drive & MediaFire) (Tanpa Ekstrak) (REGION) (Aethersx2 / PCSX2)\n`;
             generatedText += `${gameName}\n`;
             generatedText += `${chdLinks.join('\n')}\n`;
-            generatedText += `${sizeCHD}`;
+            generatedText += `${sizeCHD}\n\n`;
 
             // Generate ISO section
+            generatedText += `ISO\n`;
             generatedText += `${gameName} PS2 CHD/ISO (Google Drive & MediaFire) (Tanpa Ekstrak) (REGION) (Aethersx2 / PCSX2)\n`;
             generatedText += `${gameName}\n`;
             generatedText += `${isoLinks.join('\n')}\n`;
-            generatedText += `${sizeISO}`;
+            generatedText += `${sizeISO}\n\n`;
+
+            //Generated untuk web
+            generatedText += `UPLOAD WEB\n`;
+            generatedText += `${gameName}\n`;
+            generatedText += `${sizeCHD}\n`;
+            generatedText += `${sizeISO}\n`;
+            generatedText += `${chdLinks.join('\n')}\n`;
+            generatedText += `${isoLinks.join('\n')}\n\n\n`;
+
         }
 
         // Display the generated text
