@@ -884,8 +884,42 @@
                             resultText += `${link}\n`;
                         }
                     });
-                    
+                
                     resultText += '\n';
+
+                    //Upload Web
+
+                }
+
+                    resultText += 'UPLOAD WEB\n\n\n';
+
+                for (let i = 1; i <= gameCount; i++) {
+
+                    const gameName = document.getElementById(`gameName${i}`).value || `Game ${i}`;
+                    const gameSize = document.getElementById(`gameSize${i}`).value || '-';
+                    
+                    // Generate the Vita3K title line
+                    const linkTypesText = selectedLinkTypes.join(' & ');
+                    resultText += `${gameName}\n`;
+                    resultText += `${gameSize}\n`;
+                    resultText += `GAMEID\n`;
+                    resultText += `Category\n`;
+                    resultText += `USA\n`;
+                    
+                    // Add links
+                    selectedLinkTypes.forEach(linkType => {
+                        const sanitizedType = linkType.replace(/\s+/g, '');
+                        const link = document.getElementById(`${sanitizedType}Link${i}`).value;
+                        
+                        if (link) {
+                            resultText += `${link}\n`;
+                        }
+                    });
+                
+                    resultText += '\n';
+
+                    //Upload Web
+                    
                 }
                 
                 resultContent.textContent = resultText;
