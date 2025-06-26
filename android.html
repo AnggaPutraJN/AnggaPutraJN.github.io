@@ -931,6 +931,9 @@
 <label for="inputVersion"><i class="fas fa-code-branch"></i> Versi Game:</label>
 <input type="text" id="inputVersion" name="inputVersion" placeholder="Contoh: 1.0.0">
 
+<label for="inputMod"><i class="fas fa-code-branch"></i> MOD Game:</label>
+<input type="text" id="inputMod" name="inputMod" placeholder="Contoh: Mod Menu">
+
 <!-- Dynamic Link Inputs will be inserted here -->
 <div id="linkInputsContainer"></div>
 
@@ -969,6 +972,7 @@ function saveToSpreadsheet() {
         ukuran_game: document.getElementById("inputAndroidSize").value,
         category: document.getElementById("inputCategory")?.value || '',
         versi_game: document.getElementById("inputVersion")?.value || '',
+        mod_game: document.getElementById("inputMod")?.value || '',
         jumlah_link: singleAndroidLinkCount,
         link_game: formatLinks(getLinkValues('singleAndroid')),
         jenis_link: selectedSingleAndroidLinksOrder.join(', ')
@@ -1318,6 +1322,8 @@ function editGame(gameId) {
             setFieldValue("inputAndroidSize", game.ukuran_game);
             setFieldValue("inputCategory", game.category);
             setFieldValue("inputVersion", game.versi_game);
+            setFieldValue("inputMod", game.mod_game);
+
 
             // Set link counts
             setFieldValue("singleAndroidLinkCount", game.jumlah_link || 0);
@@ -1972,22 +1978,23 @@ textarea.addEventListener('input', () => {
     if (values.length > 1) document.getElementById("inputAndroidSize").value = values[1];
     if (values.length > 2) document.getElementById("inputCategory").value = values[2];
     if (values.length > 3) document.getElementById("inputVersion").value = values[3];
+    if (values.length > 3) document.getElementById("inputMod").value = values[4];
     
-    // Isi link inputs mulai dari index 4
+    // Isi link inputs mulai dari index 5
     const linkInputs = document.querySelectorAll('#linkInputsContainer input[type="text"]');
-    for (let i = 0; i < linkInputs.length && (i + 4) < values.length; i++) {
-        linkInputs[i].value = values[i + 4];
+    for (let i = 0; i < linkInputs.length && (i + 5) < values.length; i++) {
+        linkInputs[i].value = values[i + 5];
     }
     
     // Isi END fields jika ada nilai lebih
-    if (values.length > 4 + linkInputs.length) {
-        document.getElementById("inputEND1").value = values[5 + linkInputs.length] || "END1";
-    }
     if (values.length > 5 + linkInputs.length) {
-        document.getElementById("inputEND2").value = values[6 + linkInputs.length] || "END1";
+        document.getElementById("inputEND1").value = values[6 + linkInputs.length] || "END1";
     }
     if (values.length > 6 + linkInputs.length) {
-        document.getElementById("inputEND3").value = values[7 + linkInputs.length] || "END1";
+        document.getElementById("inputEND2").value = values[7 + linkInputs.length] || "END1";
+    }
+    if (values.length > 7 + linkInputs.length) {
+        document.getElementById("inputEND3").value = values[8 + linkInputs.length] || "END1";
     }
 });
 
@@ -1997,6 +2004,7 @@ function generateCode() {
     const inputAndroidSize = document.getElementById("inputAndroidSize").value;
     const inputCategory = document.getElementById("inputCategory").value;
     const inputVersion = document.getElementById("inputVersion").value;
+    const inputMod = document.getElementById("inputMod").value;
     const inputEND1 = document.getElementById("inputEND1").value;
     const inputEND2 = document.getElementById("inputEND2").value;
     const inputEND3 = document.getElementById("inputEND3").value;
@@ -2800,6 +2808,7 @@ Join Telegram : <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a>
 <strong>Ukuran:</strong> ${inputAndroidSize}<br>
 <strong>Category:</strong> ${inputCategory}<br>
 <strong>Versi:</strong> ${inputVersion}<br>
+<strong>MOD GAME:</strong> ${inputMod}<br>
 <strong>Game Android Lainnya:</strong> <a href="https://indapk.com/game-android/" rel="nofollow">Klik Disini</a><br>
 <strong>Request Game:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik disini</a><br>
 <strong>Laporkan Link Rusak:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik disini</a>
