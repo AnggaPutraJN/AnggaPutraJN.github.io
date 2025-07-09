@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Shorting Game Switch NSP ONLY</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --text-color: #2d3436;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --border-color: #dfe6e9;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --error-color: #d63031;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #a29bfe;
+            --secondary-color: #6c5ce7;
+            --accent-color: #ff7675;
+            --text-color: #f5f6fa;
+            --bg-color: #1e272e;
+            --card-bg: #2d3436;
+            --input-bg: #3d484f;
+            --border-color: #57606f;
+            --success-color: #55efc4;
+            --warning-color: #ffeaa7;
+            --error-color: #ff7675;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .form-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section h3 i {
+            font-size: 1.3rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background-color: var(--input-bg);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #5a4bd1;
+            border-color: #5a4bd1;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #8c7ae6;
+            border-color: #8c7ae6;
+        }
+
+        .settings-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .result-text {
+            background-color: var(--input-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .nav-section {
+            background-color: var(--card-bg);
+            padding: 15px 0;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border-radius: 10px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-gradient-bg3 {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+        }
+
+        .btn-gradient-bg5 {
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+        }
+
+        .btn-gradient-bg2 {
+            background: linear-gradient(135deg, #e17055, #fab1a0);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 999;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .game-input-group {
+            background-color: var(--input-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .game-input-group:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .link-input-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-buttons {
+                flex-direction: column;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animation for buttons */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-animate {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--input-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </div>
+
+    <!-- Navigation Section -->
+    <div class="nav-section">
+        <div class="nav-buttons">
+            <a href="index" class="nav-btn btn-gradient-bg3">
+                <i class="fas fa-code"></i>Generator HTML Switch
+            </a>
+            <a href="request" class="nav-btn btn-gradient-bg5">
+                <i class="fas fa-gamepad"></i>Admin Request Game & Report
+            </a>
+            <a href="Link2UnlockAdmin" class="nav-btn btn-gradient-bg2">
+                <i class="fas fa-lock"></i>Link2Unlock Admin
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-gamepad"></i> Generator Shorting Game Switch</h1>
+            <p>Generate formatted game listings with multiple download links</p>
+        </div>
+
+        <div id="configSection" class="form-section">
+            <h3><i class="fas fa-cog"></i> Konfigurasi Game</h3>
+            
+            <div class="mb-4">
+                <label for="gameCount" class="form-label"><i class="fas fa-list-ol"></i> Silahkan Masukkan Jumlah Game</label>
+                <input type="number" class="form-control" id="gameCount" min="1" value="1">
+            </div>
+            
+            <div class="mb-4">
+                <label for="linkCount" class="form-label"><i class="fas fa-link"></i> Silahkan Masukkan Jumlah Link Setiap Game</label>
+                <input type="number" class="form-control" id="linkCount" min="1" value="1">
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label"><i class="fas fa-check-circle"></i> Silahkan centang jenis link Game</label>
+                <div class="checkbox-group" id="linkTypeCheckboxes">
+                    <div class="checkbox-item">
+                        <input class="form-check-input" type="checkbox" id="gdCheckbox" value="Google Drive" checked>
+                        <label class="form-check-label" for="gdCheckbox"><i class="fab fa-google-drive"></i> Google Drive</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input class="form-check-input" type="checkbox" id="mfCheckbox" value="Mediafire">
+                        <label class="form-check-label" for="mfCheckbox"><i class="fas fa-cloud"></i> Mediafire</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input class="form-check-input" type="checkbox" id="VikingCheckbox" value="VikingFile">
+                        <label class="form-check-label" for="VikingCheckbox"><i class="fas fa-file-archive"></i> VikingFile</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input class="form-check-input" type="checkbox" id="pdCheckbox" value="PixelDrain">
+                        <label class="form-check-label" for="pdCheckbox"><i class="fas fa-tint"></i> PixelDrain</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input class="form-check-input" type="checkbox" id="fichierCheckbox" value="1Fichier">
+                        <label class="form-check-label" for="fichierCheckbox"><i class="fas fa-file-alt"></i> 1Fichier</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input class="form-check-input" type="checkbox" id="multiupCheckbox" value="MultiUp">
+                        <label class="form-check-label" for="multiupCheckbox"><i class="fas fa-upload"></i> MultiUp</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input class="form-check-input" type="checkbox" id="megaCheckbox" value="Mega">
+                        <label class="form-check-label" for="megaCheckbox"><i class="fas fa-folder-open"></i> Mega</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-buttons">
+                <button id="generateBtn" class="btn btn-primary btn-animate">
+                    <i class="fas fa-magic"></i> Generate Input Fields
+                </button>
+                <button id="saveSettingsBtn" class="btn btn-outline-primary">
+                    <i class="fas fa-save"></i> Save Settings
+                </button>
+                <button id="loadSettingsBtn" class="btn btn-outline-secondary">
+                    <i class="fas fa-folder-open"></i> Load Settings
+                </button>
+            </div>
+        </div>
+        
+        <div id="inputSection" class="form-section hidden">
+            <h3><i class="fas fa-edit"></i> Masukkan Detail Game</h3>
+            
+            <div class="mb-4">
+                <label class="form-label"><i class="fas fa-paste"></i> Paste Link Data (Otomatis mengisi input):</label>
+                <textarea id="linkDataTextarea" class="form-control" rows="4" placeholder="Paste semua link Anda di sini (satu per baris) untuk mengisi form secara otomatis"></textarea>
+            </div>
+            
+            <div id="gameInputs"></div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <button id="backToConfigBtn" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Config
+                </button>
+                <button id="generateResultBtn" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Generate Result
+                </button>
+            </div>
+        </div>
+        
+        <div id="resultSection" class="form-section hidden">
+            <h3><i class="fas fa-clipboard-check"></i> Hasil Shorting Game</h3>
+            <div class="result-text" id="resultContent"></div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <button id="copyResultBtn" class="btn btn-success">
+                    <i class="fas fa-copy"></i> Copy Result
+                </button>
+                <button id="newShortingBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Buat Shorting Baru
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Settings Modal -->
+    <div class="modal fade" id="saveSettingsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-save"></i> Save Current Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="settingsName" class="form-label">Settings Name</label>
+                        <input type="text" class="form-control" id="settingsName" placeholder="Enter a name for these settings">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="confirmSaveSettingsBtn">
+                        <i class="fas fa-check"></i> Save Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Settings Modal -->
+    <div class="modal fade settings-modal" id="loadSettingsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-folder-open"></i> Load Saved Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group" id="savedSettingsList">
+                        <!-- Saved settings will be listed here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or use preferred color scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                htmlElement.setAttribute('data-theme', 'dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                if (htmlElement.getAttribute('data-theme') === 'dark') {
+                    htmlElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                } else {
+                    htmlElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                }
+            });
+            
+            // DOM elements
+            const gameCountInput = document.getElementById('gameCount');
+            const linkCountInput = document.getElementById('linkCount');
+            const linkTypeCheckboxes = document.getElementById('linkTypeCheckboxes');
+            const generateBtn = document.getElementById('generateBtn');
+            const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+            const loadSettingsBtn = document.getElementById('loadSettingsBtn');
+            const inputSection = document.getElementById('inputSection');
+            const gameInputs = document.getElementById('gameInputs');
+            const generateResultBtn = document.getElementById('generateResultBtn');
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+            const copyResultBtn = document.getElementById('copyResultBtn');
+            const newShortingBtn = document.getElementById('newShortingBtn');
+            const linkDataTextarea = document.getElementById('linkDataTextarea');
+            const confirmSaveSettingsBtn = document.getElementById('confirmSaveSettingsBtn');
+            const backToConfigBtn = document.getElementById('backToConfigBtn');
+            const configSection = document.getElementById('configSection');
+            
+            let selectedLinkTypes = ['Google Drive'];
+            
+            // Update selected link types when checkboxes change
+            linkTypeCheckboxes.addEventListener('change', function(e) {
+                if (e.target.type === 'checkbox') {
+                    selectedLinkTypes = Array.from(linkTypeCheckboxes.querySelectorAll('input[type="checkbox"]:checked'))
+                        .map(checkbox => checkbox.value);
+                    
+                    if (selectedLinkTypes.length === 0) {
+                        e.target.checked = true;
+                        selectedLinkTypes = [e.target.value];
+                    }
+                }
+            });
+            
+            // Save current settings
+            saveSettingsBtn.addEventListener('click', function() {
+                const saveSettingsModal = new bootstrap.Modal(document.getElementById('saveSettingsModal'));
+                saveSettingsModal.show();
+            });
+            
+            confirmSaveSettingsBtn.addEventListener('click', function() {
+                const settingsName = document.getElementById('settingsName').value;
+                if (!settingsName) {
+                    showNotification('Please enter a name for these settings');
+                    return;
+                }
+                
+                const settings = {
+                    name: settingsName,
+                    gameCount: gameCountInput.value,
+                    linkCount: linkCountInput.value,
+                    linkTypes: selectedLinkTypes,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Get existing settings or create new array
+                const existingSettings = JSON.parse(localStorage.getItem('NSPONLYGeneratorSettings') || '[]');
+                
+                // Add new settings
+                existingSettings.push(settings);
+                
+                // Save back to localStorage
+                localStorage.setItem('NSPONLYGeneratorSettings', JSON.stringify(existingSettings));
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('saveSettingsModal'));
+                modal.hide();
+                
+                showNotification(`Settings "${settingsName}" saved successfully!`);
+                document.getElementById('settingsName').value = '';
+            });
+            
+            // Load saved settings
+            loadSettingsBtn.addEventListener('click', function() {
+                const savedSettings = JSON.parse(localStorage.getItem('NSPONLYGeneratorSettings') || '[]');
+                
+                if (savedSettings.length === 0) {
+                    showNotification('No saved settings found');
+                    return;
+                }
+                
+                // Populate the modal with saved settings
+                const settingsList = document.getElementById('savedSettingsList');
+                settingsList.innerHTML = '';
+                
+                savedSettings.forEach((setting, index) => {
+                    const settingItem = document.createElement('div');
+                    settingItem.className = 'list-group-item';
+                    settingItem.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${setting.name}</h6>
+                            <small>${new Date(setting.timestamp).toLocaleString()}</small>
+                        </div>
+                        <div class="mb-1">
+                            <small>Games: ${setting.gameCount}, Links per game: ${setting.linkCount}</small>
+                        </div>
+                        <div class="mb-1">
+                            <small>Link types: ${setting.linkTypes.join(', ')}</small>
+                        </div>
+                        <div class="d-flex gap-2 mt-2">
+                            <button class="btn btn-sm btn-success" onclick="applySavedSettings(${index})">
+                                <i class="fas fa-check"></i> Load
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteSavedSettings(${index})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    `;
+                    settingsList.appendChild(settingItem);
+                });
+                
+                // Show the modal
+                const loadModal = new bootstrap.Modal(document.getElementById('loadSettingsModal'));
+                loadModal.show();
+            });
+            
+            // Function to apply saved settings (called from the modal)
+            window.applySavedSettings = function(index) {
+                const savedSettings = JSON.parse(localStorage.getItem('NSPONLYGeneratorSettings') || '[]');
+                
+                if (index < 0 || index >= savedSettings.length) {
+                    showNotification('Invalid settings selection');
+                    return;
+                }
+                
+                const setting = savedSettings[index];
+                
+                // Apply the settings
+                gameCountInput.value = setting.gameCount;
+                linkCountInput.value = setting.linkCount;
+                
+                // Uncheck all checkboxes first
+                Array.from(linkTypeCheckboxes.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Check the saved link types
+                setting.linkTypes.forEach(linkType => {
+                    const checkbox = Array.from(linkTypeCheckboxes.querySelectorAll('input[type="checkbox"]'))
+                        .find(cb => cb.value === linkType);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+                
+                // Update the selectedLinkTypes array
+                selectedLinkTypes = setting.linkTypes;
+                
+                // Close the modal
+                const loadModal = bootstrap.Modal.getInstance(document.getElementById('loadSettingsModal'));
+                loadModal.hide();
+                
+                showNotification(`Settings "${setting.name}" loaded successfully!`);
+            };
+            
+            // Function to delete saved settings (called from the modal)
+            window.deleteSavedSettings = function(index) {
+                if (!confirm('Are you sure you want to delete these settings?')) return;
+                
+                const savedSettings = JSON.parse(localStorage.getItem('NSPONLYGeneratorSettings') || '[]');
+                
+                if (index < 0 || index >= savedSettings.length) {
+                    showNotification('Invalid settings selection');
+                    return;
+                }
+                
+                const deletedSetting = savedSettings.splice(index, 1)[0];
+                
+                // Save back to localStorage
+                localStorage.setItem('NSPONLYGeneratorSettings', JSON.stringify(savedSettings));
+                
+                // Refresh the modal
+                loadSettingsBtn.click();
+                
+                showNotification(`Settings "${deletedSetting.name}" deleted successfully!`);
+            };
+            
+            // Generate input fields based on configuration
+            generateBtn.addEventListener('click', function() {
+                const gameCount = parseInt(gameCountInput.value);
+                const linkCount = parseInt(linkCountInput.value);
+                
+                if (isNaN(gameCount)) {
+                    showNotification('Masukkan jumlah game yang valid');
+                    return;
+                }
+                
+                if (isNaN(linkCount)) {
+                    showNotification('Masukkan jumlah link yang valid');
+                    return;
+                }
+                
+                if (selectedLinkTypes.length === 0) {
+                    showNotification('Pilih minimal satu jenis link');
+                    return;
+                }
+                
+                // Generate input fields
+                gameInputs.innerHTML = '';
+                
+                for (let i = 1; i <= gameCount; i++) {
+                    const gameGroup = document.createElement('div');
+                    gameGroup.className = 'game-input-group';
+                    gameGroup.innerHTML = `
+                        <h5 class="mb-3"><i class="fas fa-gamepad"></i> Game ${i}</h5>
+                        <div class="mb-3">
+                            <label for="gameName${i}" class="form-label">Nama Game</label>
+                            <input type="text" class="form-control" id="gameName${i}" placeholder="Contoh: Persona 4 Golden">
+                        </div>
+                        <div class="mb-3">
+                            <label for="gameSize${i}" class="form-label">Ukuran Game</label>
+                            <input type="text" class="form-control" id="gameSize${i}" placeholder="Contoh: 2.74 GB">
+                        </div>
+                        <div class="link-inputs" id="linkInputs${i}"></div>
+                    `;
+                    
+                    gameInputs.appendChild(gameGroup);
+                    
+                    const linkInputsContainer = document.getElementById(`linkInputs${i}`);
+                    
+                    // Add link inputs for each selected type
+                    selectedLinkTypes.forEach(linkType => {
+                        const sanitizedType = linkType.replace(/\s+/g, '');
+                        
+                        const linkDiv = document.createElement('div');
+                        linkDiv.className = 'link-input-item';
+                        linkDiv.innerHTML = `
+                            <label for="${sanitizedType}Link${i}" class="form-label">${linkType} Link</label>
+                            <input type="text" class="form-control" id="${sanitizedType}Link${i}" placeholder="${linkType} URL">
+                        `;
+                        
+                        linkInputsContainer.appendChild(linkDiv);
+                    });
+                }
+                
+                // Show input section
+                inputSection.classList.remove('hidden');
+                configSection.classList.add('hidden');
+                
+                // Setup textarea autofill
+                setupTextareaAutofill(gameCount, linkCount);
+            });
+            
+            // Setup textarea to autofill inputs
+            function setupTextareaAutofill(gameCount, linkCount) {
+                linkDataTextarea.addEventListener('input', function() {
+                    const lines = this.value.split('\n').filter(line => line.trim() !== '');
+                    if (lines.length === 0) return;
+                    
+                    let lineIndex = 0;
+                    
+                    // Fill game names
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`gameName${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                    
+                    // Fill game sizes
+                    for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                        const input = document.getElementById(`gameSize${i}`);
+                        if (input) input.value = lines[lineIndex];
+                    }
+                    
+                    // Fill links for each type
+                    selectedLinkTypes.forEach(linkType => {
+                        const sanitizedType = linkType.replace(/\s+/g, '');
+                        
+                        for (let i = 1; i <= gameCount && lineIndex < lines.length; i++, lineIndex++) {
+                            const input = document.getElementById(`${sanitizedType}Link${i}`);
+                            if (input) input.value = lines[lineIndex];
+                        }
+                    });
+                });
+            }
+            
+            // Generate result from inputs
+            generateResultBtn.addEventListener('click', function() {
+                const gameCount = parseInt(gameCountInput.value);
+                let resultText = '';
+                
+                for (let i = 1; i <= gameCount; i++) {
+                    const gameName = document.getElementById(`gameName${i}`).value || `Game ${i}`;
+                    const gameSize = document.getElementById(`gameSize${i}`).value || '-';
+                    
+                    // Generate the Vita3K title line
+                    const linkTypesText = selectedLinkTypes.join(' & ');
+                    resultText += `${gameName} Switch NSP/XCI [Google Drive & MediaFire] (Tanpa Ekstrak) [01001C8016B4E000] [Eggns / Skyline / Strato / Yuzu] [SIZE]\n`;
+                    resultText += `${gameName}\n`;
+                    resultText += `${gameSize}\n`;
+                    
+                    // Add links
+                    selectedLinkTypes.forEach(linkType => {
+                        const sanitizedType = linkType.replace(/\s+/g, '');
+                        const link = document.getElementById(`${sanitizedType}Link${i}`).value;
+                        
+                        if (link) {
+                            resultText += `${link}\n`;
+                        }
+                    });
+                
+                    resultText += '\n';
+
+                    //Upload Web
+
+                }
+
+                    resultText += '========================================================================\nUPLOAD WEB\n========================================================================\n\n\n';
+
+                for (let i = 1; i <= gameCount; i++) {
+
+                    const gameName = document.getElementById(`gameName${i}`).value || `Game ${i}`;
+                    const gameSize = document.getElementById(`gameSize${i}`).value || '-';
+                    
+                    // Generate the Vita3K title line
+                    const linkTypesText = selectedLinkTypes.join(' & ');
+                    resultText += `${gameName} Switch NSP/XCI [Google Drive & MediaFire] (Tanpa Ekstrak) [01001C8016B4E000] [Eggns / Skyline / Strato / Yuzu] [SIZE]\n`;
+                    resultText += `${gameName}\n`;
+                    resultText += `${gameSize}\n`;
+                    resultText += `Category\n`;
+                    resultText += `GAMEID\n`;
+                    resultText += `USA\n`;
+                    resultText += `Language\n`;
+                    
+                    // Add links
+                    selectedLinkTypes.forEach(linkType => {
+                        const sanitizedType = linkType.replace(/\s+/g, '');
+                        const link = document.getElementById(`${sanitizedType}Link${i}`).value;
+                        
+                        if (link) {
+                            resultText += `${link}\n`;
+                        }
+                    });
+                
+                    resultText += '========================================================================\nLINK2UNLOCK\n========================================================================\n\n\n';
+                    resultText += '\n';
+
+                    //Upload Web
+                    
+                }
+                
+                resultContent.textContent = resultText;
+                resultSection.classList.remove('hidden');
+                inputSection.classList.add('hidden');
+                
+                // Scroll to result section
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Copy result to clipboard
+            copyResultBtn.addEventListener('click', function() {
+                const resultText = resultContent.textContent;
+                
+                navigator.clipboard.writeText(resultText).then(() => {
+                    showNotification('Hasil telah disalin ke clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    showNotification('Gagal menyalin ke clipboard. Silahkan copy manual.');
+                });
+            });
+            
+            // Start new shorting
+            newShortingBtn.addEventListener('click', function() {
+                // Reset form
+                gameCountInput.value = '1';
+                linkCountInput.value = '1';
+                gameInputs.innerHTML = '';
+                resultContent.textContent = '';
+                linkDataTextarea.value = '';
+                
+                // Uncheck all link type checkboxes except Google Drive
+                Array.from(linkTypeCheckboxes.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+                    checkbox.checked = checkbox.value === 'Google Drive';
+                });
+                selectedLinkTypes = ['Google Drive'];
+                
+                // Show config section
+                configSection.classList.remove('hidden');
+                resultSection.classList.add('hidden');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Back to config button
+            backToConfigBtn.addEventListener('click', function() {
+                inputSection.classList.add('hidden');
+                configSection.classList.remove('hidden');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Helper function to show notifications
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                
+                // Set color based on type
+                if (type === 'success') {
+                    notification.style.backgroundColor = 'var(--success-color)';
+                } else if (type === 'error') {
+                    notification.style.backgroundColor = 'var(--error-color)';
+                } else if (type === 'warning') {
+                    notification.style.backgroundColor = 'var(--warning-color)';
+                    notification.style.color = 'var(--text-color)';
+                }
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideIn 0.3s ease reverse';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
