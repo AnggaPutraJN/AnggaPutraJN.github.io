@@ -987,9 +987,9 @@ function confirmSaveSettings() {
     };
     
     // Save to localStorage
-    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6') || '[]');
+    let savedSettings = JSON.parse(localStorage.getItem('saveshortlinkswitch') || '[]');
     savedSettings.push(settings);
-    localStorage.setItem('linkSettingsV6', JSON.stringify(savedSettings));
+    localStorage.setItem('saveshortlinkswitch', JSON.stringify(savedSettings));
     
     // Close modal
     document.getElementById('settingsName').value = '';
@@ -1011,7 +1011,7 @@ function getAllInputValues() {
         
         function loadLinkSettingsModal() {
             // Get settings from localStorage
-            const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6') || '[]');
+            const savedSettings = JSON.parse(localStorage.getItem('saveshortlinkswitch') || '[]');
             
             if (savedSettings.length === 0) {
                 showNotification("Belum ada settingan yang disimpan");
@@ -1052,7 +1052,7 @@ function getAllInputValues() {
         
 function applyLinkSettings(index) {
     try {
-        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6')) || [];
+        const savedSettings = JSON.parse(localStorage.getItem('saveshortlinkswitch')) || [];
         if (index < 0 || index >= savedSettings.length) {
             showNotification("Settingan tidak ditemukan");
             return;
@@ -1135,13 +1135,13 @@ function updateTextareaFromInputs() {
             }
             
             // Get settings from localStorage
-            let savedSettings = JSON.parse(localStorage.getItem('linkSettingsV6') || '[]');
+            let savedSettings = JSON.parse(localStorage.getItem('saveshortlinkswitch') || '[]');
             
             // Remove selected setting
             const deletedSetting = savedSettings.splice(index, 1);
             
             // Save back to localStorage
-            localStorage.setItem('linkSettingsV6', JSON.stringify(savedSettings));
+            localStorage.setItem('saveshortlinkswitch', JSON.stringify(savedSettings));
             
             // Refresh settings list
             loadLinkSettingsModal();
