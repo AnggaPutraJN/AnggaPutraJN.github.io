@@ -495,6 +495,9 @@ label {
 <label for="inputVersion"><i class="fas fa-id-card"></i> Versi:</label>
 <input type="text" id="inputVersion" name="inputVersion" placeholder="Masukkan ID game...">
 
+<label for="inputMod"><i class="fas fa-code-branch"></i> MOD Game:</label>
+<input type="text" id="inputMod" name="inputMod" placeholder="Masukkan MOD game...">
+
 <label for="inputLink"><i class="fas fa-link"></i> Link Game:</label>
 <input type="text" id="inputLink" name="inputLink" placeholder="https://example.com/download">
 
@@ -667,6 +670,7 @@ function generateCode() {
         const inputSingleSize = document.getElementById("inputSingleSize").value;
         const inputCategory = document.getElementById("inputCategory").value;
         const inputVersion = document.getElementById("inputVersion").value;
+        const inputMod = document.getElementById("inputMod").value;
         const inputLink = document.getElementById("inputLink").value;
         
         // Get selected post type
@@ -681,6 +685,7 @@ Nama Game: ${inputName}
 Ukuran Game: ${inputSingleSize} (APK)
 Category: ${inputCategory}
 Versi: ${inputVersion}
+MOD: ${inputMod}
 Platform: Android
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
@@ -706,6 +711,7 @@ Nama Game: ${inputName}
 Ukuran Game: ${inputSingleSize} (APK)
 Category: ${inputCategory}
 Versi: ${inputVersion}
+MOD: ${inputMod}
 Platform: Android 
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
@@ -731,6 +737,7 @@ Nama Game: ${inputName}
 Ukuran Game: ${inputSingleSize} (APK)
 Category: ${inputCategory}
 Versi: ${inputVersion}
+MOD: ${inputMod}
 Platform: Android
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
