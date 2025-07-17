@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Locked Link System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4a94bb 0%, #2c5282 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4a94bb;
+        }
+
+        .section h2 {
+            color: #2c5282;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"], input[type="url"], textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="url"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #4a94bb;
+            box-shadow: 0 0 0 3px rgba(74, 148, 187, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4a94bb 0%, #2c5282 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 148, 187, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .btn-warning:hover {
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .btn-info:hover {
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        th {
+            background: #4a94bb;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4a94bb;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #4a94bb;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c5282;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .key-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .key-display {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #2c5282;
+            border: 1px solid #e1e5e9;
+        }
+
+        .key-edit {
+            padding: 8px 12px;
+            border: 2px solid #4a94bb;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #2c5282;
+            width: 100px;
+        }
+
+        .key-edit:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 148, 187, 0.1);
+        }
+
+        .btn-mini {
+            padding: 5px 10px;
+            font-size: 12px;
+            min-width: auto;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        /* Bulk Generator Styles */
+        .tab-navigation {
+            display: flex;
+            background: #2c5282;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tab-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .tab-button.active {
+            background: #4a94bb;
+        }
+
+        .bulk-textarea-container {
+            margin-bottom: 20px;
+        }
+
+        .bulk-textarea {
+            min-height: 200px;
+            font-family: monospace;
+        }
+
+        .bulk-result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4a94bb;
+        }
+
+        .bulk-result-link {
+            font-size: 14px;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .bulk-result-count {
+            font-weight: 600;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .copy-all-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .game-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4a94bb;
+        }
+
+        .success-title {
+            color: #2c5282;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .divider {
+            border: none;
+            height: 1px;
+            background: #e1e5e9;
+            margin: 20px 0;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            background: #4a94bb;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #27ae60;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        .notification.info {
+            background: #3498db;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .tab-navigation {
+                flex-wrap: wrap;
+            }
+
+            .tab-button {
+                flex: 1 0 auto;
+                padding: 10px;
+                font-size: 14px;
+                justify-content: center;
+            }
+
+            .copy-all-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Admin Panel</h1>
+            <p>Locked Link System Management</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <a href="#" class="tab-button active" id="dashboardTab">
+                <i class="icon">📊</i> Dashboard
+            </a>
+            <a href="#" class="tab-button" id="bulkGeneratorTab">
+                <i class="icon">🚀</i> Bulk Generator
+            </a>
+            <a href="#" class="tab-button" id="bulkGeneratorV2Tab">
+                <i class="icon">🚀</i> Bulk Generator V2
+            </a>
+    <a href="#" class="tab-button" id="linkListTab">
+        <i class="icon">📋</i> Daftar Link
+    </a>
+    <a href="Noted2UnlockAdmin" class="tab-button">
+        <i class="icon">📝</i> Noted2Unlock Admin
+    </a>
+    <a href="index" class="tab-button">
+        <i class="icon">🏠</i> Kembali Ke Home
+    </a>
+        </div>
+
+        <div class="main-content">
+            <!-- Dashboard Tab Content -->
+            <div id="dashboardContent">
+                <!-- Stats Dashboard -->
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalLinks">0</div>
+                        <div class="stat-label">Total Links</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalClicks">0</div>
+                        <div class="stat-label">Total Clicks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayClicks">0</div>
+                        <div class="stat-label">Today's Clicks</div>
+                    </div>
+                </div>
+
+                <!-- Create New Link -->
+                <div class="section">
+                    <h2>🎮 Buat Link Baru</h2>
+                    <form id="createForm">
+                        <div class="form-group">
+                            <label for="namaGame">Nama Game:</label>
+                            <input type="text" id="namaGame" name="nama_game" required placeholder="Contoh: Mobile Legends Bang Bang">
+                        </div>
+                        <div class="form-group">
+                            <label for="linkTujuan">Link Tujuan:</label>
+                            <input type="url" id="linkTujuan" name="link_tujuan" required placeholder="https://example.com/download">
+                        </div>
+                        <button type="submit" class="btn">🔗 Buat Link</button>
+                    </form>
+                </div>
+
+                <!-- Alert Messages -->
+                <div id="alertContainer"></div>
+
+                <!-- Links Management -->
+                <div class="section">
+                    <h2>📊 Manajemen Link</h2>
+                    <button onclick="loadLinks()" class="btn btn-success">🔄 Refresh Data</button>
+                    
+                    <div class="table-container">
+                        <table id="linksTable">
+                            <thead>
+                                <tr>
+                                    <th>Nama Game</th>
+                                    <th>Link Tujuan</th>
+                                    <th>Key</th>
+                                    <th>Shareable Link</th>
+                                    <th>Dibuat</th>
+                                    <th>Key Last Updated</th>
+                                    <th>Clicks</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="linksTableBody">
+                                <tr>
+                                    <td colspan="9" class="loading">
+                                        <div class="spinner"></div>
+                                        Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Telegram Info -->
+                <div class="section">
+                    <h2>📱 Informasi Telegram</h2>
+                    <p><strong>Username Admin:</strong> @indapk</p>
+                    <p><strong>Instruksi untuk User:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>User harus menghubungi admin di Telegram @indapk</li>
+                        <li>Admin akan memberikan kunci 6 digit untuk membuka link</li>
+                        <li>Kunci hanya berlaku untuk satu kali akses</li>
+                        <li>Setiap akses akan dicatat dalam sistem</li>
+                        <li>Key akan direset otomatis setiap 24 jam</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bulk Generator Tab Content -->
+            <div id="bulkGeneratorContent" style="display: none;">
+                <div class="section">
+                    <h2>🚀 Bulk Link Generator</h2>
+                    <p>Generate multiple locked links at once by pasting game names and URLs in bulk.</p>
+                    
+                    <div class="alert alert-info">
+                        <strong>Format:</strong> Nama Game di baris pertama, Link di baris berikutnya. Contoh:
+                        <pre style="margin-top: 10px; background: white; padding: 10px; border-radius: 5px;">
+Game A
+https://example.com/game-a
+Game B
+https://example.com/game-b</pre>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bulkInput">Bulk Input:</label>
+                        <textarea id="bulkInput" class="bulk-textarea" rows="10" placeholder="Paste game names and URLs here..."></textarea>
+                    </div>
+                    
+                    <button onclick="parseBulkInput()" class="btn btn-primary">🔍 Parse Input</button>
+                    <button onclick="clearBulkInput()" class="btn btn-danger">🗑️ Clear</button>
+                    
+                    <div id="bulkResults" style="margin-top: 20px; display: none;">
+                        <h3 style="margin-bottom: 15px;">Parsing Results</h3>
+                        <div id="bulkResultsContainer" style="margin-bottom: 20px;"></div>
+                        <button onclick="generateBulkLinks()" class="btn btn-success">🚀 Generate All Links</button>
+                    </div>
+                </div>
+                
+                <div class="section" id="bulkResultsSection" style="display: none;">
+                    <h2>🎉 Generated Links</h2>
+                    <div id="generatedLinksContainer"></div>
+                    <div class="copy-all-buttons">
+                        <button onclick="copyAllLinks()" class="btn btn-info">📋 Copy All Links</button>
+                        <button onclick="copyAllLinksWithNames()" class="btn btn-warning">📝 Copy Links with Names</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Generator V2 Tab Content -->
+            <div id="bulkGeneratorV2Content" style="display: none;">
+                <div class="section">
+                    <h2>🚀 Bulk Link Generator V2</h2>
+                    <p>Generate multiple locked links at once with multiple URLs per game.</p>
+                    
+                    <div class="alert alert-info">
+                        <strong>Format:</strong> Nama Game di baris pertama, diikuti beberapa link di baris berikutnya. Contoh:
+                        <pre style="margin-top: 10px; background: white; padding: 10px; border-radius: 5px;">
+Game A
+https://example.com/game-a
+https://example.com/game-b
+https://example.com/game-c
+Game B
+https://example.com/game-d
+https://example.com/game-e</pre>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bulkV2Input">Bulk Input V2:</label>
+                        <textarea id="bulkV2Input" class="bulk-textarea" rows="10" placeholder="Paste game names and multiple URLs here..."></textarea>
+                    </div>
+                    
+                    <button onclick="parseBulkV2Input()" class="btn btn-primary">🔍 Parse Input</button>
+                    <button onclick="clearBulkV2Input()" class="btn btn-danger">🗑️ Clear</button>
+                    
+                    <div id="bulkV2Results" style="margin-top: 20px; display: none;">
+                        <h3 style="margin-bottom: 15px;">Parsing Results</h3>
+                        <div id="bulkV2ResultsContainer" style="margin-bottom: 20px;"></div>
+                        <button onclick="generateBulkV2Links()" class="btn btn-success">🚀 Generate All Links</button>
+                    </div>
+                </div>
+                
+                <div class="section" id="bulkV2ResultsSection" style="display: none;">
+                    <h2>🎉 Generated Links V2</h2>
+                    <div id="generatedV2LinksContainer"></div>
+                    <div class="copy-all-buttons">
+                        <button onclick="copyAllV2Links()" class="btn btn-info">📋 Copy All Links</button>
+                        <button onclick="copyAllV2LinksWithNames()" class="btn btn-warning">📝 Copy Links with Names</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Element -->
+    <div id="notification" class="notification">
+        <span id="notificationIcon">ℹ️</span>
+        <span id="notificationMessage">Notification message</span>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYT-B2nbzoYoUuzjnpnROpCVPqcBrWYVKeR4rVkrUhSsLfIsICNe_92qCWehBzwLsE/exec';
+        let linksData = {}; // Store loaded links data
+        let parsedBulkGames = []; // Store parsed games from bulk input
+        let parsedBulkV2Games = []; // Store parsed games from bulk V2 input
+
+        // Load links on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLinks();
+            setupTabNavigation();
+        });
+
+        // Tab Navigation
+        function setupTabNavigation() {
+            document.getElementById('dashboardTab').addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('dashboard');
+            });
+            
+            document.getElementById('bulkGeneratorTab').addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('bulkGenerator');
+            });
+            
+            document.getElementById('bulkGeneratorV2Tab').addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('bulkGeneratorV2');
+            });
+        }
+
+        function switchTab(tab) {
+            // Update active tab
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            if (tab === 'dashboard') {
+                document.getElementById('dashboardTab').classList.add('active');
+                document.getElementById('dashboardContent').style.display = 'block';
+                document.getElementById('bulkGeneratorContent').style.display = 'none';
+                document.getElementById('bulkGeneratorV2Content').style.display = 'none';
+            } else if (tab === 'bulkGenerator') {
+                document.getElementById('bulkGeneratorTab').classList.add('active');
+                document.getElementById('dashboardContent').style.display = 'none';
+                document.getElementById('bulkGeneratorContent').style.display = 'block';
+                document.getElementById('bulkGeneratorV2Content').style.display = 'none';
+            } else {
+                document.getElementById('bulkGeneratorV2Tab').classList.add('active');
+                document.getElementById('dashboardContent').style.display = 'none';
+                document.getElementById('bulkGeneratorContent').style.display = 'none';
+                document.getElementById('bulkGeneratorV2Content').style.display = 'block';
+            }
+        }
+
+        // Create new link
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('action', 'create');
+            
+            showAlert('Membuat link...', 'info');
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert(`Link berhasil dibuat! Key: ${data.data.key}`, 'success');
+                    this.reset();
+                    loadLinks();
+                } else {
+                    showAlert(data.message || 'Gagal membuat link', 'error');
+                }
+            })
+            .catch(error => {
+                showAlert('Error: ' + error.message, 'error');
+            });
+        });
+
+        // Load links function
+        function loadLinks() {
+            const tbody = document.getElementById('linksTableBody');
+            tbody.innerHTML = '<tr><td colspan="9" class="loading"><div class="spinner"></div>Memuat data...</td></tr>';
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=list'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    displayLinks(data.data);
+                    updateStats(data.data);
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="9" class="loading">❌ Gagal memuat data</td></tr>';
+                }
+            })
+            .catch(error => {
+                tbody.innerHTML = '<tr><td colspan="9" class="loading">❌ Error: ' + error.message + '</td></tr>';
+            });
+        }
+
+        // Display links in table
+        function displayLinks(links) {
+            const tbody = document.getElementById('linksTableBody');
+            
+            if (links.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="loading">📭 Belum ada link yang dibuat</td></tr>';
+                return;
+            }
+
+            // Store links data for key retrieval
+            linksData = {};
+            links.forEach(link => {
+                linksData[link.id] = link;
+            });
+            
+            tbody.innerHTML = links.map(link => `
+                <tr>
+                    <td>${link.nama_game}</td>
+                    <td><a href="${link.link_tujuan}" target="_blank">${link.link_tujuan.substring(0, 30)}...</a></td>
+                    <td>
+                        <div class="key-container" id="key-container-${link.id}">
+                            <span class="key-display" id="key-${link.id}">Loading...</span>
+                            <button onclick="copyKey('${link.id}')" class="btn btn-mini" title="Copy Key">📋</button>
+                            <button onclick="editKey('${link.id}')" class="btn btn-warning btn-mini" title="Edit Key">✏️</button>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" value="https://indapk.com/buka.html?id=${link.id}" readonly style="width: 100%; padding: 5px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
+                        <button onclick="copyToClipboard('https://indapk.com/buka.html?id=${link.id}')" class="btn btn-mini" style="margin-top: 5px;">📋 Copy</button>
+                    </td>
+                    <td>${link.created_at}</td>
+                    <td>${link.key_last_updated || link.created_at}</td>
+                    <td><span class="badge badge-success">${link.count}</span></td>
+                    <td><span class="badge badge-success">${link.status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="viewDetails('${link.id}')" class="btn btn-mini">👁️ Detail</button>
+                            <button onclick="generateNewKey('${link.id}')" class="btn btn-warning btn-mini">🔄 New Key</button>
+                            <button onclick="deleteLink('${link.id}')" class="btn btn-danger btn-mini">🗑️ Hapus</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Load keys for each link
+            links.forEach(link => {
+                loadKeyForLink(link.id);
+            });
+        }
+
+        // Load key for specific link
+        function loadKeyForLink(linkId) {
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=get&id=${linkId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.data.key) {
+                    const keyElement = document.getElementById(`key-${linkId}`);
+                    if (keyElement) {
+                        keyElement.textContent = data.data.key;
+                        // Store key in linksData for later use
+                        if (linksData[linkId]) {
+                            linksData[linkId].key = data.data.key;
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading key:', error);
+            });
+        }
+
+        // Copy key to clipboard
+        function copyKey(linkId) {
+            const keyElement = document.getElementById(`key-${linkId}`);
+            if (!keyElement) {
+                showAlert('Element key tidak ditemukan', 'error');
+                return;
+            }
+
+            const key = keyElement.textContent;
+            if (key && key !== 'Loading...') {
+                navigator.clipboard.writeText(key).then(() => {
+                    showAlert('Key berhasil disalin: ' + key, 'success');
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = key;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showAlert('Key berhasil disalin: ' + key, 'success');
+                });
+            } else {
+                showAlert('Key belum tersedia', 'error');
+            }
+        }
+
+        // Edit key
+        function editKey(linkId) {
+            const keyElement = document.getElementById(`key-${linkId}`);
+            const container = document.getElementById(`key-container-${linkId}`);
+            
+            if (!keyElement || !container) {
+                showAlert('Element tidak ditemukan', 'error');
+                return;
+            }
+
+            const currentKey = keyElement.textContent;
+            if (currentKey === 'Loading...') {
+                showAlert('Tunggu key selesai dimuat', 'error');
+                return;
+            }
+            
+            // Replace display with input field
+            container.innerHTML = `
+                <input type="text" id="key-input-${linkId}" value="${currentKey}" class="key-edit" maxlength="6" pattern="[0-9]{6}" title="Key harus 6 digit angka">
+                <button onclick="saveKey('${linkId}')" class="btn btn-success btn-mini" title="Simpan">💾</button>
+                <button onclick="cancelEditKey('${linkId}', '${currentKey}')" class="btn btn-danger btn-mini" title="Batal">❌</button>
+            `;
+            
+            const input = document.getElementById(`key-input-${linkId}`);
+            if (input) {
+                input.focus();
+                input.select();
+                
+                // Handle Enter and Escape keys
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        saveKey(linkId);
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        cancelEditKey(linkId, currentKey);
+                    }
+                });
+            }
+        }
+
+        // Save key
+        function saveKey(linkId) {
+            const input = document.getElementById(`key-input-${linkId}`);
+            if (!input) {
+                showAlert('Input field tidak ditemukan', 'error');
+                return;
+            }
+            
+            const newKey = input.value.trim();
+            
+            // Validate key
+            if (!/^[0-9]{6}$/.test(newKey)) {
+                showAlert('Key harus 6 digit angka', 'error');
+                return;
+            }
+            
+            // Show loading state
+            input.disabled = true;
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=updateKey&id=${linkId}&key=${newKey}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert('Key berhasil diubah', 'success');
+                    restoreKeyDisplay(linkId, newKey);
+                    loadLinks(); // Reload to update the key last updated timestamp
+                } else {
+                    showAlert(data.message || 'Gagal mengubah key', 'error');
+                    input.disabled = false;
+                }
+            })
+            .catch(error => {
+                showAlert('Error: ' + error.message, 'error');
+                input.disabled = false;
+            });
+        }
+
+        // Cancel edit key
+        function cancelEditKey(linkId, originalKey) {
+            restoreKeyDisplay(linkId, originalKey);
+        }
+
+        // Restore key display
+        function restoreKeyDisplay(linkId, keyValue) {
+            const container = document.getElementById(`key-container-${linkId}`);
+            if (container) {
+                container.innerHTML = `
+                    <span class="key-display" id="key-${linkId}">${keyValue}</span>
+                    <button onclick="copyKey('${linkId}')" class="btn btn-mini" title="Copy Key">📋</button>
+                    <button onclick="editKey('${linkId}')" class="btn btn-warning btn-mini" title="Edit Key">✏️</button>
+                `;
+            }
+        }
+
+        // Generate new key
+        function generateNewKey(linkId) {
+            if (confirm('Apakah Anda yakin ingin membuat key baru? Key lama akan tidak bisa digunakan.')) {
+                const newKey = Math.floor(100000 + Math.random() * 900000).toString();
+                
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=updateKey&id=${linkId}&key=${newKey}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Key baru berhasil dibuat: ' + newKey, 'success');
+                        restoreKeyDisplay(linkId, newKey);
+                        loadLinks(); // Reload to update the key last updated timestamp
+                    } else {
+                        showAlert(data.message || 'Gagal membuat key baru', 'error');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error: ' + error.message, 'error');
+                });
+            }
+        }
+
+        // Update stats
+        function updateStats(links) {
+            const totalLinks = links.length;
+            const totalClicks = links.reduce((sum, link) => sum + (link.count || 0), 0);
+            const todayClicks = 0; // This would need to be calculated from click data
+            
+            document.getElementById('totalLinks').textContent = totalLinks;
+            document.getElementById('totalClicks').textContent = totalClicks;
+            document.getElementById('todayClicks').textContent = todayClicks;
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('Link berhasil disalin!', 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showAlert('Link berhasil disalin!', 'success');
+            });
+        }
+
+        // View details
+        function viewDetails(id) {
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=get&id=${id}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const link = data.data;
+                    alert(`Detail Link:\n\nNama Game: ${link.nama_game}\nLink Tujuan: ${link.link_tujuan}\nKey: ${link.key || 'N/A'}\nKey Last Updated: ${link.key_last_updated || link.created_at}\nTotal Clicks: ${link.count}\nDibuat: ${link.created_at}\nID: ${link.id}`);
+                } else {
+                    showAlert(data.message || 'Gagal mengambil detail', 'error');
+                }
+            })
+            .catch(error => {
+                showAlert('Error: ' + error.message, 'error');
+            });
+        }
+
+        // Delete link
+        function deleteLink(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=delete&id=${id}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Link berhasil dihapus', 'success');
+                        loadLinks();
+                    } else {
+                        showAlert(data.message || 'Gagal menghapus link', 'error');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error: ' + error.message, 'error');
+                });
+            }
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-error' : 'alert-info';
+            
+            alertContainer.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notificationIcon');
+            const msg = document.getElementById('notificationMessage');
+            
+            // Set icon based on type
+            if (type === 'success') {
+                icon.textContent = '✅';
+                notification.className = 'notification success';
+            } else if (type === 'error') {
+                icon.textContent = '❌';
+                notification.className = 'notification error';
+            } else {
+                icon.textContent = 'ℹ️';
+                notification.className = 'notification info';
+            }
+            
+            msg.textContent = message;
+            notification.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Bulk Generator Functions
+        function clearBulkInput() {
+            document.getElementById('bulkInput').value = '';
+            document.getElementById('bulkResults').style.display = 'none';
+            document.getElementById('bulkResultsSection').style.display = 'none';
+            parsedBulkGames = [];
+        }
+
+        function parseBulkInput() {
+            const input = document.getElementById('bulkInput').value.trim();
+            if (!input) {
+                showNotification('Mohon masukkan data terlebih dahulu', 'error');
+                return;
+            }
+            
+            const lines = input.split('\n').filter(line => line.trim() !== '');
+            const games = [];
+            let currentGame = null;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // Skip empty lines
+                if (!line) continue;
+                
+                // Check if line is a URL
+                if (line.startsWith('http://') || line.startsWith('https://')) {
+                    if (currentGame) {
+                        currentGame.link = line;
+                        currentGame.domain = extractDomainName(line);
+                        games.push(currentGame);
+                        currentGame = null;
+                    }
+                } else {
+                    // This is a game name
+                    if (currentGame) {
+                        // If we already have a game name without a URL, push it first
+                        games.push(currentGame);
+                    }
+                    currentGame = { 
+                        name: line.replace(/\[NAMA DOMAIN\]/g, '').trim(), 
+                        link: '',
+                        domain: '' 
+                    };
+                }
+            }
+            
+            // Push the last game if it exists
+            if (currentGame) {
+                games.push(currentGame);
+            }
+            
+            // Filter out games without links
+            parsedBulkGames = games.filter(game => game.link);
+            
+            if (parsedBulkGames.length === 0) {
+                showNotification('Tidak ada game dengan link yang valid ditemukan', 'error');
+                document.getElementById('bulkResults').style.display = 'none';
+                return;
+            }
+            
+            displayBulkResults(parsedBulkGames);
+        }
+
+        function extractDomainName(url) {
+            if (!url) return '';
+            
+            try {
+                const domain = new URL(url).hostname.replace('www.', '');
+                const domainMap = {
+                    'drive.google.com': 'Google Drive',
+                    'mediafire.com': 'Mediafire',
+                    'mega.nz': 'Mega',
+                    'pixeldrain.com': 'PixelDrain',
+                    'qiwi.gg': 'Qiwi',
+                    'katfile.com': 'KatFile',
+                    'bowfile.com': 'BowFile',
+                    'mixdrop.is': 'MixDrop',
+                    '1fichier.com': '1Fichier',
+                    'multiup.io': 'MultiUp',
+                    'zippyshare.com': 'ZippyShare',
+                    'dropbox.com': 'Dropbox',
+                    'terabox.com': 'TeraBox',
+                    'anonfiles.com': 'AnonFiles',
+                    'bayfiles.com': 'BayFiles',
+                    'letsupload.io': 'LetsUpload',
+                    'file.io': 'File.io',
+                    'filebin.net': 'Filebin',
+                    'uploaded.net': 'Uploaded',
+                    'rapidgator.net': 'Rapidgator',
+                    'nitroflare.com': 'NitroFlare',
+                    'turbobit.net': 'Turbobit',
+                    'uploadgig.com': 'UploadGig',
+                    'filefactory.com': 'FileFactory',
+                    'userscloud.com': 'UsersCloud',
+                    'openload.cc': 'OpenLoad',
+                    'uptobox.com': 'Uptobox',
+                    'ddownload.com': 'DDownload',
+                    'workupload.com': 'WorkUpload',
+                    'send.cm': 'SendCM',
+                    'filemail.com': 'Filemail',
+                    'onionshare.org': 'OnionShare',
+                    'wormhole.app': 'Wormhole',
+                    'sendgb.com': 'SendGB',
+                    'transfer.sh': 'Transfer.sh',
+                    'wetransfer.com': 'WeTransfer',
+                    'filetransfer.io': 'FileTransfer',
+                    'easyupload.io': 'EasyUpload',
+                    'lolabits.se': 'LolaBits',
+                    'vup.to': 'VUp',
+                    'keep2share.cc': 'Keep2Share',
+                    'file.al': 'FileAL',
+                    'uploadboy.com': 'UploadBoy',
+                    'hitfile.net': 'HitFile',
+                    'vikingfile.com': 'VikingFile',
+                    'clicknupload.space': 'Clicknupload',
+                    'link2unlock.com': 'Link2Unlock Safelinku',
+                    'megaup.net': 'MegaUP',
+                    'dupload.net': 'Dupload',
+                    'GoFile.io': 'GoFile',
+                    'FastUpload.io': 'FastUpload',
+                    'Ddownload.com ': 'Ddownload',
+                    'icerbox.com': 'IcerBox'
+                };
+                
+                return domainMap[domain] || domain;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function displayBulkResults(games) {
+            const container = document.getElementById('bulkResultsContainer');
+            container.innerHTML = '';
+            
+            games.forEach((game, index) => {
+                const gameElement = document.createElement('div');
+                gameElement.className = 'bulk-result-item';
+                
+                // Format name with domain if available
+                let displayedName = game.name;
+                if (game.domain) {
+                    displayedName = `${displayedName} [${game.domain}]`;
+                }
+                
+                gameElement.innerHTML = `
+                    <h4>${index + 1}. ${displayedName}</h4>
+                    <div class="bulk-result-link">${game.link}</div>
+                `;
+                container.appendChild(gameElement);
+            });
+            
+            document.getElementById('bulkResults').style.display = 'block';
+            showNotification(`Ditemukan ${games.length} game dengan link valid`, 'success');
+        }
+
+        async function generateBulkLinks() {
+            if (parsedBulkGames.length === 0) {
+                showNotification('Tidak ada game yang bisa digenerate', 'error');
+                return;
+            }
+            
+            const resultsContainer = document.getElementById('generatedLinksContainer');
+            resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Membuat link...</div>';
+            
+            document.getElementById('bulkResultsSection').style.display = 'block';
+            
+            let successCount = 0;
+            let errorCount = 0;
+            let resultsHTML = '';
+            
+            for (let i = 0; i < parsedBulkGames.length; i++) {
+                const game = parsedBulkGames[i];
+                
+                // Format name with domain if available
+                let gameName = game.name;
+                if (game.domain) {
+                    gameName = `${gameName} [${game.domain}]`;
+                }
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'create');
+                    formData.append('nama_game', gameName);
+                    formData.append('link_tujuan', game.link);
+                    
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        successCount++;
+                        resultsHTML += `
+                            <div class="result-item">
+                                <h4>${gameName}</h4>
+                                <div class="input-group" style="margin-top: 10px;">
+                                    <input type="text" value="https://indapk.com/buka.html?id=${data.data.id}" readonly style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px 0 0 4px;">
+                                    <button onclick="copyToClipboard('https://indapk.com/buka.html?id=${data.data.id}')" class="btn btn-mini" style="border-radius: 0 4px 4px 0;">📋 Copy</button>
+                                </div>
+                                <div style="margin-top: 5px; font-size: 14px; color: #666;">
+                                    Key: ${data.data.key}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        errorCount++;
+                        resultsHTML += `
+                            <div class="result-item" style="border-left-color: #e74c3c;">
+                                <h4 style="color: #e74c3c;">${gameName}</h4>
+                                <div style="color: #e74c3c; font-size: 14px;">
+                                    Error: ${data.message || 'Gagal membuat link'}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Update progress
+                    resultsContainer.innerHTML = `
+                        <div style="margin-bottom: 15px;">
+                            <strong>Progress:</strong> ${i + 1}/${parsedBulkGames.length} (${successCount} sukses, ${errorCount} gagal)
+                        </div>
+                        ${resultsHTML}
+                    `;
+                    
+                } catch (error) {
+                    errorCount++;
+                    resultsHTML += `
+                        <div class="result-item" style="border-left-color: #e74c3c;">
+                            <h4 style="color: #e74c3c;">${gameName}</h4>
+                            <div style="color: #e74c3c; font-size: 14px;">
+                                Error: ${error.message}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Update progress
+                    resultsContainer.innerHTML = `
+                        <div style="margin-bottom: 15px;">
+                            <strong>Progress:</strong> ${i + 1}/${parsedBulkGames.length} (${successCount} sukses, ${errorCount} gagal)
+                        </div>
+                        ${resultsHTML}
+                    `;
+                }
+            }
+            
+            // Final update
+            resultsContainer.innerHTML = `
+                <div class="alert ${successCount > 0 ? 'alert-success' : 'alert-error'}" style="margin-bottom: 15px;">
+                    <strong>Selesai!</strong> ${successCount} link berhasil dibuat, ${errorCount} gagal.
+                </div>
+                ${resultsHTML}
+            `;
+            
+            // Scroll to results
+            document.getElementById('bulkResultsSection').scrollIntoView({ behavior: 'smooth' });
+            
+            // Reload links table if any were successful
+            if (successCount > 0) {
+                loadLinks();
+            }
+        }
+
+        function copyAllLinks() {
+            const links = [];
+            document.querySelectorAll('#generatedLinksContainer .result-item input[type="text"]').forEach(input => {
+                links.push(input.value);
+            });
+            
+            if (links.length === 0) {
+                showNotification('Tidak ada link yang bisa disalin', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(links.join('\n')).then(() => {
+                showNotification(`${links.length} link berhasil disalin`, 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = links.join('\n');
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${links.length} link berhasil disalin`, 'success');
+            });
+        }
+
+        function copyAllLinksWithNames() {
+            const linksWithNames = [];
+            document.querySelectorAll('#generatedLinksContainer .result-item').forEach(item => {
+                const name = item.querySelector('h4')?.textContent;
+                const input = item.querySelector('input[type="text"]');
+                if (name && input) {
+                    linksWithNames.push(`${name}: ${input.value}`);
+                }
+            });
+            
+            if (linksWithNames.length === 0) {
+                showNotification('Tidak ada link yang bisa disalin', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(linksWithNames.join('\n')).then(() => {
+                showNotification(`${linksWithNames.length} link dengan nama berhasil disalin`, 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = linksWithNames.join('\n');
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${linksWithNames.length} link dengan nama berhasil disalin`, 'success');
+            });
+        }
+
+        // Bulk Generator V2 Functions
+        function clearBulkV2Input() {
+            document.getElementById('bulkV2Input').value = '';
+            document.getElementById('bulkV2Results').style.display = 'none';
+            document.getElementById('bulkV2ResultsSection').style.display = 'none';
+            parsedBulkV2Games = [];
+        }
+
+        function parseBulkV2Input() {
+            const input = document.getElementById('bulkV2Input').value.trim();
+            if (!input) {
+                showNotification('Mohon masukkan data terlebih dahulu', 'error');
+                return;
+            }
+            
+            const lines = input.split('\n').filter(line => line.trim() !== '');
+            const games = [];
+            let currentGame = null;
+            let currentLinks = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // Skip empty lines
+                if (!line) continue;
+                
+                // Check if line is a URL
+                if (line.startsWith('http://') || line.startsWith('https://')) {
+                    if (currentGame) {
+                        currentLinks.push({
+                            url: line,
+                            domain: extractDomainName(line)
+                        });
+                    }
+                } else {
+                    // This is a game name - save previous game if exists
+                    if (currentGame && currentLinks.length > 0) {
+                        games.push({
+                            name: currentGame,
+                            links: [...currentLinks]
+                        });
+                    }
+                    
+                    // Start new game
+                    currentGame = line.replace(/\[NAMA DOMAIN\]/g, '').trim();
+                    currentLinks = [];
+                }
+            }
+            
+            // Push the last game if it exists
+            if (currentGame && currentLinks.length > 0) {
+                games.push({
+                    name: currentGame,
+                    links: [...currentLinks]
+                });
+            }
+            
+            parsedBulkV2Games = games;
+            
+            if (parsedBulkV2Games.length === 0) {
+                showNotification('Tidak ada game dengan link yang valid ditemukan', 'error');
+                document.getElementById('bulkV2Results').style.display = 'none';
+                return;
+            }
+            
+            displayBulkV2Results(parsedBulkV2Games);
+        }
+
+        function displayBulkV2Results(games) {
+            const container = document.getElementById('bulkV2ResultsContainer');
+            container.innerHTML = '';
+            
+            games.forEach((game, index) => {
+                const gameElement = document.createElement('div');
+                gameElement.className = 'bulk-result-item';
+                
+                let linksHTML = '';
+                game.links.forEach((link, linkIndex) => {
+                    linksHTML += `
+                        <div style="margin-top: ${linkIndex > 0 ? '10px' : '5px'};">
+                            <strong>Link ${linkIndex + 1}:</strong> 
+                            <div class="bulk-result-link">${link.url}</div>
+                            ${link.domain ? `<div style="font-size: 12px; color: #666;">Domain: ${link.domain}</div>` : ''}
+                        </div>
+                    `;
+                });
+                
+                gameElement.innerHTML = `
+                    <h4>${index + 1}. ${game.name}</h4>
+                    ${linksHTML}
+                    <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                        Total ${game.links.length} link untuk game ini
+                    </div>
+                `;
+                container.appendChild(gameElement);
+            });
+            
+            document.getElementById('bulkV2Results').style.display = 'block';
+            showNotification(`Ditemukan ${games.length} game dengan total ${games.reduce((sum, game) => sum + game.links.length, 0)} link`, 'success');
+        }
+
+        async function generateBulkV2Links() {
+            if (parsedBulkV2Games.length === 0) {
+                showNotification('Tidak ada game yang bisa digenerate', 'error');
+                return;
+            }
+            
+            const resultsContainer = document.getElementById('generatedV2LinksContainer');
+            resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Membuat link...</div>';
+            
+            document.getElementById('bulkV2ResultsSection').style.display = 'block';
+            
+            let successCount = 0;
+            let errorCount = 0;
+            let resultsHTML = '';
+            
+            // Calculate total links to generate
+            const totalLinks = parsedBulkV2Games.reduce((sum, game) => sum + game.links.length, 0);
+            let processedLinks = 0;
+            
+            for (let i = 0; i < parsedBulkV2Games.length; i++) {
+                const game = parsedBulkV2Games[i];
+                
+                // Format name with domain if available
+                let gameName = game.name;
+                
+                // Generate links for each URL in the game
+                for (let j = 0; j < game.links.length; j++) {
+                    const link = game.links[j];
+                    processedLinks++;
+                    
+                    // Format name with domain for this specific link
+                    let linkGameName = gameName;
+                    if (link.domain) {
+                        linkGameName = `${gameName} [${link.domain}]`;
+                    }
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('action', 'create');
+                        formData.append('nama_game', linkGameName);
+                        formData.append('link_tujuan', link.url);
+                        
+                        const response = await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            successCount++;
+                            resultsHTML += `
+                                <div class="result-item">
+                                    <h4>${linkGameName}</h4>
+                                    <div class="input-group" style="margin-top: 10px;">
+                                        <input type="text" value="https://indapk.com/buka.html?id=${data.data.id}" readonly style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px 0 0 4px;">
+                                        <button onclick="copyToClipboard('https://indapk.com/buka.html?id=${data.data.id}')" class="btn btn-mini" style="border-radius: 0 4px 4px 0;">📋 Copy</button>
+                                    </div>
+                                    <div style="margin-top: 5px; font-size: 14px; color: #666;">
+                                        Key: ${data.data.key}
+                                    </div>
+                                    <div style="margin-top: 5px; font-size: 12px; color: #888;">
+                                        Original URL: ${link.url}
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            errorCount++;
+                            resultsHTML += `
+                                <div class="result-item" style="border-left-color: #e74c3c;">
+                                    <h4 style="color: #e74c3c;">${linkGameName}</h4>
+                                    <div style="color: #e74c3c; font-size: 14px;">
+                                        Error: ${data.message || 'Gagal membuat link'}
+                                    </div>
+                                    <div style="margin-top: 5px; font-size: 12px; color: #888;">
+                                        Original URL: ${link.url}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        // Update progress
+                        resultsContainer.innerHTML = `
+                            <div style="margin-bottom: 15px;">
+                                <strong>Progress:</strong> ${processedLinks}/${totalLinks} (${successCount} sukses, ${errorCount} gagal)
+                            </div>
+                            ${resultsHTML}
+                        `;
+                        
+                    } catch (error) {
+                        errorCount++;
+                        resultsHTML += `
+                            <div class="result-item" style="border-left-color: #e74c3c;">
+                                <h4 style="color: #e74c3c;">${linkGameName}</h4>
+                                <div style="color: #e74c3c; font-size: 14px;">
+                                    Error: ${error.message}
+                                </div>
+                                <div style="margin-top: 5px; font-size: 12px; color: #888;">
+                                    Original URL: ${link.url}
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Update progress
+                        resultsContainer.innerHTML = `
+                            <div style="margin-bottom: 15px;">
+                                <strong>Progress:</strong> ${processedLinks}/${totalLinks} (${successCount} sukses, ${errorCount} gagal)
+                            </div>
+                            ${resultsHTML}
+                        `;
+                    }
+                }
+            }
+            
+            // Final update
+            resultsContainer.innerHTML = `
+                <div class="alert ${successCount > 0 ? 'alert-success' : 'alert-error'}" style="margin-bottom: 15px;">
+                    <strong>Selesai!</strong> ${successCount} link berhasil dibuat, ${errorCount} gagal.
+                </div>
+                ${resultsHTML}
+            `;
+            
+            // Scroll to results
+            document.getElementById('bulkV2ResultsSection').scrollIntoView({ behavior: 'smooth' });
+            
+            // Reload links table if any were successful
+            if (successCount > 0) {
+                loadLinks();
+            }
+        }
+
+        function copyAllV2Links() {
+            const links = [];
+            document.querySelectorAll('#generatedV2LinksContainer .result-item input[type="text"]').forEach(input => {
+                links.push(input.value);
+            });
+            
+            if (links.length === 0) {
+                showNotification('Tidak ada link yang bisa disalin', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(links.join('\n')).then(() => {
+                showNotification(`${links.length} link berhasil disalin`, 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = links.join('\n');
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${links.length} link berhasil disalin`, 'success');
+            });
+        }
+
+        function copyAllV2LinksWithNames() {
+            const linksWithNames = [];
+            document.querySelectorAll('#generatedV2LinksContainer .result-item').forEach(item => {
+                const name = item.querySelector('h4')?.textContent;
+                const input = item.querySelector('input[type="text"]');
+                if (name && input) {
+                    linksWithNames.push(`${name}\n${input.value}`);
+                }
+            });
+            
+            if (linksWithNames.length === 0) {
+                showNotification('Tidak ada link yang bisa disalin', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(linksWithNames.join('\n\n')).then(() => {
+                showNotification(`${linksWithNames.length} link dengan nama berhasil disalin`, 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = linksWithNames.join('\n\n');
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${linksWithNames.length} link dengan nama berhasil disalin`, 'success');
+            });
+        }
+    </script>
+</body>
+</html>
