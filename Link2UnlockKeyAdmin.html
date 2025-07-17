@@ -562,6 +562,7 @@
                         <table id="linksTable">
                             <thead>
                                 <tr>
+                                    <th>Aksi</th>
                                     <th>Nama Game</th>
                                     <th>Link Tujuan</th>
                                     <th>Key</th>
@@ -570,7 +571,6 @@
                                     <th>Key Last Updated</th>
                                     <th>Clicks</th>
                                     <th>Status</th>
-                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="linksTableBody">
@@ -813,6 +813,13 @@ https://example.com/game-e</pre>
             
             tbody.innerHTML = links.map(link => `
                 <tr>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="viewDetails('${link.id}')" class="btn btn-mini">👁️ Detail</button>
+                            <button onclick="generateNewKey('${link.id}')" class="btn btn-warning btn-mini">🔄 New Key</button>
+                            <button onclick="deleteLink('${link.id}')" class="btn btn-danger btn-mini">🗑️ Hapus</button>
+                        </div>
+                    </td>
                     <td>${link.nama_game}</td>
                     <td><a href="${link.link_tujuan}" target="_blank">${link.link_tujuan.substring(0, 30)}...</a></td>
                     <td>
@@ -830,13 +837,6 @@ https://example.com/game-e</pre>
                     <td>${link.key_last_updated || link.created_at}</td>
                     <td><span class="badge badge-success">${link.count}</span></td>
                     <td><span class="badge badge-success">${link.status}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button onclick="viewDetails('${link.id}')" class="btn btn-mini">👁️ Detail</button>
-                            <button onclick="generateNewKey('${link.id}')" class="btn btn-warning btn-mini">🔄 New Key</button>
-                            <button onclick="deleteLink('${link.id}')" class="btn btn-danger btn-mini">🗑️ Hapus</button>
-                        </div>
-                    </td>
                 </tr>
             `).join('');
 
