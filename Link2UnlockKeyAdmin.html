@@ -444,6 +444,77 @@
             background: #3498db;
         }
 
+        /* Sorting and Pagination Styles */
+        .sort-pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .sort-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .sort-select {
+            padding: 8px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: #4a94bb;
+            box-shadow: 0 0 0 3px rgba(74, 148, 187, 0.1);
+        }
+
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pagination-select {
+            padding: 8px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .pagination-button {
+            padding: 8px 12px;
+            min-width: 40px;
+            background: #4a94bb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-button:hover {
+            background: #2c5282;
+        }
+
+        .pagination-button:disabled {
+            background: #e1e5e9;
+            color: #666;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 padding: 20px;
@@ -482,6 +553,15 @@
 
             .copy-all-buttons {
                 flex-direction: column;
+            }
+
+            .sort-pagination-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .pagination-container {
+                margin-top: 10px;
             }
         }
     </style>
@@ -557,6 +637,36 @@
                 <div class="section">
                     <h2>📊 Manajemen Link</h2>
                     <button onclick="loadLinks()" class="btn btn-success">🔄 Refresh Data</button>
+                    
+                    <!-- Sorting and Pagination Controls -->
+                    <div class="sort-pagination-container">
+                        <div class="sort-container">
+                            <span class="sort-label">Urutkan:</span>
+                            <select id="sortBy" class="sort-select" onchange="loadLinks()">
+                                <option value="created_at-desc">Tanggal Dibuat (Terbaru)</option>
+                                <option value="created_at-asc">Tanggal Dibuat (Terlama)</option>
+                                <option value="nama_game-asc">Nama Game (A-Z)</option>
+                                <option value="nama_game-desc">Nama Game (Z-A)</option>
+                                <option value="count-desc">Jumlah Klik (Terbanyak)</option>
+                                <option value="count-asc">Jumlah Klik (Tersedikit)</option>
+                                <option value="key_last_updated-desc">Key Last Update (Terbaru)</option>
+                                <option value="key_last_updated-asc">Key Last Update (Terlama)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="pagination-container">
+                            <select id="itemsPerPage" class="pagination-select" onchange="loadLinks()">
+                                <option value="10">10 per halaman</option>
+                                <option value="25">25 per halaman</option>
+                                <option value="50">50 per halaman</option>
+                                <option value="100">100 per halaman</option>
+                            </select>
+                            
+                            <button id="prevPage" class="pagination-button" onclick="changePage(-1)" disabled>◀</button>
+                            <span id="pageInfo" style="padding: 0 10px;">Halaman 1</span>
+                            <button id="nextPage" class="pagination-button" onclick="changePage(1)" disabled>▶</button>
+                        </div>
+                    </div>
                     
                     <div class="table-container">
                         <table id="linksTable">
@@ -696,6 +806,11 @@ https://example.com/game-e</pre>
         let linksData = {}; // Store loaded links data
         let parsedBulkGames = []; // Store parsed games from bulk input
         let parsedBulkV2Games = []; // Store parsed games from bulk V2 input
+        
+        // Pagination variables
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalLinksCount = 0;
 
         // Load links on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -771,36 +886,234 @@ https://example.com/game-e</pre>
         });
 
         // Load links function
-        function loadLinks() {
-            const tbody = document.getElementById('linksTableBody');
-            tbody.innerHTML = '<tr><td colspan="9" class="loading"><div class="spinner"></div>Memuat data...</td></tr>';
+// Ganti fungsi loadLinks() yang sudah ada dengan yang ini
+function loadLinks() {
+    const tbody = document.getElementById('linksTableBody');
+    tbody.innerHTML = '<tr><td colspan="9" class="loading"><div class="spinner"></div>Memuat data...</td></tr>';
+    
+    // Get sorting parameters
+    const sortBy = document.getElementById('sortBy').value;
+    let sortField, sortDirection;
+    
+    // Perbaikan: Handle jika sortBy tidak ada atau kosong
+    if (sortBy && sortBy.includes('-')) {
+        [sortField, sortDirection] = sortBy.split('-');
+    } else {
+        // Default sorting
+        sortField = 'created_at';
+        sortDirection = 'desc';
+    }
+    
+    // Get pagination parameters
+    const itemsPerPage = parseInt(document.getElementById('itemsPerPage').value) || 10;
+    
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=list&sortField=${sortField}&sortDirection=${sortDirection}&page=${currentPage}&perPage=${itemsPerPage}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            let links = data.data.links || data.data;
             
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'action=list'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    displayLinks(data.data);
-                    updateStats(data.data);
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="9" class="loading">❌ Gagal memuat data</td></tr>';
-                }
-            })
-            .catch(error => {
-                tbody.innerHTML = '<tr><td colspan="9" class="loading">❌ Error: ' + error.message + '</td></tr>';
-            });
+            // Perbaikan: Client-side sorting sebagai fallback jika server tidak menangani sorting
+            if (links && Array.isArray(links)) {
+                links = sortLinksClientSide(links, sortField, sortDirection);
+                
+                // Client-side pagination jika server tidak menangani pagination
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedLinks = links.slice(startIndex, endIndex);
+                
+                displayLinks(paginatedLinks);
+                updateStats(links);
+                
+                // Update pagination info
+                totalLinksCount = links.length;
+                totalPages = Math.ceil(totalLinksCount / itemsPerPage);
+            } else {
+                displayLinks([]);
+                updateStats([]);
+                totalLinksCount = 0;
+                totalPages = 1;
+            }
+            
+            updatePaginationControls();
+        } else {
+            tbody.innerHTML = '<tr><td colspan="9" class="loading">❌ Gagal memuat data</td></tr>';
+            totalLinksCount = 0;
+            totalPages = 1;
+            updatePaginationControls();
         }
+    })
+    .catch(error => {
+        tbody.innerHTML = '<tr><td colspan="9" class="loading">❌ Error: ' + error.message + '</td></tr>';
+        totalLinksCount = 0;
+        totalPages = 1;
+        updatePaginationControls();
+    });
+}
+
+// TAMBAHAN: Client-side sorting function
+function sortLinksClientSide(links, sortField, sortDirection) {
+    if (!links || !Array.isArray(links)) return links;
+    
+    return links.sort((a, b) => {
+        let valueA, valueB;
+        
+        switch(sortField) {
+            case 'nama_game':
+                valueA = (a.nama_game || '').toLowerCase();
+                valueB = (b.nama_game || '').toLowerCase();
+                break;
+            case 'created_at':
+                valueA = parseIndonesianDate(a.created_at);
+                valueB = parseIndonesianDate(b.created_at);
+                break;
+            case 'key_last_updated':
+                valueA = parseIndonesianDate(a.key_last_updated || a.created_at);
+                valueB = parseIndonesianDate(b.key_last_updated || b.created_at);
+                break;
+            case 'count':
+                valueA = parseInt(a.count) || 0;
+                valueB = parseInt(b.count) || 0;
+                break;
+            case 'status':
+                valueA = (a.status || '').toLowerCase();
+                valueB = (b.status || '').toLowerCase();
+                break;
+            case 'link_tujuan':
+                valueA = (a.link_tujuan || '').toLowerCase();
+                valueB = (b.link_tujuan || '').toLowerCase();
+                break;
+            default:
+                valueA = a[sortField] || '';
+                valueB = b[sortField] || '';
+                // Jika nilai adalah string, convert ke lowercase untuk perbandingan
+                if (typeof valueA === 'string') valueA = valueA.toLowerCase();
+                if (typeof valueB === 'string') valueB = valueB.toLowerCase();
+        }
+        
+        // Compare values
+        let comparison = 0;
+        if (valueA > valueB) {
+            comparison = 1;
+        } else if (valueA < valueB) {
+            comparison = -1;
+        }
+        
+        // Apply sort direction
+        return sortDirection === 'desc' ? comparison * -1 : comparison;
+    });
+}
+
+// TAMBAHAN: Function untuk parse tanggal format Indonesia
+function parseIndonesianDate(dateString) {
+    if (!dateString) return new Date(0);
+    
+    try {
+        // Jika format DD/MM/YYYY HH:MM:SS
+        if (dateString.includes('/')) {
+            const parts = dateString.split(' ');
+            const datePart = parts[0];
+            const timePart = parts[1] || '00:00:00';
+            
+            const [day, month, year] = datePart.split('/');
+            const [hour, minute, second] = timePart.split(':');
+            
+            return new Date(
+                parseInt(year),
+                parseInt(month) - 1, // Month is 0-indexed
+                parseInt(day),
+                parseInt(hour) || 0,
+                parseInt(minute) || 0,
+                parseInt(second) || 0
+            );
+        }
+        // Jika format ISO atau format lain
+        else {
+            return new Date(dateString);
+        }
+    } catch (e) {
+        console.error('Error parsing date:', dateString, e);
+        return new Date(0);
+    }
+}
+
+// TAMBAHAN: Event listener untuk perubahan sorting
+document.addEventListener('DOMContentLoaded', function() {
+    loadLinks();
+    setupTabNavigation();
+    
+    // Add event listeners for sorting and pagination
+    const sortBy = document.getElementById('sortBy');
+    const itemsPerPage = document.getElementById('itemsPerPage');
+    
+    if (sortBy) {
+        sortBy.addEventListener('change', function() {
+            currentPage = 1; // Reset ke halaman pertama saat sorting berubah
+            loadLinks();
+        });
+    }
+    
+    if (itemsPerPage) {
+        itemsPerPage.addEventListener('change', function() {
+            currentPage = 1; // Reset ke halaman pertama saat items per page berubah
+            loadLinks();
+        });
+    }
+    
+    // Add event listeners for pagination buttons
+    const prevButton = document.getElementById('prevPage');
+    const nextButton = document.getElementById('nextPage');
+    
+    if (prevButton) {
+        prevButton.addEventListener('click', () => changePage(-1));
+    }
+    
+    if (nextButton) {
+        nextButton.addEventListener('click', () => changePage(1));
+    }
+});
+        // Update pagination controls
+        function updatePaginationControls() {
+    const prevButton = document.getElementById('prevPage');
+    const nextButton = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
+    
+    if (prevButton) prevButton.disabled = currentPage <= 1;
+    if (nextButton) nextButton.disabled = currentPage >= totalPages;
+    
+    if (pageInfo) {
+        pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages} (Total: ${totalLinksCount} items)`;
+    }
+}
+
+        // Change page
+        function changePage(delta) {
+    const newPage = currentPage + delta;
+    if (newPage > 0 && newPage <= totalPages) {
+        currentPage = newPage;
+        loadLinks();
+    }
+}
+// Tambahkan fungsi untuk langsung ke halaman tertentu
+function goToPage(page) {
+    const pageNumber = parseInt(page);
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+        currentPage = pageNumber;
+        loadLinks();
+    }
+}
 
         // Display links in table
         function displayLinks(links) {
             const tbody = document.getElementById('linksTableBody');
             
-            if (links.length === 0) {
+            if (!links || links.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="9" class="loading">📭 Belum ada link yang dibuat</td></tr>';
                 return;
             }
@@ -1033,8 +1346,8 @@ https://example.com/game-e</pre>
 
         // Update stats
         function updateStats(links) {
-            const totalLinks = links.length;
-            const totalClicks = links.reduce((sum, link) => sum + (link.count || 0), 0);
+            const totalLinks = totalLinksCount || (links ? links.length : 0);
+            const totalClicks = links ? links.reduce((sum, link) => sum + (link.count || 0), 0) : 0;
             const todayClicks = 0; // This would need to be calculated from click data
             
             document.getElementById('totalLinks').textContent = totalLinks;
