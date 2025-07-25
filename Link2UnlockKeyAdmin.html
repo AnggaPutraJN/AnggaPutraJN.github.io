@@ -1878,136 +1878,173 @@ function goToPage(page) {
             showNotification(`Ditemukan ${games.length} game dengan total ${games.reduce((sum, game) => sum + game.links.length, 0)} link`, 'success');
         }
 
-        async function generateBulkV2Links() {
-            if (parsedBulkV2Games.length === 0) {
-                showNotification('Tidak ada game yang bisa digenerate', 'error');
-                return;
-            }
-            
-            const resultsContainer = document.getElementById('generatedV2LinksContainer');
-            resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Membuat link...</div>';
-            
-            document.getElementById('bulkV2ResultsSection').style.display = 'block';
-            
-            let successCount = 0;
-            let errorCount = 0;
-            let resultsHTML = '';
-            
-            // Calculate total links to generate
-            const totalLinks = parsedBulkV2Games.reduce((sum, game) => sum + game.links.length, 0);
-            let processedLinks = 0;
-            
-            for (let i = 0; i < parsedBulkV2Games.length; i++) {
-                const game = parsedBulkV2Games[i];
-                
-                // Format name with domain if available
-                let gameName = game.name;
-                
-                // Generate links for each URL in the game
-                for (let j = 0; j < game.links.length; j++) {
-                    const link = game.links[j];
-                    processedLinks++;
-                    
-                    // Format name with domain for this specific link
-                    let linkGameName = gameName;
-                    if (link.domain) {
-                        linkGameName = `${gameName} [${link.domain}]`;
-                    }
-                    
-                    try {
-                        const formData = new FormData();
-                        formData.append('action', 'create');
-                        formData.append('nama_game', linkGameName);
-                        formData.append('link_tujuan', link.url);
-                        
-                        const response = await fetch(SCRIPT_URL, {
-                            method: 'POST',
-                            body: formData
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (data.status === 'success') {
-                            successCount++;
-                            resultsHTML += `
-                                <div class="result-item">
-                                    <h4>${linkGameName}</h4>
-                                    <div class="input-group" style="margin-top: 10px;">
-                                        <input type="text" value="https://indapk.com/buka.html?id=${data.data.id}" readonly style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px 0 0 4px;">
-                                        <button onclick="copyToClipboard('https://indapk.com/buka.html?id=${data.data.id}')" class="btn btn-mini" style="border-radius: 0 4px 4px 0;">📋 Copy</button>
-                                    </div>
-                                    <div style="margin-top: 5px; font-size: 14px; color: #666;">
-                                        Key: ${data.data.key}
-                                    </div>
-                                    <div style="margin-top: 5px; font-size: 12px; color: #888;">
-                                        Original URL: ${link.url}
-                                    </div>
-                                </div>
-                            `;
-                        } else {
-                            errorCount++;
-                            resultsHTML += `
-                                <div class="result-item" style="border-left-color: #e74c3c;">
-                                    <h4 style="color: #e74c3c;">${linkGameName}</h4>
-                                    <div style="color: #e74c3c; font-size: 14px;">
-                                        Error: ${data.message || 'Gagal membuat link'}
-                                    </div>
-                                    <div style="margin-top: 5px; font-size: 12px; color: #888;">
-                                        Original URL: ${link.url}
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        
-                        // Update progress
-                        resultsContainer.innerHTML = `
-                            <div style="margin-bottom: 15px;">
-                                <strong>Progress:</strong> ${processedLinks}/${totalLinks} (${successCount} sukses, ${errorCount} gagal)
-                            </div>
-                            ${resultsHTML}
-                        `;
-                        
-                    } catch (error) {
-                        errorCount++;
-                        resultsHTML += `
-                            <div class="result-item" style="border-left-color: #e74c3c;">
-                                <h4 style="color: #e74c3c;">${linkGameName}</h4>
-                                <div style="color: #e74c3c; font-size: 14px;">
-                                    Error: ${error.message}
-                                </div>
-                                <div style="margin-top: 5px; font-size: 12px; color: #888;">
-                                    Original URL: ${link.url}
-                                </div>
-                            </div>
-                        `;
-                        
-                        // Update progress
-                        resultsContainer.innerHTML = `
-                            <div style="margin-bottom: 15px;">
-                                <strong>Progress:</strong> ${processedLinks}/${totalLinks} (${successCount} sukses, ${errorCount} gagal)
-                            </div>
-                            ${resultsHTML}
-                        `;
-                    }
+async function generateBulkV2Links() {
+    if (parsedBulkV2Games.length === 0) {
+        showNotification('Tidak ada game yang bisa digenerate', 'error');
+        return;
+    }
+    
+    const resultsContainer = document.getElementById('generatedV2LinksContainer');
+    resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Membuat link...</div>';
+    
+    document.getElementById('bulkV2ResultsSection').style.display = 'block';
+    
+    let successCount = 0;
+    let errorCount = 0;
+    let resultsHTML = '';
+    
+    // Calculate total links to generate
+    const totalLinks = parsedBulkV2Games.reduce((sum, game) => sum + game.links.length, 0);
+    let processedLinks = 0;
+    
+    // Pertama, cari semua game yang sudah ada di database
+    const existingGames = {};
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=listAll'
+        });
+        
+        const data = await response.json();
+        if (data.status === 'success') {
+            data.data.forEach(link => {
+                // Simpan link yang sudah ada berdasarkan nama game
+                if (!existingGames[link.nama_game]) {
+                    existingGames[link.nama_game] = [];
                 }
+                existingGames[link.nama_game].push(link);
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching existing links:', error);
+    }
+    
+    for (let i = 0; i < parsedBulkV2Games.length; i++) {
+        const game = parsedBulkV2Games[i];
+        
+        // Format name with domain if available
+        let gameName = game.name;
+        
+        // Generate links for each URL in the game
+        for (let j = 0; j < game.links.length; j++) {
+            const link = game.links[j];
+            processedLinks++;
+            
+            // Format name with domain for this specific link
+            let linkGameName = gameName;
+            if (link.domain) {
+                linkGameName = `${gameName} [${link.domain}]`;
             }
             
-            // Final update
-            resultsContainer.innerHTML = `
-                <div class="alert ${successCount > 0 ? 'alert-success' : 'alert-error'}" style="margin-bottom: 15px;">
-                    <strong>Selesai!</strong> ${successCount} link berhasil dibuat, ${errorCount} gagal.
-                </div>
-                ${resultsHTML}
-            `;
-            
-            // Scroll to results
-            document.getElementById('bulkV2ResultsSection').scrollIntoView({ behavior: 'smooth' });
-            
-            // Reload links table if any were successful
-            if (successCount > 0) {
-                loadLinks();
+            try {
+                // Cek apakah game dengan nama yang sama sudah ada
+                let existingLinkId = null;
+                if (existingGames[linkGameName] && existingGames[linkGameName].length > 0) {
+                    // Gunakan link yang sudah ada (ambil yang pertama)
+                    existingLinkId = existingGames[linkGameName][0].id;
+                }
+                
+                const formData = new FormData();
+                formData.append('action', existingLinkId ? 'update' : 'create');
+                if (existingLinkId) {
+                    formData.append('id', existingLinkId);
+                }
+                formData.append('nama_game', linkGameName);
+                formData.append('link_tujuan', link.url);
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    successCount++;
+                    const linkId = existingLinkId || data.data.id;
+                    
+                    resultsHTML += `
+                        <div class="result-item">
+                            <h4>${linkGameName} ${existingLinkId ? '(Diupdate)' : ''}</h4>
+                            <div class="input-group" style="margin-top: 10px;">
+                                <input type="text" value="https://indapk.com/buka.html?id=${linkId}" readonly style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px 0 0 4px;">
+                                <button onclick="copyToClipboard('https://indapk.com/buka.html?id=${linkId}')" class="btn btn-mini" style="border-radius: 0 4px 4px 0;">📋 Copy</button>
+                            </div>
+                            <div style="margin-top: 5px; font-size: 14px; color: #666;">
+                                Key: ${data.data.key || existingGames[linkGameName]?.[0]?.key || 'N/A'}
+                            </div>
+                            <div style="margin-top: 5px; font-size: 12px; color: #888;">
+                                Original URL: ${link.url}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    errorCount++;
+                    resultsHTML += `
+                        <div class="result-item" style="border-left-color: #e74c3c;">
+                            <h4 style="color: #e74c3c;">${linkGameName}</h4>
+                            <div style="color: #e74c3c; font-size: 14px;">
+                                Error: ${data.message || 'Gagal membuat/mengupdate link'}
+                            </div>
+                            <div style="margin-top: 5px; font-size: 12px; color: #888;">
+                                Original URL: ${link.url}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Update progress
+                resultsContainer.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <strong>Progress:</strong> ${processedLinks}/${totalLinks} (${successCount} sukses, ${errorCount} gagal)
+                    </div>
+                    ${resultsHTML}
+                `;
+                
+            } catch (error) {
+                errorCount++;
+                resultsHTML += `
+                    <div class="result-item" style="border-left-color: #e74c3c;">
+                        <h4 style="color: #e74c3c;">${linkGameName}</h4>
+                        <div style="color: #e74c3c; font-size: 14px;">
+                            Error: ${error.message}
+                        </div>
+                        <div style="margin-top: 5px; font-size: 12px; color: #888;">
+                            Original URL: ${link.url}
+                        </div>
+                    </div>
+                `;
+                
+                // Update progress
+                resultsContainer.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <strong>Progress:</strong> ${processedLinks}/${totalLinks} (${successCount} sukses, ${errorCount} gagal)
+                    </div>
+                    ${resultsHTML}
+                `;
             }
         }
+    }
+    
+    // Final update
+    resultsContainer.innerHTML = `
+        <div class="alert ${successCount > 0 ? 'alert-success' : 'alert-error'}" style="margin-bottom: 15px;">
+            <strong>Selesai!</strong> ${successCount} link berhasil dibuat/diupdate, ${errorCount} gagal.
+        </div>
+        ${resultsHTML}
+    `;
+    
+    // Scroll to results
+    document.getElementById('bulkV2ResultsSection').scrollIntoView({ behavior: 'smooth' });
+    
+    // Reload links table if any were successful
+    if (successCount > 0) {
+        loadLinks();
+    }
+}
 
         function copyAllV2Links() {
             const links = [];
