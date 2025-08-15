@@ -858,20 +858,35 @@
                   Paste konten bulk note di sini
                 </label>
                 <textarea class="form-control bulk-textarea" id="bulkNoteTextarea" placeholder="Contoh format:
-MotoGP22 Part NSP Google Drive
+Resident Evil 5 Switch
 4.88 GB
 4.88 GB
-2.07 GB
-https://drive.google.com/file/d/1Qh1vWwkTM2poDPNCP9aDezbfOubeIjvw/view?usp=sharing
-https://drive.google.com/file/d/1jUIh9t9elxKyCDFD6Ub-ryHFLGNi1Oc8/view?usp=sharing
-https://drive.google.com/file/d/1UqJqPyLjTQmODvAG8dz3cbJO6LvyubzV/view?usp=sharing
-MotoGP22 Part NSP Mediafire
 4.88 GB
-4.88 GB
-2.07 GB
-https://www.mediafire.com/file/uxr128btz9q6oya/[INDapk.com]+[0100CF3016BBE000][USA][v0].part1.rar/file
-https://www.mediafire.com/file/i3m2bh3ekczseca/[INDapk.com]+[0100CF3016BBE000][USA][v0].part2.rar/file
-https://www.mediafire.com/file/jvuic5kark1ispo/[INDapk.com]+[0100CF3016BBE000][USA][v0].part3.rar/file"></textarea>
+4.11 GB
+https://drive.google.com/file/d/1n0OpqzW-EWSwBM79KFAlKbrsJ99ZPOGG/view?usp=sharing
+https://drive.google.com/file/d/1zz51V0XIGGckKQCgYY_ey7rbcRaQQ4Q_/view?usp=sharing
+https://drive.google.com/file/d/1yolam00cgn2T2RSxVG7kLhJfnP23VYoA/view?usp=sharing
+https://drive.google.com/file/d/1v2dFf9robwRF_PPqtZdAYELh8uZsUe2K/view?usp=sharing
+https://www.mediafire.com/file/byg1pl26a4ujs96/[INDapk.com]+[010018100CD46000][USA][v0].part1.rar/file
+https://www.mediafire.com/file/kg7z5q2g82s3o0b/[INDapk.com]+[010018100CD46000][USA][v0].part2.rar/file
+https://www.mediafire.com/file/61nkomfeq6p2hph/[INDapk.com]+[010018100CD46000][USA][v0].part3.rar/file
+https://www.mediafire.com/file/g7x1b4v6o7bs4vw/[INDapk.com]+[010018100CD46000][USA][v0].part4.rar/file
+https://vikingfile.com/f/SeAIPEjDaD#%5BINDapk.com%5D%20%5B010018100CD46000%5D%5BUSA%5D%5Bv0%5D.part1.rar
+https://vikingfile.com/f/E2JcHc8HIn#%5BINDapk.com%5D%20%5B010018100CD46000%5D%5BUSA%5D%5Bv0%5D.part2.rar
+https://vikingfile.com/f/bfRxYyawG5#%5BINDapk.com%5D%20%5B010018100CD46000%5D%5BUSA%5D%5Bv0%5D.part3.rar
+https://vikingfile.com/f/ZunPSj8O6O#%5BINDapk.com%5D%20%5B010018100CD46000%5D%5BUSA%5D%5Bv0%5D.part4.rar
+https://pixeldrain.com/u/avaVyFGL
+https://pixeldrain.com/u/HdPv5jpc
+https://pixeldrain.com/u/SAsZeUsd
+https://pixeldrain.com/u/zWKrXBQC
+https://1fichier.com/?ryyni0pd3hj9445kv8cc
+https://1fichier.com/?rqgvxnuio99vvv8nr0yf
+https://1fichier.com/?ylt77iff45hyf0wdrh6i
+https://1fichier.com/?0b9fxxmd5tudihnculek
+https://multiup.io/download/b32542ca9c7b8e92c44fe237787787d7/%5BINDapk.com%5D%20%5B010018100CD46000%5D%5BUSA%5D%5Bv0%5D.part1.rar
+https://multiup.io/download/c81933c19ee888fc5badd4d638353b11/%5BINDapk.com%5D%20%5B010018100CD46000%5D%5BUSA%5D%5Bv0%5D.part2.rar
+https://multiup.io/download/7415019d51b53232dc837775d45c6351/%5BINDapk.com%5D%20%5B010018100CD46000%5D%5BUSA%5D%5Bv0%5D.part3.rar
+https://multiup.io/download/8eaf27c89836286b141f894e749820ac/%5BINDapk.com%5D%20%5B010018100CD46000%5D%5BUSA%5D%5Bv0%5D.part4.rar"></textarea>
               </div>
               
               <div class="d-flex gap-2 mb-3">
@@ -1198,12 +1213,111 @@ https://www.mediafire.com/file/jvuic5kark1ispo/[INDapk.com]+[0100CF3016BBE000][U
       showNotification(`${parsedNotes.length} note berhasil diparsing dan siap digenerate!`, 'success');
     });
 
-    // Function to parse bulk content
-// Function to parse bulk content
+
+
+// Function to parse bulk content and create separate notes per domain
 function parseBulkContent(content) {
   const lines = content.split('\n');
   const notes = [];
   let currentNote = null;
+  let currentDomain = null;
+  let baseName = '';
+  let sizeInfo = [];
+  
+  // Domain mapping
+const domainMap = {
+  // Google Services
+  'drive.google.com': 'Google Drive',
+  'docs.google.com': 'Google Docs',
+  'sites.google.com': 'Google Sites',
+  
+  // Popular File Hosts
+  'mediafire.com': 'Mediafire',
+  'mega.nz': 'MEGA',
+  'dropbox.com': 'Dropbox',
+  'onedrive.live.com': 'OneDrive',
+  'box.com': 'Box',
+  'pcloud.com': 'pCloud',
+  
+  // File Sharing Platforms
+  'zippyshare.com': 'Zippyshare',
+  'uploaded.net': 'Uploaded',
+  'rapidgator.net': 'Rapidgator',
+  'nitroflare.com': 'Nitroflare',
+  'turbobit.net': 'Turbobit',
+  'uploadhaven.com': 'UploadHaven',
+  
+  // Alternative Hosts
+  'vikingfile.com': 'Vikingfile',
+  'pixeldrain.com': 'Pixeldrain',
+  '1fichier.com': '1Fichier',
+  'multiup.io': 'Multiup',
+  'filefactory.com': 'FileFactory',
+  'file-upload.com': 'File-Upload',
+  'userscloud.com': 'UsersCloud',
+  'katfile.com': 'KatFile',
+  'clicknupload.cc': 'Clicknupload',
+  'uploadboy.com': 'Uploadboy',
+  'uploadgig.com': 'UploadGIG',
+  'upload.ac': 'Upload.ac',
+  'uploadbank.com': 'UploadBank',
+  'upload.ee': 'Upload.EE',
+  
+  // Cloud Storage
+  'terabox.com': 'TeraBox',
+  'yandex.com': 'Yandex Disk',
+  'icloud.com': 'iCloud',
+  
+  // Video Hosts
+  'streamtape.com': 'Streamtape',
+  'doodstream.com': 'DoodStream',
+  'mixdrop.co': 'Mixdrop',
+  'vidoza.net': 'Vidoza',
+  'vidlox.me': 'Vidlox',
+  
+  // Image Hosts
+  'imgur.com': 'Imgur',
+  'postimg.cc': 'PostImage',
+  'ibb.co': 'ImgBB',
+  'imagebam.com': 'ImageBam',
+  
+  // Developer Hosts
+  'github.com': 'GitHub',
+  'gitlab.com': 'GitLab',
+  'bitbucket.org': 'Bitbucket',
+  
+  // Archive Hosts
+  'archive.org': 'Internet Archive',
+  'uptobox.com': 'Uptobox',
+  
+  // Country Specific
+  'indishare.org': 'Indishare',
+  'sfile.mobi': 'SFile',
+  'krakenfiles.com': 'KrakenFiles',
+  'letsupload.io': 'LetsUpload',
+  
+  // Shorteners
+  'sh.st': 'Shortest',
+  'ouo.io': 'OUO',
+  'linkvertise.com': 'Linkvertise',
+  
+  // Torrent
+  '1337x.to': '1337x',
+  'nyaa.si': 'Nyaa',
+  'thepiratebay.org': 'The Pirate Bay',
+  
+  // Others
+  'anonfiles.com': 'AnonFiles',
+  'bayfiles.com': 'BayFiles',
+  'send.cm': 'SendCM',
+  'racaty.net': 'Racaty',
+  'solidfiles.com': 'SolidFiles',
+  'ddownload.com': 'DDownload',
+  'filerio.in': 'FileRio',
+  'file.al': 'File.al',
+  'file-up.org': 'File-Up',
+  'filebin.net': 'Filebin'
+};
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -1212,29 +1326,55 @@ function parseBulkContent(content) {
     if (!line) continue;
     
     // Check if line is a note name (doesn't look like a URL or size)
-    if (!line.match(/http|\.com|\.net|\.org|\.id|\.co|\.xyz|\.io|\.me|\.info|GB|MB|KB/i)) {
+    if (!line.match(/http|\.com|\.net|\.org|\.id|\.co|\.xyz|\.io|\.me|\.info|GB|MB|KB/i) && 
+        !line.match(/^\d+\.\d+\s*GB|MB|KB$/i)) {
       // If we have a current note and it has content, save it
       if (currentNote && currentNote.content.trim()) {
         notes.push(currentNote);
       }
       
-      // Start a new note
-      currentNote = {
-        name: line,
-        size: '', // Initialize size
-        content: ''
-      };
+      // Start new base note
+      baseName = line;
+      sizeInfo = [];
+      currentNote = null;
+      currentDomain = null;
     } 
     // Check if line is a size (contains GB/MB/KB)
-    else if (line.match(/GB|MB|KB/i) && currentNote && !currentNote.size) {
-      currentNote.size = line;
+    else if (line.match(/^\d+\.\d+\s*GB|MB|KB$/i)) {
+      sizeInfo.push(line);
     }
-    else if (currentNote) {
-      // Add line to current note's content (links)
-      if (currentNote.content) {
-        currentNote.content += '\n' + line;
-      } else {
-        currentNote.content = line;
+    // Check if line is a URL
+    else if (line.match(/^https?:\/\//i)) {
+      // Extract domain from URL
+      let domain = null;
+      try {
+        const url = new URL(line);
+        domain = url.hostname.replace('www.', '');
+      } catch (e) {
+        console.error('Invalid URL:', line);
+        continue;
+      }
+      
+      // If domain changed, create new note for this domain
+      if (domain !== currentDomain) {
+        // Save previous note if exists
+        if (currentNote && currentNote.content.trim()) {
+          notes.push(currentNote);
+        }
+        
+        // Create new note for this domain
+        const domainName = domainMap[domain] || domain;
+        currentNote = {
+          name: `${baseName} [${domainName}]`,
+          size: sizeInfo.join('\n'),
+          content: `${baseName} [${domainName}]\n${sizeInfo.join('\n')}\n`
+        };
+        currentDomain = domain;
+      }
+      
+      // Add URL to current note's content
+      if (currentNote) {
+        currentNote.content += line + '\n';
       }
     }
   }
@@ -1244,39 +1384,49 @@ function parseBulkContent(content) {
     notes.push(currentNote);
   }
   
-  // Format the content with size and links
+  // Format the content with footer for each note
   notes.forEach(note => {
-    note.content = `${note.name}\n${note.size}\n${note.content}\n\n⚠️ DOWNLOAD APLIKASI INDapk:\n🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing\n🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file\n🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet`;
+    note.content += `\n\n⚠️ DOWNLOAD APLIKASI INDapk:\n` +
+      `🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing\n` +
+      `🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file\n` +
+      `🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet`;
   });
   
   return notes;
 }
 
-// Function to display parse result
+// Function to display parse result with separate notes per domain
 function displayParseResult(notes) {
   const resultContainer = document.getElementById('parseResultContent');
   resultContainer.innerHTML = '';
   
   notes.forEach(note => {
     const item = document.createElement('div');
-    item.className = 'parse-result-item';
+    item.className = 'parse-result-item mb-3 p-3 border rounded';
     
-    // Count links in content (subtract 1 for size line)
-    const lineCount = note.content.split('\n').filter(l => l.trim()).length - 1;
+    // Count links
+    const linkCount = (note.content.match(/https?:\/\/[^\s]+/g) || []).length;
     
     item.innerHTML = `
-      <div class="parse-result-name">
-        <i class="bi bi-sticky me-2"></i>
-        ${note.name}
-        <small class="text-muted d-block">${note.size}</small>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="parse-result-name">
+          <i class="bi bi-sticky me-2"></i>
+          <strong>${note.name}</strong>
+        </div>
+        <div class="badge bg-primary">
+          ${linkCount} links
+        </div>
       </div>
-      <div class="parse-result-count">
-        ${lineCount} links
+      <div class="mt-2">
+        <small class="text-muted">${note.size.replace(/\n/g, ', ')}</small>
       </div>
     `;
     
     resultContainer.appendChild(item);
   });
+  
+  // Update note count
+  document.getElementById('noteCount').textContent = notes.length;
 }
     
     // Add new note form
@@ -2020,3 +2170,4 @@ function displayParseResult(notes) {
   </script>
 </body>
 </html>
+
