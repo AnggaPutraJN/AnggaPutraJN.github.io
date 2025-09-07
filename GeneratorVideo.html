@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Video Database System</title>
+<style>
+  :root{--bg:#0b1220;--card:#121a2b;--muted:#24324a;--text:#e7eef7;--accent:#51d0ff;--ok:#8df5b5;--err:#ff9090}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,#0b1220 0%,#0a1528 100%)}
+
+  /* Header / Nav / Tabs */
+  header{position:sticky;top:0;background:#0c1526;box-shadow:0 4px 30px rgba(0,0,0,.3);z-index:5}
+  .nav{display:flex;gap:10px;align-items:center;max-width:1100px;margin:0 auto;padding:12px 16px}
+  .nav h1{font-size:16px;margin:0;opacity:.9}
+  .tabs{margin-left:auto;display:flex;gap:8px}
+  .tab{padding:8px 12px;border:1px solid var(--muted);border-radius:10px;background:#0f1e36;color:var(--text);cursor:pointer;text-decoration:none;display:inline-block}
+  .tab.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .tab:hover{background:#13243f}
+
+  /* Layout / Cards */
+  .wrap{max-width:1100px;margin:18px auto;padding:0 16px}
+  .card{background:var(--card);border:1px solid var(--muted);border-radius:14px;padding:14px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+  .grid{display:grid;gap:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+
+  /* Form elements */
+  label{font-size:12px;opacity:.9}
+  input,textarea,select{width:100%;padding:10px;border:1px solid var(--muted);border-radius:10px;background:#0c182d;color:var(--text)}
+  textarea{min-height:120px;resize:vertical}
+  a{color:#93d8ff}
+
+  /* Buttons */
+  .btn{appearance:none;border:none;cursor:pointer;border-radius:10px;padding:10px 14px;font-weight:700;color:#012d38;background:var(--accent)}
+  .btn.ghost{background:#0c182d;color:var(--text);border:1px solid var(--muted)}
+  .btn.warn{background:#ffb84d;color:#2c1200}
+  .btn.danger{background:#ff6b6b;color:#2a0000}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+
+  /* Stats */
+  .stat{background:#0e203c;border:1px solid #1c2c49;border-radius:12px;padding:10px 12px;min-width:150px}
+  .stat .num{font-size:22px;font-weight:800}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse;margin-top:60px;table-layout:fixed}
+  th,td{border-bottom:1px solid var(--muted);padding:10px 8px;vertical-align:top}
+  thead th{position:sticky;top:58px;background:#0f1e36;z-index:2}
+  tbody tr:hover{background:#0f1e36}
+  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;font-size:12px}
+
+  /* Column widths */
+  th:nth-child(1){width:120px}   /* Timestamp */
+  th:nth-child(2){width:25%}     /* Nama Video */
+  th:nth-child(3){width:80px}    /* Link Video */
+  th:nth-child(4){width:80px}    /* Link Iklan */
+  th:nth-child(5){width:15%}     /* Category */
+  th:nth-child(6){width:90px}    /* Durasi */
+  th:nth-child(7){width:80px}    /* Thumbnail */
+
+  /* Text clamp + toggle */
+  .clamp{
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    max-height:4.5em;
+    word-break:break-word;
+  }
+  .clamp.expanded{
+    -webkit-line-clamp:initial;
+    max-height:none;
+  }
+  .toggle{
+    margin-top:6px;
+    padding:4px 8px;
+    border:1px solid var(--muted);
+    background:#0f1e36;
+    color:var(--text);
+    border-radius:8px;
+    font-size:11px;
+    cursor:pointer;
+  }
+
+  /* Toast */
+  .toast{position:fixed;right:16px;bottom:16px;background:#102440;border:1px solid #1e3a63;padding:10px 12px;border-radius:10px;display:none}
+  .ok{color:var(--ok)} .err{color:var(--err)} .muted{opacity:.8}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:20px}
+  .modal>.box{max-width:720px;width:100%;background:var(--card);border:1px solid var(--muted);border-radius:14px;padding:14px}
+
+  /* Link buttons in table */
+  .link-btn{
+    display:inline-block;
+    padding:4px 8px;
+    background:#0f1e36;
+    border:1px solid var(--muted);
+    border-radius:6px;
+    color:var(--accent);
+    text-decoration:none;
+    font-size:11px;
+  }
+  .link-btn:hover{
+    background:#1a2a4a;
+  }
+</style>
+
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <h1>🎬 Video Database System</h1>
+      <div class="tabs">
+        <!-- Tombol yang telah diubah menjadi link -->
+        <a class="tab" href="Noted2UnlockVideo">Noted2Unlock Video</a>
+        <button class="tab active" data-tab="dash">Dashboard</button>
+        <button class="tab" data-tab="add">Tambah Video</button>
+        <button class="tab" data-tab="bulk">Bulk Import</button>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <!-- DASHBOARD -->
+    <section id="tab-dash" class="grid">
+      <div class="row">
+        <div class="stat"><div class="muted">Total Video</div><div id="stVideos" class="num">0</div></div>
+        <div class="stat"><div class="muted">Total Durasi</div><div id="stDuration" class="num">0</div></div>
+        <div class="stat"><div class="muted">Total Category</div><div id="stCategories" class="num">0</div></div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong>📹 Data Videos</strong>
+          <div class="row">
+            <input id="q" placeholder="Cari nama video..." style="min-width:240px"/>
+            <button class="btn ghost" id="btnRefresh">🔄 Refresh</button>
+          </div>
+        </div>
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Nama Video</th>
+                <th>Link Video</th>
+                <th>Link Iklan</th>
+                <th>Category</th>
+                <th>Durasi</th>
+                <th>Thumbnail</th>
+              </tr>
+            </thead>
+            <tbody id="tbl"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADD VIDEO -->
+    <section id="tab-add" class="grid" style="display:none">
+      <div class="card">
+        <h3>➕ Tambah Video</h3>
+        <div class="grid2">
+          <div>
+            <label>Nama Video</label>
+            <input id="fName" placeholder="Contoh: Tutorial React JS"/>
+          </div>
+          <div>
+            <label>Category</label>
+            <input id="fCat" placeholder="Contoh: Tutorial"/>
+          </div>
+          <div>
+            <label>Durasi</label>
+            <input id="fDur" placeholder="Contoh: 15:30 atau 15 menit"/>
+          </div>
+          <div>
+            <label>Screenshot Thumbnail (URL)</label>
+            <input id="fThumb" placeholder="https://..."/>
+          </div>
+          <div>
+            <label>Link Video</label>
+            <input id="fVideo" placeholder="https://youtube.com/watch?v=..."/>
+          </div>
+          <div>
+            <label>Link Iklan</label>
+            <input id="fAds" placeholder="https://link.indapk.com/..."/>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="btnCreate">💾 Simpan</button>
+          <button class="btn ghost" id="btnClearAdd">🗑️ Clear</button>
+          <div class="muted" id="addInfo"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BULK IMPORT -->
+<section id="tab-bulk" class="grid" style="display:none">
+  <div class="card">
+    <h3>🚀 Bulk Import</h3>
+    <p class="muted">Format per video (2 format didukung):</p>
+<pre class="mono" style="background:#0c182d;border:1px solid var(--muted);padding:10px;border-radius:10px;white-space:pre-wrap">
+// Format 1: Tanpa link iklan
+Nama Video
+Category
+Durasi
+Screenshot Thumbnail URL
+Link Video
+
+// Format 2: Dengan link iklan
+Nama Video
+Category
+Durasi
+Screenshot Thumbnail URL
+Link Video
+Link Iklan
+</pre>
+    <textarea id="bulkText" placeholder="Tempel data bulk di sini..." rows="14"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="btnBulk">🚚 Proses & Simpan</button>
+      <button class="btn ghost" id="btnClearBulk">🗑️ Clear</button>
+      <div class="muted" id="bulkInfo"></div>
+    </div>
+  </div>
+</section>
+  </main>
+
+  <!-- MODAL EDIT -->
+  <div class="modal" id="editModal">
+    <div class="box">
+      <div class="row" style="justify-content:space-between;align-items:center"><h3>✏️ Edit Video</h3><button class="btn ghost" id="btnCloseEdit">Tutup</button></div>
+      <input type="hidden" id="eRow" />
+      <div class="grid2">
+        <div>
+          <label>Nama Video</label>
+          <input id="eName"/>
+        </div>
+        <div>
+          <label>Category</label>
+          <input id="eCat"/>
+        </div>
+        <div>
+          <label>Durasi</label>
+          <input id="eDur"/>
+        </div>
+        <div>
+          <label>Screenshot Thumbnail (URL)</label>
+          <input id="eThumb"/>
+        </div>
+        <div>
+          <label>Link Video</label>
+          <input id="eVideo"/>
+        </div>
+        <div>
+          <label>Link Iklan</label>
+          <input id="eAds"/>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="btnSaveEdit">💾 Simpan Perubahan</button>
+        <div class="muted" id="editInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ==============================
+    // CONFIG - GANTI DENGAN URL SCRIPT ANDA
+    // ==============================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8XawygP708y86ZogLGEpUxWiB-dRFbpNefjJDGOm5Juudue-zPkorMo4O9w0L3rgvAA/exec';
+
+    // ==============================
+    // HELPERS
+    // ==============================
+    const $ = (id) => document.getElementById(id);
+    const toast = (msg) => {
+      const t = $('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 2200);
+    };
+
+    function fmtDate(ts) {
+      if (!ts) return '';
+      if (ts instanceof Date) {
+        return ts.toLocaleDateString('id-ID') + ' ' + ts.toLocaleTimeString('id-ID', { hour12: false });
+      }
+      if (typeof ts === 'string') {
+        const d = new Date(ts);
+        if (!isNaN(d)) return d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID', { hour12: false });
+        return ts;
+      }
+      return String(ts);
+    }
+
+    function linkButton(url, text) {
+      if (!url) return '-';
+      return `<a class="link-btn" href="${url}" target="_blank" title="${url}">${text}</a>`;
+    }
+
+    function thumbnailButton(url) {
+      if (!url) return '-';
+      return `<a class="link-btn" href="${url}" target="_blank" title="Lihat Thumbnail">🖼️</a>`;
+    }
+
+    function toggleText(element) {
+      const clamp = element.previousElementSibling;
+      const expanded = clamp.classList.toggle('expanded');
+      element.textContent = expanded ? 'Tutup' : 'Lihat';
+    }
+
+    function rowHtml(v) {
+      const ts = fmtDate(v.timestamp);
+      const name = v.nama_video || '-';
+      const category = v.category || '';
+      const durasi = $('fDur').value.trim();
+      const videoLink = linkButton(v.link_video, '▶️ Video');
+      const adLink = linkButton(v.link_iklan, '📢 Iklan');
+      const thumb = thumbnailButton(v.screenshot_thumbnail);
+
+      return `<tr>
+        <td class="mono">${ts}</td>
+        <td>
+          <div class="clamp" title="${name.replace(/"/g,'&quot;')}">${name}</div>
+          ${name.length > 50 ? `<button class="toggle" onclick="toggleText(this)">Lihat</button>` : ''}
+        </td>
+        <td style="text-align:center">${videoLink}</td>
+        <td style="text-align:center">${adLink}</td>
+        <td>
+          <div class="clamp" title="${category.replace(/"/g,'&quot;')}">${category}</div>
+          ${category.length > 30 ? `<button class="toggle" onclick="toggleText(this)">Lihat</button>` : ''}
+        </td>
+        <td class="mono">${durasi}</td>
+        <td style="text-align:center">${thumb}</td>
+      </tr>
+      <tr>
+        <td colspan="7" style="padding-top:0;border-bottom:1px solid #24324a">
+          <div class="row" style="justify-content:flex-end;padding:8px 0;">
+            <button class="btn ghost" onclick="viewDetail(${v.row})">👁️ Detail</button>
+            <button class="btn warn" onclick="openEdit(${v.row})">✏️ Edit</button>
+            <button class="btn danger" onclick="delVideo(${v.row})">🗑️ Hapus</button>
+          </div>
+        </td>
+      </tr>`;
+    }
+
+    // ==============================
+    // DATA LAYER
+    // ==============================
+    async function apiPost(body) {
+      try {
+        const res = await fetch(SCRIPT_URL, { method: 'POST', body, redirect: 'follow' });
+        const txt = await res.text();
+        try {
+          return JSON.parse(txt);
+        } catch (e) {
+          console.error('JSON Parse Error:', txt);
+          return { status: 'error', message: 'Invalid JSON', raw: txt };
+        }
+      } catch (e) {
+        console.error('Fetch Error:', e);
+        return { status: 'error', message: 'Network error: ' + e.message };
+      }
+    }
+
+    async function loadVideos() {
+      $('tbl').innerHTML = `<tr><td colspan="7" class="mono">Memuat data...</td></tr>`;
+      const body = new URLSearchParams({ action: 'getVideos' });
+      const res = await apiPost(body);
+
+      if (res.status !== 'success') {
+        $('tbl').innerHTML = `<tr><td colspan="7" class="mono err">${res.message || 'Gagal memuat data'}</td></tr>`;
+        return;
+      }
+
+      window.__VIDEOS__ = res.data || [];
+      renderTable();
+      updateStats();
+    }
+
+    function renderTable() {
+      const q = ($('q').value || '').toLowerCase();
+      const list = (window.__VIDEOS__ || []).filter(v => (v.nama_video || '').toLowerCase().includes(q));
+      $('tbl').innerHTML = list.length ? list.map(rowHtml).join('') 
+        : `<tr><td colspan="7" class="mono muted">(Tidak ada data)</td></tr>`;
+    }
+
+    function updateStats() {
+      const all = window.__VIDEOS__ || [];
+      const categories = [...new Set(all.map(v => v.category).filter(Boolean))];
+      const totalDuration = all.reduce((total, v) => {
+        // Simple duration parsing for display
+        const dur = v.durasi || '';
+        if (dur.includes(':')) {
+          const parts = dur.split(':');
+          if (parts.length === 2) {
+            return total + (parseInt(parts[0]) * 60) + parseInt(parts[1]);
+          }
+        }
+        return total;
+      }, 0);
+
+      $('stVideos').textContent = all.length;
+      $('stDuration').textContent = totalDuration > 60 ? 
+        `${Math.floor(totalDuration / 60)}h ${totalDuration % 60}m` : 
+        `${totalDuration}m`;
+      $('stCategories').textContent = categories.length;
+    }
+
+    // ==============================
+    // CREATE VIDEO
+    // ==============================
+  async function createVideo() {
+    const nama = $('fName').value.trim();
+    const category = $('fCat').value.trim();
+    const durasi = $('fDur').value.trim();
+    const thumbnail = $('fThumb').value.trim();
+    const video = $('fVideo').value.trim();
+    const ads = $('fAds').value.trim(); // Opsional
+
+    if (!nama) return toast('Nama video wajib diisi.');
+    if (!video) return toast('Link video wajib diisi.');
+    // Link iklan sekarang opsional, tidak perlu validasi
+
+    const fd = new FormData();
+    fd.append('action', 'createVideo');
+    fd.append('nama_video', nama);
+    fd.append('category', category);
+    fd.append('durasi', durasi);
+    fd.append('screenshot_thumbnail', thumbnail);
+    fd.append('link_video', video);
+    fd.append('link_iklan', ads); // Bisa kosong
+
+    $('addInfo').textContent = 'Menyimpan...';
+    const res = await apiPost(fd);
+    if (res.status === 'success') {
+      $('addInfo').innerHTML = `<span class="ok">${res.message}</span>`;
+      toast('Video berhasil ditambahkan.');
+      clearAdd();
+      await loadVideos();
+    } else {
+      $('addInfo').innerHTML = `<span class="err">${res.message || 'Gagal menyimpan'}</span>`;
+    }
+  }
+
+
+    function clearAdd() {
+      ['fName', 'fCat', 'fDur', 'fThumb', 'fVideo', 'fAds'].forEach(id => $(id).value = '');
+      $('addInfo').textContent = '';
+    }
+
+    // ==============================
+    // DETAIL / EDIT / DELETE
+    // ==============================
+    async function viewDetail(row) {
+      const fd = new URLSearchParams({ action: 'getVideoById', id: row });
+      const res = await apiPost(fd);
+      if (res.status !== 'success') return toast(res.message || 'Gagal mengambil detail');
+      const v = res.data;
+      alert(`📹 DETAIL VIDEO\n\n` +
+            `🎬 Nama: ${v.nama_video}\n` +
+            `📂 Category: ${v.category}\n` +
+            `⏱️ Durasi: ${v.durasi}\n` +
+            `🖼️ Thumbnail: ${v.screenshot_thumbnail}\n` +
+            `▶️ Link Video: ${v.link_video}\n` +
+            `📢 Link Iklan: ${v.link_iklan}\n` +
+            `🕒 Timestamp: ${fmtDate(v.timestamp)}`);
+    }
+
+    async function openEdit(row) {
+      const fd = new URLSearchParams({ action: 'getVideoById', id: row });
+      const res = await apiPost(fd);
+      if (res.status !== 'success') return toast(res.message || 'Gagal mengambil data untuk edit');
+      const v = res.data;
+      $('eRow').value = v.row;
+      $('eName').value = v.nama_video || '';
+      $('eCat').value = v.category || '';
+      $('eDur').value = v.durasi || '';
+      $('eThumb').value = v.screenshot_thumbnail || '';
+      $('eVideo').value = v.link_video || '';
+      $('eAds').value = v.link_iklan || '';
+      $('editInfo').textContent = '';
+      $('editModal').style.display = 'flex';
+    }
+
+async function saveEdit() {
+  const row = $('eRow').value;
+  const nama = $('eName').value.trim();
+  const category = $('eCat').value.trim();
+  const durasi = $('eDur').value.trim();
+  const thumbnail = $('eThumb').value.trim();
+  const video = $('eVideo').value.trim();
+  const ads = $('eAds').value.trim(); // Opsional
+
+  if (!row) return toast('Row tidak valid.');
+  if (!nama) return toast('Nama video wajib diisi.');
+  if (!video) return toast('Link video wajib diisi.');
+  // Link iklan sekarang opsional, tidak perlu validasi
+
+  const fd = new FormData();
+  fd.append('action', 'updateVideo');
+  fd.append('row', row);
+  fd.append('nama_video', nama);
+  fd.append('category', category);
+  fd.append('durasi', durasi);
+  fd.append('screenshot_thumbnail', thumbnail);
+  fd.append('link_video', video);
+  fd.append('link_iklan', ads); // Bisa kosong
+
+  $('editInfo').textContent = 'Menyimpan perubahan...';
+  const res = await apiPost(fd);
+  if (res.status === 'success') {
+    toast('Perubahan berhasil disimpan.');
+    $('editModal').style.display = 'none';
+    await loadVideos();
+  } else {
+    $('editInfo').innerHTML = `<span class="err">${res.message || 'Gagal menyimpan perubahan'}</span>`;
+  }
+}
+
+    async function delVideo(row) {
+      const video = (window.__VIDEOS__ || []).find(v => v.row === row);
+      const name = video ? video.nama_video : `Row ${row}`;
+      if (!confirm(`Apakah Anda yakin ingin menghapus video "${name}"?\n\nTindakan ini tidak dapat dibatalkan.`)) return;
+      
+      const fd = new URLSearchParams({ action: 'deleteVideo', id: row });
+      const res = await apiPost(fd);
+      if (res.status === 'success') {
+        toast('Video berhasil dihapus.');
+        await loadVideos();
+      } else {
+        toast(res.message || 'Gagal menghapus video');
+      }
+    }
+
+    // ==============================
+    // BULK IMPORT
+    // ==============================
+    async function bulkProcess() {
+      const data = $('bulkText').value.trim();
+      if (!data) return toast('Silakan tempel data bulk terlebih dahulu.');
+      
+      $('bulkInfo').textContent = 'Memproses dan menyimpan data...';
+      const body = new FormData();
+      body.append('action', 'processBulk');
+      body.append('data', data);
+      
+      const res = await apiPost(body);
+      if (res.status === 'success') {
+        $('bulkInfo').innerHTML = `<span class="ok">${res.message}</span>`;
+        toast('Bulk import berhasil.');
+        $('bulkText').value = '';
+        await loadVideos();
+      } else {
+        $('bulkInfo').innerHTML = `<span class="err">${res.message || 'Gagal memproses data bulk'}</span>`;
+      }
+    }
+
+    // ==============================
+    // EVENT LISTENERS
+    // ==============================
+    document.addEventListener('click', (e) => {
+      const t = e.target;
+      if (t.classList.contains('tab')) {
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        t.classList.add('active');
+        const which = t.dataset.tab;
+        ['dash', 'add', 'bulk'].forEach(k => {
+          document.getElementById('tab-' + k).style.display = (k === which) ? 'grid' : 'none';
+        });
+      }
+    });
+
+    // Dashboard events
+    $('btnRefresh').addEventListener('click', loadVideos);
+    $('q').addEventListener('input', renderTable);
+
+    // Add form events
+    $('btnCreate').addEventListener('click', createVideo);
+    $('btnClearAdd').addEventListener('click', clearAdd);
+
+    // Bulk import events
+    $('btnBulk').addEventListener('click', bulkProcess);
+    $('btnClearBulk').addEventListener('click', () => {
+      $('bulkText').value = '';
+      $('bulkInfo').textContent = '';
+    });
+
+    // Edit modal
+    $('btnCloseEdit').addEventListener('click', () => $('editModal').style.display = 'none');
+    $('btnSaveEdit').addEventListener('click', saveEdit);
+    $('editModal').addEventListener('click', (e) => {
+      if (e.target === $('editModal')) $('editModal').style.display = 'none';
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') $('editModal').style.display = 'none';
+    });
+
+    // Init
+    document.addEventListener('DOMContentLoaded', loadVideos);
+
+    // Expose functions to global scope
+    window.viewDetail = viewDetail;
+    window.openEdit = openEdit;
+    window.delVideo = delVideo;
+    window.toggleText = toggleText;
+  </script>
+</body>
+</html>
