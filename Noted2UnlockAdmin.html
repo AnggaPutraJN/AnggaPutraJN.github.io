@@ -1219,178 +1219,104 @@ https://multiup.io/download/8eaf27c89836286b141f894e749820ac/%5BINDapk.com%5D%20
 function parseBulkContent(content) {
   const lines = content.split('\n');
   const notes = [];
-  let currentNote = null;
-  let currentDomain = null;
-  let baseName = '';
-  let sizeInfo = [];
   
   // Domain mapping
-const domainMap = {
-  // Google Services
-  'drive.google.com': 'Google Drive',
-  'docs.google.com': 'Google Docs',
-  'sites.google.com': 'Google Sites',
+  const domainMap = {
+    'drive.google.com': 'Google Drive',
+    'mediafire.com': 'Mediafire',
+    'vikingfile.com': 'Vikingfile',
+    'pixeldrain.com': 'Pixeldrain',
+    '1fichier.com': '1Fichier',
+    'multiup.io': 'Multiup'
+  };
   
-  // Popular File Hosts
-  'mediafire.com': 'Mediafire',
-  'mega.nz': 'MEGA',
-  'dropbox.com': 'Dropbox',
-  'onedrive.live.com': 'OneDrive',
-  'box.com': 'Box',
-  'pcloud.com': 'pCloud',
+  let currentBaseName = '';
+  let sizeInfo = [];
+  let urlsForCurrentNote = [];
   
-  // File Sharing Platforms
-  'zippyshare.com': 'Zippyshare',
-  'uploaded.net': 'Uploaded',
-  'rapidgator.net': 'Rapidgator',
-  'nitroflare.com': 'Nitroflare',
-  'turbobit.net': 'Turbobit',
-  'uploadhaven.com': 'UploadHaven',
-  
-  // Alternative Hosts
-  'vikingfile.com': 'Vikingfile',
-  'pixeldrain.com': 'Pixeldrain',
-  '1fichier.com': '1Fichier',
-  'multiup.io': 'Multiup',
-  'filefactory.com': 'FileFactory',
-  'file-upload.com': 'File-Upload',
-  'userscloud.com': 'UsersCloud',
-  'katfile.com': 'KatFile',
-  'clicknupload.cc': 'Clicknupload',
-  'uploadboy.com': 'Uploadboy',
-  'uploadgig.com': 'UploadGIG',
-  'upload.ac': 'Upload.ac',
-  'uploadbank.com': 'UploadBank',
-  'upload.ee': 'Upload.EE',
-  
-  // Cloud Storage
-  'terabox.com': 'TeraBox',
-  'yandex.com': 'Yandex Disk',
-  'icloud.com': 'iCloud',
-  
-  // Video Hosts
-  'streamtape.com': 'Streamtape',
-  'doodstream.com': 'DoodStream',
-  'mixdrop.co': 'Mixdrop',
-  'vidoza.net': 'Vidoza',
-  'vidlox.me': 'Vidlox',
-  
-  // Image Hosts
-  'imgur.com': 'Imgur',
-  'postimg.cc': 'PostImage',
-  'ibb.co': 'ImgBB',
-  'imagebam.com': 'ImageBam',
-  
-  // Developer Hosts
-  'github.com': 'GitHub',
-  'gitlab.com': 'GitLab',
-  'bitbucket.org': 'Bitbucket',
-  
-  // Archive Hosts
-  'archive.org': 'Internet Archive',
-  'uptobox.com': 'Uptobox',
-  
-  // Country Specific
-  'indishare.org': 'Indishare',
-  'sfile.mobi': 'SFile',
-  'krakenfiles.com': 'KrakenFiles',
-  'letsupload.io': 'LetsUpload',
-  
-  // Shorteners
-  'sh.st': 'Shortest',
-  'ouo.io': 'OUO',
-  'linkvertise.com': 'Linkvertise',
-  
-  // Torrent
-  '1337x.to': '1337x',
-  'nyaa.si': 'Nyaa',
-  'thepiratebay.org': 'The Pirate Bay',
-  
-  // Others
-  'anonfiles.com': 'AnonFiles',
-  'bayfiles.com': 'BayFiles',
-  'send.cm': 'SendCM',
-  'racaty.net': 'Racaty',
-  'solidfiles.com': 'SolidFiles',
-  'ddownload.com': 'DDownload',
-  'filerio.in': 'FileRio',
-  'file.al': 'File.al',
-  'file-up.org': 'File-Up',
-  'filebin.net': 'Filebin'
-};
-  
+  // Process each line
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
     // Skip empty lines
     if (!line) continue;
     
-    // Check if line is a note name (doesn't look like a URL or size)
-    if (!line.match(/http|\.com|\.net|\.org|\.id|\.co|\.xyz|\.io|\.me|\.info|GB|MB|KB/i) && 
-        !line.match(/^\d+\.\d+\s*GB|MB|KB$/i)) {
-      // If we have a current note and it has content, save it
-      if (currentNote && currentNote.content.trim()) {
-        notes.push(currentNote);
+    // Check if line is a note name (not URL, not size info)
+    if (!line.match(/^https?:\/\//i) && !line.match(/^\d+\.\d+\s*(GB|MB|KB)$/i)) {
+      // If we have a previous note to process, process it first
+      if (currentBaseName && urlsForCurrentNote.length > 0) {
+        const notesByDomain = groupUrlsByDomain(currentBaseName, sizeInfo, urlsForCurrentNote, domainMap);
+        notes.push(...notesByDomain);
       }
       
-      // Start new base note
-      baseName = line;
+      // Start new note
+      currentBaseName = line;
       sizeInfo = [];
-      currentNote = null;
-      currentDomain = null;
+      urlsForCurrentNote = [];
     } 
-    // Check if line is a size (contains GB/MB/KB)
-    else if (line.match(/^\d+\.\d+\s*GB|MB|KB$/i)) {
+    // Collect size info
+    else if (line.match(/^\d+\.\d+\s*(GB|MB|KB)$/i)) {
       sizeInfo.push(line);
     }
-    // Check if line is a URL
+    // Collect URLs
     else if (line.match(/^https?:\/\//i)) {
-      // Extract domain from URL
-      let domain = null;
-      try {
-        const url = new URL(line);
-        domain = url.hostname.replace('www.', '');
-      } catch (e) {
-        console.error('Invalid URL:', line);
-        continue;
-      }
-      
-      // If domain changed, create new note for this domain
-      if (domain !== currentDomain) {
-        // Save previous note if exists
-        if (currentNote && currentNote.content.trim()) {
-          notes.push(currentNote);
-        }
-        
-        // Create new note for this domain
-        const domainName = domainMap[domain] || domain;
-        currentNote = {
-          name: `${baseName} [${domainName}]`,
-          size: sizeInfo.join('\n'),
-          content: `${baseName} [${domainName}]\n${sizeInfo.join('\n')}\n`
-        };
-        currentDomain = domain;
-      }
-      
-      // Add URL to current note's content
-      if (currentNote) {
-        currentNote.content += line + '\n';
-      }
+      urlsForCurrentNote.push(line);
     }
   }
   
-  // Add the last note if it exists
-  if (currentNote && currentNote.content.trim()) {
-    notes.push(currentNote);
+  // Process the last note if exists
+  if (currentBaseName && urlsForCurrentNote.length > 0) {
+    const notesByDomain = groupUrlsByDomain(currentBaseName, sizeInfo, urlsForCurrentNote, domainMap);
+    notes.push(...notesByDomain);
   }
   
-  // Format the content with footer for each note
-  notes.forEach(note => {
-    note.content += `\n\n⚠️ DOWNLOAD APLIKASI INDapk:\n` +
+  return notes;
+}
+
+// Helper function to group URLs by domain for a single note
+function groupUrlsByDomain(baseName, sizeInfo, urls, domainMap) {
+  const domainGroups = {}; // Reset untuk setiap note
+  const notes = [];
+  
+  // Group URLs by domain
+  urls.forEach(url => {
+    try {
+      const urlObj = new URL(url);
+      const domain = urlObj.hostname.replace('www.', '');
+      const domainName = domainMap[domain] || domain;
+      
+      if (!domainGroups[domainName]) {
+        domainGroups[domainName] = [];
+      }
+      domainGroups[domainName].push(url);
+    } catch (e) {
+      console.error('Invalid URL:', url);
+    }
+  });
+  
+  // Create notes from domain groups
+  for (const domainName in domainGroups) {
+    const urls = domainGroups[domainName];
+    const noteName = `${baseName} [${domainName}]`;
+    
+    let noteContent = `${noteName}\n`;
+    if (sizeInfo.length > 0) {
+      noteContent += `${sizeInfo.join('\n')}\n\n`;
+    }
+    noteContent += urls.join('\n');
+    
+    // Add footer
+    noteContent += `\n\n⚠️ DOWNLOAD APLIKASI INDapk:\n` +
       `🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing\n` +
       `🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file\n` +
       `🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet`;
-  });
+    
+    notes.push({
+      name: noteName,
+      size: sizeInfo.join(', '),
+      content: noteContent
+    });
+  }
   
   return notes;
 }
@@ -1400,12 +1326,22 @@ function displayParseResult(notes) {
   const resultContainer = document.getElementById('parseResultContent');
   resultContainer.innerHTML = '';
   
+  if (notes.length === 0) {
+    resultContainer.innerHTML = `
+      <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Tidak dapat menemukan format note yang valid
+      </div>
+    `;
+    return;
+  }
+  
   notes.forEach(note => {
     const item = document.createElement('div');
     item.className = 'parse-result-item mb-3 p-3 border rounded';
     
     // Count links
-    const linkCount = (note.content.match(/https?:\/\/[^\s]+/g) || []).length;
+    const linkCount = (note.content.match(/https?:\/\/[^\s]+/g) || []).length - 3; // Minus 3 untuk footer links
     
     item.innerHTML = `
       <div class="d-flex justify-content-between align-items-center">
@@ -1414,11 +1350,11 @@ function displayParseResult(notes) {
           <strong>${note.name}</strong>
         </div>
         <div class="badge bg-primary">
-          ${linkCount} links
+          ${linkCount > 0 ? linkCount : 0} links
         </div>
       </div>
       <div class="mt-2">
-        <small class="text-muted">${note.size.replace(/\n/g, ', ')}</small>
+        <small class="text-muted">${note.size}</small>
       </div>
     `;
     
