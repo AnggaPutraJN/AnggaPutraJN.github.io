@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Locked Link System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: #4a94bb;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+        }
+        
+        .tab-navigation {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab-navigation a {
+            padding: 10px 20px;
+            margin-right: 5px;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .tab-navigation a.active {
+            background-color: #4a94bb;
+            color: white;
+            border-color: #4a94bb;
+        }
+        
+        .tab-navigation a:hover:not(.active) {
+            background-color: #ddd;
+        }
+        
+        .section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            margin-top: 0;
+            color: #4a94bb;
+            font-size: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background-color: #4a94bb;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #3a7b9b;
+        }
+        
+        .btn-mini {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        
+        .btn-info {
+            background-color: #17a2b8;
+        }
+        
+        .btn-info:hover {
+            background-color: #138496;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a94bb;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #4a94bb;
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #4a94bb;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            background-color: #28a745;
+        }
+        
+        .notification.error {
+            background-color: #dc3545;
+        }
+        
+        .notification.info {
+            background-color: #17a2b8;
+        }
+        
+        #notificationIcon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .sort-pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .sort-container, .pagination-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sort-label {
+            font-weight: 500;
+        }
+        
+        .sort-select, .pagination-select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .pagination-button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .pagination-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .key-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .key-display {
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .key-edit {
+            width: 80px;
+            padding: 5px;
+            font-family: monospace;
+        }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 5px;
+        }
+        
+        .bulk-textarea {
+            font-family: monospace;
+            font-size: 13px;
+        }
+        
+        .bulk-result-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #4a94bb;
+        }
+        
+        .bulk-result-link {
+            font-family: monospace;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 3px;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+        
+        .part-indicator {
+            color: #856404;
+            background-color: #fff3cd;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .game-group {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .game-group h3 {
+            color: #4a94bb;
+            margin-bottom: 10px;
+        }
+        
+        .result-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        .result-item h4 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .multiup-link {
+            border-left: 4px solid #ffc107;
+        }
+        
+        .copy-all-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* Dashboard V2 Styles */
+        .dashboard-v2-game-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .dashboard-v2-game-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #4a94bb;
+        }
+        
+        .dashboard-v2-game-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4a94bb;
+            font-size: 16px;
+        }
+        
+        .dashboard-v2-game-links {
+            margin-top: 10px;
+        }
+        
+        .dashboard-v2-game-link {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        
+        .dashboard-v2-game-link input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .dashboard-v2-game-link button {
+            margin-left: 5px;
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+        
+        .dashboard-v2-copy-all {
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+            }
+            
+            .sort-pagination-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+            
+            .dashboard-v2-game-list {
+                grid-template-columns: 1fr;
+            }
+
+        }
+/* Screenshot thumb */
+.screenshot-thumb{
+  width: 90px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Admin Panel</h1>
+            <p>Locked Link System Management</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <a href="#" class="tab-button" id="bulkGeneratorV3Tab">
+                <i class="icon">🏡</i> HOME
+            </a>
+            <a href="#" class="tab-button active" id="dashboardTab">
+                <i class="icon">📊</i> Dashboard
+            </a>
+            <a href="#" class="tab-button" id="dashboardV2Tab">
+                <i class="icon">📊</i> Dashboard V2
+            </a>
+            <a href="#" class="tab-button" id="bulkGeneratorV3Tab">
+                <i class="icon">🚀</i> Bulk Generator V3
+            </a>
+        </div>
+
+        <div class="main-content">
+            <!-- Dashboard Tab Content -->
+            <div id="dashboardContent">
+                <!-- Stats Dashboard -->
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalLinks">0</div>
+                        <div class="stat-label">Total Links</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalClicks">0</div>
+                        <div class="stat-label">Total Clicks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayClicks">0</div>
+                        <div class="stat-label">Today's Clicks</div>
+                    </div>
+                </div>
+
+                <!-- Create New Link -->
+                <div class="section">
+                    <h2>🎮 Buat Link Baru</h2>
+                    <form id="createForm">
+                        <div class="form-group">
+                            <label for="namaGame">Nama Game:</label>
+                            <input type="text" id="namaGame" name="nama_game" required placeholder="Contoh: Mobile Legends Bang Bang">
+                        </div>
+                        <div class="form-group">
+                            <label for="linkTujuan">Link Tujuan:</label>
+                            <input type="url" id="linkTujuan" name="link_tujuan" required placeholder="https://example.com/download">
+                        </div>
+                        <div class="form-group">
+                            <label for="adLink">Link Iklan (Opsional):</label>
+                            <input type="url" id="adLink" name="ad_link" placeholder="https://example.com/iklan">
+                        </div>
+                        <button type="submit" class="btn">🔗 Buat Link</button>
+                    </form>
+                </div>
+
+                <!-- Alert Messages -->
+                <div id="alertContainer"></div>
+
+                <!-- Links Management -->
+                <div class="section">
+                    <h2>📊 Manajemen Link</h2>
+                    <button onclick="loadLinks()" class="btn btn-success">🔄 Refresh Data</button>
+                    <button onclick="deleteSelectedLinks()" class="btn btn-danger" id="deleteSelectedBtn" style="display: none;">🗑️ Hapus yang Dipilih</button>
+                    
+                    <!-- Sorting and Pagination Controls -->
+                    <div class="sort-pagination-container">
+                        <div class="sort-container">
+                            <span class="sort-label">Urutkan:</span>
+                            <select id="sortBy" class="sort-select" onchange="loadLinks()">
+                                <option value="created_at-desc">Tanggal Dibuat (Terbaru)</option>
+                                <option value="created_at-asc">Tanggal Dibuat (Terlama)</option>
+                                <option value="nama_game-asc">Nama Game (A-Z)</option>
+                                <option value="nama_game-desc">Nama Game (Z-A)</option>
+                                <option value="count_click-desc">Jumlah Klik (Terbanyak)</option>
+                                <option value="count_click-asc">Jumlah Klik (Tersedikit)</option>
+                                <option value="key_last_updated-desc">Key Last Update (Terbaru)</option>
+                                <option value="key_last_updated-asc">Key Last Update (Terlama)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="pagination-container">
+                            <select id="itemsPerPage" class="pagination-select" onchange="loadLinks()">
+                                <option value="10">10 per halaman</option>
+                                <option value="25">25 per halaman</option>
+                                <option value="50">50 per halaman</option>
+                                <option value="100">100 per halaman</option>
+                            </select>
+                            
+                            <button id="prevPage" class="pagination-button" onclick="changePage(-1)" disabled>◀</button>
+                            <span id="pageInfo">Halaman 1</span>
+                            <button id="nextPage" class="pagination-button" onclick="changePage(1)" disabled>▶</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="linksTable">
+                        <thead>
+                          <tr>
+                            <th><input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)"></th>
+                            <th>Aksi</th>
+                            <th>Nama Game</th>
+                            <th>Link Tujuan</th>
+                            <th>Key</th>
+                            <th>Shareable Link</th>
+                            <th>Dibuat</th>
+                            <th>Key Last Updated</th>
+                            <th>Screenshot</th>
+                            <th>Clicks</th>
+                            <th>Link Iklan</th>
+                            <th>Cloud Download</th>
+                          </tr>
+                        </thead>
+                            <tbody id="linksTableBody">
+                                <tr>
+                                    <td colspan="11" class="loading">
+                                        <div class="spinner"></div>
+                                        Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Telegram Info -->
+                <div class="section">
+                    <h2>📱 Informasi Telegram</h2>
+                    <p><strong>Username Admin:</strong> @indapk</p>
+                    <p><strong>Instruksi untuk User:</strong></p>
+                    <ul>
+                        <li>User harus menghubungi admin di Telegram @indapk</li>
+                        <li>Admin akan memberikan kunci 6 digit untuk membuka link</li>
+                        <li>Kunci hanya berlaku untuk satu kali akses</li>
+                        <li>Setiap akses akan dicatat dalam sistem</li>
+                        <li>Key akan direset otomatis setiap 24 jam</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Dashboard V2 Tab Content -->
+            <div id="dashboardV2Content" style="display: none;">
+                <div class="section">
+                    <h2>📊 Dashboard V2 - Game Links Overview</h2>
+                    <p>View all games and their generated links in a card-based layout.</p>
+                    
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="v2TotalGames">0</div>
+                            <div class="stat-label">Total Games</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="v2TotalLinks">0</div>
+                            <div class="stat-label">Total Links</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="v2TotalClicks">0</div>
+                            <div class="stat-label">Total Clicks</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="v2SearchGame">Search Game:</label>
+                        <input type="text" id="v2SearchGame" placeholder="Search by game name..." oninput="filterDashboardV2Games()">
+                    </div>
+                    
+                    <button onclick="loadDashboardV2Data()" class="btn btn-success">🔄 Refresh Data</button>
+                    <button onclick="copyAllDashboardV2Links()" class="btn btn-info">📋 Copy All Links</button>
+                    
+                    <div id="dashboardV2Loading" class="loading">
+                        <div class="spinner"></div>
+                        Memuat data game...
+                    </div>
+                    
+                    <div id="dashboardV2GameList" class="dashboard-v2-game-list" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Bulk Generator V3 Tab Content -->
+<!-- Bulk Generator V3 Tab Content -->
+<div id="bulkGeneratorV3Content" style="display: none;">
+    <div class="section">
+        <h2>🚀 Bulk Link Generator V3</h2>
+        <p>Generate multiple locked links at once with multiple URLs and ad links per game.</p>
+        
+        <!-- Part Configuration Section -->
+        <div class="part-config-section">
+            <h3>⚙️ Part Configuration</h3>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="hasPartsCheckbox" onchange="togglePartConfiguration()">
+                    Game ini memiliki part/parts?
+                </label>
+            </div>
+            
+            <div id="partConfiguration" style="display: none;">
+                <div class="form-group">
+                    <label for="partCount">Jumlah Part:</label>
+                    <input type="number" id="partCount" min="1" value="1" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="selectedDomains">Domain yang Digunakan (urutkan sesuai urutan part):</label>
+                    <div id="domainSelectionContainer">
+                        <!-- Domains will be added here dynamically -->
+                    </div>
+                    <button type="button" class="btn btn-small" onclick="addDomainField()">➕ Tambah Domain</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bulk Input Section -->
+        <div class="form-group">
+            <label for="bulkV3Input">Bulk Input V3:</label>
+            <textarea id="bulkV3Input" class="bulk-textarea" rows="10" placeholder="Paste game names, URLs, and ad links here..."></textarea>
+            <div class="format-info">
+                <strong>Format:</strong> Nama Game di baris pertama, diikuti link game, lalu link iklan. Contoh:
+                <pre>
+Game A
+https://example.com/game-a
+https://example.com/game-b
+https://multiup.io/download/.../game-a.chd
+LINK IKLAN 1
+LINK IKLAN 2
+LINK IKLAN 3
+
+Game B Part 1
+https://drive.google.com/part1
+https://mediafire.com/part1
+LINK IKLAN 1
+LINK IKLAN 2</pre>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button onclick="parseBulkV3Input()" class="btn btn-primary">🔍 Parse Input</button>
+            <button onclick="clearBulkV3Input()" class="btn btn-danger">🗑️ Clear</button>
+            <button onclick="generateBulkV3Links()" class="btn btn-success" id="generateAllBtn" style="display: none;">🚀 Generate All Links</button>
+        </div>
+        
+        <div id="bulkV3Results" style="display: none;">
+            <h3>Parsing Results</h3>
+            <div id="bulkV3ResultsContainer"></div>
+        </div>
+    </div>
+    
+    <div class="section" id="bulkV3ResultsSection" style="display: none;">
+        <h2>🎉 Generated Links V3</h2>
+        <div id="generatedV3LinksContainer"></div>
+        <div class="copy-all-buttons">
+            <button onclick="copyAllV3Links()" class="btn btn-info">📋 Copy All Links</button>
+            <button onclick="copyAllV3LinksWithNames()" class="btn btn-warning">📝 Copy Links with Names</button>
+            <button onclick="copyAllV3LinksWithoutAds()" class="btn btn-primary">📋 Copy Links Without Ads</button>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <!-- Notification Element -->
+    <div id="notification" class="notification">
+        <span id="notificationIcon">ℹ️</span>
+        <span id="notificationMessage">Notification message</span>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_kPMeDtkBw0CjNh9jfoTcH5Nr0mSnTi1R42WVK0KvPWzHI3jvVp8PFRaTBas9nLnZ6w/exec';
+        let linksData = {};
+        let parsedBulkV3Games = [];
+        let dashboardV2Games = [];
+        let selectedDomains = [];
+        let hasParts = false;
+            let partCount = 6;
+        
+        // Pagination variables
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalLinksCount = 0;
+        const availableDomains = [
+            'Google Drive', 'MediaFire', 'VikingFile', 'PixelDrain', '1Fichier', 'MultiUp',
+            'Mega', 'Qiwi', 'KatFile', 'BowFile', 'MixDrop', 'ZippyShare', 'Dropbox',
+            'TeraBox', 'AnonFiles', 'BayFiles', 'LetsUpload', 'File.io', 'Filebin',
+            'Uploaded', 'Rapidgator', 'NitroFlare', 'Turbobit', 'UploadGig', 'FileFactory',
+            'UsersCloud', 'OpenLoad', 'Uptobox', 'DDownload', 'WorkUpload', 'SendCM',
+            'Filemail', 'OnionShare', 'Wormhole', 'SendGB', 'Transfer.sh', 'WeTransfer',
+            'FileTransfer', 'EasyUpload', 'LolaBits', 'VUp', 'Keep2Share', 'FileAL',
+            'UploadBoy', 'HitFile', 'Clicknupload', 'Link2Unlock', 'MegaUP', 'Dupload',
+            'GoFile', 'FastUpload', 'IcerBox'
+        ];
+
+        // Load links on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLinks();
+            setupTabNavigation();
+            initializeDomainSelection();
+        });
+
+        // Tab Navigation
+        function setupTabNavigation() {
+            document.getElementById('dashboardTab').addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('dashboard');
+            });
+            
+            document.getElementById('dashboardV2Tab').addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('dashboardV2');
+                loadDashboardV2Data();
+            });
+            
+            document.getElementById('bulkGeneratorV3Tab').addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('bulkGeneratorV3');
+            });
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            if (tab === 'dashboard') {
+                document.getElementById('dashboardTab').classList.add('active');
+                document.getElementById('dashboardContent').style.display = 'block';
+                document.getElementById('dashboardV2Content').style.display = 'none';
+                document.getElementById('bulkGeneratorV3Content').style.display = 'none';
+            } else if (tab === 'dashboardV2') {
+                document.getElementById('dashboardV2Tab').classList.add('active');
+                document.getElementById('dashboardContent').style.display = 'none';
+                document.getElementById('dashboardV2Content').style.display = 'block';
+                document.getElementById('bulkGeneratorV3Content').style.display = 'none';
+            } else {
+                document.getElementById('bulkGeneratorV3Tab').classList.add('active');
+                document.getElementById('dashboardContent').style.display = 'none';
+                document.getElementById('dashboardV2Content').style.display = 'none';
+                document.getElementById('bulkGeneratorV3Content').style.display = 'block';
+            }
+        }
+
+        // Create new link
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('action', 'create');
+            
+            // Pastikan ad_link dikirim
+            const adLink = document.getElementById('adLink').value;
+            if (adLink) {
+                formData.append('link_dengan_iklan', adLink);
+            }
+            
+            showAlert('Membuat link...', 'info');
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert(`Link berhasil dibuat! Key: ${data.data.key}`, 'success');
+                    this.reset();
+                    loadLinks();
+                } else {
+                    showAlert(data.message || 'Gagal membuat link', 'error');
+                }
+            })
+            .catch(error => {
+                showAlert('Error: ' + error.message, 'error');
+            });
+        });
+
+        // Load links function
+        function loadLinks() {
+            const tbody = document.getElementById('linksTableBody');
+            tbody.innerHTML = '<tr><td colspan="11" class="loading"><div class="spinner"></div>Memuat data...</td></tr>';
+            
+            const sortBy = document.getElementById('sortBy').value;
+            let sortField, sortDirection;
+            
+            if (sortBy && sortBy.includes('-')) {
+                [sortField, sortDirection] = sortBy.split('-');
+            } else {
+                sortField = 'created_at';
+                sortDirection = 'desc';
+            }
+            
+            const itemsPerPage = parseInt(document.getElementById('itemsPerPage').value) || 10;
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=listAll&sortField=${sortField}&sortDirection=${sortDirection}&page=${currentPage}&perPage=${itemsPerPage}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    let links = data.data;
+                    
+                    if (links && Array.isArray(links)) {
+                        links = sortLinksClientSide(links, sortField, sortDirection);
+                        
+                        const startIndex = (currentPage - 1) * itemsPerPage;
+                        const endIndex = startIndex + itemsPerPage;
+                        const paginatedLinks = links.slice(startIndex, endIndex);
+                        
+                        displayLinks(paginatedLinks);
+                        updateStats(links);
+                        
+                        totalLinksCount = links.length;
+                        totalPages = Math.ceil(totalLinksCount / itemsPerPage);
+                    } else {
+                        displayLinks([]);
+                        updateStats([]);
+                        totalLinksCount = 0;
+                        totalPages = 1;
+                    }
+                    
+                    updatePaginationControls();
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="11" class="loading">❌ Gagal memuat data</td></tr>';
+                    totalLinksCount = 0;
+                    totalPages = 1;
+                    updatePaginationControls();
+                }
+            })
+            .catch(error => {
+                tbody.innerHTML = '<tr><td colspan="11" class="loading">❌ Error: ' + error.message + '</td></tr>';
+                totalLinksCount = 0;
+                totalPages = 1;
+                updatePaginationControls();
+            });
+        }
+
+        function sortLinksClientSide(links, sortField, sortDirection) {
+            if (!links || !Array.isArray(links)) return links;
+            
+            return links.sort((a, b) => {
+                let valueA, valueB;
+                
+                switch(sortField) {
+                    case 'nama_game':
+                        valueA = (a.nama_game || '').toLowerCase();
+                        valueB = (b.nama_game || '').toLowerCase();
+                        break;
+                    case 'created_at':
+                        valueA = parseIndonesianDate(a.created_at);
+                        valueB = parseIndonesianDate(b.created_at);
+                        break;
+                    case 'key_last_updated':
+                        valueA = parseIndonesianDate(a.key_last_updated || a.created_at);
+                        valueB = parseIndonesianDate(b.key_last_updated || b.created_at);
+                        break;
+                    case 'count_click':
+                        valueA = parseInt(a.count_click) || 0;
+                        valueB = parseInt(b.count_click) || 0;
+                        break;
+                    case 'link_tujuan':
+                        valueA = (a.link_tujuan || '').toLowerCase();
+                        valueB = (b.link_tujuan || '').toLowerCase();
+                        break;
+                    default:
+                        valueA = a[sortField] || '';
+                        valueB = b[sortField] || '';
+                        if (typeof valueA === 'string') valueA = valueA.toLowerCase();
+                        if (typeof valueB === 'string') valueB = valueB.toLowerCase();
+                }
+                
+                let comparison = 0;
+                if (valueA > valueB) {
+                    comparison = 1;
+                } else if (valueA < valueB) {
+                    comparison = -1;
+                }
+                
+                return sortDirection === 'desc' ? comparison * -1 : comparison;
+            });
+        }
+
+        function parseIndonesianDate(dateString) {
+            if (!dateString) return new Date(0);
+            
+            try {
+                if (dateString.includes('/')) {
+                    const parts = dateString.split(' ');
+                    const datePart = parts[0];
+                    const timePart = parts[1] || '00:00:00';
+                    
+                    const [day, month, year] = datePart.split('/');
+                    const [hour, minute, second] = timePart.split(':');
+                    
+                    return new Date(
+                        parseInt(year),
+                        parseInt(month) - 1,
+                        parseInt(day),
+                        parseInt(hour) || 0,
+                        parseInt(minute) || 0,
+                        parseInt(second) || 0
+                    );
+                } else {
+                    return new Date(dateString);
+                }
+            } catch (e) {
+                console.error('Error parsing date:', dateString, e);
+                return new Date(0);
+            }
+        }
+
+        // Update pagination controls
+        function updatePaginationControls() {
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+            const pageInfo = document.getElementById('pageInfo');
+            
+            if (prevButton) prevButton.disabled = currentPage <= 1;
+            if (nextButton) nextButton.disabled = currentPage >= totalPages;
+            
+            if (pageInfo) {
+                pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages} (Total: ${totalLinksCount} items)`;
+            }
+        }
+
+        // Change page
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage > 0 && newPage <= totalPages) {
+                currentPage = newPage;
+                loadLinks();
+            }
+        }
+
+        // Fungsi untuk toggle select all
+        function toggleSelectAll(checkbox) {
+            const checkboxes = document.querySelectorAll('.link-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = checkbox.checked;
+            });
+            updateDeleteButton();
+        }
+
+        // Fungsi untuk update tampilan tombol delete
+        function updateDeleteButton() {
+            const selectedCount = document.querySelectorAll('.link-checkbox:checked').length;
+            const deleteBtn = document.getElementById('deleteSelectedBtn');
+            
+            if (selectedCount > 0) {
+                deleteBtn.style.display = 'inline-block';
+                deleteBtn.textContent = `🗑️ Hapus ${selectedCount} yang Dipilih`;
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+        }
+
+        // Fungsi untuk menghapus yang dipilih
+        function deleteSelectedLinks() {
+            const selectedIds = [];
+            document.querySelectorAll('.link-checkbox:checked').forEach(checkbox => {
+                selectedIds.push(checkbox.value);
+            });
+            
+            if (selectedIds.length === 0) {
+                showAlert('Tidak ada link yang dipilih', 'error');
+                return;
+            }
+            
+            if (confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.length} link yang dipilih?`)) {
+                showAlert(`Menghapus ${selectedIds.length} link...`, 'info');
+                
+                // Kirim permintaan untuk setiap ID yang dipilih
+                const deletePromises = selectedIds.map(id => {
+                    return fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `action=delete&id=${id}`
+                    })
+                    .then(response => response.json());
+                });
+                
+                // Tunggu semua selesai
+                Promise.all(deletePromises)
+                    .then(results => {
+                        const successCount = results.filter(r => r.status === 'success').length;
+                        const errorCount = results.length - successCount;
+                        
+                        if (errorCount > 0) {
+                            showAlert(`${successCount} link berhasil dihapus, ${errorCount} gagal`, 
+                                      errorCount === results.length ? 'error' : 'warning');
+                        } else {
+                            showAlert(`${successCount} link berhasil dihapus`, 'success');
+                        }
+                        
+                        // Refresh data
+                        loadLinks();
+                        document.getElementById('selectAllCheckbox').checked = false;
+                    })
+                    .catch(error => {
+                        showAlert('Error: ' + error.message, 'error');
+                    });
+            }
+        }
+
+        // Display links in table
+    function displayLinks(links) {
+      const tbody = document.getElementById('linksTableBody');
+      
+      if (!links || links.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="12" class="loading">📭 Belum ada link yang dibuat</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = links.map(link => {
+        const screenshot = link.screenshot_url || link.screenshot || '';
+        const screenshotCell = screenshot
+          ? `<img src="${screenshot}" alt="screenshot" class="screenshot-thumb" loading="lazy" onerror="this.style.display='none'">`
+          : '-';
+
+        return `
+          <tr>
+            <td><input type="checkbox" class="link-checkbox" value="${link.unique_id}"></td>
+            <td>
+              <div class="action-buttons">
+                <button onclick="viewDetails('${link.unique_id}')" class="btn btn-mini">👁️ Detail</button>
+                <button onclick="generateNewKey('${link.unique_id}')" class="btn btn-warning btn-mini">🔄 Key</button>
+                <button onclick="deleteLink('${link.unique_id}')" class="btn btn-danger btn-mini">🗑️ Hapus</button>
+              </div>
+            </td>
+            <td>${link.nama_game}</td>
+            <td><a href="${link.link_tujuan}" target="_blank">${(link.link_tujuan || '').substring(0, 30)}...</a></td>
+            <td>
+              <div class="key-container" id="key-container-${link.unique_id}">
+                <span class="key-display" id="key-${link.unique_id}">${link.key}</span>
+                <button onclick="copyKey('${link.unique_id}')" class="btn btn-mini">📋</button>
+              </div>
+            </td>
+            <td>
+              <input type="text" value="${link.shareable_link}" readonly>
+              <button onclick="copyToClipboard('${link.shareable_link}')" class="btn btn-mini">📋</button>
+            </td>
+            <td>${link.created_at}</td>
+            <td>${link.key_last_updated || link.created_at}</td>
+            <!-- NEW -->
+            <td>${screenshotCell}</td>
+            <td>${link.count_click || 0}</td>
+            <td>${link.link_dengan_iklan || '-'}</td>
+            <td>${link.cloud_download || extractDomainName(link.link_tujuan)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+
+        // Copy key to clipboard
+        function copyKey(linkId) {
+            const keyElement = document.getElementById(`key-${linkId}`);
+            if (!keyElement) {
+                showAlert('Element key tidak ditemukan', 'error');
+                return;
+            }
+
+            const key = keyElement.textContent;
+            if (key && key !== 'Loading...') {
+                navigator.clipboard.writeText(key).then(() => {
+                    showAlert('Key berhasil disalin: ' + key, 'success');
+                }).catch(() => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = key;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showAlert('Key berhasil disalin: ' + key, 'success');
+                });
+            } else {
+                showAlert('Key belum tersedia', 'error');
+            }
+        }
+
+        // Edit key
+        function editKey(linkId) {
+            const keyElement = document.getElementById(`key-${linkId}`);
+            const container = document.getElementById(`key-container-${linkId}`);
+            
+            if (!keyElement || !container) {
+                showAlert('Element tidak ditemukan', 'error');
+                return;
+            }
+
+            const currentKey = keyElement.textContent;
+            if (currentKey === 'Loading...') {
+                showAlert('Tunggu key selesai dimuat', 'error');
+                return;
+            }
+            
+            container.innerHTML = `
+                <input type="text" id="key-input-${linkId}" value="${currentKey}" class="key-edit" maxlength="6" pattern="[0-9]{6}" title="Key harus 6 digit angka">
+                <button onclick="saveKey('${linkId}')" class="btn btn-success btn-mini" title="Simpan">💾</button>
+                <button onclick="cancelEditKey('${linkId}', '${currentKey}')" class="btn btn-danger btn-mini" title="Batal">❌</button>
+            `;
+            
+            const input = document.getElementById(`key-input-${linkId}`);
+            if (input) {
+                input.focus();
+                input.select();
+                
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        saveKey(linkId);
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        cancelEditKey(linkId, currentKey);
+                    }
+                });
+            }
+        }
+
+        // Save key
+        function saveKey(linkId) {
+            const input = document.getElementById(`key-input-${linkId}`);
+            if (!input) {
+                showAlert('Input field tidak ditemukan', 'error');
+                return;
+            }
+            
+            const newKey = input.value.trim();
+            
+            if (!/^[0-9]{6}$/.test(newKey)) {
+                showAlert('Key harus 6 digit angka', 'error');
+                return;
+            }
+            
+            input.disabled = true;
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=updateKey&id=${linkId}&key=${newKey}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert('Key berhasil diubah', 'success');
+                    restoreKeyDisplay(linkId, newKey);
+                    loadLinks();
+                } else {
+                    showAlert(data.message || 'Gagal mengubah key', 'error');
+                    input.disabled = false;
+                }
+            })
+            .catch(error => {
+                showAlert('Error: ' + error.message, 'error');
+                input.disabled = false;
+            });
+        }
+
+        // Cancel edit key
+        function cancelEditKey(linkId, originalKey) {
+            restoreKeyDisplay(linkId, originalKey);
+        }
+
+        // Restore key display
+        function restoreKeyDisplay(linkId, keyValue) {
+            const container = document.getElementById(`key-container-${linkId}`);
+            if (container) {
+                container.innerHTML = `
+                    <span class="key-display" id="key-${linkId}">${keyValue}</span>
+                    <button onclick="copyKey('${linkId}')" class="btn btn-mini" title="Copy Key">📋</button>
+                    <button onclick="editKey('${linkId}')" class="btn btn-warning btn-mini" title="Edit Key">✏️</button>
+                `;
+            }
+        }
+
+        // Generate new key
+        function generateNewKey(linkId) {
+            if (confirm('Apakah Anda yakin ingin membuat key baru? Key lama akan tidak bisa digunakan.')) {
+                const newKey = Math.floor(100000 + Math.random() * 900000).toString();
+                
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=updateKey&id=${linkId}&key=${newKey}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Key baru berhasil dibuat: ' + newKey, 'success');
+                        restoreKeyDisplay(linkId, newKey);
+                        loadLinks();
+                    } else {
+                        showAlert(data.message || 'Gagal membuat key baru', 'error');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error: ' + error.message, 'error');
+                });
+            }
+        }
+
+        // Update stats
+        function updateStats(links) {
+            const totalLinks = links ? links.length : 0;
+            const totalClicks = links ? links.reduce((sum, link) => sum + (link.count_click || 0), 0) : 0;
+            const todayClicks = 0;
+            
+            document.getElementById('totalLinks').textContent = totalLinks;
+            document.getElementById('totalClicks').textContent = totalClicks;
+            document.getElementById('todayClicks').textContent = todayClicks;
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('Link berhasil disalin!', 'success');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showAlert('Link berhasil disalin!', 'success');
+            });
+        }
+
+        // View details
+        function viewDetails(id) {
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=get&id=${id}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const link = data.data;
+                    alert(`Detail Link:\n\nNama Game: ${link.nama_game}\nLink Tujuan: ${link.link_tujuan}\nKey: ${link.key || 'N/A'}\nKey Last Updated: ${link.key_last_updated || link.created_at}\nTotal Clicks: ${link.count_click}\nDibuat: ${link.created_at}\nLink Iklan: ${link.link_dengan_iklan || 'Tidak ada'}\nCloud Download: ${link.cloud_download || '-'}\nID: ${link.unique_id}`);
+                } else {
+                    showAlert(data.message || 'Gagal mengambil detail', 'error');
+                }
+            })
+            .catch(error => {
+                showAlert('Error: ' + error.message, 'error');
+            });
+        }
+
+        // Delete link
+        function deleteLink(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=delete&id=${id}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Link berhasil dihapus', 'success');
+                        loadLinks();
+                    } else {
+                        showAlert(data.message || 'Gagal menghapus link', 'error');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error: ' + error.message, 'error');
+                });
+            }
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-error' : 'alert-info';
+            
+            alertContainer.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notificationIcon');
+            const msg = document.getElementById('notificationMessage');
+            
+            if (type === 'success') {
+                icon.textContent = '✅';
+                notification.className = 'notification success';
+            } else if (type === 'error') {
+                icon.textContent = '❌';
+                notification.className = 'notification error';
+            } else {
+                icon.textContent = 'ℹ️';
+                notification.className = 'notification info';
+            }
+            
+            msg.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+function extractDomainName(url) {
+    if (!url) return '';
+    
+    // Clean URL from strange characters and wrong formats
+    url = url.toString().trim()
+             .replace(/\s+/g, '') // Remove all whitespace
+             .replace(/httpsV/g, 'https://')
+             .replace(/httpV/g, 'http://')
+             .replace(/https-J/g, 'https://')
+             .replace(/hips/g, 'https')
+             .replace(/^https\/\//g, 'https://')
+             .replace(/^http\/\//g, 'http://');
+    
+    try {
+        // Add https:// if no protocol exists
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+        
+        const urlObj = new URL(url);
+        const domain = urlObj.hostname.replace('www.', '').toLowerCase();
+        
+        // Mapping domain to more user-friendly names
+        const domainMap = {
+            'drive.google.com': 'Google Drive',
+            'mediafire.com': 'MediaFire',
+            'medafire.com': 'MediaFire', // Handle typo
+            'mega.nz': 'Mega',
+            'pixeldrain.com': 'PixelDrain',
+            'qiwi.gg': 'Qiwi',
+            'katfile.com': 'KatFile',
+            'bowfile.com': 'BowFile',
+            'dupload.net': 'Dupload',
+            'mixdrop.is': 'MixDrop',
+            '1fichier.com': '1Fichier',
+            'multiup.io': 'MultiUp',
+            'multip.job': 'MultiUp', // Handle typo
+            'zippyshare.com': 'ZippyShare',
+            'dropbox.com': 'Dropbox',
+            'terabox.com': 'TeraBox',
+            // Add more domain mappings as needed
+        };
+        
+        return domainMap[domain] || domain;
+        
+    } catch(e) {
+        console.error('Error extracting domain from URL:', url, e);
+        
+        // Fallback: try to extract domain manually
+        try {
+            const match = url.match(/https?:\/\/(?:www\.)?([^\/\?#]+)/i);
+            if (match && match[1]) {
+                const fallbackDomain = match[1].toLowerCase();
+                const domainMap = {
+                    // Same mapping as above
+                };
+                return domainMap[fallbackDomain] || fallbackDomain;
+            }
+        } catch(fallbackError) {
+            console.error('Fallback domain extraction failed:', fallbackError);
+        }
+        
+        return 'Unknown Domain';
+    }
+}
+
+        // Bulk Generator V3 Functions
+        function clearBulkV3Input() {
+            document.getElementById('bulkV3Input').value = '';
+            document.getElementById('bulkV3Results').style.display = 'none';
+            document.getElementById('bulkV3ResultsSection').style.display = 'none';
+            document.getElementById('generateAllBtn').style.display = 'none';
+            parsedBulkV3Games = [];
+        }
+
+     
+
+        // Helper function for Part sections
+        function getExpectedDomain(index) {
+            switch(index) {
+                case 0: return 'Google Drive';
+                case 1: return 'MediaFire';
+                case 2: return 'VikingFile';
+                case 3: return 'PixelDrain';
+                case 4: return '1Fichier';
+                case 5: return 'MultiUp';
+                default: return '';
+            }
+        }
+
+// Toggle part configuration
+function togglePartConfiguration() {
+    hasParts = document.getElementById('hasPartsCheckbox').checked;
+    document.getElementById('partConfiguration').style.display = hasParts ? 'block' : 'none';
+    
+    if (hasParts) {
+        partCount = parseInt(document.getElementById('partCount').value) || 1;
+        initializeDomainSelection();
+    }
+}
+
+// Initialize domain selection
+function initializeDomainSelection() {
+    selectedDomains = [];
+    const container = document.getElementById('domainSelectionContainer');
+    container.innerHTML = '';
+    
+    // Default domains based on common order
+    const defaultDomains = [
+        'Google Drive',
+        'MediaFire',
+        'VikingFile', 
+        'PixelDrain',
+        '1Fichier',
+        'MultiUp',
+        'Mega',
+        'Qiwi',
+        'KatFile',
+        'BowFile'
+    ];
+    
+    for (let i = 0; i < partCount; i++) {
+        addDomainField(i, defaultDomains[i] || 'Google Drive');
+    }
+}
+
+// Add domain selection field
+function addDomainField(index, defaultDomain = 'Google Drive') {
+    const container = document.getElementById('domainSelectionContainer');
+    const domainField = document.createElement('div');
+    domainField.className = 'domain-selection-field';
+    domainField.innerHTML = `
+        <div class="form-group">
+            <label>Part ${index + 1} Domain:</label>
+            <select class="domain-select" onchange="updateSelectedDomains()">
+                ${availableDomains.map(domain => 
+                    `<option value="${domain}" ${domain === defaultDomain ? 'selected' : ''}>${domain}</option>`
+                ).join('')}
+            </select>
+            <button type="button" class="btn btn-small btn-danger" onclick="removeDomainField(this)">❌ Hapus</button>
+        </div>
+    `;
+    container.appendChild(domainField);
+    updateSelectedDomains();
+}
+
+// Remove domain field
+function removeDomainField(button) {
+    const field = button.closest('.domain-selection-field');
+    field.remove();
+    partCount = Math.max(1, partCount - 1);
+    document.getElementById('partCount').value = partCount;
+    updateSelectedDomains();
+    
+    // Renumber the remaining fields
+    const fields = document.querySelectorAll('.domain-selection-field');
+    fields.forEach((field, index) => {
+        field.querySelector('label').textContent = `Part ${index + 1} Domain:`;
+    });
+}
+
+// Update selected domains array
+function updateSelectedDomains() {
+    selectedDomains = [];
+    const selects = document.querySelectorAll('.domain-select');
+    
+    selects.forEach(select => {
+        selectedDomains.push(select.value);
+    });
+    
+    console.log('Updated selected domains:', selectedDomains);
+}
+
+// Update part count and domain fields
+document.getElementById('partCount').addEventListener('change', function() {
+    const newPartCount = parseInt(this.value) || 1;
+    const currentFieldCount = document.querySelectorAll('.domain-selection-field').length;
+    
+    if (newPartCount > currentFieldCount) {
+        // Add more fields
+        for (let i = currentFieldCount; i < newPartCount; i++) {
+            addDomainField(i);
+        }
+    } else if (newPartCount < currentFieldCount) {
+        // Remove excess fields
+        const fields = document.querySelectorAll('.domain-selection-field');
+        for (let i = fields.length - 1; i >= newPartCount; i--) {
+            fields[i].remove();
+        }
+    }
+    
+    partCount = newPartCount;
+    updateSelectedDomains();
+});
+
+// Enhanced checkbox handler
+document.getElementById('hasPartsCheckbox').addEventListener('change', function() {
+    hasParts = this.checked;
+    const partConfig = document.getElementById('partConfiguration');
+    
+    if (hasParts) {
+        partConfig.style.display = 'block';
+        initializeDomainSelection();
+    } else {
+        partConfig.style.display = 'none';
+        selectedDomains = [];
+    }
+});
+
+
+// Helper function to detect ad links (shortener domains)
+function isAdLink(url, domain) {
+    const adDomains = [
+        'sfl.gl',
+        'bit.ly', 
+        'tinyurl.com',
+        't.co',
+        'goo.gl',
+        'short',
+        'tiny',
+        'link'
+    ];
+    
+    return adDomains.some(adDomain => 
+        url.toLowerCase().includes(adDomain) || 
+        domain.toLowerCase().includes(adDomain)
+    );
+}
+
+
+// Modified parseBulkV3Input to handle configured domains
+function parseBulkV3Input() {
+  const input = document.getElementById('bulkV3Input').value.trim();
+  if (!input) return showNotification('Mohon masukkan data terlebih dahulu', 'error');
+
+  // Konfigurasi part
+  hasParts = document.getElementById('hasPartsCheckbox').checked;
+  partCount = hasParts ? parseInt(document.getElementById('partCount').value) || 1 : 0;
+  updateSelectedDomains();
+
+  const lines = input.split('\n').map(s => s.trim()).filter(Boolean);
+
+  // helper lokal agar tidak tergantung fungsi luar
+  const isAdLinkLocal = (url) => /(?:sfl\.gl|bit\.ly|tinyurl\.com|t\.co|goo\.gl)/i.test(url);
+
+  const games = [];
+  let current = null;
+  let expectScreenshot = false;
+
+  for (const line of lines) {
+    // Judul game (bukan URL)
+    if (!/^https?:\/\//i.test(line)) {
+      if (current && current.links.length > 0) games.push(current);
+      current = { name: line, screenshot: '', links: [], adLinks: [], isPart: false };
+      current.isPart = hasParts && / part/i.test(line);
+      expectScreenshot = true;           // BARIS URL berikutnya adalah screenshot
+      continue;
+    }
+
+    // URL pertama setelah judul = screenshot (bukan link ke-1)
+    if (expectScreenshot) {
+      current.screenshot = line;
+      expectScreenshot = false;
+      continue;
+    }
+
+    // Setelah screenshot: baru klasifikasikan direct/ad
+    if (isAdLinkLocal(line)) {
+      current.adLinks.push(line);
+    } else {
+      const idx = current.links.length;
+      const domain = (current.isPart && selectedDomains[idx]) ? selectedDomains[idx] : extractDomainName(line);
+      current.links.push({
+        url: line,
+        domain: domain,
+        isMultiUp: line.includes('multiup.io')
+      });
+    }
+  }
+
+  if (current && current.links.length > 0) games.push(current);
+
+  parsedBulkV3Games = games;
+
+  if (parsedBulkV3Games.length === 0) {
+    return showNotification('Tidak ada game dengan link yang valid ditemukan', 'error');
+  }
+
+  displayBulkV3Results(parsedBulkV3Games);
+  showNotification(
+    `Ditemukan ${games.length} game dengan total ${games.reduce((s,g)=>s+g.links.length,0)} link original dan ${games.reduce((s,g)=>s+g.adLinks.length,0)} link iklan`,
+    'success'
+  );
+}
+
+
+
+// Modified displayBulkV3Results to show proper 1:1 pairing
+function displayBulkV3Results(games) {
+  const container = document.getElementById('bulkV3ResultsContainer');
+  container.innerHTML = '';
+
+  games.forEach((game, index) => {
+    const gameElement = document.createElement('div');
+    gameElement.className = 'bulk-result-item';
+
+    let linksHTML = '';
+    game.links.forEach((link, idx) => {
+      const pairedAdLink = idx < game.adLinks.length ? game.adLinks[idx] : '(Tidak ada link iklan)';
+      linksHTML += `
+        <div class="link-pair">
+          <div class="direct-link">
+            <strong>Link ${idx + 1}:</strong>
+            <div class="bulk-result-link">${link.url}</div>
+            <div>Domain: ${link.domain}</div>
+          </div>
+          <div class="ad-link">
+            <strong>Link Iklan:</strong>
+            <div class="bulk-result-link">${pairedAdLink}</div>
+          </div>
+          ${link.isMultiUp ? '<div class="multiup-tag">MultiUp Link</div>' : ''}
+        </div>
+      `;
+    });
+
+    gameElement.innerHTML = `
+      <h4>${index + 1}. ${game.name}</h4>
+      ${game.screenshot ? `<div><img src="${game.screenshot}" alt="screenshot" class="screenshot-thumb" loading="lazy"></div>` : ''}
+      ${linksHTML}
+    `;
+    container.appendChild(gameElement);
+  });
+
+  document.getElementById('bulkV3Results').style.display = 'block';
+  document.getElementById('generateAllBtn').style.display = 'inline-block';
+}
+
+
+
+async function generateBulkV3Links() {
+  if (parsedBulkV3Games.length === 0) {
+    showNotification('Tidak ada game yang bisa digenerate', 'error');
+    return;
+  }
+  
+  const resultsContainer = document.getElementById('generatedV3LinksContainer');
+  resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Membuat link...</div>';
+  document.getElementById('bulkV3ResultsSection').style.display = 'block';
+
+  let successCount = 0;
+  let errorCount = 0;
+  let resultsHTML = '';
+
+  try {
+    for (const game of parsedBulkV3Games) {
+      const formData = new FormData();
+      formData.append('action', 'createBulk');
+      formData.append('selectedDomains', JSON.stringify(selectedDomains));
+
+      // Format bulk_input: Judul, BARIS SCREENSHOT, lalu link-link
+      let bulkInput = game.name + '\n';
+      if (game.screenshot) bulkInput += game.screenshot + '\n';
+      game.links.forEach((link, index) => {
+        bulkInput += link.url + '\n';
+        if (index < game.adLinks.length) {
+          bulkInput += game.adLinks[index] + '\n';
+        }
+      });
+      formData.append('bulk_input', bulkInput);
+
+      const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        data.data.forEach((gameResult) => {
+          resultsHTML += `
+            <div class="game-group">
+              <h3>${gameResult.gameName}</h3>
+              ${game.screenshot ? `<div><img src="${game.screenshot}" alt="screenshot" class="screenshot-thumb" loading="lazy"></div>` : ''}
+              <div class="original-links">
+                <h4>Original Links:</h4>
+          `;
+
+          gameResult.links.forEach((link, idx) => {
+            // Domain – gunakan konfigurasi jika ada
+            let domain = game.links[idx]?.domain || extractDomainName(link.directLink);
+            if (game.isPart && selectedDomains[idx]) domain = selectedDomains[idx];
+            const correctAdLink = idx < game.adLinks.length ? game.adLinks[idx] : '';
+
+            resultsHTML += `
+              <div class="result-item ${link.isMultiUp ? 'multiup-link' : ''}">
+                <div class="input-group">
+                  <input type="text" value="${link.shareableLink}" readonly>
+                  <button onclick="copyToClipboard('${link.shareableLink}')" class="btn btn-mini">📋 Copy</button>
+                </div>
+                <div>Key: ${link.key}</div>
+                <div>Domain: ${domain}</div>
+                ${correctAdLink ? `<div>Link Iklan: ${correctAdLink}</div>` : ''}
+              </div>
+            `;
+            successCount++;
+          });
+
+          resultsHTML += `</div></div>`;
+        });
+      } else {
+        errorCount++;
+        resultsHTML += `
+          <div class="alert alert-error">
+            <strong>Error!</strong> Gagal membuat link untuk ${game.name}: ${data.message}
+          </div>
+        `;
+      }
+    }
+
+    resultsContainer.innerHTML = `
+      <div class="alert ${errorCount ? 'alert-warning' : 'alert-success'}">
+        <strong>Selesai.</strong> Berhasil: ${successCount}, Gagal: ${errorCount}.
+      </div>
+      ${resultsHTML}
+    `;
+  } catch (error) {
+    resultsContainer.innerHTML = `
+      <div class="alert alert-error">
+        <strong>Error!</strong> ${error.message}
+      </div>
+    `;
+  }
+
+  document.getElementById('bulkV3ResultsSection').scrollIntoView({ behavior: 'smooth' });
+  if (successCount > 0) loadLinks();
+}
+
+
+
+
+        function copyAllV3LinksWithoutAds() {
+            const links = [];
+            document.querySelectorAll('#generatedV3LinksContainer .result-item:not(.multiup-link) input[type="text"]').forEach(input => {
+                links.push(input.value);
+            });
+            
+            if (links.length === 0) {
+                showNotification('Tidak ada link yang bisa disalin', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(links.join('\n')).then(() => {
+                showNotification(`${links.length} link (tanpa iklan) berhasil disalin`, 'success');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = links.join('\n');
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${links.length} link (tanpa iklan) berhasil disalin`, 'success');
+            });
+        }
+
+        function copyAllV3Links() {
+            const links = [];
+            document.querySelectorAll('#generatedV3LinksContainer .result-item input[type="text"]').forEach(input => {
+                links.push(input.value);
+            });
+            
+            if (links.length === 0) {
+                showNotification('Tidak ada link yang bisa disalin', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(links.join('\n')).then(() => {
+                showNotification(`${links.length} link berhasil disalin`, 'success');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = links.join('\n');
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${links.length} link berhasil disalin`, 'success');
+            });
+        }
+
+        function copyAllV3LinksWithNames() {
+            const linksWithNames = [];
+            document.querySelectorAll('#generatedV3LinksContainer .result-item').forEach(item => {
+                const name = item.querySelector('h4')?.textContent;
+                const input = item.querySelector('input[type="text"]');
+                if (name && input) {
+                    linksWithNames.push(`${name}\n${input.value}`);
+                }
+            });
+            
+            if (linksWithNames.length === 0) {
+                showNotification('Tidak ada link yang bisa disalin', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(linksWithNames.join('\n\n')).then(() => {
+                showNotification(`${linksWithNames.length} link dengan nama berhasil disalin`, 'success');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = linksWithNames.join('\n\n');
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${linksWithNames.length} link dengan nama berhasil disalin`, 'success');
+            });
+        }
+
+        // Dashboard V2 Functions
+        function loadDashboardV2Data() {
+            const loadingElement = document.getElementById('dashboardV2Loading');
+            const gameListElement = document.getElementById('dashboardV2GameList');
+            
+            loadingElement.style.display = 'block';
+            gameListElement.style.display = 'none';
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=listAll'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    dashboardV2Games = data.data || [];
+                    displayDashboardV2Games(dashboardV2Games);
+                    
+                    // Update stats
+                    document.getElementById('v2TotalGames').textContent = countUniqueGames(dashboardV2Games);
+                    document.getElementById('v2TotalLinks').textContent = dashboardV2Games.length;
+                    document.getElementById('v2TotalClicks').textContent = dashboardV2Games.reduce((sum, link) => sum + (link.count_click || 0), 0);
+                } else {
+                    throw new Error(data.message || 'Gagal memuat data');
+                }
+            })
+            .catch(error => {
+                loadingElement.innerHTML = `<div class="alert alert-error">Error: ${error.message}</div>`;
+            });
+        }
+
+        function countUniqueGames(links) {
+            const gameNames = new Set();
+            links.forEach(link => {
+                if (link.nama_game) {
+                    gameNames.add(link.nama_game);
+                }
+            });
+            return gameNames.size;
+        }
+
+        function displayDashboardV2Games(links) {
+            const loadingElement = document.getElementById('dashboardV2Loading');
+            const gameListElement = document.getElementById('dashboardV2GameList');
+            
+            // Group links by game name
+            const gamesMap = {};
+            links.forEach(link => {
+                if (!gamesMap[link.nama_game]) {
+                    gamesMap[link.nama_game] = [];
+                }
+                gamesMap[link.nama_game].push(link);
+            });
+            
+            // Create HTML for each game
+            let html = '';
+            Object.entries(gamesMap).forEach(([gameName, gameLinks]) => {
+                html += `
+                    <div class="dashboard-v2-game-card">
+                        <div class="dashboard-v2-game-title">${gameName}</div>
+                        <div class="dashboard-v2-game-links">
+                `;
+                
+                gameLinks.forEach(link => {
+                    html += `
+                        <div class="dashboard-v2-game-link">
+                            <input type="text" value="${link.shareable_link}" readonly>
+                            <button onclick="copyToClipboard('${link.shareable_link}')" class="btn btn-mini">📋</button>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                        <div class="dashboard-v2-copy-all">
+                            <button onclick="copyAllLinksForGame('${gameName}')" class="btn btn-mini btn-info">📋 Copy All Links for ${gameName}</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            gameListElement.innerHTML = html;
+            loadingElement.style.display = 'none';
+            gameListElement.style.display = 'grid';
+        }
+
+        function filterDashboardV2Games() {
+            const searchTerm = document.getElementById('v2SearchGame').value.toLowerCase();
+            if (!searchTerm) {
+                displayDashboardV2Games(dashboardV2Games);
+                return;
+            }
+            
+            const filteredGames = dashboardV2Games.filter(link => 
+                link.nama_game.toLowerCase().includes(searchTerm)
+            );
+            
+            displayDashboardV2Games(filteredGames);
+        }
+
+        function copyAllLinksForGame(gameName) {
+            const gameLinks = dashboardV2Games.filter(link => link.nama_game === gameName);
+            if (gameLinks.length === 0) {
+                showNotification(`Tidak ada link untuk game ${gameName}`, 'error');
+                return;
+            }
+            
+            const linksToCopy = gameLinks.map(link => link.shareable_link).join('\n');
+            
+            navigator.clipboard.writeText(linksToCopy).then(() => {
+                showNotification(`${gameLinks.length} link untuk ${gameName} berhasil disalin`, 'success');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = linksToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${gameLinks.length} link untuk ${gameName} berhasil disalin`, 'success');
+            });
+        }
+
+        function copyAllDashboardV2Links() {
+            if (dashboardV2Games.length === 0) {
+                showNotification('Tidak ada link yang bisa disalin', 'error');
+                return;
+            }
+            
+            const linksToCopy = dashboardV2Games.map(link => link.shareable_link).join('\n');
+            
+            navigator.clipboard.writeText(linksToCopy).then(() => {
+                showNotification(`${dashboardV2Games.length} link berhasil disalin`, 'success');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = linksToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(`${dashboardV2Games.length} link berhasil disalin`, 'success');
+            });
+        }
+    </script>
+</body>
+</html>
