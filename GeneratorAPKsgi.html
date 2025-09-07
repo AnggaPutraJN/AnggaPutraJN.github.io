@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Game Database System (9 Kolom)</title>
+<style>
+  :root{--bg:#0b1220;--card:#121a2b;--muted:#24324a;--text:#e7eef7;--accent:#51d0ff;--ok:#8df5b5;--err:#ff9090}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,#0b1220 0%,#0a1528 100%)}
+
+  /* Header / Nav / Tabs */
+  header{position:sticky;top:0;background:#0c1526;box-shadow:0 4px 30px rgba(0,0,0,.3);z-index:5}
+  .nav{display:flex;gap:10px;align-items:center;max-width:1100px;margin:0 auto;padding:12px 16px}
+  .nav h1{font-size:16px;margin:0;opacity:.9}
+  .tabs{margin-left:auto;display:flex;gap:8px}
+  .tab{padding:8px 12px;border:1px solid var(--muted);border-radius:10px;background:#0f1e36;color:var(--text);cursor:pointer;text-decoration:none;display:inline-block}
+  .tab.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .tab:hover{background:#13243f}
+
+  /* Layout / Cards */
+  .wrap{max-width:1100px;margin:18px auto;padding:0 16px}
+  .card{background:var(--card);border:1px solid var(--muted);border-radius:14px;padding:14px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+  .grid{display:grid;gap:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+
+  /* Form elements */
+  label{font-size:12px;opacity:.9}
+  input,textarea,select{width:100%;padding:10px;border:1px solid var(--muted);border-radius:10x;background:#0c182d;color:var(--text)}
+  textarea{min-height:120px;resize:vertical}
+  a{color:#93d8ff}
+
+  /* Buttons */
+  .btn{appearance:none;border:none;cursor:pointer;border-radius:10px;padding:10px 14px;font-weight:700;color:#012d38;background:var(--accent)}
+  .btn.ghost{background:#0c182d;color:var(--text);border:1px solid var(--muted)}
+  .btn.warn{background:#ffb84d;color:#2c1200}
+  .btn.danger{background:#ff6b6b;color:#2a0000}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+
+  /* Stats */
+  .stat{background:#0e203c;border:1px solid #1c2c49;border-radius:12px;padding:10px 12px;min-width:150px}
+  .stat .num{font-size:22px;font-weight:800}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse;margin-top:60px;table-layout:fixed}
+  th,td{border-bottom:1px solid var(--muted);padding:10px 8px;vertical-align:top}
+  thead th{position:sticky;top:58px;background:#0f1e36;z-index:2}
+  tbody tr:hover{background:#0f1e36}
+  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;font-size:12px}
+
+  /* Column widths (table-layout: fixed honors header widths) */
+  th:nth-child(1){width:120px}   /* Timestamp */
+  th:nth-child(2){width:90px}    /* ID Game */
+  th:nth-child(3){width:22%}     /* Nama Game */
+  th:nth-child(4){width:110px}   /* Ukuran */
+  th:nth-child(5){width:22%}     /* Category */
+  th:nth-child(6){width:70px}    /* Shot */
+  th:nth-child(7){width:70px}   /* Gameplay */
+  th:nth-child(7){width:90px}    /* #Original */
+  th:nth-child(8){width:90px}    /* #Iklan */
+  /* 9 (Domains) auto */
+
+  /* Category clamp + toggle */
+  td.cat .clamp{
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    max-height:4.5em;
+    word-break:break-word;
+  }
+  td.cat .clamp.expanded{
+    -webkit-line-clamp:initial;
+    max-height:none;
+  }
+  td.cat .toggle{
+    margin-top:6px;
+    padding:4px 8px;
+    border:1px solid var(--muted);
+    background:#0f1e36;
+    color:var(--text);
+    border-radius:8px;
+    font-size:11px;
+    cursor:pointer;
+  }
+
+  /* Domain chips */
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{background:#0e203c;border:1px solid #1c2c49;border-radius:999px;padding:4px 8px;font-size:11px}
+
+  /* Toast */
+  .toast{position:fixed;right:16px;bottom:16px;background:#102440;border:1px solid #1e3a63;padding:10px 12px;border-radius:10px;display:none}
+  .ok{color:var(--ok)} .err{color:var(--err)} .muted{opacity:.8}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:20px}
+  .modal>.box{max-width:720px;width:100%;background:var(--card);border:1px solid var(--muted);border-radius:14px;padding:14px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <h1>🎮 Game Database APKsgi</h1>
+      <div class="tabs">
+        <!-- Tombol Home yang telah diubah menjadi link -->
+        <a class="tab" href="index">Home</a>
+        <button class="tab active" data-tab="dash">Dashboard</button>
+        <button class="tab" data-tab="add">Tambah Game</button>
+        <button class="tab" data-tab="bulk">Bulk Import</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- DASHBOARD -->
+    <section id="tab-dash" class="grid">
+      <div class="row">
+        <div class="stat"><div class="muted">Total Game</div><div id="stGames" class="num">0</div></div>
+        <div class="stat"><div class="muted">Total Link Original</div><div id="stOrig" class="num">0</div></div>
+        <div class="stat"><div class="muted">Total Link Iklan</div><div id="stAds" class="num">0</div></div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong>📋 Data Games</strong>
+          <div class="row">
+            <input id="q" placeholder="Cari nama game..." style="min-width:240px"/>
+            <button class="btn ghost" id="btnRefresh">🔄 Refresh</button>
+          </div>
+        </div>
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:120px">Timestamp</th>
+                <th style="width:90px">ID Game</th>
+                <th>Nama Game</th>
+                <th style="width:110px">Ukuran</th>
+                <th style="width:120px">Category</th>
+                <th style="width:70px">Shot</th>
+                <th style="width:70px">Gameplay</th> <!-- Kolom baru -->
+                <th style="width:110px">#Original</th>
+                <th style="width:90px">#Iklan</th>
+                <th style="width:220px">Domains</th>
+              </tr>
+            </thead>
+            <tbody id="tbl"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADD -->
+    <section id="tab-add" class="grid" style="display:none">
+      <div class="card">
+        <h3>➕ Tambah Game</h3>
+        <div class="grid2">
+          <div>
+            <label>Nama Game</label>
+            <input id="fName" placeholder="Contoh: Naruto"/>
+          </div>
+          <div>
+            <label>Ukuran Game</label>
+            <input id="fSize" placeholder="Contoh: 3.97 GB"/>
+          </div>
+          <div>
+            <label>Category</label>
+            <input id="fCat" placeholder="Contoh: Action"/>
+          </div>
+          <div>
+            <label>Screenshot Game (URL)</label>
+            <input id="fShot" placeholder="https://..."/>
+          </div>
+          <div>
+            <label>Screenshot Gameplay (URL - Opsional)</label>
+            <input id="fGameplay" placeholder="https://..."/>
+          </div>
+        </div>
+        <div class="grid2" style="margin-top:8px">
+          <div>
+            <label>Link Original (1 per baris)</label>
+            <textarea id="fOrig" placeholder="https://drive.google.com/...
+https://mediafire.com/...
+https://multiup.io/... "></textarea>
+          </div>
+          <div>
+            <label>Link Iklan (1 per baris — jumlah harus sama)</label>
+            <textarea id="fAds" placeholder="http://link.indapk.com/...
+http://link.indapk.com/... "></textarea>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="btnCreate">💾 Simpan</button>
+          <button class="btn ghost" id="btnClearAdd">🗑️ Clear</button>
+          <div class="muted" id="addInfo"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BULK -->
+    <section id="tab-bulk" class="grid" style="display:none">
+      <div class="card">
+        <h3>🚀 Bulk Import</h3>
+        <p class="muted">Format per game:</p>
+<!-- Update panduan bulk import -->
+<pre class="mono" style="background:#0c182d;border:1px solid var(--muted);padding:10px;border-radius:10px;white-space:pre-wrap">Nama Game
+Ukuran
+Category
+URL Screenshot
+URL Link Original 1
+URL Link Original 2
+...
+Dibawah multiup itu link iklan
+URL Link Iklan 1
+URL Link Iklan 2
+...
+Dibawah Link Iklan itu Link Screenshot Gameplay
+URL Link Screenshot Gameplay 1
+URL Link Screenshot Gameplay 2</pre>
+        <textarea id="bulkText" placeholder="Tempel data bulk di sini..." rows="14"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="btnBulk">🚚 Proses & Simpan</button>
+          <button class="btn ghost" id="btnClearBulk">🗑️ Clear</button>
+          <div class="muted" id="bulkInfo"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL EDIT -->
+  <div class="modal" id="editModal">
+    <div class="box">
+      <div class="row" style="justify-content:space-between;align-items:center"><h3>✏️ Edit Game</h3><button class="btn ghost" id="btnCloseEdit">Tutup</button></div>
+      <input type="hidden" id="eId" />
+      <div class="grid2">
+        <div>
+          <label>Nama Game</label>
+          <input id="eName"/>
+        </div>
+        <div>
+          <label>Ukuran Game</label>
+          <input id="eSize"/>
+        </div>
+        <div>
+          <label>Category</label>
+          <input id="eCat"/>
+        </div>
+        <div>
+          <label>Screenshot Game (URL)</label>
+          <input id="eShot"/>
+        </div>
+      <div>
+        <label>Screenshot Gameplay (URL - Opsional)</label>
+        <input id="eGameplay"/>
+      </div>
+      </div>
+      <div class="grid2" style="margin-top:8px">
+        <div>
+          <label>Link Original (1 per baris)</label>
+          <textarea id="eOrig"></textarea>
+        </div>
+        <div>
+          <label>Link Iklan (1 per baris — jumlah harus sama)</label>
+          <textarea id="eAds"></textarea>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="btnSaveEdit">💾 Simpan Perubahan</button>
+        <div class="muted" id="editInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ==============================
+    // CONFIG - GANTI DENGAN URL SCRIPT ANDA
+    // ==============================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyEs1aAA04pv7teozEtBc8cafX_wghPenjpBT_V9LQRl6f9Mk34n4mcDYUW9iWYLd-p/exec';
+
+    // ==============================
+    // HELPERS
+    // ==============================
+  const $ = (id)=>document.getElementById(id);
+  const toast = (msg)=>{const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2200)}
+  const splitLines = (txt)=> (txt||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+
+    // Normalisasi 1 objek game dari server ke bentuk yang pasti
+    const normalizeGame = (raw) => ({
+      timestamp: raw.timestamp ?? raw.Timestamp ?? '',
+      id: String(raw.id ?? raw['ID'] ?? raw['ID Game'] ?? ''),
+      nama_game: raw.nama_game ?? raw['Nama Game'] ?? '',
+      ukuran_game: raw.ukuran_game ?? raw['Ukuran Game'] ?? '',
+      category: raw.category ?? raw['Category'] ?? '',
+      screenshot_game: raw.screenshot_game ?? raw['Screenshot Game'] ?? '',
+      screenshot_gameplay: raw.screenshot_gameplay ?? raw['Screenshot Gameplay'] ?? '', // Tambahkan
+      link_original: Array.isArray(raw.link_original) ? raw.link_original
+                   : (raw['Link Original'] ? [].concat(raw['Link Original']) : []),
+      link_iklan: Array.isArray(raw.link_iklan) ? raw.link_iklan
+                  : (raw['Link Iklan'] ? [].concat(raw['Link Iklan']) : []),
+      domains: Array.isArray(raw.domains) ? raw.domains
+               : (raw['Domain'] ? [].concat(raw['Domain']) : []),
+    });
+
+  function fmtDate(ts){
+    if (!ts) return '';
+    if (ts instanceof Date){
+      return ts.toLocaleDateString('id-ID') + ' ' + ts.toLocaleTimeString('id-ID',{hour12:false});
+    }
+    if (typeof ts === 'string'){
+      const d = new Date(ts);
+      if (!isNaN(d)) return d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID',{hour12:false});
+      return ts; // biarkan apa adanya bila bukan ISO
+    }
+    return String(ts);
+  }
+
+  const counts = (v)=> Array.isArray(v) ? v.length : 0;
+
+  function domainChips(domains){
+    if (!Array.isArray(domains) || !domains.length) return '-';
+    return '<div class="chips">' + domains.map(d=>`<span class="chip">${d}</span>`).join('') + '</div>';
+  }
+
+    function shotLink(url){
+      if (!url) return '-';
+      
+      // Handle multiple URLs separated by |
+      const urls = url.split('|');
+      if (urls.length > 1) {
+        return urls.map((u, i) => 
+          `<a class="mono" href="${u.trim()}" target="_blank" title="Screenshot ${i+1}">🔗${i+1}</a>`
+        ).join(' ');
+      }
+      
+      return `<a class="mono" href="${url}" target="_blank" title="Buka Screenshot">🔗</a>`;
+    }
+
+function rowHtml(g){
+  const ts  = fmtDate(g.timestamp);
+  const id  = g.id || '-';
+  const nm  = g.nama_game || '-';
+  const sz  = g.ukuran_game || '-';
+  const cat = g.category || '';
+  const shot= shotLink(g.screenshot_game);
+  const gameplay = shotLink(g.screenshot_gameplay); // Tambahkan screenshot gameplay
+  const nO  = counts(g.link_original);
+  const nA  = counts(g.link_iklan);
+  const dom = domainChips(g.domains||[]);
+
+  return `<tr>
+    <td class="mono">${ts}</td>
+    <td class="mono">${id}</td>
+    <td>${nm}</td>
+    <td class="mono">${sz}</td>
+    <td class="cat">
+      <div class="clamp" title="${cat.replace(/"/g,'&quot;')}">${cat}</div>
+      ${cat ? `<button class="toggle" onclick="toggleCat(this)">Lihat</button>` : ``}
+    </td>
+    <td style="text-align:center">${shot}</td>
+    <td style="text-align:center">${gameplay}</td> <!-- Kolom baru -->
+    <td class="mono">${nO}</td>
+    <td class="mono">${nA}</td>
+    <td>${dom}</td>
+  </tr>
+  <tr>
+    <td colspan="10" style="padding-top:0;border-bottom:1px solid #24324a">
+      <div class="row" style="justify-content:flex-end;padding:8px 0;">
+        <button class="btn ghost" onclick="viewDetail('${id}')">👁️ Detail</button>
+        <button class="btn warn" onclick="openEdit('${id}')">✏️ Edit</button>
+        <button class="btn danger" onclick="delGame('${id}')">🗑️ Hapus</button>
+      </div>
+    </td>
+  </tr>`;
+}
+
+function toggleCat(btn){
+  const box = btn.previousElementSibling; // .clamp
+  const expanded = box.classList.toggle('expanded');
+  btn.textContent = expanded ? 'Tutup' : 'Lihat';
+}
+    // ==============================
+    // DATA LAYER
+    // ==============================
+    async function apiPost(body){
+      try{
+        const res = await fetch(SCRIPT_URL,{method:'POST',body,redirect:'follow'});
+        const txt = await res.text();
+        try{ return JSON.parse(txt) }catch(e){ console.error('JSON Parse Error:', txt); return {status:'error',message:'Invalid JSON',raw:txt}; }
+      }catch(e){
+        console.error('Fetch Error:', e);
+        return {status:'error',message:'Network error: '+e.message};
+      }
+    }
+
+  async function loadGames(){
+    $('tbl').innerHTML = `<tr><td colspan="9" class="mono">Memuat data...</td></tr>`;
+    const body = new URLSearchParams({ action:'getGames' });
+    const res = await apiPost(body);
+
+    if (res.status !== 'success'){
+      $('tbl').innerHTML = `<tr><td colspan="9" class="mono err">${res.message||'Gagal memuat data'}</td></tr>`;
+      return;
+    }
+
+    // NORMALISASI SEMUA ROW
+    const raw = Array.isArray(res.data) ? res.data : [];
+    window.__GAMES__ = raw.map(normalizeGame);
+
+    renderTable();
+    updateStats();
+  }
+
+  function renderTable(){
+    const q = ($('q').value||'').toLowerCase();
+    const list = (window.__GAMES__||[]).filter(g => (g.nama_game||'').toLowerCase().includes(q));
+    $('tbl').innerHTML = list.length ? list.map(rowHtml).join('') 
+      : `<tr><td colspan="9" class="mono muted">(Tidak ada data)</td></tr>`;
+  }
+
+  function updateStats(){
+    const all = window.__GAMES__||[];
+    const totalOrig = all.reduce((s,g)=> s + (Array.isArray(g.link_original)?g.link_original.length:0), 0);
+    const totalAds  = all.reduce((s,g)=> s + (Array.isArray(g.link_iklan)?g.link_iklan.length:0), 0);
+    $('stGames').textContent = all.length;
+    $('stOrig').textContent  = totalOrig;
+    $('stAds').textContent   = totalAds;
+  }
+
+    // ==============================
+    // CREATE
+    // ==============================
+    async function createGame(){
+      const nama = $('fName').value.trim();
+      const size = $('fSize').value.trim();
+      const cat  = $('fCat').value.trim();
+      const shot = $('fShot').value.trim();
+      const gameplay = $('fGameplay').value.trim(); // Tambahkan screenshot gameplay
+      const orig = splitLines($('fOrig').value);
+      const ads  = splitLines($('fAds').value);
+
+      if (!nama) return toast('Nama game wajib diisi.');
+      if (orig.length===0) return toast('Minimal 1 Link Original diperlukan.');
+      if (ads.length===0) return toast('Minimal 1 Link Iklan diperlukan.');
+      if (orig.length!==ads.length) return toast('Jumlah Link Original dan Link Iklan harus sama.');
+
+      const fd = new FormData();
+      fd.append('action','createGame');
+      fd.append('nama_game',nama);
+      fd.append('ukuran_game',size);
+      fd.append('category',cat);
+      fd.append('screenshot_game',shot);
+      fd.append('screenshot_gameplay',gameplay); // Tambahkan screenshot gameplay
+      orig.forEach(v=>fd.append('link_original',v));
+      ads.forEach(v=>fd.append('link_iklan',v));
+
+      $('addInfo').textContent='Menyimpan...';
+      const res = await apiPost(fd);
+      if (res.status==='success'){
+        $('addInfo').innerHTML = `<span class="ok">Berhasil! ID: ${res.data.id}</span>`;
+        toast('Game berhasil ditambahkan.');
+        clearAdd();
+        await loadGames();
+      }else{
+        $('addInfo').innerHTML = `<span class="err">${res.message||'Gagal menyimpan'}</span>`;
+      }
+    }
+
+    function clearAdd(){ 
+      ['fName','fSize','fCat','fShot','fGameplay','fOrig','fAds'].forEach(id=>$(id).value=''); 
+      $('addInfo').textContent=''; 
+    }
+
+    // ==============================
+    // DETAIL / EDIT / DELETE
+    // ==============================
+async function viewDetail(id){
+  const fd = new URLSearchParams({action:'getGameById',id});
+  const res = await apiPost(fd);
+  if (res.status!=='success') return toast(res.message||'Gagal mengambil detail');
+  const g = res.data;
+  const origLinks = (g.link_original||[]).map((l,i)=>`${i+1}. ${l}`).join('\n');
+  const adLinks   = (g.link_iklan||[]).map((l,i)=>`${i+1}. ${l}`).join('\n');
+  alert(`📋 DETAIL GAME\n\n`+
+        `🆔 ID: ${g.id}\n`+
+        `🎮 Nama: ${g.nama_game}\n`+
+        `📦 Ukuran: ${g.ukuran_game}\n`+
+        `📂 Category: ${g.category}\n`+
+        `📸 Screenshot: ${g.screenshot_game}\n`+
+        `🎥 Screenshot Gameplay: ${g.screenshot_gameplay}\n`+ // Tambahkan screenshot gameplay
+        `🕒 Timestamp: ${fmtDate(g.timestamp)}\n\n`+
+        `🔗 Link Original (${counts(g.link_original)}):\n${origLinks}\n\n`+
+        `📢 Link Iklan (${counts(g.link_iklan)}):\n${adLinks}\n\n`+
+        `🌐 Domains: ${(g.domains||[]).join(', ')||'-'}`);
+}
+
+async function openEdit(id){
+  const fd = new URLSearchParams({action:'getGameById',id});
+  const res = await apiPost(fd);
+  if (res.status!=='success') return toast(res.message||'Gagal mengambil data untuk edit');
+  const g = res.data;
+  $('eId').value   = g.id;
+  $('eName').value = g.nama_game||'';
+  $('eSize').value = g.ukuran_game||'';
+  $('eCat').value  = g.category||'';
+  $('eShot').value = g.screenshot_game||'';
+  $('eGameplay').value = g.screenshot_gameplay||''; // Tambahkan screenshot gameplay
+  $('eOrig').value = (g.link_original||[]).join('\n');
+  $('eAds').value  = (g.link_iklan||[]).join('\n');
+  $('editInfo').textContent='';
+  $('editModal').style.display='flex';
+}
+
+async function saveEdit(){
+  const id   = $('eId').value;
+  const name = $('eName').value.trim();
+  const size = $('eSize').value.trim();
+  const cat  = $('eCat').value.trim();
+  const shot = $('eShot').value.trim();
+  const gameplay = $('eGameplay').value.trim(); // Tambahkan screenshot gameplay
+  const orig = splitLines($('eOrig').value);
+  const ads  = splitLines($('eAds').value);
+
+  if (!id) return toast('ID tidak valid.');
+  if (!name) return toast('Nama game wajib diisi.');
+  if (orig.length!==ads.length) return toast('Jumlah link Original dan Iklan harus sama.');
+
+  const fd = new FormData();
+  fd.append('action','updateGame');
+  fd.append('id',id);
+  fd.append('nama_game',name);
+  fd.append('ukuran_game',size);
+  fd.append('category',cat);
+  fd.append('screenshot_game',shot);
+  fd.append('screenshot_gameplay',gameplay); // Tambahkan screenshot gameplay
+  orig.forEach(v=>fd.append('link_original',v));
+  ads.forEach(v=>fd.append('link_iklan',v));
+
+  $('editInfo').textContent='Menyimpan perubahan...';
+  const res = await apiPost(fd);
+  if (res.status==='success'){
+    toast('Perubahan berhasil disimpan.');
+    $('editModal').style.display='none';
+    await loadGames();
+  }else{
+    $('editInfo').innerHTML = `<span class="err">${res.message||'Gagal menyimpan perubahan'}</span>`;
+  }
+}
+
+    async function delGame(id){
+      const game = (window.__GAMES__||[]).find(g=>g.id===id);
+      const name = game ? game.nama_game : id;
+      if (!confirm(`Apakah Anda yakin ingin menghapus game "${name}"?\n\nTindakan ini tidak dapat dibatalkan.`)) return;
+      const fd = new URLSearchParams({action:'deleteGame',id});
+      const res = await apiPost(fd);
+      if (res.status==='success'){ toast('Game berhasil dihapus.'); await loadGames(); } else { toast(res.message||'Gagal menghapus game'); }
+    }
+
+    // ==============================
+    // BULK IMPORT
+    // ==============================
+    async function bulkProcess(){
+      const data = $('bulkText').value.trim();
+      if (!data) return toast('Silakan tempel data bulk terlebih dahulu.');
+      $('bulkInfo').textContent='Memproses dan menyimpan data...';
+      const body = new FormData();
+      body.append('action','processBulk');
+      body.append('data',data);
+      const res = await apiPost(body);
+      if (res.status==='success'){
+        $('bulkInfo').innerHTML = `<span class="ok">${res.message}</span>`;
+        toast('Bulk import berhasil.');
+        $('bulkText').value='';
+        await loadGames();
+      }else{
+        $('bulkInfo').innerHTML = `<span class="err">${res.message||'Gagal memproses data bulk'}</span>`;
+      }
+    }
+
+    // ==============================
+    // EVENT LISTENERS
+    // ==============================
+    document.addEventListener('click',(e)=>{
+      const t=e.target;
+      if (t.classList.contains('tab')){
+        document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+        t.classList.add('active');
+        const which=t.dataset.tab;
+        ['dash','add','bulk'].forEach(k=>{
+          document.getElementById('tab-'+k).style.display=(k===which)?'grid':'none';
+        });
+      }
+    });
+
+    // Dashboard events
+    $('btnRefresh').addEventListener('click', loadGames);
+    $('q').addEventListener('input', renderTable);
+
+    // Add form events
+    $('btnCreate').addEventListener('click', createGame);
+    $('btnClearAdd').addEventListener('click', clearAdd);
+
+    // Bulk import events
+    $('btnBulk').addEventListener('click', bulkProcess);
+    $('btnClearBulk').addEventListener('click', ()=>{ $('bulkText').value=''; $('bulkInfo').textContent=''; });
+
+    // Edit modal
+    $('btnCloseEdit').addEventListener('click', ()=> $('editModal').style.display='none');
+    $('btnSaveEdit').addEventListener('click', saveEdit);
+    $('editModal').addEventListener('click', (e)=>{ if (e.target===$('editModal')) $('editModal').style.display='none'; });
+    document.addEventListener('keydown', (e)=>{ if (e.key==='Escape') $('editModal').style.display='none'; });
+
+    // Init
+    document.addEventListener('DOMContentLoaded', loadGames);
+
+    // Expose
+    window.viewDetail = viewDetail;
+    window.openEdit   = openEdit;
+    window.delGame    = delGame;
+  </script>
+</body>
+</html>
