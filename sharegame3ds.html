@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Generator Kode Share Game 3DS</title>
+<title>Generator Kode Share Game Nintendo 3DS</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
@@ -412,7 +412,7 @@ label {
 </style>
 </head>
 <body>
-<!-- Theme Switch -->
+<!-- Theme 3DS -->
 <div class="theme-switch-container">
   <div class="theme-switch" onclick="toggleTheme()" title="Toggle Theme">
   </div>
@@ -422,10 +422,10 @@ label {
 <div class="nav-section">
   <div class="nav-buttons">
     <a href="index" class="nav-btn btn-gradient-bg3">
-      <i class="fas fa-code"></i> Generator HTML Switch
+      <i class="fas fa-code"></i> HOME
     </a>
-    <a href="ps2" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-gamepad"></i> Generator HTML PS2
+    <a href="3ds" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Generator HTML Nintendo 3DS
     </a>
   </div>
 </div>
@@ -442,23 +442,23 @@ label {
     <div class="form-check">
         <input class="form-check-input" type="radio" name="postType" id="updateRequest" value="update" checked>
         <label class="form-check-label" for="updateRequest">
-            UPDATE REQUEST GAME 3DS
+            UPDATE REQUEST GAME Nintendo 3DS
         </label>
     </div>
     <div class="form-check">
         <input class="form-check-input" type="radio" name="postType" id="shareGame" value="share">
         <label class="form-check-label" for="shareGame">
-            SHARE GAME 3DS
+            SHARE GAME Nintendo 3DS
         </label>
     </div>
     <div class="form-check">
         <input class="form-check-input" type="radio" name="postType" id="uploadulang" value="upload">
         <label class="form-check-label" for="uploadulang">
-            Upload Ulang GAME 3DS
+            Upload Ulang GAME Nintendo 3DS
         </label>
     </div>
-<label for="myTextarea">Masukkan Detail Game 3DS (satu per baris):</label>
-<textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game...&#10;Contoh:&#10;The Legend of Zelda: A Link Between Worlds&#10;1.2 GB&#10;RPG&#10;EUR&#10;https://example.com/download"></textarea>
+<label for="myTextarea">Masukkan Detail Game Nintendo 3DS (satu per baris):</label>
+<textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game...&#10;Contoh:&#10;God of War&#10;2.5 GB&#10;4.2 GB&#10;Action&#10;NTSC-U&#10;https://example.com/download"></textarea>
 </div>
 <div class="d-flex justify-content-center flex-wrap gap-2">
 <button type="button" onclick="generateCode()" class="btn btn-custom btn-primary-custom">
@@ -476,24 +476,29 @@ label {
 </div>
 </div>
 
+
+
 <div class="col-md-6 mb-4">
 <div class="custom-card">
 <div class="card-header">
-<h2><i class="fas fa-gamepad"></i> Detail Game 3DS</h2>
+<h2><i class="fas fa-gamepad"></i> Detail Game Nintendo 3DS</h2>
 </div>
 <div class="card-body">
 <form id="myForm">
 <label for="inputName"><i class="fas fa-tag"></i> Nama Game:</label>
 <input type="text" id="inputName" name="inputName" placeholder="Masukkan nama game...">
 
-<label for="inputSingleSize"><i class="fas fa-hdd"></i> Ukuran Game (Decrypted):</label>
-<input type="text" id="inputSingleSize" name="inputSingleSize" placeholder="Contoh: 1.2 GB">
+<label for="inputSingleSizeCIA"><i class="fas fa-hdd"></i> Ukuran CIA Game:</label>
+<input type="text" id="inputSingleSizeCIA" name="inputSingleSizeCIA" placeholder="Contoh: 2.5 GB">
+
+<label for="inputSingleSize3DS"><i class="fas fa-compact-disc"></i> Ukuran 3DS Game:</label>
+<input type="text" id="inputSingleSize3DS" name="inputSingleSize3DS" placeholder="Contoh: 4.2 GB">
 
 <label for="inputCategory"><i class="fas fa-list"></i> Category:</label>
-<input type="text" id="inputCategory" name="inputCategory" placeholder="Contoh: RPG, Adventure, Puzzle">
+<input type="text" id="inputCategory" name="inputCategory" placeholder="Contoh: Action, RPG, Sports">
 
 <label for="inputRegion"><i class="fas fa-globe"></i> Region:</label>
-<input type="text" id="inputRegion" name="inputRegion" placeholder="Contoh: EUR, USA, JPN">
+<input type="text" id="inputRegion" name="inputRegion" placeholder="Contoh: NTSC-U, PAL">
 
 <label for="inputLink"><i class="fas fa-link"></i> Link Game:</label>
 <input type="text" id="inputLink" name="inputLink" placeholder="https://example.com/download">
@@ -664,7 +669,8 @@ function generateCode() {
     setTimeout(() => {
         // Get values from game form
         const inputName = document.getElementById("inputName").value;
-        const inputSingleSize = document.getElementById("inputSingleSize").value;
+        const inputSingleSizeCIA = document.getElementById("inputSingleSizeCIA").value;
+        const inputSingleSize3DS = document.getElementById("inputSingleSize3DS").value;
         const inputCategory = document.getElementById("inputCategory").value;
         const inputRegion = document.getElementById("inputRegion").value;
         const inputLink = document.getElementById("inputLink").value;
@@ -675,80 +681,69 @@ function generateCode() {
         let generatedHtml;
         
         if (postType === 'share') {
-            generatedHtml = `SHARE GAME 3DS
-🎮Update Game 3DS:
+            generatedHtml = `🎮SHARE GAME Nintendo 3DS
+🎮Update Game Nintendo 3DS:
 Nama Game: ${inputName}
-Ukuran Game: ${inputSingleSize} (Decrypted)
+Ukuran Game CIA: ${inputSingleSizeCIA}
+Ukuran Game 3DS: ${inputSingleSize3DS}
 Category: ${inputCategory}
 Region: ${inputRegion}
-Emulator: Citra (Android/PC)
+Emulator: Citra & Limon
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: 3DS Decrypted
+Format: CIA dan 3DS
 
 🌐Link Game:
 ${inputLink}
 
-================
-⚠️ DOWNLOAD APLIKASI INDapk: 
-Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing
-Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file
-SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet
+🌐Link Alternative:
+https://t.me/INDapkBot
 
-💵Donate Dana/Shopeepay/Gopay:
-082286344446
+NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD
 
-NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
+`;
         } else {
-            generatedHtml = `UPDATE REQUEST GAME 3DS
-🎮Update Game 3DS:
+            generatedHtml = `🎮UPDATE REQUEST GAME Nintendo 3DS
+🎮Update Game Nintendo 3DS:
 Nama Game: ${inputName}
-Ukuran Game: ${inputSingleSize} (Decrypted)
+Ukuran Game CIA: ${inputSingleSizeCIA}
+Ukuran Game 3DS: ${inputSingleSize3DS}
 Category: ${inputCategory}
 Region: ${inputRegion}
-Emulator: Citra (Android/PC)
+Emulator: Citra & Limon
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: 3DS Decrypted
+Format: CIA dan 3DS
 
 🌐Link Game:
 ${inputLink}
 
 ================
-⚠️ DOWNLOAD APLIKASI INDapk: 
-Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing
-Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file
-SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet
-
-💵Donate Dana/Shopeepay/Gopay:
-082286344446
-
-NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
+⚠️ DOWNLOAD APLIKASI INDapk:
+🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing
+🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file
+🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet
+DOWNLOAD TANPA IKLAN TERSEDIA DIBAWAH VIA INDAPK`;
         } if (postType === 'upload') {
-            generatedHtml = `Upload Ulang GAME 3DS
-🎮Update Game 3DS:
+            generatedHtml = `🎮Upload Ulang GAME Nintendo 3DS
+🎮Update Game Nintendo 3DS:
 Nama Game: ${inputName}
-Ukuran Game: ${inputSingleSize} (Decrypted)
+Ukuran Game CIA: ${inputSingleSizeCIA}
+Ukuran Game 3DS: ${inputSingleSize3DS}
 Category: ${inputCategory}
 Region: ${inputRegion}
-Emulator: Citra (Android/PC)
+Emulator: Citra & Limon
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: 3DS Decrypted
+Format: CIA dan 3DS
 
 🌐Link Game:
 ${inputLink}
 
-================
-⚠️ DOWNLOAD APLIKASI INDapk: 
-Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing
-Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file
-SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet
+🌐Link Alternative:
+https://t.me/INDapkBot
 
-💵Donate Dana/Shopeepay/Gopay:
-082286344446
-
-NOTE: Untuk user premium bot, bisa langsung download tanpa iklan`;
+NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD`;
         }
 
         // Display the generated HTML
