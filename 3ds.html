@@ -2,10 +2,9 @@
 <html>
 <head>
 <script src="https://apis.google.com/js/api.js"></script>
- <title>Generator Kode HTML Nintendo 3DS</title>
+ <title>Generator Kode HTML 3DS</title>
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"> 
-
 <style>
 :root {
   --primary-color: #007bff;
@@ -499,16 +498,18 @@ button:hover, .btn:hover {
 }
 </style>
 </head>
-
 <body>
 <!-- Navigation Section -->
 <div class="nav-section">
   <div class="nav-buttons">
     <a href="index" class="nav-btn btn-gradient-bg3">
-      <i class="fas fa-code"></i>Generator HTML Switch
+      <i class="fas fa-code"></i>HOME
     </a>
     <a href="sharegame3ds" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-gamepad"></i>Share Game 3DS
+      <i class="fas fa-gamepad"></i>Tools Share Game 3DS
+    </a>
+    <a href="#" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i>Tools shorting Game 3DS
     </a>
   </div>
 </div>
@@ -527,9 +528,15 @@ button:hover, .btn:hover {
     
     <div class="triple-link-container">
         <div class="link-type-section">
+            <h5>Single Link CIA</h5>
+            <p>Maksimal 1000 link</p>
+            <input type="number" id="singleCIALinkCount" class="link-count-input" min="0" max="1000" placeholder="Jumlah Single CIA (0-10)">
+        </div>
+        
+        <div class="link-type-section">
             <h5>Single Link 3DS</h5>
-            <p>Maksimal 10 link</p>
-            <input type="number" id="single3DSLinkCount" class="link-count-input" min="0" max="10" placeholder="Jumlah Single 3DS (0-10)">
+            <p>Maksimal 1000 link</p>
+            <input type="number" id="single3DSLinkCount" class="link-count-input" min="0" max="1000" placeholder="Jumlah Single 3DS (0-10)">
         </div>
     </div>
     
@@ -543,52 +550,162 @@ button:hover, .btn:hover {
     <!-- Bagian ini awalnya hidden -->
     <div id="tripleLinkTypeSelection" class="hidden">
         <div class="triple-link-container">
+            <!-- Single CIA Link Selection -->
+            <div class="link-type-section" id="singleCIALinkSection">
+                <h5>Pilih Jenis Link untuk Single CIA:</h5>
+                <div class="link-checkboxes" id="singleCIALinkCheckboxes">
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Google Drive"> <i class="fab fa-google-drive"></i> Google Drive
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Mediafire"> <i class="fas fa-cloud"></i> Mediafire
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Vikingfile"> <i class="fas fa-file-archive"></i> Vikingfile
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="PixelDrain"> <i class="fas fa-tint"></i> PixelDrain
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="1Fichier"> <i class="fas fa-file-alt"></i> 1Fichier
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="MultiUp"> <i class="fas fa-upload"></i> MultiUp
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Qiwi"> <i class="fas fa-wallet"></i> Qiwi
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Mega"> <i class="fas fa-folder-open"></i> Mega
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Megaup"> <i class="fas fa-rocket"></i> Megaup
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="KatFile"> <i class="fas fa-file-download"></i> KatFile
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Dupload"> <i class="fas fa-copy"></i> Dupload
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="BowFile"> <i class="fas fa-file-export"></i> BowFile
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Terabox"> <i class="fas fa-box-open"></i> Terabox
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="clicknupload"> <i class="fas fa-mouse-pointer"></i> clicknupload
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="MixDrop"> <i class="fas fa-tint"></i> MixDrop
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Workupload"> <i class="fas fa-upload"></i> Workupload
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Link2Unlock"> <i class="fas fa-unlock"></i> Link2Unlock
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="Buzzheavier"> <i class="fas fa-bolt"></i> Buzzheavier
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="GoFile"> <i class="fas fa-file"></i> GoFile
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="RapidGator"> <i class="fas fa-dragon"></i> RapidGator
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="SendCM"> <i class="fas fa-paper-plane"></i> SendCM
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="DooDrive"> <i class="fas fa-hdd"></i> DooDrive
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="FileUpload"> <i class="fas fa-upload"></i> FileUpload
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="singleCIALinkType" value="FreeDL"> <i class="fas fa-download"></i> FreeDL
+                </label>
+                </div>
+                <div id="selectedSingleCIALinksContainer" class="mt-3"></div>
+            </div>
+            
             <!-- Single 3DS Link Selection -->
             <div class="link-type-section" id="single3DSLinkSection">
-                <h5>Pilih Jenis Link untuk 3DS:</h5>
+                <h5>Pilih Jenis Link untuk Single 3DS:</h5>
                 <div class="link-checkboxes" id="single3DSLinkCheckboxes">
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Google Drive"> Google Drive
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Mediafire"> Mediafire
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Vikingfile"> Vikingfile
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="PixelDrain"> PixelDrain
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="1Fichier"> 1Fichier
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="MultiUp"> MultiUp
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Qiwi"> Qiwi
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Mega"> Mega
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Megaup"> Megaup
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Link2Unlcok"> Link2Unlcok
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="KatFile"> KatFile
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Clicknupload"> Clicknupload
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="BowFile"> BowFile
-                    </label>
-                    <label class="link-checkbox-item">
-                        <input type="checkbox" name="single3DSLinkType" value="Terabox"> Terabox
-                    </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Google Drive"> <i class="fab fa-google-drive"></i> Google Drive
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Mediafire"> <i class="fas fa-cloud"></i> Mediafire
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Vikingfile"> <i class="fas fa-file-archive"></i> Vikingfile
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="PixelDrain"> <i class="fas fa-tint"></i> PixelDrain
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="1Fichier"> <i class="fas fa-file-alt"></i> 1Fichier
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="MultiUp"> <i class="fas fa-upload"></i> MultiUp
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Qiwi"> <i class="fas fa-wallet"></i> Qiwi
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Mega"> <i class="fas fa-folder-open"></i> Mega
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Megaup"> <i class="fas fa-rocket"></i> Megaup
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="KatFile"> <i class="fas fa-file-download"></i> KatFile
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Duplooad"> <i class="fas fa-copy"></i> Duplooad
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="BowFile"> <i class="fas fa-file-export"></i> BowFile
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Terabox"> <i class="fas fa-box-open"></i> Terabox
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="clicknupload"> <i class="fas fa-mouse-pointer"></i> clicknupload
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="MixDrop"> <i class="fas fa-tint"></i> MixDrop
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Workupload"> <i class="fas fa-upload"></i> Workupload
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Link2Unlock"> <i class="fas fa-unlock"></i> Link2Unlock
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="Buzzheavier"> <i class="fas fa-bolt"></i> Buzzheavier
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="GoFile"> <i class="fas fa-file"></i> GoFile
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="RapidGator"> <i class="fas fa-dragon"></i> RapidGator
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="SendCM"> <i class="fas fa-paper-plane"></i> SendCM
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="DooDrive"> <i class="fas fa-hdd"></i> DooDrive
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="FileUpload"> <i class="fas fa-upload"></i> FileUpload
+                </label>
+                <label class="link-checkbox-item">
+                    <input type="checkbox" name="single3DSLinkType" value="FreeDL"> <i class="fas fa-download"></i> FreeDL
+                </label>
                 </div>
                 <div id="selectedSingle3DSLinksContainer" class="mt-3"></div>
             </div>
@@ -607,7 +724,7 @@ button:hover, .btn:hover {
 <div class="row">
 <div class="col-md-6">
 <div class="mb-3 gradient-bg">
-<h2>Nintendo 3DS</h2>
+<h2>CITRA CIA x 3DS</h2>
 <textarea id="myTextarea" class="form-control"></textarea>
 </div>
 <div class="d-flex justify-content-center">
@@ -631,8 +748,11 @@ button:hover, .btn:hover {
 <label for="inputName">Nama Game:</label>
 <input type="text" id="inputName" name="inputName"><br><br>
 
-<label for="input3DSSize">Ukuran 3DS:</label>
-<input type="text" id="input3DSSize" name="input3DSSize"><br><br>
+<label for="inputSingleCIASize">Ukuran Single CIA:</label>
+<input type="text" id="inputSingleCIASize" name="inputSingleCIASize"><br><br>
+
+<label for="inputSingle3DSSize">Ukuran Single 3DS:</label>
+<input type="text" id="inputSingle3DSSize" name="inputSingle3DSSize"><br><br>
 
 <label for="inputCategory">Category:</label>
 <input type="text" id="inputCategory" name="inputCategory"><br><br>
@@ -667,6 +787,7 @@ button:hover, .btn:hover {
 <!--Script-->
 <script>
 // Fungsi untuk menyimpan data ke spreadsheet
+// Enhanced saveToSpreadsheet function with comma-separated links
 function saveToSpreadsheet() {
     // Format links with commas
     const formatLinks = (links) => {
@@ -677,15 +798,19 @@ function saveToSpreadsheet() {
         action: document.getElementById("inputGameId") ? 'update' : 'create',
         id: document.getElementById("inputGameId")?.value || '',
         nama_game: document.getElementById("inputName").value,
-        ukuran_3ds: document.getElementById("input3DSSize").value,
+        ukuran_chd: document.getElementById("inputSingleCIASize").value,
+        ukuran_iso: document.getElementById("inputSingle3DSSize").value,
         category: document.getElementById("inputCategory")?.value || '',
         region: document.getElementById("inputRegion")?.value || '',
-        jumlah_link_3ds: single3DSLinkCount,
-        link_3ds: formatLinks(getLinkValues('single3DS')),
-        jenis_link_3ds: selectedSingle3DSLinksOrder.join(', ')
+        jumlah_link_chd: singleCIALinkCount,
+        jumlah_link_iso: single3DSLinkCount,
+        link_single_chd: formatLinks(getLinkValues('singleCIA')),
+        link_single_iso: formatLinks(getLinkValues('single3DS')),
+        jenis_link_chd: selectedSingleCIALinksOrder.join(', '),
+        jenis_link_iso: selectedSingle3DSLinksOrder.join(', ')
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbywzubNKiw8v2gKgCxe9Ckp8-zwXXE7cK2nzA7bRwaddEWUdkp7NXuoLxdHS9EeoQg/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbzZhjwDPuXD5m-M-zHmXHaq_CQlwhRBOiI6lf4rjZnrc9MNVcpZSlXYYXlMPIz1WDQ/exec', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -705,59 +830,6 @@ function saveToSpreadsheet() {
         console.error('Error:', error);
         showNotification('Terjadi kesalahan saat menyimpan data');
     });
-}
-
-// Notification function
-function showNotification(message, type) {
-  const notification = document.createElement('div');
-  notification.style.cssText = `
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 15px 25px;
-    border-radius: 25px;
-    color: white;
-    font-weight: 600;
-    z-index: 10000;
-    animation: slideDown 0.3s ease-out;
-    ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
-  `;
-  notification.textContent = message;
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.style.animation = 'slideUp 0.3s ease-out forwards';
-    setTimeout(() => notification.remove(), 300);
-  }, 3000);
-}
-
-// Fungsi untuk melihat data di database
-function viewDatabase() {
-    fetch('https://script.google.com/macros/s/AKfycbywzubNKiw8v2gKgCxe9Ckp8-zwXXE7cK2nzA7bRwaddEWUdkp7NXuoLxdHS9EeoQg/exec?action=read')
-        .then(response => response.json())
-        .then(data => displayDatabase(data))
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Terjadi kesalahan saat memuat data');
-        });
-}
-
-// Fungsi pembantu untuk mendapatkan nilai link
-function getLinkValues(type) {
-    let links = [];
-    let prefix = '';
-    
-    if (type === 'single3DS') {
-        prefix = 'inputINDapk3DSSingleLink';
-        selectedSingle3DSLinksOrder.forEach(linkType => {
-            const value = document.getElementById(prefix + linkType)?.value || '';
-            if (value) links.push(value);
-        });
-    }
-    
-    // Clean up links - remove empty entries and trim whitespace
-    return links.map(link => link.trim()).filter(link => link);
 }
 
 // Fungsi untuk menampilkan data dari database
@@ -801,8 +873,16 @@ function displayDatabase(data) {
                                                 <td><strong>${game.nama_game || '-'}</strong></td>
                                                 <td>${game.category || '-'}</td>
                                                 <td>${game.region || '-'}</td>
-                                                <td>${game.ukuran_3ds || '-'}</td>
-                                                <td>${game.jumlah_link_3ds || 0}</td>
+                                                <td>
+                                                    <small>CIA: ${game.ukuran_chd || '-'}<br>
+                                                    3DS: ${game.ukuran_iso || '-'}</small>
+                                                </td>
+                                                <td>
+                                                    <small>
+                                                        CIA: ${game.jumlah_link_chd || 0} link<br>
+                                                        3DS: ${game.jumlah_link_iso || 0} link
+                                                    </small>
+                                                </td>
                                                 <td>${new Date(game.timestamp).toLocaleString('id-ID', {
                                                     day: '2-digit',
                                                     month: '2-digit',
@@ -860,597 +940,42 @@ function displayDatabase(data) {
     }
 }
 
-// Fungsi untuk filter database
-function filterDatabase() {
-    const searchTerm = document.getElementById('databaseSearch').value.toLowerCase();
-    const tableBody = document.getElementById('databaseTableBody');
-    
-    if (!searchTerm) {
-        // If search is empty, show all data
-        displayFilteredData(window.originalDatabaseData);
-        return;
-    }
-    
-    // Filter the data based on search term
-    const filteredData = window.originalDatabaseData.filter(game => {
-        return (game.nama_game && game.nama_game.toLowerCase().includes(searchTerm)) ||
-               (game.category && game.category.toLowerCase().includes(searchTerm)) ||
-               (game.region && game.region.toLowerCase().includes(searchTerm));
-    });
-    
-    displayFilteredData(filteredData);
-}
-
-// Fungsi untuk menampilkan data yang sudah difilter
-function displayFilteredData(filteredData) {
-    const tableBody = document.getElementById('databaseTableBody');
-    
-    if (filteredData.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Tidak ada data yang ditemukan</td></tr>';
-        return;
-    }
-    
-    tableBody.innerHTML = filteredData.map(game => `
-        <tr>
-            <td><strong>${game.nama_game || '-'}</strong></td>
-            <td>${game.category || '-'}</td>
-            <td>${game.region || '-'}</td>
-            <td>${game.ukuran_3ds || '-'}</td>
-            <td>${game.jumlah_link_3ds || 0}</td>
-            <td>${new Date(game.timestamp).toLocaleString('id-ID', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            })}</td>
-            <td>
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-}
-
-// Fungsi untuk menghapus game
-function deleteGame(gameId) {
-    if (confirm('Apakah Anda yakin ingin menghapus game ini?')) {
-        fetch('https://script.google.com/macros/s/AKfycbywzubNKiw8v2gKgCxe9Ckp8-zwXXE7cK2nzA7bRwaddEWUdkp7NXuoLxdHS9EeoQg/exec', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                action: 'delete',
-                id: gameId
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                showNotification('Game berhasil dihapus!');
-                viewDatabase(); // Refresh tampilan database
-            } else {
-                showNotification('Gagal menghapus game: ' + (data.message || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Terjadi kesalahan saat menghapus game');
-        });
-    }
-}
-
-// Fungsi untuk export ke CSV
-function exportToCSV() {
-    if (!window.currentDatabaseData || window.currentDatabaseData.length === 0) {
-        showNotification('Tidak ada data untuk di-export');
-        return;
-    }
-    
-    const headers = [
-        'Timestamp', 'Nama Game', 'Category', 'Region', 'Ukuran 3DS', 'Jumlah Link 3DS', 'Link 3DS', 'Jenis Link 3DS'
-    ];
-    
-    const csvContent = [
-        headers.join(','),
-        ...window.currentDatabaseData.map(game => [
-            `"${new Date(game.timestamp).toISOString()}"`,
-            `"${game.nama_game || ''}"`,
-            `"${game.category || ''}"`,
-            `"${game.region || ''}"`,
-            `"${game.ukuran_3ds || ''}"`,
-            game.jumlah_link_3ds || 0,
-            `"${game.link_3ds || ''}"`,
-            `"${game.jenis_link_3ds || ''}"`
-        ].join(','))
-    ].join('\n');
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `3ds_database_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-// Fungsi untuk edit game
-function editGame(gameId) {
-    const game = window.currentDatabaseData.find(g => g.id === gameId);
-    if (!game) {
-        showNotification('Game tidak ditemukan!');
-        return;
-    }
-
-    // Close database modal first
-    const databaseModal = bootstrap.Modal.getInstance(document.getElementById('databaseModal'));
-    if (databaseModal) {
-        databaseModal.hide();
-    }
-
-    // Wait for modal to close then populate form
-    setTimeout(() => {
-        try {
-            // Create or update hidden input for game ID
-            let gameIdInput = document.getElementById("inputGameId");
-            if (!gameIdInput) {
-                gameIdInput = document.createElement("input");
-                gameIdInput.type = "hidden";
-                gameIdInput.id = "inputGameId";
-                gameIdInput.name = "inputGameId";
-                const form = document.getElementById("myForm");
-                if (form) {
-                    form.appendChild(gameIdInput);
-                }
-            }
-            gameIdInput.value = game.id;
-        
-            // Populate basic form fields
-            const setFieldValue = (id, value) => {
-                const field = document.getElementById(id);
-                if (field) {
-                    field.value = value || '';
-                }
-            };
-
-            setFieldValue("inputName", game.nama_game);
-            setFieldValue("input3DSSize", game.ukuran_3ds);
-            setFieldValue("inputCategory", game.category);
-            setFieldValue("inputRegion", game.region);
-
-            // Set link counts
-            setFieldValue("single3DSLinkCount", game.jumlah_link_3ds || 0);
-
-            // Update global variables if they exist
-            if (typeof single3DSLinkCount !== 'undefined') {
-                single3DSLinkCount = game.jumlah_link_3ds || 0;
-            }
-
-            // Set link types if arrays exist
-            if (typeof selectedSingle3DSLinksOrder !== 'undefined') {
-                selectedSingle3DSLinksOrder = game.jenis_link_3ds ? game.jenis_link_3ds.split(', ') : [];
-            }
-
-            // Try to call functions if they exist
-            if (typeof showTripleLinkTypeSelection === 'function') {
-                showTripleLinkTypeSelection();
-            }
-
-            if (typeof generateTripleLinkInputs === 'function') {
-                generateTripleLinkInputs();
-            }
-
-            // Populate link values
-            setTimeout(() => {
-                if (game.link_3ds && typeof selectedSingle3DSLinksOrder !== 'undefined') {
-                    const linkArray = game.link_3ds.split(', ');
-                    linkArray.forEach((link, index) => {
-                        if (selectedSingle3DSLinksOrder[index]) {
-                            const inputId = `inputINDapk3DSSingleLink${selectedSingle3DSLinksOrder[index]}`;
-                            const input = document.getElementById(inputId);
-                            if (input) {
-                                input.value = link;
-                            }
-                        }
-                    });
-                }
-            }, 100);
-
-        } catch (error) {
-            console.error('Error in editGame:', error);
-            showNotification('Terjadi kesalahan saat memuat data game untuk diedit');
-        }
-    }, 300);
-}
-
-//ViewDetailGame
-// Fungsi untuk melihat detail game
-function viewGameDetails(gameId) {
-    const game = window.currentDatabaseData.find(g => g.id === gameId);
-    if (!game) {
-        showNotification('Game tidak ditemukan!');
-        return;
-    }
-
-    // Remove existing detail modal if present
-    const existingModal = document.getElementById('gameDetailModal');
-    if (existingModal) {
-        existingModal.remove();
-    }
-
-    // Parse links untuk ditampilkan dalam format yang lebih rapi
-    const formatLinksForDisplay = (links, linkTypes) => {
-        if (!links) return '<span class="text-muted">Tidak ada link</span>';
-        
-        const linkArray = links.split(', ');
-        const typeArray = linkTypes ? linkTypes.split(', ') : [];
-        
-        if (linkArray.length === 0) {
-            return '<span class="text-muted">Tidak ada link</span>';
-        }
-        
-        return linkArray.map((link, index) => {
-            const linkType = typeArray[index] || 'Unknown';
-            const displayType = getLinkTypeDisplay(linkType);
-            return `
-                <div class="mb-2">
-                    <span class="badge bg-primary me-2">${displayType}</span>
-                    <a href="${link}" target="_blank" class="text-decoration-none">
-                        ${link}
-                    </a>
-                    <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('${link}')" title="Copy link">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-            `;
-        }).join('');
-    };
-
-    // Helper function untuk menampilkan nama link type yang lebih user-friendly
-    const getLinkTypeDisplay = (type) => {
-        const typeMap = {
-            'GoogleDrive': 'Google Drive',
-            'MediaFire': 'MediaFire',
-            'Mega': 'MEGA',
-            'Dropbox': 'Dropbox',
-            'OneDrive': 'OneDrive',
-            'ZippyShare': 'ZippyShare',
-            'Racaty': 'Racaty',
-            'Uptobox': 'Uptobox',
-            'Other': 'Lainnya'
-        };
-        return typeMap[type] || type;
-    };
-
-    const modalContent = `
-        <div class="modal fade" id="gameDetailModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">
-                            <i class="fas fa-gamepad me-2"></i>
-                            Detail Game: ${game.nama_game || 'Tidak Ada Nama'}
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <!-- Informasi Dasar -->
-                            <div class="col-md-6">
-                                <div class="card mb-3">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informasi Dasar</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <table class="table table-borderless table-sm">
-                                            <tr>
-                                                <td><strong>Nama Game:</strong></td>
-                                                <td>${game.nama_game || '<span class="text-muted">-</span>'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Category:</strong></td>
-                                                <td>
-                                                    ${game.category ? 
-                                                        `<span class="badge bg-secondary">${game.category}</span>` : 
-                                                        '<span class="text-muted">-</span>'
-                                                    }
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Region:</strong></td>
-                                                <td>
-                                                    ${game.region ? 
-                                                        `<span class="badge bg-info">${game.region}</span>` : 
-                                                        '<span class="text-muted">-</span>'
-                                                    }
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Informasi Teknis -->
-                            <div class="col-md-6">
-                                <div class="card mb-3">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Informasi Teknis</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <table class="table table-borderless table-sm">
-                                            <tr>
-                                                <td><strong>Ukuran:</strong></td>
-                                                <td>
-                                                    ${game.ukuran_3ds ? 
-                                                        `<span class="badge bg-success">${game.ukuran_3ds}</span>` : 
-                                                        '<span class="text-muted">-</span>'
-                                                    }
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Jumlah Link:</strong></td>
-                                                <td>
-                                                    <span class="badge bg-warning text-dark">
-                                                        ${game.jumlah_link_3ds || 0} Link
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Terakhir Update:</strong></td>
-                                                <td>
-                                                    <small class="text-muted">
-                                                        ${new Date(game.timestamp).toLocaleString('id-ID', {
-                                                            weekday: 'long',
-                                                            day: '2-digit',
-                                                            month: 'long',
-                                                            year: 'numeric',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit'
-                                                        })}
-                                                    </small>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Database ID:</strong></td>
-                                                <td><small class="text-muted">#${game.id}</small></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Download Links -->
-                        <div class="card">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-download me-2"></i>
-                                    Download Links 3DS
-                                    ${game.jumlah_link_3ds > 0 ? 
-                                        `<span class="badge bg-primary ms-2">${game.jumlah_link_3ds} Link</span>` : 
-                                        ''
-                                    }
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                ${formatLinksForDisplay(game.link_3ds, game.jenis_link_3ds)}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="me-auto">
-                            <button class="btn btn-outline-warning" onclick="editGame(${game.id}); bootstrap.Modal.getInstance(document.getElementById('gameDetailModal')).hide();">
-                                <i class="fas fa-edit me-1"></i>Edit Game
-                            </button>
-                            <button class="btn btn-outline-danger" onclick="confirmDeleteFromDetail(${game.id})">
-                                <i class="fas fa-trash me-1"></i>Hapus Game
-                            </button>
-                        </div>
-                        <button class="btn btn-outline-info" onclick="copyGameInfo(${game.id})">
-                            <i class="fas fa-copy me-1"></i>Salin Info
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-1"></i>Tutup
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Add modal to DOM and show it
-    document.body.insertAdjacentHTML('beforeend', modalContent);
-    
-    const modal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
-    modal.show();
-}
-
-// Helper function untuk copy link ke clipboard
-function copyToClipboard(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => {
-            // Show temporary tooltip or alert
-            showToast('Link berhasil disalin!', 'success');
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-            fallbackCopyTextToClipboard(text);
-        });
-    } else {
-        fallbackCopyTextToClipboard(text);
-    }
-}
-
-// Fallback method untuk copy text
-function fallbackCopyTextToClipboard(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            showToast('Link berhasil disalin!', 'success');
-        } else {
-            showToast('Gagal menyalin link', 'error');
-        }
-    } catch (err) {
-        console.error('Fallback: Oops, unable to copy', err);
-        showToast('Gagal menyalin link', 'error');
-    }
-    
-    document.body.removeChild(textArea);
-}
-
-// Function untuk copy semua informasi game
-function copyGameInfo(gameId) {
-    const game = window.currentDatabaseData.find(g => g.id === gameId);
-    if (!game) {
-        showToast('Game tidak ditemukan!', 'error');
-        return;
-    }
-    
-    const gameInfo = `
-🎮 ${game.nama_game || 'N/A'}
-🌍 Region: ${game.region || 'N/A'}
-📦 Size: ${game.ukuran_3ds || 'N/A'}
-🔗 Links: ${game.jumlah_link_3ds || 0}
-
-📥 Download Links:
-${game.link_3ds || 'No links available'}
-
-⏰ Last Updated: ${new Date(game.timestamp).toLocaleString('id-ID')}
-    `.trim();
-    
-    copyToClipboard(gameInfo);
-}
-
-// Function untuk konfirmasi delete dari detail modal
-function confirmDeleteFromDetail(gameId) {
-    if (confirm('Apakah Anda yakin ingin menghapus game ini?')) {
-        // Close detail modal first
-        const detailModal = bootstrap.Modal.getInstance(document.getElementById('gameDetailModal'));
-        if (detailModal) {
-            detailModal.hide();
-        }
-        
-        // Call delete function
-        deleteGame(gameId);
-    }
-}
-
-// Helper function untuk menampilkan toast notification
-function showToast(message, type = 'info') {
-    // Remove existing toast if present
-    const existingToast = document.getElementById('dynamicToast');
-    if (existingToast) {
-        existingToast.remove();
-    }
-    
-    const bgClass = type === 'success' ? 'bg-success' : 
-                   type === 'error' ? 'bg-danger' : 'bg-info';
-    
-    const toastHtml = `
-        <div class="toast-container position-fixed top-0 end-0 p-3">
-            <div id="dynamicToast" class="toast ${bgClass} text-white" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-body">
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                                  type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} me-2"></i>
-                    ${message}
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', toastHtml);
-    
-    const toast = new bootstrap.Toast(document.getElementById('dynamicToast'), {
-        delay: 3000
-    });
-    toast.show();
-    
-    // Remove toast element after it's hidden
-    document.getElementById('dynamicToast').addEventListener('hidden.bs.toast', function () {
-        this.parentElement.remove();
-    });
-}
-
-
-// Theme switcher functionality
-const themeToggle = document.getElementById('theme-toggle');
-const themeLabel = document.querySelector('.theme-switch label span');
-const themeIcon = document.querySelector('.theme-switch i');
-
-themeToggle.addEventListener('change', function() {
-    if(this.checked) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        themeLabel.textContent = 'Light Mode';
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-        themeLabel.textContent = 'Dark Mode';
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-    }
-    
-    // Save preference to localStorage
-    localStorage.setItem('theme', this.checked ? 'dark' : 'light');
-});
-
-// Check for saved theme preference
-const currentTheme = localStorage.getItem('theme');
-if (currentTheme === 'dark') {
-    themeToggle.checked = true;
-    document.documentElement.setAttribute('data-theme', 'dark');
-    themeLabel.textContent = 'Light Mode';
-    themeIcon.classList.remove('fa-moon');
-    themeIcon.classList.add('fa-sun');
-}
-
 // Global variables for storing selections
+let selectedSingleCIALinksOrder = [];
 let selectedSingle3DSLinksOrder = [];
+let singleCIALinkCount = 0;
 let single3DSLinkCount = 0;
 
 // Function to show triple link type selection
 function showTripleLinkTypeSelection() {
+    singleCIALinkCount = parseInt(document.getElementById("singleCIALinkCount").value) || 0;
     single3DSLinkCount = parseInt(document.getElementById("single3DSLinkCount").value) || 0;
     
-    if (single3DSLinkCount < 1) {
-        showNotification("Masukkan minimal 1 link untuk 3DS");
+    if (singleCIALinkCount < 1 && single3DSLinkCount < 1) {
+        showNotification("Masukkan minimal 1 link untuk salah satu tipe (Single CIA atau Single 3DS)");
         return;
     }
     
-    if (single3DSLinkCount > 10) {
-        showNotification("Maksimal 10 link");
+    if (singleCIALinkCount > 1000 || single3DSLinkCount > 1000) {
+        showNotification("Maksimal 10 link per kategori");
         return;
     }
     
     document.getElementById("tripleLinkTypeSelection").classList.remove("hidden");
     
     // Show/hide sections based on link count
+    document.getElementById("singleCIALinkSection").style.display = singleCIALinkCount > 0 ? "block" : "none";
     document.getElementById("single3DSLinkSection").style.display = single3DSLinkCount > 0 ? "block" : "none";
     
     // Update instruction text
+    if (singleCIALinkCount > 0) {
+        document.getElementById("selectedSingleCIALinksContainer").innerHTML = 
+            `<p>Silahkan pilih tepat ${singleCIALinkCount} jenis link untuk single CIA link</p>`;
+    }
+    
     if (single3DSLinkCount > 0) {
         document.getElementById("selectedSingle3DSLinksContainer").innerHTML = 
-            `<p>Silahkan pilih tepat ${single3DSLinkCount} jenis link untuk 3DS</p>`;
+            `<p>Silahkan pilih tepat ${single3DSLinkCount} jenis link untuk single 3DS link</p>`;
     }
     
     // Add event listeners for checkboxes
@@ -1459,6 +984,16 @@ function showTripleLinkTypeSelection() {
 
 // Function to add event listeners to checkboxes
 function addCheckboxEventListeners() {
+    // Single CIA link checkboxes
+    document.querySelectorAll('input[name="singleCIALinkType"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.dataset.checkedTime = Date.now();
+            }
+            updateSelectedLinksDisplay('singleCIA');
+        });
+    });
+    
     // Single 3DS link checkboxes
     document.querySelectorAll('input[name="single3DSLinkType"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
@@ -1474,7 +1009,12 @@ function addCheckboxEventListeners() {
 function updateSelectedLinksDisplay(type) {
     let requiredCount, container, checkboxes, selectedLinksOrder;
     
-    if (type === 'single3DS') {
+    if (type === 'singleCIA') {
+        requiredCount = singleCIALinkCount;
+        container = document.getElementById("selectedSingleCIALinksContainer");
+        checkboxes = Array.from(document.querySelectorAll('input[name="singleCIALinkType"]:checked'));
+        selectedLinksOrder = selectedSingleCIALinksOrder;
+    } else if (type === 'single3DS') {
         requiredCount = single3DSLinkCount;
         container = document.getElementById("selectedSingle3DSLinksContainer");
         checkboxes = Array.from(document.querySelectorAll('input[name="single3DSLinkType"]:checked'));
@@ -1496,13 +1036,15 @@ function updateSelectedLinksDisplay(type) {
     });
     
     // Store the ordered selection
-    if (type === 'single3DS') {
+    if (type === 'singleCIA') {
+        selectedSingleCIALinksOrder = checkboxes.map(cb => cb.value);
+    } else if (type === 'single3DS') {
         selectedSingle3DSLinksOrder = checkboxes.map(cb => cb.value);
     }
     
     let statusText = "";
     if (checkboxes.length === 0) {
-        statusText = `Silahkan pilih ${requiredCount} jenis link untuk ${type}`;
+        statusText = `Silahkan pilih ${requiredCount} jenis link untuk ${type} link`;
     } else if (checkboxes.length < requiredCount) {
         statusText = `Anda telah memilih ${checkboxes.length} dari ${requiredCount} jenis link yang diperlukan`;
     } else if (checkboxes.length === requiredCount) {
@@ -1527,16 +1069,28 @@ function updateSelectedLinksDisplay(type) {
 
 // Function to proceed to generator
 function proceedToTripleGenerator() {
-    const totalSingle3DSSelected = selectedSingle3DSLinksOrder.length;
+    const totalSingleCIASelected = selectedSingleCIALinksOrder.length;
+    const totalSingle3DSSSelected = selectedSingle3DSLinksOrder.length;
     
     // Validate selections - must match exactly
-    if (single3DSLinkCount > 0) {
-        if (totalSingle3DSSelected === 0) {
-            showNotification("Pilih jenis link untuk 3DS");
+    if (singleCIALinkCount > 0) {
+        if (totalSingleCIASelected === 0) {
+            showNotification("Pilih jenis link untuk Single CIA Link");
             return;
         }
-        if (totalSingle3DSSelected !== single3DSLinkCount) {
-            showNotification(`Anda harus memilih tepat ${single3DSLinkCount} jenis link untuk 3DS (sekarang ${totalSingle3DSSelected})`);
+        if (totalSingleCIASelected !== singleCIALinkCount) {
+            showNotification(`Anda harus memilih tepat ${singleCIALinkCount} jenis link untuk Single CIA Link (sekarang ${totalSingleCIASelected})`);
+            return;
+        }
+    }
+    
+    if (single3DSLinkCount > 0) {
+        if (totalSingle3DSSSelected === 0) {
+            showNotification("Pilih jenis link untuk Single 3DS Link");
+            return;
+        }
+        if (totalSingle3DSSSelected !== single3DSLinkCount) {
+            showNotification(`Anda harus memilih tepat ${single3DSLinkCount} jenis link untuk Single 3DS Link (sekarang ${totalSingle3DSSSelected})`);
             return;
         }
     }
@@ -1549,57 +1103,88 @@ function proceedToTripleGenerator() {
     generateTripleLinkInputs();
 }
 
+// Function to generate triple link inputs
 // Fungsi untuk menghasilkan input link
 function generateTripleLinkInputs() {
     const container = document.getElementById("linkInputsContainer");
     container.innerHTML = "";
     
-    // Pastikan selectedSingle3DSLinksOrder sudah terisi
-    if (!selectedSingle3DSLinksOrder || selectedSingle3DSLinksOrder.length === 0) {
-        return;
-    }
-    
     // Single INDapk Links
-    if (single3DSLinkCount > 0) {
+    if (singleCIALinkCount > 0 || single3DSLinkCount > 0) {
         const divider = document.createElement("div");
         divider.className = "section-divider";
         divider.textContent = "INPUTAN SINGLE LINK VIA INDAPK";
         container.appendChild(divider);
         
-        // Generate input fields berdasarkan urutan yang disimpan
-        selectedSingle3DSLinksOrder.slice(0, single3DSLinkCount).forEach((linkType, index) => {
-            const inputDiv = document.createElement("div");
-            inputDiv.innerHTML = `
-                <label for="inputINDapk3DSSingleLink${linkType}">Single ${linkType} 3DS INDapk (${index + 1}):</label>
-                <input type="text" id="inputINDapk3DSSingleLink${linkType}" name="inputINDapk3DSSingleLink${linkType}"><br><br>
-            `;
-            container.appendChild(inputDiv);
-        });
+        // Generate Single CIA INDapk Links - dengan urutan yang sesuai
+        if (singleCIALinkCount > 0 && selectedSingleCIALinksOrder.length > 0) {
+            selectedSingleCIALinksOrder.slice(0, singleCIALinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputINDapkCIASingleLink${linkType}">Single ${linkType} CIA INDapk (${index + 1}):</label>
+                    <input type="text" id="inputINDapkCIASingleLink${linkType}" name="inputINDapkCIASingleLink${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+        
+        // Generate Single 3DS INDapk Links - dengan urutan yang sesuai
+        if (single3DSLinkCount > 0 && selectedSingle3DSLinksOrder.length > 0) {
+            selectedSingle3DSLinksOrder.slice(0, single3DSLinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputINDapkSingleLink3DS${linkType}">Single ${linkType} 3DS INDapk (${index + 1}):</label>
+                    <input type="text" id="inputINDapkSingleLink3DS${linkType}" name="inputINDapkSingleLink3DS${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
     }
     
     // Single SEMAWUR Links
-    if (single3DSLinkCount > 0) {
+    if (singleCIALinkCount > 0 || single3DSLinkCount > 0) {
         const divider = document.createElement("div");
         divider.className = "section-divider";
         divider.textContent = "INPUTAN SINGLE LINK VIA SEMAWUR";
         container.appendChild(divider);
         
-        // Generate input fields berdasarkan urutan yang sama
-        selectedSingle3DSLinksOrder.slice(0, single3DSLinkCount).forEach((linkType, index) => {
-            const inputDiv = document.createElement("div");
-            inputDiv.innerHTML = `
-                <label for="input3DSSingleLink${linkType}">Single ${linkType} 3DS SEMAWUR (${index + 1}):</label>
-                <input type="text" id="input3DSSingleLink${linkType}" name="input3DSSingleLink${linkType}"><br><br>
-            `;
-            container.appendChild(inputDiv);
-        });
+        // Generate Single CIA SEMAWUR Links - dengan urutan yang sesuai
+        if (singleCIALinkCount > 0 && selectedSingleCIALinksOrder.length > 0) {
+            selectedSingleCIALinksOrder.slice(0, singleCIALinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputCIASingleLink${linkType}">Single ${linkType} CIA SEMAWUR (${index + 1}):</label>
+                    <input type="text" id="inputCIASingleLink${linkType}" name="inputCIASingleLink${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+        
+        // Generate Single 3DS SEMAWUR Links - dengan urutan yang sesuai
+        if (single3DSLinkCount > 0 && selectedSingle3DSLinksOrder.length > 0) {
+            selectedSingle3DSLinksOrder.slice(0, single3DSLinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputSingleLink3DS${linkType}">Single ${linkType} 3DS SEMAWUR (${index + 1}):</label>
+                    <input type="text" id="inputSingleLink3DS${linkType}" name="inputSingleLink3DS${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
     }
 }
 
 function clearCode() {
     document.getElementById("result").innerText = "";
-    const allInputs = document.querySelectorAll('input, textarea');
-    allInputs.forEach(input => {
+    document.getElementById("myTextarea").value = "";
+    
+    // Hapus semua input kecuali END 1, END 2, dan END 3
+    const inputsToClear = document.querySelectorAll(`
+        input:not(#inputEND1):not(#inputEND2):not(#inputEND3),
+        textarea
+    `);
+    
+    inputsToClear.forEach(input => {
         input.value = '';
     });
 }
@@ -1632,24 +1217,25 @@ textarea.addEventListener('input', () => {
     
     // Isi field utama secara eksplisit
     if (values.length > 0) document.getElementById("inputName").value = values[0];
-    if (values.length > 1) document.getElementById("input3DSSize").value = values[1];
-    if (values.length > 2) document.getElementById("inputCategory").value = values[2];
-    if (values.length > 3) document.getElementById("inputRegion").value = values[3];
+    if (values.length > 1) document.getElementById("inputSingleCIASize").value = values[1];
+    if (values.length > 2) document.getElementById("inputSingle3DSSize").value = values[2];
+    if (values.length > 3) document.getElementById("inputCategory").value = values[3];
+    if (values.length > 4) document.getElementById("inputRegion").value = values[4];
     
-    // Isi link inputs mulai dari index 4
+    // Isi link inputs mulai dari index 5
     const linkInputs = document.querySelectorAll('#linkInputsContainer input[type="text"]');
-    for (let i = 0; i < linkInputs.length && (i + 4) < values.length; i++) {
-        linkInputs[i].value = values[i + 4];
+    for (let i = 0; i < linkInputs.length && (i + 5) < values.length; i++) {
+        linkInputs[i].value = values[i + 5];
     }
     
     // Isi END fields jika ada nilai lebih
-    if (values.length > 4 + linkInputs.length) {
+    if (values.length > 5 + linkInputs.length) {
         document.getElementById("inputEND1").value = values[5 + linkInputs.length] || "END1";
     }
-    if (values.length > 5 + linkInputs.length) {
+    if (values.length > 6 + linkInputs.length) {
         document.getElementById("inputEND2").value = values[6 + linkInputs.length] || "END1";
     }
-    if (values.length > 6 + linkInputs.length) {
+    if (values.length > 7 + linkInputs.length) {
         document.getElementById("inputEND3").value = values[7 + linkInputs.length] || "END1";
     }
 });
@@ -1657,7 +1243,8 @@ textarea.addEventListener('input', () => {
 function generateCode() {
     // Get values from game form
     const inputName = document.getElementById("inputName").value;
-    const input3DSSize = document.getElementById("input3DSSize").value;
+    const inputSingleCIASize = document.getElementById("inputSingleCIASize").value;
+    const inputSingle3DSSize = document.getElementById("inputSingle3DSSize").value;
     const inputCategory = document.getElementById("inputCategory").value;
     const inputRegion = document.getElementById("inputRegion").value;
     const inputEND1 = document.getElementById("inputEND1").value;
@@ -1665,19 +1252,33 @@ function generateCode() {
     const inputEND3 = document.getElementById("inputEND3").value;
 
     // Create arrays to hold the link values
-    const indapk3DSSingleLinks = [];
-    const semawur3DSSingleLinks = [];
+    const indapkChdSingleLinks = [];
+    const indapkIsoSingleLinks = [];
+    const semawurChdSingleLinks = [];
+    const semawurIsoSingleLinks = [];
+
+    // Collect single CIA INDapk link values
+    selectedSingleCIALinksOrder.slice(0, singleCIALinkCount).forEach(type => {
+        const chdSingleLink = document.getElementById(`inputINDapkCIASingleLink${type}`)?.value || "";
+        if (chdSingleLink) indapkChdSingleLinks.push({type, link: chdSingleLink});
+    });
 
     // Collect single 3DS INDapk link values
     selectedSingle3DSLinksOrder.slice(0, single3DSLinkCount).forEach(type => {
-        const single3DSLink = document.getElementById(`inputINDapk3DSSingleLink${type}`)?.value || "";
-        if (single3DSLink) indapk3DSSingleLinks.push({type, link: single3DSLink});
+        const isoSingleLink = document.getElementById(`inputINDapkSingleLink3DS${type}`)?.value || "";
+        if (isoSingleLink) indapkIsoSingleLinks.push({type, link: isoSingleLink});
+    });
+
+    // Collect single CIA SEMAWUR link values
+    selectedSingleCIALinksOrder.slice(0, singleCIALinkCount).forEach(type => {
+        const semawurChdLink = document.getElementById(`inputCIASingleLink${type}`)?.value || "";
+        if (semawurChdLink) semawurChdSingleLinks.push({type, link: semawurChdLink});
     });
 
     // Collect single 3DS SEMAWUR link values
     selectedSingle3DSLinksOrder.slice(0, single3DSLinkCount).forEach(type => {
-        const semawur3DSLink = document.getElementById(`input3DSSingleLink${type}`)?.value || "";
-        if (semawur3DSLink) semawur3DSSingleLinks.push({type, link: semawur3DSLink});
+        const semawurIsoLink = document.getElementById(`inputSingleLink3DS${type}`)?.value || "";
+        if (semawurIsoLink) semawurIsoSingleLinks.push({type, link: semawurIsoLink});
     });
 
     // Function to generate HTML for download links section
@@ -2366,7 +1967,11 @@ input:focus {
   visibility: visible;
   opacity: 1;
 }
-  /* ========= VIDEO TUTORIAL STYLING ========= */
+
+
+
+
+/* ========= VIDEO TUTORIAL STYLING ========= */
 .wp-block-video.aligncenter {
 max-width: 800px;
 margin: 30px auto;
@@ -2431,16 +2036,14 @@ padding: 0 10px;
 }
 }
 </style>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Game Download</title>
 </head>
 <body>
 <div class="container">
 <ul class="tab-links">
   <li class="active"><a href="#tab1">INFO</a></li>
-  <li><a href="#tab2">3DS</a></li>
-  <li><a href="#tab3">Tutorial</a></li>
+  <li><a href="#tab2">CIA</a></li>
+  <li><a href="#tab3">3DS</a></li>
+  <li><a href="#tab4">Tutorial</a></li>
   <!-- Theme Switcher -->
   <li class="theme-switcher-container">
     <label class="switch tooltip" data-tooltip="Toggle Dark Mode">
@@ -2459,10 +2062,10 @@ Join Telegram : <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a>
 
 <div class="game-details">
 <strong>Nama Game:</strong> ${inputName}<br>
-<strong>Ukuran 3DS:</strong> ${input3DSSize}<br>
+<strong>Ukuran Single CIA:</strong> ${inputSingleCIASize}<br>
+<strong>Ukuran Single 3DS:</strong> ${inputSingle3DSSize}<br>
 <strong>Category:</strong> ${inputCategory}<br>
 <strong>Region:</strong> ${inputRegion}<br>
-<strong>Format:</strong> Decrypted<br>
 <strong>Game 3DS Lainnya:</strong> <a href="https://indapk.com/game-3ds/" rel="nofollow">Klik Disini</a><br>
 <strong>Request Game:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik disini</a><br>
 <strong>Laporkan Link Rusak:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik disini</a>
@@ -2471,7 +2074,7 @@ Join Telegram : <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a>
 
 <div id="tab2" class="tab">
 <div class="info-box">
-<span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Pastikan untuk mengikuti petunjuk instalasi dengan benar!
+<span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Pastikan untuk mendownload file dengan benar!
 <br><br>
 <div class="section-heading">
 <strong>Gunakan Bot Telegram untuk download tanpa iklan</strong>
@@ -2480,7 +2083,93 @@ Join Telegram : <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a>
 <strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">@INDapkBot</a><br>
 <strong>Telegram Bot Web:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">@WebINDapkBot</a><br>
 <strong>ID tiktok:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">@INDapk</a><br>
-<strong>Telegram:</strong> <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a> (Wajib Join)
+<strong>Telegram:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">Klik Disini</a> (Wajib Join)
+<br><br>
+Follow Facebook dan IG Mimin juga dong (Optional)<br>
+<strong>Instagram:</strong> <a href="https://www.instagram.com/indapk" rel="nofollow">@INDapk</a><br>
+<strong>Facebook:</strong> <a href="https://www.facebook.com/IDNApk" rel="nofollow">@INDapk</a>
+<br><br>
+<span style="color: var(--primary-color);"><strong>Rekomendasi Download:</strong></span> Google Drive, Mediafire, Pixeldrain, Qiwi (Jika Google Drive Terkena Limit, Gunakan Link Alternatif Lain)<br>
+<span style="color: var(--primary-color);"><strong>Password:</strong></span> indapk
+</div>
+
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="password-image">
+<img alt="Password" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnMnh52UxSnW5OS41N5rguqSspGatcqhG2sKoyhOzsfuUWz9CopJTq8YhTrvr067UsXVnY4r5RUCFb5n2meOK3a_qA88Yw7J_-f2OIW7Ji28sU0E90v3AlkaVSEpyHdSrAkZ73_-vl_De8uSbpTLhN33VygUpFUt0_ImFP_-Nf0sU6jXI2trggYymstwQ/s400/Password.png"/>
+</div>`;
+
+    // CIA Single Links sections
+    if (singleCIALinkCount > 0) {
+        generatedHtml += `
+<div class="info-box">
+<div class="section-heading"> 
+<strong>DOWNLOAD SINGLE FILE</strong> 
+</div> 
+</div>
+<div class="section-heading">
+<strong>Format CIA SINGLE Via INDapk Safelink</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via INDapk Safelink
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="download-links">
+${generateDownloadLinksSection(indapkChdSingleLinks, inputSingleCIASize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>
+<br><br>
+<div class="section-heading">
+<strong>Format CIA SINGLE Via (No Ads)</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via (No Ads) [DOWNLOAD TANPA IKLAN]
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+<div class="download-links">
+${generateDownloadLinksSection(semawurChdSingleLinks, inputSingleCIASize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>`;
+    }
+
+    generatedHtml += `
+</div>
+
+<div id="tab3" class="tab">
+<div class="info-box">
+<span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Pastikan untuk mendownload file dengan benar!
+<br><br>
+<div class="section-heading">
+<strong>Gunakan Bot Telegram untuk download tanpa iklan</strong>
+</div>
+<br>
+<strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">@INDapkBot</a><br>
+<strong>Telegram Bot Web:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">@WebINDapkBot</a><br>
+<strong>ID tiktok:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">@INDapk</a><br>
+<strong>Telegram:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">Klik Disini</a> (Wajib Join)
 <br><br>
 Follow Facebook dan IG Mimin juga dong (Optional)<br>
 <strong>Instagram:</strong> <a href="https://www.instagram.com/indapk" rel="nofollow">@INDapk</a><br>
@@ -2505,11 +2194,11 @@ Follow Facebook dan IG Mimin juga dong (Optional)<br>
         generatedHtml += `
 <div class="info-box">
 <div class="section-heading"> 
-<strong>DOWNLOAD FILE</strong> 
+<strong>DOWNLOAD SINGLE FILE</strong> 
 </div> 
 </div>
 <div class="section-heading">
-<strong>Format Decrypted 3DS Via INDapk Safelink</strong>
+<strong>Format 3DS SINGLE Via INDapk Safelink</strong>
 </div>
 <div class="game-title">
 <i class='icon download'></i><strong>${inputName}</strong> Via INDapk Safelink
@@ -2521,7 +2210,7 @@ Follow Facebook dan IG Mimin juga dong (Optional)<br>
 </div>
 
 <div class="download-links">
-${generateDownloadLinksSection(indapk3DSSingleLinks, input3DSSize)}
+${generateDownloadLinksSection(indapkIsoSingleLinks, inputSingle3DSSize)}
 <div class="download-link password">
 <span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
 </div>
@@ -2531,10 +2220,10 @@ ${generateDownloadLinksSection(indapk3DSSingleLinks, input3DSSize)}
 </div>
 <br><br>
 <div class="section-heading">
-<strong>Format Decrypted 3DS Via Semawur</strong>
+<strong>Format 3DS SINGLE Via (No Ads)</strong>
 </div>
 <div class="game-title">
-<i class='icon download'></i><strong>${inputName}</strong> Via Semawur
+<i class='icon download'></i><strong>${inputName}</strong> Via (No Ads) [DOWNLOAD TANPA IKLAN]
 </div>
 <div class="download-container">
 <a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
@@ -2542,7 +2231,7 @@ ${generateDownloadLinksSection(indapk3DSSingleLinks, input3DSSize)}
 </a>
 </div>
 <div class="download-links">
-${generateDownloadLinksSection(semawur3DSSingleLinks, input3DSSize)}
+${generateDownloadLinksSection(semawurIsoSingleLinks, inputSingle3DSSize)}
 <div class="download-link password">
 <span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
 </div>
@@ -2555,19 +2244,23 @@ ${generateDownloadLinksSection(semawur3DSSingleLinks, input3DSSize)}
     generatedHtml += `
 </div>
 
-<div id="tab3" class="tab">
+
+<div id="tab4" class="tab">
+
+
 <div class="donation-section">
 <h3>Tutorial Download Game:</h3>
 <figure class="wp-block-video aligncenter"><video controls loop muted src="https://indapk.com/wp-content/uploads/2025/05/Cara-Download-Via-INDapk-Safelink.mp4"></video><figcaption class="wp-element-caption"><strong>Tutorial Download Game</strong></figcaption></figure>
 </div>
 
 <div class="donation-section">
-<h3>Cara Install:</h3>
-<p>1. Download file 3DS</p>
-<p>2. Copy file ke folder yang sesuai di SD Card</p>
-<p>3. Install menggunakan FBI atau TWiLight Menu++</p>
-<p><strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik Disini</a> untuk tutorial lengkap</p>
+<h3>Cara Download:</h3>
+<p>Cara downloadnya ada di Telegram Dibawah ini:</p>
+<p><strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik Disini</a></p>
+<p>Jika Web bermasalah, beralih kesini:</p>
+<p><strong>Telegram Web Bot:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">Klik Disini</a></p>
 </div>
+
 
 <div class="donation-section">
 <h3>Download Tutorial:</h3>
@@ -2576,6 +2269,7 @@ ${generateDownloadLinksSection(semawur3DSSingleLinks, input3DSSize)}
 <p>If the website has issues, switch to this option:</p>
 <p><strong>Telegram Web Bot:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">Click Here</a></p>
 </div>
+
 
 <div class="donation-section">
 <h3>Donasi:</h3>
@@ -2667,11 +2361,665 @@ ${inputEND3}
     document.getElementById("result").innerText = generatedHtml;
 }
 
+// Fungsi untuk melihat data di database
+function viewDatabase() {
+    fetch('https://script.google.com/macros/s/AKfycbzZhjwDPuXD5m-M-zHmXHaq_CQlwhRBOiI6lf4rjZnrc9MNVcpZSlXYYXlMPIz1WDQ/exec?action=read')
+        .then(response => response.json())
+        .then(data => displayDatabase(data))
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan saat memuat data');
+        });
+}
+
+// Fungsi pembantu untuk mendapatkan nilai link
+function getLinkValues(type) {
+    let links = [];
+    let prefix = '';
+    
+    switch(type) {
+        case 'singleCIA':
+            prefix = 'inputINDapkCIASingleLink';
+            selectedSingleCIALinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || "";
+                if (value) links.push(value);
+            });
+            break;
+        case 'single3DS':
+            prefix = 'inputINDapkSingleLink3DS';
+            selectedSingle3DSLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || "";
+                if (value) links.push(value);
+            });
+            break;
+    }
+    
+    // Clean up links - remove empty entries and trim whitespace
+    return links.map(link => link.trim()).filter(link => link);
+}
+
+// Fungsi untuk filter database
+function filterDatabase() {
+    const searchTerm = document.getElementById('databaseSearch').value.toLowerCase();
+    const tableBody = document.getElementById('databaseTableBody');
+    
+    if (!searchTerm) {
+        // If search is empty, show all data
+        displayFilteredData(window.originalDatabaseData);
+        return;
+    }
+    
+    // Filter the data based on search term
+    const filteredData = window.originalDatabaseData.filter(game => {
+        return (game.nama_game && game.nama_game.toLowerCase().includes(searchTerm)) ||
+               (game.category && game.category.toLowerCase().includes(searchTerm)) ||
+               (game.region && game.region.toLowerCase().includes(searchTerm));
+    });
+    
+    displayFilteredData(filteredData);
+}
+
+// Fungsi untuk menampilkan data yang sudah difilter
+function displayFilteredData(filteredData) {
+    const tableBody = document.getElementById('databaseTableBody');
+    
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Tidak ada data yang ditemukan</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = filteredData.map(game => `
+        <tr>
+            <td><strong>${game.nama_game || '-'}</strong></td>
+            <td>${game.category || '-'}</td>
+            <td>${game.region || '-'}</td>
+            <td>
+                <small>CIA: ${game.ukuran_chd || '-'}<br>
+                3DS: ${game.ukuran_iso || '-'}</small>
+            </td>
+            <td>
+                <small>
+                    CIA: ${game.jumlah_link_chd || 0} link<br>
+                    3DS: ${game.jumlah_link_iso || 0} link
+                </small>
+            </td>
+            <td>${new Date(game.timestamp).toLocaleString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Fungsi untuk menghapus game
+function deleteGame(gameId) {
+    if (confirm('Apakah Anda yakin ingin menghapus game ini?')) {
+        fetch('https://script.google.com/macros/s/AKfycbzZhjwDPuXD5m-M-zHmXHaq_CQlwhRBOiI6lf4rjZnrc9MNVcpZSlXYYXlMPIz1WDQ/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'delete',
+                id: gameId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showNotification('Game berhasil dihapus!');
+                viewDatabase(); // Refresh tampilan database
+            } else {
+                showNotification('Gagal menghapus game: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan saat menghapus game');
+        });
+    }
+}
+
+
+// Notification function
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+    ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+// Fungsi untuk export ke CSV
+function exportToCSV() {
+    if (!window.currentDatabaseData || window.currentDatabaseData.length === 0) {
+        showNotification('Tidak ada data untuk di-export');
+        return;
+    }
+    
+    const headers = [
+        'Timestamp', 'Nama Game', 'Category', 'Region',
+        'Ukuran CIA', 'Ukuran 3DS', 'Jumlah Link CIA', 'Jumlah Link 3DS',
+        'Link Single CIA', 'Link Single 3DS', 'Jenis Link CIA', 'Jenis Link 3DS'
+    ];
+    
+    const csvContent = [
+        headers.join(','),
+        ...window.currentDatabaseData.map(game => [
+            `"${new Date(game.timestamp).to3DSString()}"`,
+            `"${game.nama_game || ''}"`,
+            `"${game.category || ''}"`,
+            `"${game.region || ''}"`,
+            `"${game.ukuran_chd || ''}"`,
+            `"${game.ukuran_iso || ''}"`,
+            game.jumlah_link_chd || 0,
+            game.jumlah_link_iso || 0,
+            `"${game.link_single_chd || ''}"`,
+            `"${game.link_single_iso || ''}"`,
+            `"${game.jenis_link_chd || ''}"`,
+            `"${game.jenis_link_iso || ''}"`
+        ].join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `ps2_database_${new Date().to3DSString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Fungsi untuk edit game
+function editGame(gameId) {
+    const game = window.currentDatabaseData.find(g => g.id === gameId);
+    if (!game) {
+        showNotification('Game tidak ditemukan!');
+        return;
+    }
+
+    // Close database modal first
+    const databaseModal = bootstrap.Modal.getInstance(document.getElementById('databaseModal'));
+    if (databaseModal) {
+        databaseModal.hide();
+    }
+
+    // Wait for modal to close then populate form
+    setTimeout(() => {
+        try {
+            // Create or update hidden input for game ID
+            let gameIdInput = document.getElementById("inputGameId");
+            if (!gameIdInput) {
+                gameIdInput = document.createElement("input");
+                gameIdInput.type = "hidden";
+                gameIdInput.id = "inputGameId";
+                gameIdInput.name = "inputGameId";
+                const form = document.getElementById("myForm");
+                if (form) {
+                    form.appendChild(gameIdInput);
+                }
+            }
+            gameIdInput.value = game.id;
+
+            // Populate basic form fields
+            const setFieldValue = (id, value) => {
+                const field = document.getElementById(id);
+                if (field) {
+                    field.value = value || '';
+                }
+            };
+
+            setFieldValue("inputName", game.nama_game);
+            setFieldValue("inputSingleCIASize", game.ukuran_chd);
+            setFieldValue("inputSingle3DSSize", game.ukuran_iso);
+            setFieldValue("inputCategory", game.category);
+            setFieldValue("inputRegion", game.region);
+
+            // Set link counts
+            setFieldValue("singleCIALinkCount", game.jumlah_link_chd || 0);
+            setFieldValue("single3DSLinkCount", game.jumlah_link_iso || 0);
+
+            // Update global variables if they exist
+            if (typeof singleCIALinkCount !== 'undefined') {
+                singleCIALinkCount = game.jumlah_link_chd || 0;
+            }
+            if (typeof single3DSLinkCount !== 'undefined') {
+                single3DSLinkCount = game.jumlah_link_iso || 0;
+            }
+
+            // Set link types if arrays exist
+            if (typeof selectedSingleCIALinksOrder !== 'undefined') {
+                selectedSingleCIALinksOrder = game.jenis_link_chd ? game.jenis_link_chd.split(', ') : [];
+            }
+            if (typeof selectedSingle3DSLinksOrder !== 'undefined') {
+                selectedSingle3DSLinksOrder = game.jenis_link_iso ? game.jenis_link_iso.split(', ') : [];
+            }
+
+            // Try to call functions if they exist
+            if (typeof showTripleLinkTypeSelection === 'function') {
+                showTripleLinkTypeSelection();
+            }
+
+            if (typeof generateTripleLinkInputs === 'function') {
+                generateTripleLinkInputs();
+            }
+
+            // Populate link values
+            if (game.link_single_chd && typeof selectedSingleCIALinksOrder !== 'undefined') {
+                const linkArray = game.link_single_chd.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedSingleCIALinksOrder[index]) {
+                        const inputId = `inputINDapkCIASingleLink${selectedSingleCIALinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            if (game.link_single_iso && typeof selectedSingle3DSLinksOrder !== 'undefined') {
+                const linkArray = game.link_single_iso.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedSingle3DSLinksOrder[index]) {
+                        const inputId = `inputINDapkSingleLink3DS${selectedSingle3DSLinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            // Scroll to form
+            const mainGenerator = document.getElementById("mainGenerator");
+            if (mainGenerator) {
+                mainGenerator.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Change button text to indicate editing mode
+            const submitButton = document.querySelector('button[onclick*="saveToSpreadsheet"]');
+            if (submitButton) {
+                submitButton.innerHTML = '<i class="fas fa-save"></i> Update Game';
+                submitButton.className = 'btn btn-warning';
+            }
+
+            showNotification('Data game berhasil dimuat untuk diedit!');
+            
+        } catch (error) {
+            console.error('Error in editGame:', error);
+            showNotification('Terjadi kesalahan saat memuat data untuk edit: ' + error.message);
+        }
+    }, 500); // Wait for modal to close
+}
+
+// Fungsi untuk melihat detail game
+function viewGameDetails(gameId) {
+    // Tutup modal database terlebih dahulu jika sedang terbuka
+    const databaseModal = document.getElementById('databaseModal');
+    if (databaseModal) {
+        const databaseModalInstance = bootstrap.Modal.getInstance(databaseModal);
+        if (databaseModalInstance) {
+            databaseModalInstance.hide();
+        }
+    }
+
+    // Cari game dari database
+    const game = window.currentDatabaseData.find(g => g.id === gameId);
+    if (!game) {
+        showNotification('Game tidak ditemukan!');
+        return;
+    }
+
+    // Isi informasi dasar dengan animasi loading
+    const loadingSpinner = '<div class="spinner-border spinner-border-sm me-1" role="sta  tus"></div>Loading...';
+    document.getElementById('detailGameName').innerHTML = loadingSpinner;
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+        // Isi informasi dasar
+        document.getElementById('detailGameName').innerHTML = `<i class="fas fa-gamepad me-2 text-primary"></i><span class="text-info">${game.nama_game || '-'}</span>`;
+        document.getElementById('detailChdSize').innerHTML = `<span class="badge bg-info">${game.ukuran_chd || '-'}</span>`;
+        document.getElementById('detailIsoSize').innerHTML = `<span class="badge bg-info">${game.ukuran_iso || '-'}</span>`;
+        document.getElementById('detailCategory').innerHTML = `<span class="badge bg-secondary">${game.category || '-'}</span>`;
+        document.getElementById('detailRegion').innerHTML = `<span class="badge bg-warning text-dark">${game.region || '-'}</span>`;
+        
+        // Format timestamp dengan style yang lebih baik
+        const timestamp = game.timestamp ? new Date(game.timestamp).toLocaleString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }) : '-';
+        document.getElementById('detailTimestamp').innerHTML = `<small class="text-muted"><i class="fas fa-clock me-1"></i>${timestamp}</small>`;
+
+        // Isi statistik link dengan animasi counter
+        animateCounter('detailChdCount', game.jumlah_link_chd || 0);
+        animateCounter('detailIsoCount', game.jumlah_link_iso || 0);
+
+        // Tampilkan jenis link yang digunakan dengan icon
+        let linkTypesHtml = '';
+        const linkTypeData = [
+            { type: game.jenis_link_chd, label: 'CIA', icon: 'fas fa-file-alt', color: 'primary' },
+            { type: game.jenis_link_iso, label: '3DS', icon: 'fas fa-compact-disc', color: 'success' }
+        ];
+
+        linkTypeData.forEach(item => {
+            if (item.type) {
+                linkTypesHtml += `
+                    <div class="d-flex align-items-center mb-2 p-2 border rounded bg-light">
+                        <i class="${item.icon} text-${item.color} me-2"></i>
+                        <strong class="me-2">${item.label}:</strong>
+                        <span class="badge bg-${item.color}">${item.type}</span>
+                    </div>`;
+            }
+        });
+        
+        document.getElementById('detailLinkTypes').innerHTML = linkTypesHtml || 
+            '<div class="text-center p-3"><i class="fas fa-info-circle text-muted me-2"></i><span class="text-muted">Tidak ada data jenis link</span></div>';
+    }, 300);
+
+    // Fungsi untuk membuat list link dengan tampilan yang lebih menarik
+    const createLinkList = (links, containerId) => {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '<div class="text-center p-3"><div class="spinner-border text-primary" role="status"></div></div>';
+        
+        setTimeout(() => {
+            container.innerHTML = '';
+            
+            if (!links) {
+                container.innerHTML = `
+                    <div class="list-group-item text-center border-0 bg-light">
+                        <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">Tidak ada link tersedia</p>
+                    </div>`;
+                return;
+            }
+            
+            const linkArray = links.split(', ');
+            if (linkArray.length === 0 || (linkArray.length === 1 && !linkArray[0])) {
+                container.innerHTML = `
+                    <div class="list-group-item text-center border-0 bg-light">
+                        <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">Tidak ada link tersedia</p>
+                    </div>`;
+                return;
+            }
+            
+            linkArray.forEach((link, index) => {
+                if (link.trim()) {
+                    // Deteksi jenis link berdasarkan domain
+                    let linkIcon = 'fas fa-link';
+                    let linkBadgeColor = 'primary';
+                    const lowerLink = link.toLowerCase();
+                    
+                    if (lowerLink.includes('drive.google.com')) {
+                        linkIcon = 'fab fa-google-drive';
+                        linkBadgeColor = 'success';
+                    } else if (lowerLink.includes('mega.nz')) {
+                        linkIcon = 'fas fa-cloud';
+                        linkBadgeColor = 'danger';
+                    } else if (lowerLink.includes('mediafire.com')) {
+                        linkIcon = 'fas fa-fire';
+                        linkBadgeColor = 'warning';
+                    } else if (lowerLink.includes('1fichier.com')) {
+                        linkIcon = 'fas fa-file-archive';
+                        linkBadgeColor = 'info';
+                    }
+
+                    const linkItem = document.createElement('a');
+                    linkItem.href = link;
+                    linkItem.target = '_blank';
+                    linkItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center border-start border-4 border-primary mb-2 link-hover-effect';
+                    linkItem.innerHTML = `
+                        <div class="d-flex align-items-center flex-grow-1">
+                            <i class="${linkIcon} text-${linkBadgeColor} me-3 fa-lg"></i>
+                            <div class="flex-grow-1">
+                                <div class="text-truncate fw-semibold" style="max-width: 400px;" title="${link}">
+                                    ${link}
+                                </div>
+                                <small class="text-muted">Klik untuk membuka link</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-${linkBadgeColor} rounded-pill me-2">#${index + 1}</span>
+                            <i class="fas fa-external-link-alt text-muted"></i>
+                        </div>
+                    `;
+                    
+                    // Add hover effects
+                    linkItem.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateX(5px)';
+                        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                    });
+                    
+                    linkItem.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateX(0)';
+                        this.style.boxShadow = 'none';
+                    });
+                    
+                    container.appendChild(linkItem);
+                }
+            });
+        }, 500);
+    };
+
+    // Isi link download dengan delay untuk effect
+    createLinkList(game.link_single_chd, 'detailChdLinks');
+    createLinkList(game.link_single_iso, 'detailIsoLinks');
+
+    // Set event listener untuk tombol edit dengan confirmation
+    document.getElementById('btnEditGame').onclick = () => {
+        if (confirm('Apakah Anda yakin ingin mengedit game ini?')) {
+            editGame(game.id);
+            bootstrap.Modal.getInstance(document.getElementById('gameDetailModal')).hide();
+        }
+    };
+
+    // Set event listener untuk tombol salin link dengan feedback yang lebih baik
+    document.getElementById('btnCopyLinks').onclick = () => {
+        let allLinks = '';
+        let linkCount = 0;
+        
+        if (game.link_single_chd) {
+            allLinks += `CIA Links:\n${game.link_single_chd}\n\n`;
+            linkCount += game.link_single_chd.split(', ').length;
+        }
+        if (game.link_single_iso) {
+            allLinks += `3DS Links:\n${game.link_single_iso}`;
+            linkCount += game.link_single_iso.split(', ').length;
+        }
+        
+        if (allLinks.trim()) {
+            navigator.clipboard.writeText(allLinks.trim())
+                .then(() => {
+                    showToast(`Berhasil menyalin ${linkCount} link!`, 'success');
+                    // Tambahkan efek visual pada button
+                    const btn = document.getElementById('btnCopyLinks');
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check me-1"></i> Tersalin!';
+                    btn.classList.remove('btn-info');
+                    btn.classList.add('btn-success');
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-info');
+                    }, 2000);
+                })
+                .catch(() => {
+                    showToast('Gagal menyalin link. Silakan coba lagi.', 'error');
+                });
+        } else {
+            showToast('Tidak ada link untuk disalin.', 'warning');
+        }
+    };
+
+    // Update tab counters with badges
+    updateTabCounters(game);
+
+    // PERBAIKAN: Tunggu sebentar untuk memastikan modal database tertutup sepenuhnya
+    // kemudian baru tampilkan modal detail game
+    setTimeout(() => {
+        const modal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
+        modal.show();
+        
+        // Add entrance animation
+        const modalDialog = document.querySelector('#gameDetailModal .modal-dialog');
+        modalDialog.style.transform = 'scale(0.8)';
+        modalDialog.style.opacity = '0';
+        
+        setTimeout(() => {
+            modalDialog.style.transition = 'all 0.3s ease';
+            modalDialog.style.transform = 'scale(1)';
+            modalDialog.style.opacity = '1';
+        }, 100);
+    }, 300); // Delay 300ms untuk memastikan modal database tertutup
+}
+
+// Helper function untuk animasi counter
+function animateCounter(elementId, targetValue) {
+    const element = document.getElementById(elementId);
+    let currentValue = 0;
+    const increment = Math.ceil(targetValue / 20);
+    const timer = setInterval(() => {
+        currentValue += increment;
+        if (currentValue >= targetValue) {
+            currentValue = targetValue;
+            clearInterval(timer);
+        }
+        element.textContent = currentValue;
+    }, 50);
+}
+
+// Helper function untuk menampilkan toast notification
+function showToast(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+
+    const toastId = 'toast-' + Date.now();
+    const iconMap = {
+        success: 'fas fa-check-circle text-success',
+        error: 'fas fa-exclamation-circle text-danger',
+        warning: 'fas fa-exclamation-triangle text-warning',
+        info: 'fas fa-info-circle text-info'
+    };
+
+    const toastHtml = `
+        <div id="${toastId}" class="toast align-items-center border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center">
+                    <i class="${iconMap[type]} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+
+    toastContainer.innerHTML = toastHtml;
+    const toastElement = new bootstrap.Toast(document.getElementById(toastId), {
+        autohide: true,
+        delay: 3000
+    });
+    toastElement.show();
+}
+
+// Helper function untuk update tab counters
+function updateTabCounters(game) {
+    const tabs = [
+        { id: 'chd-tab', count: game.jumlah_link_chd || 0 },
+        { id: 'iso-tab', count: game.jumlah_link_iso || 0 }
+    ];
+
+    tabs.forEach(tab => {
+        const tabElement = document.getElementById(tab.id);
+        if (tabElement && tab.count > 0) {
+            const badgeHtml = ` <span class="badge bg-danger rounded-pill ms-1">${tab.count}</span>`;
+            if (!tabElement.innerHTML.includes('badge')) {
+                tabElement.innerHTML += badgeHtml;
+            }
+        }
+    });
+}
+
+// Theme switcher functionality
+const themeToggle = document.getElementById('theme-toggle');
+const themeLabel = document.querySelector('.theme-switch label span');
+const themeIcon = document.querySelector('.theme-switch i');
+
+themeToggle.addEventListener('change', function() {
+    if(this.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeLabel.textContent = 'Light Mode';
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeLabel.textContent = 'Dark Mode';
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+    }
+    
+    // Save preference to localStorage
+    localStorage.setItem('theme', this.checked ? 'dark' : 'light');
+});
+
+// Check for saved theme preference
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme === 'dark') {
+    themeToggle.checked = true;
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeLabel.textContent = 'Light Mode';
+    themeIcon.classList.remove('fa-moon');
+    themeIcon.classList.add('fa-sun');
+}
+
 //SEttingan Save and load
-    // Fungsi untuk menyimpan settingan
 function saveLinkSettings() {
     // Validasi dulu apakah sudah memilih sesuai jumlah yang ditentukan
-    if (single3DSLinkCount > 0 && selectedSingle3DSLinksOrder.length !== single3DSLinkCount) {
+    if ((singleCIALinkCount > 0 && selectedSingleCIALinksOrder.length !== singleCIALinkCount) || 
+        (single3DSLinkCount > 0 && selectedSingle3DSLinksOrder.length !== single3DSLinkCount)) {
         showNotification("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
         return;
     }
@@ -2681,6 +3029,7 @@ function saveLinkSettings() {
     modal.show();
 }
 
+// Fungsi untuk konfirmasi penyimpanan settingan
 function confirmSaveSettings() {
     const settingsName = document.getElementById('settingsName').value.trim();
     if (!settingsName) {
@@ -2688,22 +3037,40 @@ function confirmSaveSettings() {
         return;
     }
 
+    // Validasi sebelum menyimpan
+    if ((singleCIALinkCount > 0 && selectedSingleCIALinksOrder.length !== singleCIALinkCount) || 
+        (single3DSLinkCount > 0 && selectedSingle3DSLinksOrder.length !== single3DSLinkCount)) {
+        showNotification("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
+        return;
+    }
+
     // Buat objek settingan
     const settings = {
         name: settingsName,
+        singleCIALinkCount: singleCIALinkCount,
         single3DSLinkCount: single3DSLinkCount,
+        singleCIALinks: selectedSingleCIALinksOrder,
         single3DSLinks: selectedSingle3DSLinksOrder,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString() // Perbaiki dari to3DSString() ke toISOString()
     };
 
     // Ambil settingan yang sudah ada dari localStorage
-    let savedSettings = JSON.parse(localStorage.getItem('linkSettings3DS') || '[]');
+    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsNDSGHTML') || '[]');
     
-    // Tambahkan settingan baru
-    savedSettings.push(settings);
+    // Cek apakah nama sudah ada
+    const existingIndex = savedSettings.findIndex(s => s.name === settingsName);
+    if (existingIndex !== -1) {
+        if (!confirm(`Settingan "${settingsName}" sudah ada. Timpa yang sudah ada?`)) {
+            return;
+        }
+        savedSettings[existingIndex] = settings;
+    } else {
+        // Tambahkan settingan baru
+        savedSettings.push(settings);
+    }
     
     // Simpan ke localStorage
-    localStorage.setItem('linkSettings3DS', JSON.stringify(savedSettings));
+    localStorage.setItem('linkSettingsNDSGHTML', JSON.stringify(savedSettings));
     
     // Tutup modal dan reset input
     document.getElementById('settingsName').value = '';
@@ -2715,7 +3082,7 @@ function confirmSaveSettings() {
 // Ganti nama fungsi dari loadLinkSettings() menjadi loadLinkSettingsModal()
 function loadLinkSettingsModal() {
     // Ambil settingan dari localStorage
-    const savedSettings = JSON.parse(localStorage.getItem('linkSettings3DS') || []);
+    const savedSettings = JSON.parse(localStorage.getItem('linkSettingsNDSGHTML') || []);
     
     if (savedSettings.length === 0) {
         showNotification("Belum ada settingan yang disimpan");
@@ -2738,7 +3105,8 @@ function loadLinkSettingsModal() {
                 <small class="text-muted">${new Date(setting.timestamp).toLocaleString()}</small>
             </div>
             <div class="mb-2">
-                <small class="text-muted">3DS: ${setting.single3DSLinkCount} link (${setting.single3DSLinks?.join(', ') || '-'})</small><br>
+                <small class="text-muted">Single CIA: ${setting.singleCIALinkCount} link (${setting.singleCIALinks?.join(', ') || '-'})</small><br>
+                <small class="text-muted">Single 3DS: ${setting.single3DSLinkCount} link (${setting.single3DSLinks?.join(', ') || '-'})</small>
             </div>
     <div class="d-flex gap-2">
         <button class="btn btn-sm btn-success" onclick="applyLinkSettings(${index})">Load</button>
@@ -2756,7 +3124,7 @@ function loadLinkSettingsModal() {
 function applyLinkSettings(index) {
     try {
         // Ambil settingan dari localStorage
-        const savedSettings = JSON.parse(localStorage.getItem('linkSettings3DS')) || [];
+        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsNDSGHTML')) || [];
         
         if (index < 0 || index >= savedSettings.length) {
             showNotification("Settingan tidak ditemukan");
@@ -2766,38 +3134,52 @@ function applyLinkSettings(index) {
         const settings = savedSettings[index];
         
         // Set jumlah link
+        document.getElementById('singleCIALinkCount').value = settings.singleCIALinkCount || 0;
         document.getElementById('single3DSLinkCount').value = settings.single3DSLinkCount || 0;
+        singleCIALinkCount = settings.singleCIALinkCount || 0;
         single3DSLinkCount = settings.single3DSLinkCount || 0;
         
         // Uncheck semua checkbox terlebih dahulu
+        document.querySelectorAll('input[name="singleCIALinkType"]').forEach(cb => {
+            cb.checked = false;
+            cb.dataset.checkedTime = ''; // Reset waktu check
+        });
         document.querySelectorAll('input[name="single3DSLinkType"]').forEach(cb => {
             cb.checked = false;
-            cb.dataset.checkedTime = '';
+            cb.dataset.checkedTime = ''; // Reset waktu check
         });
         
-        // Perbaikan: Gunakan single3DSLinks dari settings (bukan selectedSingle3DSLinksOrder)
-        if (settings.single3DSLinks && settings.single3DSLinks.length > 0) {
-            selectedSingle3DSLinksOrder = [...settings.single3DSLinks];
-            
-            // Tampilkan dulu section-nya sebelum mencentang
-            document.getElementById("tripleLinkTypeSelection").classList.remove("hidden");
-            document.getElementById("single3DSLinkSection").style.display = "block";
-            
-            // Centang checkbox sesuai settingan
-            settings.single3DSLinks.forEach((linkType, index) => {
-                const checkbox = document.querySelector(`input[name="single3DSLinkType"][value="${linkType}"]`);
+        // Check yang sesuai dengan settingan dan simpan urutan aslinya
+        if (settings.singleCIALinks) {
+            selectedSingleCIALinksOrder = settings.singleCIALinks;
+            settings.singleCIALinks.forEach((linkType, index) => {
+                const checkbox = document.querySelector(`input[name="singleCIALinkType"][value="${linkType}"]`);
                 if (checkbox) {
                     checkbox.checked = true;
-                    checkbox.dataset.checkedTime = index;
+                    checkbox.dataset.checkedTime = index; // Simpan urutan asli
                 }
             });
         }
         
-        // Update tampilan
-        updateSelectedLinksDisplay('single3DS');
+        if (settings.single3DSLinks) {
+            selectedSingle3DSLinksOrder = settings.single3DSLinks;
+            settings.single3DSLinks.forEach((linkType, index) => {
+                const checkbox = document.querySelector(`input[name="single3DSLinkType"][value="${linkType}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = index; // Simpan urutan asli
+                }
+            });
+        }
         
-        // Generate input fields langsung
-        generateTripleLinkInputs();
+        // Tampilkan section pemilihan link
+        document.getElementById("tripleLinkTypeSelection").classList.remove("hidden");
+        document.getElementById("singleCIALinkSection").style.display = singleCIALinkCount > 0 ? "block" : "none";
+        document.getElementById("single3DSLinkSection").style.display = single3DSLinkCount > 0 ? "block" : "none";
+        
+        // Update tampilan
+        updateSelectedLinksDisplay('singleCIA');
+        updateSelectedLinksDisplay('single3DS');
         
         // Tutup modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('loadSettingsModal'));
@@ -2805,14 +3187,11 @@ function applyLinkSettings(index) {
             modal.hide();
         }
         
-        showNotification(`Settingan "${settings.name}" berhasil dimuat!`);
-        
     } catch (error) {
         console.error("Error applying settings:", error);
         showNotification("Terjadi error saat memuat settingan: " + error.message);
     }
 }
-
 
 // Ganti juga nama fungsi deleteSavedSettings() menjadi deleteLinkSettings()
 function deleteLinkSettings(index) {
@@ -2821,13 +3200,13 @@ function deleteLinkSettings(index) {
     }
     
     // Ambil settingan dari localStorage
-    let savedSettings = JSON.parse(localStorage.getItem('linkSettings3DS') || '[]');
+    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsNDSGHTML') || '[]');
     
     // Hapus settingan yang dipilih
     const deletedSetting = savedSettings.splice(index, 1);
     
     // Simpan kembali ke localStorage
-    localStorage.setItem('linkSettings3DS', JSON.stringify(savedSettings));
+    localStorage.setItem('linkSettingsNDSGHTML', JSON.stringify(savedSettings));
     
     // Refresh daftar settingan
     loadLinkSettingsModal();
@@ -2877,12 +3256,13 @@ function deleteLinkSettings(index) {
         </div>
     </div>
 </div>
+
 <!-- Modal untuk Lihat Detail Game -->
 <div class="modal fade" id="gameDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="fas fa-gamepad me-2"></i>Detail Game</h5>
+                <h5 class="modal-title"><i class="fas fa-gamepad me-2"></i>Detail Game 3DS</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -2900,8 +3280,12 @@ function deleteLinkSettings(index) {
                                         <td id="detailGameName">-</td>
                                     </tr>
                                     <tr>
+                                        <th>Ukuran CIA</th>
+                                        <td id="detailChdSize">-</td>
+                                    </tr>
+                                    <tr>
                                         <th>Ukuran 3DS</th>
-                                        <td id="detail3DSSize">-</td>
+                                        <td id="detailIsoSize">-</td>
                                     </tr>
                                     <tr>
                                         <th>Kategori</th>
@@ -2928,11 +3312,19 @@ function deleteLinkSettings(index) {
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="card bg-light mb-3">
+                                            <div class="card-header fw-bold">CIA</div>
+                                            <div class="card-body">
+                                                <p class="mb-1"><i class="fas fa-file-alt me-2"></i> Link: <span id="detailChdCount" class="badge bg-primary">0</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="card bg-light mb-3">
                                             <div class="card-header fw-bold">3DS</div>
                                             <div class="card-body">
-                                                <p class="mb-1"><i class="fas fa-file-alt me-2"></i> Link: <span id="detail3DSCount" class="badge bg-primary">0</span></p>
+                                                <p class="mb-1"><i class="fas fa-file-alt me-2"></i> Link: <span id="detailIsoCount" class="badge bg-primary">0</span></p>
                                             </div>
                                         </div>
                                     </div>
@@ -2952,18 +3344,34 @@ function deleteLinkSettings(index) {
                 <!-- Tab untuk Link Download -->
                 <ul class="nav nav-tabs" id="detailTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="3ds-tab" data-bs-toggle="tab" data-bs-target="#3ds" type="button" role="tab">
-                            <i class="fas fa-file-alt me-1"></i> 3DS
+                        <button class="nav-link active" id="chd-tab" data-bs-toggle="tab" data-bs-target="#chd" type="button" role="tab">
+                            <i class="fas fa-file-alt me-1"></i> CIA
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="iso-tab" data-bs-toggle="tab" data-bs-target="#iso" type="button" role="tab">
+                            <i class="fas fa-compact-disc me-1"></i> 3DS
                         </button>
                     </li>
                 </ul>
                 
                 <div class="tab-content p-3 border border-top-0 rounded-bottom" id="detailTabsContent">
-                    <!-- Tab 3DS -->
-                    <div class="tab-pane fade show active" id="3ds" role="tabpanel">
-                        <div id="detail3DSLinks" class="list-group">
+                    <!-- Tab CIA -->
+                    <div class="tab-pane fade show active" id="chd" role="tabpanel">
+                        <div id="detailChdLinks" class="list-group">
                             <div class="list-group-item text-center text-muted">
-                                Tidak ada link 3DS
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link CIA</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab 3DS -->
+                    <div class="tab-pane fade" id="iso" role="tabpanel">
+                        <div id="detailIsoLinks" class="list-group">
+                            <div class="list-group-item text-center text-muted">
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link 3DS</p>
                             </div>
                         </div>
                     </div>
@@ -2984,125 +3392,251 @@ function deleteLinkSettings(index) {
     </div>
 </div>
 
+    <style>
+        /* Base styling */
+        .link-hover-effect {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-<style>
-/* Dark Mode Styles for Game Detail Modal */
-[data-theme="dark"] #gameDetailModal .modal-content {
-  background-color: #2d3748;
-  color: #e2e8f0;
-  border-color: #4a5568;
-}
+        .link-hover-effect:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left-width: 6px !important;
+        }
 
-[data-theme="dark"] #gameDetailModal .modal-header {
-  background-color: #2c5282 !important;
-  border-bottom-color: #4a5568;
-}
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
 
-[data-theme="dark"] #gameDetailModal .card {
-  background-color: #1a202c;
-  border-color: #4a5568;
-  color: #e2e8f0;
-}
+        .modal-dialog {
+            transition: all 0.3s ease;
+        }
 
-[data-theme="dark"] #gameDetailModal .card-header {
-  background-color: #2d3748 !important;
-  border-bottom-color: #4a5568;
-  color: #e2e8f0;
-}
+        /* Badge pulse animation for counters */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
 
-[data-theme="dark"] #gameDetailModal .table {
-  color: #e2e8f0;
-  background-color: #1a202c;
-}
+        .badge-animated {
+            animation: pulse 0.5s ease-in-out;
+        }
 
-[data-theme="dark"] #gameDetailModal .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(74, 85, 104, 0.3);
-}
+        /* Improved tab styling */
+        .nav-tabs .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
 
-[data-theme="dark"] #gameDetailModal th {
-  color: #4895ef;
-}
+        .nav-tabs .nav-link:hover {
+            transform: translateY(-2px);
+        }
 
-[data-theme="dark"] #gameDetailModal .nav-tabs {
-  border-bottom-color: #4a5568;
-}
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border-radius: 2px 2px 0 0;
+        }
 
-[data-theme="dark"] #gameDetailModal .nav-tabs .nav-link {
-  color: #4895ef;
-  background-color: #2d3748;
-  border-color: #4a5568;
-}
+        /* Toast container */
+        #toast-container {
+            z-index: 9999;
+        }
 
-[data-theme="dark"] #gameDetailModal .nav-tabs .nav-link.active {
-  background-color: #1a202c;
-  border-color: #4a5568 #4a5568 #1a202c;
-  color: #e2e8f0;
-}
+        .toast {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
 
-[data-theme="dark"] #gameDetailModal .tab-content {
-  background-color: #1a202c;
-  border-color: #4a5568;
-  color: #e2e8f0;
-}
+        /* FIXED: Ensure table content doesn't overflow the card */
+        .table-responsive {
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
 
-[data-theme="dark"] #gameDetailModal .list-group-item {
-  background-color: #2d3748;
-  border-color: #4a5568;
-  color: #3e86e6;
-}
+        .table td, .table th {
+            word-wrap: break-word;
+            word-break: break-word;
+            max-width: 200px;
+        }
 
-[data-theme="dark"] #gameDetailModal .list-group-item-action:hover {
-  background-color: #4a5568;
-  color: #ffffff;
-}
+        /* FIXED: Better link type display styling */
+        .link-type-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
 
-[data-theme="dark"] #gameDetailModal .text-muted {
-  color: #4895ef !important;
-}
+        .link-type-item {
+            background: rgba(13, 110, 253, 0.1);
+            border: 1px solid rgba(13, 110, 253, 0.2);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
 
-[data-theme="dark"] #gameDetailModal .badge {
-  color: white;
-}
+        .link-type-item:hover {
+            background: rgba(13, 110, 253, 0.15);
+            transform: translateY(-1px);
+        }
 
-/* Light Mode Styles for Game Detail Modal */
-#gameDetailModal .modal-content {
-  transition: all 0.3s ease;
-}
+        /* Dark Mode Styles - FIXED */
+        [data-theme="dark"] {
+            background-color: #1a202c;
+            color: #0067ee;
+        }
 
-#gameDetailModal .list-group-item {
-  transition: all 0.3s ease;
-}
-/* Dark Mode Adjustments for Stats Card */
-[data-theme="dark"] .text-dark {
-    color: #e2e8f0 !important;
-}
+        [data-theme="dark"] #gameDetailModal .modal-content {
+            background-color: #2d3748;
+            color: #0067ee;
+            border-color: #4a5568;
+        }
 
-[data-theme="dark"] .card-body {
-    background-color: #2d3748;
-}
+        [data-theme="dark"] #gameDetailModal .modal-header {
+            background-color: #2c5282 !important;
+            border-bottom-color: #4a5568;
+        }
 
-[data-theme="dark"] .card {
-    border-color: #4a5568;
-    background-color: #2d3748;
-}
+        [data-theme="dark"] #gameDetailModal .card {
+            background-color: #1a202c;
+            border-color: #4a5568;
+            color: #0067ee;
+        }
 
-[data-theme="dark"] .card-header:not(.bg-success):not(.bg-primary) {
-    background-color: #1a202c !important;
-    border-bottom-color: #4a5568;
-}
+        [data-theme="dark"] #gameDetailModal .card-header {
+            background-color: #2d3748 !important;
+            border-bottom-color: #4a5568;
+            color: #e2e8f0;
+        }
 
-.dark\:text-gray-200 {
-    color: #e2e8f0;
-}
+        /* FIXED: Table styling in dark mode */
+        [data-theme="dark"] #gameDetailModal .table {
+            color: #0067ee;
+            background-color: transparent;
+        }
 
-.dark\:text-gray-400 {
-    color: #a0aec0;
-}
+        [data-theme="dark"] #gameDetailModal .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(74, 85, 104, 0.2);
+        }
 
-.dark\:text-white {
-    color: #ffffff;
-}
-</style>
+        [data-theme="dark"] #gameDetailModal .table th {
+            color: #4895ef;
+            background-color: transparent;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .table td {
+            border-color: #4a5568;
+            background-color: transparent;
+        }
+
+        /* FIXED: Link type container in dark mode */
+        [data-theme="dark"] .link-type-container {
+            background-color: #1a202c;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] .link-type-item {
+            background: rgba(72, 149, 239, 0.15);
+            border-color: rgba(72, 149, 239, 0.3);
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .link-type-item:hover {
+            background: rgba(72, 149, 239, 0.25);
+        }
+
+        /* FIXED: Link types section heading */
+        [data-theme="dark"] .link-types-heading {
+            color: #0067ee !important;
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs {
+            border-bottom-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs .nav-link {
+            color: #4895ef;
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs .nav-link.active {
+            background-color: #1a202c;
+            border-color: #4a5568 #4a5568 #1a202c;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .tab-content {
+            background-color: #1a202c;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .list-group-item {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .list-group-item-action:hover {
+            background-color: #4a5568;
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] #gameDetailModal .text-muted {
+            color: #0067ee !important;
+        }
+
+        [data-theme="dark"] .toast {
+            background-color: rgba(45, 55, 72, 0.95);
+            color: #e2e8f0;
+        }
+
+        /* FIXED: Badge and code elements */
+        [data-theme="dark"] .badge {
+            color: white !important;
+        }
+
+        [data-theme="dark"] code {
+            background-color: #2d3748 !important;
+            color: #ff9292 !important;
+            border: 1px solid #4a5568;
+        }
+
+        /* FIXED: Responsive table wrapper */
+        .card-body .table-responsive {
+            margin: -0.5rem;
+            padding: 0.5rem;
+        }
+
+        /* Loading states */
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        [data-theme="dark"] .loading-shimmer {
+            background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+            background-size: 200% 100%;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
