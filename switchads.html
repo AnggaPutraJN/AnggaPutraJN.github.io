@@ -1,0 +1,4844 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://apis.google.com/js/api.js"></script>
+ <title>Generator Kode HTML Switch</title>
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"> 
+
+<style>
+:root {
+  --primary-bg: #0a0a0a;
+  --secondary-bg: #1a1a1a;
+  --card-bg: #2a2a2a;
+  --text-primary: #7CC6ED;
+  --text-secondary: #7CC6ED;
+  --accent-color: #00d4ff;
+  --accent-secondary: #ff006e;
+  --accent-green: #00ff88;
+  --border-color: #333;
+  --neon-glow: 0 0 20px;
+  --placeholder-color: #888;
+}
+
+[data-theme="dark"] {
+  --primary-bg: #f8f9fa;
+  --secondary-bg: #ffffff;
+  --card-bg: #ffffff;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --accent-color: #0066cc;
+  --accent-secondary: #dc3545;
+  --accent-green: #28a745;
+  --border-color: #dee2e6;
+  --neon-glow: 0 0 10px;
+  --placeholder-color: #6c757d;
+}
+
+body {
+  background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+.container-fluid {
+  padding: 0;
+}
+
+.theme-switch {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.theme-switch label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background: var(--card-bg);
+  padding: 8px 15px;
+  border-radius: 30px;
+  box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.theme-switch i {
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+
+@media screen and (max-height: 450px) {
+  .sidebar {
+    padding-top: 15px;
+  }
+  .sidebar a {
+    font-size: 18px;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .container-fluid {
+    padding: 1rem;
+  }
+  
+  .triple-link-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .link-checkboxes {
+    grid-template-columns: 1fr;
+  }
+}
+  .sidebar {
+    height: auto;
+    position: static;
+  }
+  .containeranimasi {
+    margin-left: 0;
+    margin-bottom: 20px;
+  }
+
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
+}
+
+/* Typography */
+h2, h3, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  color: var(--dark-color);
+}
+
+/* Form elements */
+#myTextarea {
+  width: 100%;
+  height: 150px;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+label {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+input[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+/* Button Styles */
+.btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  color: white;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Form Styles */
+.form-control, input[type="text"], input[type="number"], textarea {
+  background: var(--secondary-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  padding: 12px 16px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.form-control:focus, input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  background: var(--card-bg);
+}
+
+
+/* Placeholder Styles */
+::placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 1;
+}
+
+:-ms-input-placeholder {
+  color: var(--placeholder-color) !important;
+}
+
+::-ms-input-placeholder {
+  color: var(--placeholder-color) !important;
+}
+
+textarea.form-control {
+  min-height: 200px;
+  resize: vertical;
+  font-family: 'Courier New', monospace;
+}
+
+
+/* Cards */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  transition: all 0.3s ease;
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+  color: white;
+  padding: 1.5rem;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+}
+
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Result area */
+#result {
+  background: var(--card-bg);
+  border: 2px solid var(--accent-color);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  color: var(--text-primary);
+  box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1);
+  min-height: 100px;
+}
+
+/* Link Selection Screen */
+.link-selection-container {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.triple-link-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.link-type-section {
+  background: var(--secondary-bg);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.link-count-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.link-checkboxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.link-checkbox-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.link-checkbox-item:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: var(--accent-color);
+}
+
+.selected-links-list {
+  background: var(--secondary-bg);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px dashed var(--accent-color);
+}
+
+.hidden {
+  display: none;
+}
+
+
+.selected-links-list li {
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.selected-links-list li:last-child {
+  border-bottom: none;
+}
+
+/* Dual link type selection */
+.dual-link-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.link-type-section {
+  flex: 1;
+  background: var(--light-color);
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+}
+
+.link-type-section h5 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+/* Animation section */
+.containeranimasi {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: inline-block;
+  margin-left: 300px;
+  margin-bottom: -550px;
+  text-align: center;
+}
+
+.boxanimasi {
+  position: relative;
+  display: inline-block;
+}
+
+.boxanimasi h7 {
+  color: #fff;
+  font-size: 3em;
+  margin-top: 15px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+}
+
+.boxanimasi h7:nth-child(1) {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--primary-color);
+}
+
+.boxanimasi h7:nth-child(2) {
+  color: var(--primary-color);
+  animation: animated 4s ease-in-out infinite;
+}
+
+@keyframes animated {
+  0%, 100% {
+    clip-path: polygon(0% 45%, 16% 44%, 33% 50%, 54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
+  }
+  50% {
+    clip-path: polygon(0% 60%, 15% 65%, 34% 66%, 51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%);
+  }
+}
+
+
+/* Card Styles */
+.gradient-bg {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.gradient-bg:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.btn-gradient-bg1 {
+  background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+  box-shadow: var(--neon-glow) var(--accent-color);
+}
+
+.btn-gradient-bg2 {
+  background: linear-gradient(45deg, var(--accent-secondary), var(--accent-color));
+  box-shadow: var(--neon-glow) var(--accent-secondary);
+}
+
+.btn-gradient-bg3 {
+  background: linear-gradient(45deg, #6c757d, #495057);
+}
+
+.btn-gradient-bg4 {
+  background: linear-gradient(45deg, #ff006e, #ff4757);
+  box-shadow: var(--neon-glow) var(--accent-secondary);
+}
+
+.btn-gradient-bg5 {
+  background: linear-gradient(45deg, var(--accent-secondary), var(--accent-color));
+  box-shadow: var(--neon-glow) var(--accent-secondary);
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Modal styles */
+.modal-content {
+  border-radius: 15px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.list-group-item {
+  padding: 1rem;
+  border-radius: 0.5rem !important;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--light-color);
+  transition: all 0.3s ease;
+}
+
+.list-group-item h6 {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.modal-lg {
+  max-width: 800px;
+}
+
+.text-muted {
+    
+  color: var(--accent-color) !important;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* CSS untuk pembatas/judul section input */
+.section-divider {
+    margin: 20px 0 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-left: 4px solid var(--primary-color);
+    font-weight: bold;
+    color: #333;
+    border-radius: 4px;
+}
+
+[data-theme="dark"] .section-divider {
+    background-color: #2d2d2d;
+    color: #f0f0f0;
+    border-left-color: var(--primary-color-dark);
+}
+
+/* Navigation Styles */
+.nav-section {
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--accent-color);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  padding: 12px 24px;
+  border-radius: 25px;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+.nav-btn:hover {
+  transform: translateY(-3px);
+  color: white;
+  box-shadow: var(--neon-glow) var(--accent-color), 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.nav-btn i {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Dropdown Navigation Styles */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.nav-dropdown-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-dropdown-btn i.fa-chevron-down {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--card-bg);
+  min-width: 200px;
+  box-shadow: 0 8px 16px var(--shadow-color);
+  border-radius: 8px;
+  z-index: 1000;
+  padding: 5px 0;
+  border: 1px solid var(--border-color);
+}
+
+.nav-dropdown:hover .nav-dropdown-content {
+  display: block;
+}
+
+.nav-dropdown:hover .nav-dropdown-btn i.fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown-item {
+  color: var(--text-color);
+  padding: 10px 15px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.nav-dropdown-item:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .nav-dropdown {
+    width: 100%;
+    margin: 5px 0;
+  }
+  
+  .nav-dropdown-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .nav-dropdown-content {
+    position: static;
+    width: 100%;
+    box-shadow: none;
+    border: none;
+    border-top: 1px solid var(--border-color);
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .nav-dropdown:hover .nav-dropdown-content {
+    display: none;
+  }
+  
+  /* Show dropdown on click for mobile */
+  .nav-dropdown.active .nav-dropdown-content {
+    display: block;
+  }
+  
+  .nav-dropdown.active .nav-dropdown-btn i.fa-chevron-down {
+    transform: rotate(180deg);
+  }
+}
+</style>
+</head>
+
+<body>
+<!-- Navigation Section -->
+<div class="nav-section">
+  <div class="nav-buttons">
+    <!-- PLAYSTATION Dropdown -->
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn btn-gradient-bg5">
+        <i class="fas fa-gamepad"></i> PLAYSTATION <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="nav-dropdown-content">
+        <a href="psvita" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> PS Vita
+        </a>
+        <a href="ps2" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> PS2
+        </a>
+        <a href="psp" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> PSP
+        </a>
+      </div>
+    </div>
+
+    <!-- NINTENDO Dropdown -->
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn btn-gradient-bg3">
+        <i class="fas fa-gamepad"></i> NINTENDO <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="nav-dropdown-content">
+        <a href="index" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> Switch
+        </a>
+        <a href="sharegameswitch" class="nav-dropdown-item">
+          <i class="fas fa-share-alt"></i> Share Game Switch NSP x XCI
+        </a>
+        <a href="sharegameswitchnsponly" class="nav-dropdown-item">
+          <i class="fas fa-share-alt"></i> Share Game Switch NSP Only
+        </a>
+        <a href="shortingswitch" class="nav-dropdown-item">
+          <i class="fas fa-list-ol"></i> Shorting Game Switch
+        </a>
+        <a href="shortingnsponly" class="nav-dropdown-item">
+          <i class="fas fa-list-ol"></i> Shorting NSP OR XCI ONLY
+        </a>
+        <a href="shortingswitchpartonly" class="nav-dropdown-item">
+          <i class="fas fa-puzzle-piece"></i> Parts Only Switch
+        </a>
+        <a href="wii" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> Wii
+        </a>
+        <a href="3ds" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> 3DS
+        </a>
+      </div>
+    </div>
+    <!-- OTHER Dropdown -->
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn btn-gradient-bg3">
+        <i class="fas fa-gamepad"></i> OTHER GAME <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="nav-dropdown-content">
+        <a href="android" class="nav-dropdown-item">
+          <i class="fas fa-gamepad"></i> Android
+        </a>
+        <a href="shortingandroid" class="nav-dropdown-item">
+          <i class="fas fa-list-ol"></i> Shorting Game Switch
+        </a>
+      </div>
+    </div>
+
+    <!-- ADMIN Dropdown -->
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn btn-gradient-bg2">
+        <i class="fas fa-user-shield"></i> ADMIN <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="nav-dropdown-content">
+        <a href="request" class="nav-dropdown-item">
+          <i class="fas fa-comment-dots"></i> Request & Report
+        </a>
+        <a href="Link2UnlockAdmin" class="nav-dropdown-item">
+          <i class="fas fa-unlock-alt"></i> Link2Unlock
+        </a>
+        <a href="Link2UnlockKeyAdmin" class="nav-dropdown-item">
+          <i class="fas fa-unlock-alt"></i> Link2UnlockKey
+        </a>
+        <a href="Noted2UnlockAdmin" class="nav-dropdown-item">
+          <i class="fas fa-sticky-note"></i> Noted2Unlock
+        </a>
+      </div>
+    </div>
+
+    <!-- ADMIN Dropdown -->
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn btn-gradient-bg2">
+        <i class="fas fa-user-shield"></i> BOT <i class="fas fa-chevron-down"></i>
+      </button>
+      <div class="nav-dropdown-content">
+        <a href="GeneratorINDapk" class="nav-dropdown-item">
+          <i class="fas fa-comment-dots"></i> Generator INDapk
+        </a>
+        <a href="GeneratorAPKsgi" class="nav-dropdown-item">
+          <i class="fas fa-unlock-alt"></i> Generator APKsgi
+        </a>
+        <a href="GeneratorVideo" class="nav-dropdown-item">
+          <i class="fas fa-unlock-alt"></i> Generator Video
+        </a>
+        <a href="Noted2UnlockVideo" class="nav-dropdown-item">
+          <i class="fas fa-sticky-note"></i> Noted2Unlock Video
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- Theme switcher -->
+<div class="theme-switch">
+  <label for="theme-toggle">
+    <i class="fas fa-moon"></i>
+    <span>Dark Mode</span>
+    <input type="checkbox" id="theme-toggle" style="display: none;">
+  </label>
+</div>
+
+<!-- Initial Link Selection Screen -->
+<div id="linkSelectionScreen" class="link-selection-container">
+    <h3>Silahkan masukkan jumlah link yang ingin di generate</h3>
+    
+    <div class="triple-link-container">
+        <div class="link-type-section">
+            <h5>Single Link NSP</h5>
+            <p>Maksimal 10 link</p>
+            <input type="number" id="singleNSPLinkCount" class="link-count-input" min="0" max="10" placeholder="Jumlah Single NSP (0-10)">
+        </div>
+        
+        <div class="link-type-section">
+            <h5>Single Link XCI</h5>
+            <p>Maksimal 10 link</p>
+            <input type="number" id="singleXCILinkCount" class="link-count-input" min="0" max="10" placeholder="Jumlah Single XCI (0-10)">
+        </div>
+        
+        <div class="link-type-section">
+            <h5>Part Link NSP</h5>
+            <p>Maksimal 10 link</p>
+            <input type="number" id="partNSPLinkCount" class="link-count-input" min="0" max="10" placeholder="Jumlah Part NSP (0-10)">
+        </div>
+
+        <div class="link-type-section">
+            <h5>Part Link XCI</h5>
+            <p>Maksimal 10 link</p>
+            <input type="number" id="partXCILinkCount" class="link-count-input" min="0" max="10" placeholder="Jumlah Part XCI (0-10)">
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mt-3">
+        <button type="button" onclick="showTripleLinkTypeSelection()" class="btn btn-gradient-bg1">Selanjutnya</button>
+    <button type="button" onclick="loadLinkSettingsModal()" class="btn btn-gradient-bg3">Load Settingan</button>
+    <button type="button" onclick="viewDatabase()" class="btn btn-gradient-bg4 me-2">Lihat Database</button>
+    <button type="button" onclick="proceedToTripleGenerator()" class="btn btn-gradient-bg1">Generate</button>
+</div>
+    
+    <!-- Bagian ini awalnya hidden -->
+    <div id="tripleLinkTypeSelection" class="hidden">
+        <div class="triple-link-container">
+            <!-- Single NSP Link Selection -->
+            <div class="link-type-section" id="singleNSPLinkSection">
+                <h5>Pilih Jenis Link untuk Single NSP:</h5>
+                <div class="link-checkboxes" id="singleNSPLinkCheckboxes">
+                    <!-- singleNSPLinkType section -->
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Google Drive"> <i class="fab fa-google-drive"></i> Google Drive
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Mediafire"> <i class="fas fa-cloud"></i> Mediafire
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Vikingfile"> <i class="fas fa-file-archive"></i> Vikingfile
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="PixelDrain"> <i class="fas fa-tint"></i> PixelDrain
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="1Fichier"> <i class="fas fa-file-alt"></i> 1Fichier
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="MultiUp"> <i class="fas fa-upload"></i> MultiUp
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Qiwi"> <i class="fas fa-wallet"></i> Qiwi
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Mega"> <i class="fas fa-folder-open"></i> Mega
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Megaup"> <i class="fas fa-rocket"></i> Megaup
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="KatFile"> <i class="fas fa-file-download"></i> KatFile
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Dupload"> <i class="fas fa-copy"></i> Dupload
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="BowFile"> <i class="fas fa-file-export"></i> BowFile
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Terabox"> <i class="fas fa-box-open"></i> Terabox
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="clicknupload"> <i class="fas fa-mouse-pointer"></i> clicknupload
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="MixDrop"> <i class="fas fa-tint"></i> MixDrop
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Workupload"> <i class="fas fa-upload"></i> Workupload
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Link2Unlock"> <i class="fas fa-unlock"></i> Link2Unlock
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Buzzheavier"> <i class="fas fa-bolt"></i> Buzzheavier
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="GoFile"> <i class="fas fa-file"></i> GoFile
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="Turbobit"> <i class="fas fa-file"></i> Turbobit
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="RapidGator"> <i class="fas fa-dragon"></i> RapidGator
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="SendCM"> <i class="fas fa-paper-plane"></i> SendCM
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="DooDrive"> <i class="fas fa-hdd"></i> DooDrive
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="FileUpload"> <i class="fas fa-upload"></i> FileUpload
+                  </label>
+                  <label class="link-checkbox-item">
+                      <input type="checkbox" name="singleNSPLinkType" value="FreeDL"> <i class="fas fa-download"></i> FreeDL
+                  </label>
+                </div>
+                <div id="selectedSingleNSPLinksContainer" class="mt-3"></div>
+            </div>
+            
+            <!-- Single XCI Link Selection -->
+            <div class="link-type-section" id="singleXCILinkSection">
+                <h5>Pilih Jenis Link untuk Single XCI:</h5>
+                <div class="link-checkboxes" id="singleXCILinkCheckboxes">
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Google Drive"> <i class="fab fa-google-drive"></i> Google Drive
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Mediafire"> <i class="fas fa-cloud"></i> Mediafire
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Vikingfile"> <i class="fas fa-file-archive"></i> Vikingfile
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="PixelDrain"> <i class="fas fa-tint"></i> PixelDrain
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="1Fichier"> <i class="fas fa-file-alt"></i> 1Fichier
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="MultiUp"> <i class="fas fa-upload"></i> MultiUp
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Qiwi"> <i class="fas fa-wallet"></i> Qiwi
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Mega"> <i class="fas fa-folder-open"></i> Mega
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Megaup"> <i class="fas fa-rocket"></i> Megaup
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="KatFile"> <i class="fas fa-file-download"></i> KatFile
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Dupload"> <i class="fas fa-copy"></i> Dupload
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="BowFile"> <i class="fas fa-file-export"></i> BowFile
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Terabox"> <i class="fas fa-box-open"></i> Terabox
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="clicknupload"> <i class="fas fa-mouse-pointer"></i> clicknupload
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="MixDrop"> <i class="fas fa-tint"></i> MixDrop
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Workupload"> <i class="fas fa-upload"></i> Workupload
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Link2Unlock"> <i class="fas fa-unlock"></i> Link2Unlock
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Buzzheavier"> <i class="fas fa-bolt"></i> Buzzheavier
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="GoFile"> <i class="fas fa-file"></i> GoFile
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="Turbobit"> <i class="fas fa-file"></i> Turbobit
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="RapidGator"> <i class="fas fa-dragon"></i> RapidGator
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="SendCM"> <i class="fas fa-paper-plane"></i> SendCM
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="DooDrive"> <i class="fas fa-hdd"></i> DooDrive
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="FileUpload"> <i class="fas fa-upload"></i> FileUpload
+              </label>
+              <label class="link-checkbox-item">
+                  <input type="checkbox" name="singleXCILinkType" value="FreeDL"> <i class="fas fa-download"></i> FreeDL
+              </label>
+                </div>
+                <div id="selectedSingleXCILinksContainer" class="mt-3"></div>
+            </div>
+            
+            <!-- Part NSP Link Selection -->
+            <div class="link-type-section" id="partNSPLinkSection">
+                <h5>Pilih Jenis Link untuk Part NSP:</h5>
+                <div class="link-checkboxes" id="partNSPLinkCheckboxes">
+                    <!-- partXCILinkType section -->
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Google Drive"> <i class="fab fa-google-drive"></i> Google Drive
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Mediafire"> <i class="fas fa-cloud"></i> Mediafire
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Vikingfile"> <i class="fas fa-file-archive"></i> Vikingfile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="PixelDrain"> <i class="fas fa-tint"></i> PixelDrain
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="1Fichier"> <i class="fas fa-file-alt"></i> 1Fichier
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="MultiUp"> <i class="fas fa-upload"></i> MultiUp
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Qiwi"> <i class="fas fa-wallet"></i> Qiwi
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Mega"> <i class="fas fa-folder-open"></i> Mega
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Megaup"> <i class="fas fa-rocket"></i> Megaup
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="KatFile"> <i class="fas fa-file-download"></i> KatFile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Dupload"> <i class="fas fa-copy"></i> Dupload
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="BowFile"> <i class="fas fa-file-export"></i> BowFile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Terabox"> <i class="fas fa-box-open"></i> Terabox
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="clicknupload"> <i class="fas fa-mouse-pointer"></i> clicknupload
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="MixDrop"> <i class="fas fa-tint"></i> MixDrop
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Workupload"> <i class="fas fa-upload"></i> Workupload
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Link2Unlock"> <i class="fas fa-unlock"></i> Link2Unlock
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Buzzheavier"> <i class="fas fa-bolt"></i> Buzzheavier
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="GoFile"> <i class="fas fa-file"></i> GoFile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="Turbobit"> <i class="fas fa-file"></i> Turbobit
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="RapidGator"> <i class="fas fa-dragon"></i> RapidGator
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="SendCM"> <i class="fas fa-paper-plane"></i> SendCM
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="DooDrive"> <i class="fas fa-hdd"></i> DooDrive
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="FileUpload"> <i class="fas fa-upload"></i> FileUpload
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partNSPLinkType" value="FreeDL"> <i class="fas fa-download"></i> FreeDL
+                    </label>
+                </div>
+                <div id="selectedPartNSPLinksContainer" class="mt-3"></div>
+            </div>
+
+            <!-- Part XCI Link Selection -->
+            <div class="link-type-section" id="partXCILinkSection">
+                <h5>Pilih Jenis Link untuk Part XCI:</h5>
+                <div class="link-checkboxes" id="partXCILinkCheckboxes">
+                    <!-- partNSPLinkType section -->
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Google Drive"> <i class="fab fa-google-drive"></i> Google Drive
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Mediafire"> <i class="fas fa-cloud"></i> Mediafire
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Vikingfile"> <i class="fas fa-file-archive"></i> Vikingfile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="PixelDrain"> <i class="fas fa-tint"></i> PixelDrain
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="1Fichier"> <i class="fas fa-file-alt"></i> 1Fichier
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="MultiUp"> <i class="fas fa-upload"></i> MultiUp
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Qiwi"> <i class="fas fa-wallet"></i> Qiwi
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Mega"> <i class="fas fa-folder-open"></i> Mega
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Megaup"> <i class="fas fa-rocket"></i> Megaup
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="KatFile"> <i class="fas fa-file-download"></i> KatFile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Dupload"> <i class="fas fa-copy"></i> Dupload
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="BowFile"> <i class="fas fa-file-export"></i> BowFile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Terabox"> <i class="fas fa-box-open"></i> Terabox
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="clicknupload"> <i class="fas fa-mouse-pointer"></i> clicknupload
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="MixDrop"> <i class="fas fa-tint"></i> MixDrop
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Workupload"> <i class="fas fa-upload"></i> Workupload
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Link2Unlock"> <i class="fas fa-unlock"></i> Link2Unlock
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Buzzheavier"> <i class="fas fa-bolt"></i> Buzzheavier
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="GoFile"> <i class="fas fa-file"></i> GoFile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="Turbobit"> <i class="fas fa-file"></i> Turbobit
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="RapidGator"> <i class="fas fa-dragon"></i> RapidGator
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="SendCM"> <i class="fas fa-paper-plane"></i> SendCM
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="DooDrive"> <i class="fas fa-hdd"></i> DooDrive
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="FileUpload"> <i class="fas fa-upload"></i> FileUpload
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="partXCILinkType" value="FreeDL"> <i class="fas fa-download"></i> FreeDL
+                    </label>
+                </div>
+                <div id="selectedPartXCILinksContainer" class="mt-3"></div>
+            </div>
+        </div>
+        
+<div class="d-flex justify-content-center mt-3 gap-2">
+    <button type="button" onclick="saveLinkSettings()" class="btn btn-gradient-bg2">Simpan Settingan</button>
+    <button type="button" onclick="loadLinkSettingsModal()" class="btn btn-gradient-bg3">Load Settingan</button>
+    <button type="button" onclick="proceedToTripleGenerator()" class="btn btn-gradient-bg1">Generate</button>
+</div>
+    </div>
+</div>
+
+<!-- Main Generator (Initially Hidden) -->
+<div id="mainGenerator" class="container-fluid hidden">
+<div class="row">
+<div class="col-md-6">
+<div class="mb-3 gradient-bg">
+<h2>Switch NSP x XCI</h2>
+<textarea id="myTextarea" class="form-control"></textarea>
+</div>
+<div class="d-flex justify-content-center">
+<button type="button" onclick="generateCode()" class="btn btn-gradient-bg1 me-2">Generate Codingan</button>
+<button type="button" onclick="copyCode()" class="btn btn-gradient-bg2 me-2">Copy Generate</button>
+<button type="button" onclick="clearCode()" class="btn btn-gradient-bg3 me-2">Clear Codingan</button>
+    <button type="button" onclick="viewDatabase()" class="btn btn-gradient-bg4 me-2">Lihat Database</button>
+    <button type="button" onclick="saveToSpreadsheet()" class="btn btn-gradient-bg5 me-2">Simpan ke Database</button>
+</div>
+<div id="result"></div>
+</div>
+
+<div class="col-md-6">
+<div class="card">
+<div class="card-header gradient-bg">
+<h2>Masukkan Detail Game Switch</h2>
+</div>
+<div class="card-body">
+<form id="myForm">
+
+<label for="inputName">Nama Game:</label>
+<input type="text" id="inputName" name="inputName"><br><br>
+
+<label for="inputSingleNSPSize">Ukuran Single NSP:</label>
+<input type="text" id="inputSingleNSPSize" name="inputSingleNSPSize"><br><br>
+
+<label for="inputSingleXCISize">Ukuran Single XCI:</label>
+<input type="text" id="inputSingleXCISize" name="inputSingleXCISize"><br><br>
+
+<label for="inputCategory">Category:</label>
+<input type="text" id="inputCategory" name="inputCategory"><br><br>
+
+<label for="inputGameID">Game ID:</label>
+<input type="text" id="inputGameID" name="inputGameID"><br><br>
+
+<label for="inputRegion">Region:</label>
+<input type="text" id="inputRegion" name="inputRegion"><br><br>
+
+<label for="inputLanguage">Language:</label>
+<input type="text" id="inputLanguage" name="inputLanguage"><br><br>
+
+
+<!-- Dynamic Link Inputs will be inserted here -->
+<div id="linkInputsContainer"></div>
+
+
+<!-- END 1-->
+<label for="inputEND1">END 1:</label>
+<input type="text" id="inputEND1" name="inputEND1" value="&lt;/script&gt;"><br><br>
+
+<!-- END 2-->
+<label for="inputEND2">END 2:</label>
+<input type="text" id="inputEND2" name="inputEND2" value="&lt;/body&gt;"><br><br>
+
+<!-- END 3-->
+<label for="inputEND3">END 3:</label>
+<input type="text" id="inputEND3" name="inputEND3" value="&lt;/html&gt;"><br><br>
+
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!--Script-->
+<script>
+
+  // Mobile dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdowns = document.querySelectorAll('.nav-dropdown');
+  
+  // For mobile devices, toggle dropdown on click
+  if (window.innerWidth <= 768) {
+    dropdowns.forEach(dropdown => {
+      const btn = dropdown.querySelector('.nav-dropdown-btn');
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        dropdown.classList.toggle('active');
+        
+        // Close other open dropdowns
+        dropdowns.forEach(otherDropdown => {
+          if (otherDropdown !== dropdown) {
+            otherDropdown.classList.remove('active');
+          }
+        });
+      });
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.nav-dropdown')) {
+        dropdowns.forEach(dropdown => {
+          dropdown.classList.remove('active');
+        });
+      }
+    });
+  }
+});
+
+// Handle window resize
+window.addEventListener('resize', function() {
+  const dropdowns = document.querySelectorAll('.nav-dropdown');
+  if (window.innerWidth > 768) {
+    dropdowns.forEach(dropdown => {
+      dropdown.classList.remove('active');
+    });
+  }
+});
+// Fungsi untuk menyimpan data ke spreadsheet
+// Enhanced saveToSpreadsheet function with comma-separated links
+function saveToSpreadsheet() {
+    // Format links with commas
+    const formatLinks = (links) => {
+        return links.map(link => link.trim()).filter(link => link).join(', ');
+    };
+
+    const gameData = {
+        action: document.getElementById("inputGameId") ? 'update' : 'create',
+        id: document.getElementById("inputGameId")?.value || '',
+        nama_game: document.getElementById("inputName").value,
+        ukuran_nsp: document.getElementById("inputSingleNSPSize").value,
+        ukuran_xci: document.getElementById("inputSingleXCISize").value,
+        category: document.getElementById("inputCategory")?.value || '',
+        game_id: document.getElementById("inputGameID")?.value || '',
+        region: document.getElementById("inputRegion")?.value || '',
+        language: document.getElementById("inputLanguage")?.value || '',
+        jumlah_link_nsp_single: singleNSPLinkCount,
+        jumlah_link_xci_single: singleXCILinkCount,
+        jumlah_link_nsp_part: partNSPLinkCount,
+        jumlah_link_xci_part: partXCILinkCount,
+        link_single_nsp: formatLinks(getLinkValues('singleNSP')),
+        link_single_xci: formatLinks(getLinkValues('singleXCI')),
+        link_part_nsp: formatLinks(getLinkValues('partNSP')),
+        link_part_xci: formatLinks(getLinkValues('partXCI')),
+        jenis_link_single_nsp: selectedSingleNSPLinksOrder.join(', '),
+        jenis_link_single_xci: selectedSingleXCILinksOrder.join(', '),
+        jenis_link_part_nsp: selectedPartNSPLinksOrder.join(', '),
+        jenis_link_part_xci: selectedPartXCILinksOrder.join(', ')
+    };
+
+    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(gameData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification('Data berhasil disimpan ke database!');
+            viewDatabase();
+        } else {
+            showNotification('Gagal menyimpan data: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Terjadi kesalahan saat menyimpan data');
+    });
+}
+
+// Fungsi untuk menampilkan data dari database
+function displayDatabase(data) {
+    if (data.status === 'success') {
+        // Remove existing modal if present
+        const existingModal = document.getElementById('databaseModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        const modalContent = `
+            <div class="modal fade" id="databaseModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Database Game</h5>
+                            <div class="d-flex gap-2">
+                                <input type="text" id="databaseSearch" class="form-control" placeholder="Cari game..." style="width: 200px;">
+                                <button class="btn btn-sm btn-primary" onclick="filterDatabase()">Filter</button>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Nama Game</th>
+                                            <th>Category</th>
+                                            <th>Game ID</th>
+                                            <th>Region</th>
+                                            <th>Ukuran</th>
+                                            <th>Jumlah Link</th>
+                                            <th>Terakhir Update</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="databaseTableBody">
+                                        ${data.data.map(game => `
+                                            <tr>
+                                                <td><strong>${game.nama_game || '-'}</strong></td>
+                                                <td>${game.category || '-'}</td>
+                                                <td><code>${game.game_id || '-'}</code></td>
+                                                <td>${game.region || '-'}</td>
+                                                <td>
+                                                    <small>NSP: ${game.ukuran_nsp || '-'}<br>
+                                                    XCI: ${game.ukuran_xci || '-'}</small>
+                                                </td>
+                                                <td>
+                                                    <small>
+                                                        NSP: ${game.jumlah_link_nsp_single || 0}S ${game.jumlah_link_nsp_part || 0}P<br>
+                                                        XCI: ${game.jumlah_link_xci_single || 0}S ${game.jumlah_link_xci_part || 0}P
+                                                    </small>
+                                                </td>
+                                                <td>${new Date(game.timestamp).toLocaleString('id-ID', {
+                                                    day: '2-digit',
+                                                    month: '2-digit',
+                                                    year: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            ${data.data.length === 0 ? '<div class="alert alert-info text-center"><i class="fas fa-info-circle"></i> Tidak ada data dalam database</div>' : ''}
+                        </div>
+                        <div class="modal-footer">
+                            <div class="me-auto">
+                                <small class="text-muted">Total: ${data.data.length} game(s)</small>
+                            </div>
+                            <button type="button" class="btn btn-success" onclick="exportToCSV()">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i> Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to DOM and show it
+        document.body.insertAdjacentHTML('beforeend', modalContent);
+        
+        const modal = new bootstrap.Modal(document.getElementById('databaseModal'));
+        modal.show();
+        
+        // Save data for other functions
+        window.currentDatabaseData = data.data;
+        window.originalDatabaseData = data.data; // Save original data for filtering
+    } else {
+        showNotification("Gagal memuat data: " + (data.message || 'Unknown error'));
+    }
+}
+
+// Fungsi untuk filter database
+function filterDatabase() {
+    const searchTerm = document.getElementById('databaseSearch').value.toLowerCase();
+    const tableBody = document.getElementById('databaseTableBody');
+    
+    if (!searchTerm) {
+        // If search is empty, show all data
+        displayFilteredData(window.originalDatabaseData);
+        return;
+    }
+    
+    // Filter the data based on search term
+    const filteredData = window.originalDatabaseData.filter(game => {
+        return (game.nama_game && game.nama_game.toLowerCase().includes(searchTerm)) ||
+               (game.category && game.category.toLowerCase().includes(searchTerm)) ||
+               (game.game_id && game.game_id.toLowerCase().includes(searchTerm)) ||
+               (game.region && game.region.toLowerCase().includes(searchTerm));
+    });
+    
+    displayFilteredData(filteredData);
+}
+
+
+// Fungsi untuk melihat data di database
+function viewDatabase() {
+    fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec?action=read')
+        .then(response => response.json())
+        .then(data => displayDatabase(data))
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan saat memuat data');
+        });
+}
+
+// Fungsi pembantu untuk mendapatkan nilai link
+function getLinkValues(type) {
+    let links = [];
+    let prefix = '';
+    
+    switch(type) {
+        case 'singleNSP':
+            prefix = 'inputINDapkNSPSingleLink';
+            selectedSingleNSPLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'singleXCI':
+            prefix = 'inputINDapkSingleLinkXCI';
+            selectedSingleXCILinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'partNSP':
+            prefix = 'inputINDapkNSPPart';
+            selectedPartNSPLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+        case 'partXCI':
+            prefix = 'inputINDapkXCIPart';
+            selectedPartXCILinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || '';
+                if (value) links.push(value);
+            });
+            break;
+    }
+    
+    // Clean up links - remove empty entries and trim whitespace
+    return links.map(link => link.trim()).filter(link => link);
+}
+
+// Fungsi untuk menampilkan data yang sudah difilter
+function displayFilteredData(filteredData) {
+    const tableBody = document.getElementById('databaseTableBody');
+    
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data yang ditemukan</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = filteredData.map(game => `
+        <tr>
+            <td><strong>${game.nama_game || '-'}</strong></td>
+            <td>${game.category || '-'}</td>
+            <td><code>${game.game_id || '-'}</code></td>
+            <td>${game.region || '-'}</td>
+            <td>
+                <small>NSP: ${game.ukuran_nsp || '-'}<br>
+                XCI: ${game.ukuran_xci || '-'}</small>
+            </td>
+            <td>
+                <small>
+                    NSP: ${game.jumlah_link_nsp_single || 0}S ${game.jumlah_link_nsp_part || 0}P<br>
+                    XCI: ${game.jumlah_link_xci_single || 0}S ${game.jumlah_link_xci_part || 0}P
+                </small>
+            </td>
+            <td>${new Date(game.timestamp).toLocaleString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-info" onclick="viewGameDetails(${game.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="editGame(${game.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteGame(${game.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Event listener untuk search input (real-time filtering)
+document.addEventListener('DOMContentLoaded', function() {
+    // This will be added when modal is created
+});
+
+// Add event listener when modal is shown
+function addSearchEventListener() {
+    const searchInput = document.getElementById('databaseSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                filterDatabase();
+            }, 300); // Debounce search for 300ms
+        });
+        
+        // Also allow Enter key to trigger search
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterDatabase();
+            }
+        });
+    }
+}
+
+// Fungsi untuk melihat detail game - IMPROVED VERSION dengan auto close database modal
+function viewGameDetails(gameId) {
+    // PERBAIKAN: Tutup modal database terlebih dahulu jika sedang terbuka
+    const databaseModal = document.getElementById('databaseModal');
+    if (databaseModal) {
+        const databaseModalInstance = bootstrap.Modal.getInstance(databaseModal);
+        if (databaseModalInstance) {
+            databaseModalInstance.hide();
+        }
+    }
+
+    // Cari game dari database
+    const game = window.currentDatabaseData.find(g => g.id === gameId);
+    if (!game) {
+        showNotification('Game tidak ditemukan!');
+        return;
+    }
+
+    // Isi informasi dasar dengan animasi loading
+    const loadingSpinner = '<div class="spinner-border spinner-border-sm me-1" role="status"></div>Loading...';
+    document.getElementById('detailGameName').innerHTML = loadingSpinner;
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+        // Isi informasi dasar
+        document.getElementById('detailGameName').innerHTML = `<i class="fas fa-gamepad me-2 text-primary"></i>${game.nama_game || '-'}`;
+        document.getElementById('detailNspSize').innerHTML = `<span class="badge bg-info">${game.ukuran_nsp || '-'}</span>`;
+        document.getElementById('detailXciSize').innerHTML = `<span class="badge bg-info">${game.ukuran_xci || '-'}</span>`;
+        document.getElementById('detailCategory').innerHTML = `<span class="badge bg-secondary">${game.category || '-'}</span>`;
+        document.getElementById('detailGameId').innerHTML = `<code class="bg-light px-2 py-1 rounded">${game.game_id || '-'}</code>`;
+        document.getElementById('detailRegion').innerHTML = `<span class="badge bg-warning text-dark">${game.region || '-'}</span>`;
+        document.getElementById('detailLanguage').innerHTML = `<span class="badge bg-success">${game.language || '-'}</span>`;
+        
+        // Format timestamp dengan style yang lebih baik
+        const timestamp = game.timestamp ? new Date(game.timestamp).toLocaleString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }) : '-';
+        document.getElementById('detailTimestamp').innerHTML = `<small class="text-muted"><i class="fas fa-clock me-1"></i>${timestamp}</small>`;
+
+        // Isi statistik link dengan animasi counter
+        animateCounter('detailNspSingleCount', game.jumlah_link_nsp_single || 0);
+        animateCounter('detailNspPartCount', game.jumlah_link_nsp_part || 0);
+        animateCounter('detailXciSingleCount', game.jumlah_link_xci_single || 0);
+        animateCounter('detailXciPartCount', game.jumlah_link_xci_part || 0);
+
+        // Tampilkan jenis link yang digunakan dengan icon
+        let linkTypesHtml = '';
+        const linkTypeData = [
+            { type: game.jenis_link_single_nsp, label: 'NSP Single', icon: 'fas fa-file-alt', color: 'primary' },
+            { type: game.jenis_link_part_nsp, label: 'NSP Part', icon: 'fas fa-file-archive', color: 'info' },
+            { type: game.jenis_link_single_xci, label: 'XCI Single', icon: 'fas fa-compact-disc', color: 'success' },
+            { type: game.jenis_link_part_xci, label: 'XCI Part', icon: 'fas fa-layer-group', color: 'warning' }
+        ];
+
+        linkTypeData.forEach(item => {
+            if (item.type) {
+                linkTypesHtml += `
+                    <div class="d-flex align-items-center mb-2 p-2 border rounded bg-light">
+                        <i class="${item.icon} text-${item.color} me-2"></i>
+                        <strong class="me-2">${item.label}:</strong>
+                        <span class="badge bg-${item.color}">${item.type}</span>
+                    </div>`;
+            }
+        });
+        
+        document.getElementById('detailLinkTypes').innerHTML = linkTypesHtml || 
+            '<div class="text-center p-3"><i class="fas fa-info-circle text-muted me-2"></i><span class="text-muted">Tidak ada data jenis link</span></div>';
+    }, 300);
+
+    // Fungsi untuk membuat list link dengan tampilan yang lebih menarik
+    const createLinkList = (links, containerId) => {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '<div class="text-center p-3"><div class="spinner-border text-primary" role="status"></div></div>';
+        
+        setTimeout(() => {
+            container.innerHTML = '';
+            
+            if (!links) {
+                container.innerHTML = `
+                    <div class="list-group-item text-center border-0 bg-light">
+                        <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">Tidak ada link tersedia</p>
+                    </div>`;
+                return;
+            }
+            
+            const linkArray = links.split(', ');
+            if (linkArray.length === 0 || (linkArray.length === 1 && !linkArray[0])) {
+                container.innerHTML = `
+                    <div class="list-group-item text-center border-0 bg-light">
+                        <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">Tidak ada link tersedia</p>
+                    </div>`;
+                return;
+            }
+            
+            linkArray.forEach((link, index) => {
+                if (link.trim()) {
+                    // Deteksi jenis link berdasarkan domain
+                    let linkIcon = 'fas fa-link';
+                    let linkBadgeColor = 'primary';
+                    const lowerLink = link.toLowerCase();
+                    
+                    if (lowerLink.includes('drive.google.com')) {
+                        linkIcon = 'fab fa-google-drive';
+                        linkBadgeColor = 'success';
+                    } else if (lowerLink.includes('mega.nz')) {
+                        linkIcon = 'fas fa-cloud';
+                        linkBadgeColor = 'danger';
+                    } else if (lowerLink.includes('mediafire.com')) {
+                        linkIcon = 'fas fa-fire';
+                        linkBadgeColor = 'warning';
+                    } else if (lowerLink.includes('1fichier.com')) {
+                        linkIcon = 'fas fa-file-archive';
+                        linkBadgeColor = 'info';
+                    }
+
+                    const linkItem = document.createElement('a');
+                    linkItem.href = link;
+                    linkItem.target = '_blank';
+                    linkItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center border-start border-4 border-primary mb-2 link-hover-effect';
+                    linkItem.innerHTML = `
+                        <div class="d-flex align-items-center flex-grow-1">
+                            <i class="${linkIcon} text-${linkBadgeColor} me-3 fa-lg"></i>
+                            <div class="flex-grow-1">
+                                <div class="text-truncate fw-semibold" style="max-width: 400px;" title="${link}">
+                                    ${link}
+                                </div>
+                                <small class="text-muted">Klik untuk membuka link</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-${linkBadgeColor} rounded-pill me-2">#${index + 1}</span>
+                            <i class="fas fa-external-link-alt text-muted"></i>
+                        </div>
+                    `;
+                    
+                    // Add hover effects
+                    linkItem.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateX(5px)';
+                        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                    });
+                    
+                    linkItem.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateX(0)';
+                        this.style.boxShadow = 'none';
+                    });
+                    
+                    container.appendChild(linkItem);
+                }
+            });
+        }, 500);
+    };
+
+    // Isi link download dengan delay untuk effect
+    createLinkList(game.link_single_nsp, 'detailNspSingleLinks');
+    createLinkList(game.link_part_nsp, 'detailNspPartLinks');
+    createLinkList(game.link_single_xci, 'detailXciSingleLinks');
+    createLinkList(game.link_part_xci, 'detailXciPartLinks');
+
+    // Set event listener untuk tombol edit dengan confirmation
+    document.getElementById('btnEditGame').onclick = () => {
+        if (confirm('Apakah Anda yakin ingin mengedit game ini?')) {
+            editGame(game.id);
+            bootstrap.Modal.getInstance(document.getElementById('gameDetailModal')).hide();
+        }
+    };
+
+    // Set event listener untuk tombol salin link dengan feedback yang lebih baik
+    document.getElementById('btnCopyLinks').onclick = () => {
+        let allLinks = '';
+        let linkCount = 0;
+        
+        if (game.link_single_nsp) {
+            allLinks += `NSP Single Links:\n${game.link_single_nsp}\n\n`;
+            linkCount += game.link_single_nsp.split(', ').length;
+        }
+        if (game.link_part_nsp) {
+            allLinks += `NSP Part Links:\n${game.link_part_nsp}\n\n`;
+            linkCount += game.link_part_nsp.split(', ').length;
+        }
+        if (game.link_single_xci) {
+            allLinks += `XCI Single Links:\n${game.link_single_xci}\n\n`;
+            linkCount += game.link_single_xci.split(', ').length;
+        }
+        if (game.link_part_xci) {
+            allLinks += `XCI Part Links:\n${game.link_part_xci}`;
+            linkCount += game.link_part_xci.split(', ').length;
+        }
+        
+        if (allLinks.trim()) {
+            navigator.clipboard.writeText(allLinks.trim())
+                .then(() => {
+                    showToast(`Berhasil menyalin ${linkCount} link!`, 'success');
+                    // Tambahkan efek visual pada button
+                    const btn = document.getElementById('btnCopyLinks');
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check me-1"></i> Tersalin!';
+                    btn.classList.remove('btn-info');
+                    btn.classList.add('btn-success');
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-info');
+                    }, 2000);
+                })
+                .catch(() => {
+                    showToast('Gagal menyalin link. Silakan coba lagi.', 'error');
+                });
+        } else {
+            showToast('Tidak ada link untuk disalin.', 'warning');
+        }
+    };
+
+    // Tambahkan tombol untuk melihat QR Code (fitur baru)
+    const btnQrCode = document.getElementById('btnGenerateQR');
+    if (btnQrCode) {
+        btnQrCode.onclick = () => generateGameQRCode(game);
+    }
+
+    // Update tab counters with badges
+    updateTabCounters(game);
+
+    // PERBAIKAN: Tunggu sebentar untuk memastikan modal database tertutup sepenuhnya
+    // kemudian baru tampilkan modal detail game
+    setTimeout(() => {
+        const modal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
+        modal.show();
+        
+        // Add entrance animation
+        const modalDialog = document.querySelector('#gameDetailModal .modal-dialog');
+        modalDialog.style.transform = 'scale(0.8)';
+        modalDialog.style.opacity = '0';
+        
+        setTimeout(() => {
+            modalDialog.style.transition = 'all 0.3s ease';
+            modalDialog.style.transform = 'scale(1)';
+            modalDialog.style.opacity = '1';
+        }, 100);
+    }, 300); // Delay 300ms untuk memastikan modal database tertutup
+}
+
+// Helper function untuk animasi counter
+function animateCounter(elementId, targetValue) {
+    const element = document.getElementById(elementId);
+    let currentValue = 0;
+    const increment = Math.ceil(targetValue / 20);
+    const timer = setInterval(() => {
+        currentValue += increment;
+        if (currentValue >= targetValue) {
+            currentValue = targetValue;
+            clearInterval(timer);
+        }
+        element.textContent = currentValue;
+    }, 50);
+}
+
+// Helper function untuk menampilkan toast notification
+function showToast(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+
+    const toastId = 'toast-' + Date.now();
+    const iconMap = {
+        success: 'fas fa-check-circle text-success',
+        error: 'fas fa-exclamation-circle text-danger',
+        warning: 'fas fa-exclamation-triangle text-warning',
+        info: 'fas fa-info-circle text-info'
+    };
+
+    const toastHtml = `
+        <div id="${toastId}" class="toast align-items-center border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center">
+                    <i class="${iconMap[type]} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+
+    toastContainer.innerHTML = toastHtml;
+    const toastElement = new bootstrap.Toast(document.getElementById(toastId), {
+        autohide: true,
+        delay: 3000
+    });
+    toastElement.show();
+}
+
+// Helper function untuk update tab counters
+function updateTabCounters(game) {
+    const tabs = [
+        { id: 'nsp-single-tab', count: game.jumlah_link_nsp_single || 0 },
+        { id: 'nsp-part-tab', count: game.jumlah_link_nsp_part || 0 },
+        { id: 'xci-single-tab', count: game.jumlah_link_xci_single || 0 },
+        { id: 'xci-part-tab', count: game.jumlah_link_xci_part || 0 }
+    ];
+
+    tabs.forEach(tab => {
+        const tabElement = document.getElementById(tab.id);
+        if (tabElement && tab.count > 0) {
+            const badgeHtml = ` <span class="badge bg-danger rounded-pill ms-1">${tab.count}</span>`;
+            if (!tabElement.innerHTML.includes('badge')) {
+                tabElement.innerHTML += badgeHtml;
+            }
+        }
+    });
+}
+
+// Fitur baru: Generate QR Code untuk game info (opsional)
+function generateGameQRCode(game) {
+    const gameInfo = `Game: ${game.nama_game}\nSize NSP: ${game.ukuran_nsp}\nSize XCI: ${game.ukuran_xci}\nCategory: ${game.category}`;
+    
+    // Ini memerlukan library QR code seperti qrcode.js
+    // Untuk saat ini, kita tampilkan info dalam format text
+    const qrModal = document.createElement('div');
+    qrModal.className = 'modal fade';
+    qrModal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-qrcode me-2"></i>Game Info QR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        QR Code feature requires additional library
+                    </div>
+                    <pre class="bg-light p-3 rounded">${gameInfo}</pre>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(qrModal);
+    const modal = new bootstrap.Modal(qrModal);
+    modal.show();
+    
+    qrModal.addEventListener('hidden.bs.modal', () => {
+        document.body.removeChild(qrModal);
+    });
+}
+
+// Improved CSS untuk efek hover dan animasi
+const additionalStyles = `
+<style>
+.link-hover-effect {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.link-hover-effect:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-left-width: 6px !important;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+.toast {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="dark"] .toast {
+    background-color: rgba(45, 55, 72, 0.95);
+    color: #e2e8f0;
+}
+
+.modal-dialog {
+    transition: all 0.3s ease;
+}
+
+/* Badge pulse animation for counters */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.badge-animated {
+    animation: pulse 0.5s ease-in-out;
+}
+
+/* Improved tab styling */
+.nav-tabs .nav-link {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    transform: translateY(-2px);
+}
+
+.nav-tabs .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border-radius: 2px 2px 0 0;
+}
+</style>
+`;
+
+// Inject additional styles
+if (!document.getElementById('gameDetailStyles')) {
+    const styleElement = document.createElement('div');
+    styleElement.id = 'gameDetailStyles';
+    styleElement.innerHTML = additionalStyles;
+    document.head.appendChild(styleElement);
+}
+
+// Fungsi untuk menghapus game
+function deleteGame(gameId) {
+    if (confirm('Apakah Anda yakin ingin menghapus game ini?')) {
+        fetch('https://script.google.com/macros/s/AKfycbzdHRUKCrZUYYIKtCEF-EiR93FqlXuVbQTP2GF5aRFPNw442qjyI7AQ_YhZCksITIQ/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'delete',
+                id: gameId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showNotification('Game berhasil dihapus!');
+                viewDatabase(); // Refresh tampilan database
+            } else {
+                showNotification('Gagal menghapus game: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan saat menghapus game');
+        });
+    }
+}
+
+
+// Notification function
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+    ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
+
+// Fungsi untuk export ke CSV
+function exportToCSV() {
+    if (!window.currentDatabaseData || window.currentDatabaseData.length === 0) {
+        showNotification('Tidak ada data untuk di-export');
+        return;
+    }
+    
+    const headers = [
+        'Timestamp', 'Nama Game', 'Category', 'Game ID', 'Region', 'Language',
+        'Ukuran NSP', 'Ukuran XCI', 'Jumlah Link NSP Single', 'Jumlah Link XCI Single',
+        'Jumlah Link NSP Part', 'Jumlah Link XCI Part', 'Link Single NSP', 'Link Single XCI',
+        'Link Part NSP', 'Link Part XCI', 'Jenis Link Single NSP', 'Jenis Link Single XCI',
+        'Jenis Link Part NSP', 'Jenis Link Part XCI'
+    ];
+    
+    const csvContent = [
+        headers.join(','),
+        ...window.currentDatabaseData.map(game => [
+            `"${new Date(game.timestamp).toISOString()}"`,
+            `"${game.nama_game || ''}"`,
+            `"${game.category || ''}"`,
+            `"${game.game_id || ''}"`,
+            `"${game.region || ''}"`,
+            `"${game.language || ''}"`,
+            `"${game.ukuran_nsp || ''}"`,
+            `"${game.ukuran_xci || ''}"`,
+            game.jumlah_link_nsp_single || 0,
+            game.jumlah_link_xci_single || 0,
+            game.jumlah_link_nsp_part || 0,
+            game.jumlah_link_xci_part || 0,
+            `"${game.link_single_nsp || ''}"`,
+            `"${game.link_single_xci || ''}"`,
+            `"${game.link_part_nsp || ''}"`,
+            `"${game.link_part_xci || ''}"`,
+            `"${game.jenis_link_single_nsp || ''}"`,
+            `"${game.jenis_link_single_xci || ''}"`,
+            `"${game.jenis_link_part_nsp || ''}"`,
+            `"${game.jenis_link_part_xci || ''}"`
+        ].join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `game_database_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Fungsi untuk edit game - DIPERBAIKI
+function editGame(gameId) {
+    const game = window.currentDatabaseData.find(g => g.id === gameId);
+    if (!game) {
+        showNotification('Game tidak ditemukan!');
+        return;
+    }
+
+    // Close database modal first
+    const databaseModal = bootstrap.Modal.getInstance(document.getElementById('databaseModal'));
+    if (databaseModal) {
+        databaseModal.hide();
+    }
+
+    // Wait for modal to close then populate form
+    setTimeout(() => {
+        try {
+            // Create or update hidden input for game ID
+            let gameIdInput = document.getElementById("inputGameId");
+            if (!gameIdInput) {
+                gameIdInput = document.createElement("input");
+                gameIdInput.type = "hidden";
+                gameIdInput.id = "inputGameId";
+                gameIdInput.name = "inputGameId";
+                const form = document.getElementById("myForm");
+                if (form) {
+                    form.appendChild(gameIdInput);
+                }
+            }
+            gameIdInput.value = game.id;
+
+            // Populate basic form fields
+            const setFieldValue = (id, value) => {
+                const field = document.getElementById(id);
+                if (field) {
+                    field.value = value || '';
+                }
+            };
+
+            setFieldValue("inputName", game.nama_game);
+            setFieldValue("inputSingleNSPSize", game.ukuran_nsp);
+            setFieldValue("inputSingleXCISize", game.ukuran_xci);
+            setFieldValue("inputCategory", game.category);
+            setFieldValue("inputGameID", game.game_id);
+            setFieldValue("inputRegion", game.region);
+            setFieldValue("inputLanguage", game.language);
+
+            // Set link counts
+            setFieldValue("singleNSPLinkCount", game.jumlah_link_nsp_single || 0);
+            setFieldValue("singleXCILinkCount", game.jumlah_link_xci_single || 0);
+            setFieldValue("partNSPLinkCount", game.jumlah_link_nsp_part || 0);
+            setFieldValue("partXCILinkCount", game.jumlah_link_xci_part || 0);
+
+            // Update global variables if they exist
+            if (typeof singleNSPLinkCount !== 'undefined') {
+                singleNSPLinkCount = game.jumlah_link_nsp_single || 0;
+            }
+            if (typeof singleXCILinkCount !== 'undefined') {
+                singleXCILinkCount = game.jumlah_link_xci_single || 0;
+            }
+            if (typeof partNSPLinkCount !== 'undefined') {
+                partNSPLinkCount = game.jumlah_link_nsp_part || 0;
+            }
+            if (typeof partXCILinkCount !== 'undefined') {
+                partXCILinkCount = game.jumlah_link_xci_part || 0;
+            }
+
+            // Set link types if arrays exist
+            if (typeof selectedSingleNSPLinksOrder !== 'undefined') {
+                selectedSingleNSPLinksOrder = game.jenis_link_single_nsp ? game.jenis_link_single_nsp.split(', ') : [];
+            }
+            if (typeof selectedSingleXCILinksOrder !== 'undefined') {
+                selectedSingleXCILinksOrder = game.jenis_link_single_xci ? game.jenis_link_single_xci.split(', ') : [];
+            }
+            if (typeof selectedPartNSPLinksOrder !== 'undefined') {
+                selectedPartNSPLinksOrder = game.jenis_link_part_nsp ? game.jenis_link_part_nsp.split(', ') : [];
+            }
+            if (typeof selectedPartXCILinksOrder !== 'undefined') {
+                selectedPartXCILinksOrder = game.jenis_link_part_xci ? game.jenis_link_part_xci.split(', ') : [];
+            }
+
+            // Try to call functions if they exist
+            if (typeof showTripleLinkTypeSelection === 'function') {
+                showTripleLinkTypeSelection();
+            }
+
+            if (typeof generateTripleLinkInputs === 'function') {
+                generateTripleLinkInputs();
+            }
+
+            // Populate link values
+            const populateLinks = (linkString, prefixArray) => {
+                if (linkString && prefixArray) {
+                    const linkArray = linkString.split(', ');
+                    linkArray.forEach((link, index) => {
+                        if (prefixArray[index]) {
+                            prefixArray.forEach(prefix => {
+                                const input = document.getElementById(`${prefix}${prefixArray[index]}`);
+                                if (input && index < linkArray.length) {
+                                    input.value = linkArray[index];
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+
+            // Try to populate links
+            if (game.link_single_nsp && typeof selectedSingleNSPLinksOrder !== 'undefined') {
+                const linkArray = game.link_single_nsp.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedSingleNSPLinksOrder[index]) {
+                        const inputId = `inputINDapkNSPSingleLink${selectedSingleNSPLinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            if (game.link_single_xci && typeof selectedSingleXCILinksOrder !== 'undefined') {
+                const linkArray = game.link_single_xci.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedSingleXCILinksOrder[index]) {
+                        const inputId = `inputINDapkSingleLinkXCI${selectedSingleXCILinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            if (game.link_part_nsp && typeof selectedPartNSPLinksOrder !== 'undefined') {
+                const linkArray = game.link_part_nsp.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedPartNSPLinksOrder[index]) {
+                        const inputId = `inputINDapkNSPPart${selectedPartNSPLinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            if (game.link_part_xci && typeof selectedPartXCILinksOrder !== 'undefined') {
+                const linkArray = game.link_part_xci.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedPartXCILinksOrder[index]) {
+                        const inputId = `inputINDapkXCIPart${selectedPartXCILinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
+            // Scroll to form
+            const mainGenerator = document.getElementById("mainGenerator");
+            if (mainGenerator) {
+                mainGenerator.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Change button text to indicate editing mode
+            const submitButton = document.querySelector('button[onclick*="saveToSpreadsheet"]');
+            if (submitButton) {
+                submitButton.innerHTML = '<i class="fas fa-save"></i> Update Game';
+                submitButton.className = 'btn btn-warning';
+            }
+
+            showNotification('Data game berhasil dimuat untuk diedit!');
+            
+        } catch (error) {
+            console.error('Error in editGame:', error);
+            showNotification('Terjadi kesalahan saat memuat data untuk edit: ' + error.message);
+        }
+    }, 500); // Wait for modal to close
+}
+
+// Add event listener when database modal is shown
+document.addEventListener('DOMContentLoaded', function() {
+    // Listen for when database modal is shown
+    document.addEventListener('shown.bs.modal', function(event) {
+        if (event.target.id === 'databaseModal') {
+            addSearchEventListener();
+        }
+    });
+});
+
+
+// Theme switcher functionality
+const themeToggle = document.getElementById('theme-toggle');
+const themeLabel = document.querySelector('.theme-switch label span');
+const themeIcon = document.querySelector('.theme-switch i');
+
+themeToggle.addEventListener('change', function() {
+    if(this.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeLabel.textContent = 'Light Mode';
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeLabel.textContent = 'Dark Mode';
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+    }
+    
+    // Save preference to localStorage
+    localStorage.setItem('theme', this.checked ? 'dark' : 'light');
+});
+
+// Check for saved theme preference
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme === 'dark') {
+    themeToggle.checked = true;
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeLabel.textContent = 'Light Mode';
+    themeIcon.classList.remove('fa-moon');
+    themeIcon.classList.add('fa-sun');
+}
+// Global variables for storing selections
+let selectedSingleNSPLinksOrder = [];
+let selectedSingleXCILinksOrder = [];
+let selectedPartNSPLinksOrder = [];
+let selectedPartXCILinksOrder = [];
+let singleNSPLinkCount = 0;
+let singleXCILinkCount = 0;
+let partNSPLinkCount = 0;
+let partXCILinkCount = 0;
+
+// Function to show triple link type selection
+function showTripleLinkTypeSelection() {
+    singleNSPLinkCount = parseInt(document.getElementById("singleNSPLinkCount").value) || 0;
+    singleXCILinkCount = parseInt(document.getElementById("singleXCILinkCount").value) || 0;
+    partNSPLinkCount = parseInt(document.getElementById("partNSPLinkCount").value) || 0;
+    partXCILinkCount = parseInt(document.getElementById("partXCILinkCount").value) || 0;
+    
+    if (singleNSPLinkCount < 1 && singleXCILinkCount < 1 && partNSPLinkCount < 1 && partXCILinkCount < 1) {
+        showNotification("Masukkan minimal 1 link untuk salah satu tipe (Single NSP, Single XCI, Part NSP, atau Part XCI)");
+        return;
+    }
+    
+    if (singleNSPLinkCount > 10 || singleXCILinkCount > 10 || partNSPLinkCount > 10 || partXCILinkCount > 10) {
+        showNotification("Maksimal 10 link per kategori");
+        return;
+    }
+    
+    document.getElementById("tripleLinkTypeSelection").classList.remove("hidden");
+    
+    // Show/hide sections based on link count
+    document.getElementById("singleNSPLinkSection").style.display = singleNSPLinkCount > 0 ? "block" : "none";
+    document.getElementById("singleXCILinkSection").style.display = singleXCILinkCount > 0 ? "block" : "none";
+    document.getElementById("partNSPLinkSection").style.display = partNSPLinkCount > 0 ? "block" : "none";
+    document.getElementById("partXCILinkSection").style.display = partXCILinkCount > 0 ? "block" : "none";
+    
+    // Update instruction text
+    if (singleNSPLinkCount > 0) {
+        document.getElementById("selectedSingleNSPLinksContainer").innerHTML = 
+            `<p>Silahkan pilih tepat ${singleNSPLinkCount} jenis link untuk single NSP link</p>`;
+    }
+    
+    if (singleXCILinkCount > 0) {
+        document.getElementById("selectedSingleXCILinksContainer").innerHTML = 
+            `<p>Silahkan pilih tepat ${singleXCILinkCount} jenis link untuk single XCI link</p>`;
+    }
+    
+    if (partNSPLinkCount > 0) {
+        document.getElementById("selectedPartNSPLinksContainer").innerHTML = 
+            `<p>Silahkan pilih tepat ${partNSPLinkCount} jenis link untuk part NSP link</p>`;
+    }
+
+    if (partXCILinkCount > 0) {
+        document.getElementById("selectedPartXCILinksContainer").innerHTML = 
+            `<p>Silahkan pilih tepat ${partXCILinkCount} jenis link untuk part XCI link</p>`;
+    }
+    
+    // Add event listeners for checkboxes
+    addCheckboxEventListeners();
+}
+
+// Function to add event listeners to checkboxes
+function addCheckboxEventListeners() {
+    // Single NSP link checkboxes
+    document.querySelectorAll('input[name="singleNSPLinkType"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.dataset.checkedTime = Date.now();
+            }
+            updateSelectedLinksDisplay('singleNSP');
+        });
+    });
+    
+    // Single XCI link checkboxes
+    document.querySelectorAll('input[name="singleXCILinkType"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.dataset.checkedTime = Date.now();
+            }
+            updateSelectedLinksDisplay('singleXCI');
+        });
+    });
+    
+    // Part NSP link checkboxes
+    document.querySelectorAll('input[name="partNSPLinkType"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.dataset.checkedTime = Date.now();
+            }
+            updateSelectedLinksDisplay('partNSP');
+        });
+    });
+
+    // Part XCI link checkboxes
+    document.querySelectorAll('input[name="partXCILinkType"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.dataset.checkedTime = Date.now();
+            }
+            updateSelectedLinksDisplay('partXCI');
+        });
+    });
+}
+
+// Function to update selected links display with limit
+function updateSelectedLinksDisplay(type) {
+    let requiredCount, container, checkboxes, selectedLinksOrder;
+    
+    if (type === 'singleNSP') {
+        requiredCount = singleNSPLinkCount;
+        container = document.getElementById("selectedSingleNSPLinksContainer");
+        checkboxes = Array.from(document.querySelectorAll('input[name="singleNSPLinkType"]:checked'));
+        selectedLinksOrder = selectedSingleNSPLinksOrder;
+    } else if (type === 'singleXCI') {
+        requiredCount = singleXCILinkCount;
+        container = document.getElementById("selectedSingleXCILinksContainer");
+        checkboxes = Array.from(document.querySelectorAll('input[name="singleXCILinkType"]:checked'));
+        selectedLinksOrder = selectedSingleXCILinksOrder;
+    } else if (type === 'partNSP') {
+        requiredCount = partNSPLinkCount;
+        container = document.getElementById("selectedPartNSPLinksContainer");
+        checkboxes = Array.from(document.querySelectorAll('input[name="partNSPLinkType"]:checked'));
+        selectedLinksOrder = selectedPartNSPLinksOrder;
+    } else if (type === 'partXCI') {
+        requiredCount = partXCILinkCount;
+        container = document.getElementById("selectedPartXCILinksContainer");
+        checkboxes = Array.from(document.querySelectorAll('input[name="partXCILinkType"]:checked'));
+        selectedLinksOrder = selectedPartXCILinksOrder;
+    }
+    
+    // Update timestamp when checkbox is checked
+    checkboxes.forEach(checkbox => {
+        if (!checkbox.dataset.checkedTime) {
+            checkbox.dataset.checkedTime = Date.now();
+        }
+    });
+    
+    // Sort by checked time
+    checkboxes.sort((a, b) => {
+        const timeA = parseInt(a.dataset.checkedTime) || 0;
+        const timeB = parseInt(b.dataset.checkedTime) || 0;
+        return timeA - timeB;
+    });
+    
+    // Store the ordered selection
+    if (type === 'singleNSP') {
+        selectedSingleNSPLinksOrder = checkboxes.map(cb => cb.value);
+    } else if (type === 'singleXCI') {
+        selectedSingleXCILinksOrder = checkboxes.map(cb => cb.value);
+    } else if (type === 'partNSP') {
+        selectedPartNSPLinksOrder = checkboxes.map(cb => cb.value);
+    } else if (type === 'partXCI') {
+        selectedPartXCILinksOrder = checkboxes.map(cb => cb.value);
+    }
+    
+    let statusText = "";
+    if (checkboxes.length === 0) {
+        statusText = `Silahkan pilih ${requiredCount} jenis link untuk ${type} link`;
+    } else if (checkboxes.length < requiredCount) {
+        statusText = `Anda telah memilih ${checkboxes.length} dari ${requiredCount} jenis link yang diperlukan`;
+    } else if (checkboxes.length === requiredCount) {
+        statusText = `Anda telah memilih semua ${requiredCount} jenis link yang diperlukan`;
+    } else {
+        // Shouldn't happen because of the limit in the HTML
+        statusText = `Anda telah memilih ${checkboxes.length} jenis link (maksimal ${requiredCount})`;
+    }
+    
+    let html = `<h6>${statusText}</h6>`;
+    
+    if (checkboxes.length > 0) {
+        html += `<ol class="selected-links-list">`;
+        checkboxes.forEach((checkbox, index) => {
+            html += `<li>${index + 1}. ${checkbox.value}</li>`;
+        });
+        html += '</ol>';
+    }
+    
+    container.innerHTML = html;
+}
+
+// Function to proceed to generator
+function proceedToTripleGenerator() {
+    const totalSingleNSPSelected = selectedSingleNSPLinksOrder.length;
+    const totalSingleXCISelected = selectedSingleXCILinksOrder.length;
+    const totalPartNSPSelected = selectedPartNSPLinksOrder.length;
+    const totalPartXCISelected = selectedPartXCILinksOrder.length;
+    
+    // Validate selections - must match exactly
+    if (singleNSPLinkCount > 0) {
+        if (totalSingleNSPSelected === 0) {
+            showNotification("Pilih jenis link untuk Single NSP Link");
+            return;
+        }
+        if (totalSingleNSPSelected !== singleNSPLinkCount) {
+            showNotification(`Anda harus memilih tepat ${singleNSPLinkCount} jenis link untuk Single NSP Link (sekarang ${totalSingleNSPSelected})`);
+            return;
+        }
+    }
+    
+    if (singleXCILinkCount > 0) {
+        if (totalSingleXCISelected === 0) {
+            showNotification("Pilih jenis link untuk Single XCI Link");
+            return;
+        }
+        if (totalSingleXCISelected !== singleXCILinkCount) {
+            showNotification(`Anda harus memilih tepat ${singleXCILinkCount} jenis link untuk Single XCI Link (sekarang ${totalSingleXCISelected})`);
+            return;
+        }
+    }
+    
+    if (partNSPLinkCount > 0) {
+        if (totalPartNSPSelected === 0) {
+            showNotification("Pilih jenis link untuk Part NSP Link");
+            return;
+        }
+        if (totalPartNSPSelected !== partNSPLinkCount) {
+            showNotification(`Anda harus memilih tepat ${partNSPLinkCount} jenis link untuk Part NSP Link (sekarang ${totalPartNSPSelected})`);
+            return;
+        }
+    }
+
+    if (partXCILinkCount > 0) {
+        if (totalPartXCISelected === 0) {
+            showNotification("Pilih jenis link untuk Part XCI Link");
+            return;
+        }
+        if (totalPartXCISelected !== partXCILinkCount) {
+            showNotification(`Anda harus memilih tepat ${partXCILinkCount} jenis link untuk Part XCI Link (sekarang ${totalPartXCISelected})`);
+            return;
+        }
+    }
+    
+    // Hide selection screen and show main generator
+    document.getElementById("linkSelectionScreen").classList.add("hidden");
+    document.getElementById("mainGenerator").classList.remove("hidden");
+    
+    // Generate the link input fields
+    generateTripleLinkInputs();
+}
+
+// Function to generate triple link inputs
+function generateTripleLinkInputs() {
+    const container = document.getElementById("linkInputsContainer");
+    container.innerHTML = "";
+    
+    // Single INDapk Links
+    if (singleNSPLinkCount > 0 || singleXCILinkCount > 0) {
+        const divider = document.createElement("div");
+        divider.className = "section-divider";
+        divider.textContent = "INPUTAN SINGLE LINK VIA INDAPK";
+        container.appendChild(divider);
+        
+        // Generate Single NSP INDapk Links
+        if (singleNSPLinkCount > 0 && selectedSingleNSPLinksOrder.length > 0) {
+            selectedSingleNSPLinksOrder.slice(0, singleNSPLinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputINDapkNSPSingleLink${linkType}">Single ${linkType} NSP INDapk:</label>
+                    <input type="text" id="inputINDapkNSPSingleLink${linkType}" name="inputINDapkNSPSingleLink${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+        
+        // Generate Single XCI INDapk Links
+        if (singleXCILinkCount > 0 && selectedSingleXCILinksOrder.length > 0) {
+            selectedSingleXCILinksOrder.slice(0, singleXCILinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputINDapkSingleLinkXCI${linkType}">Single ${linkType} XCI INDapk:</label>
+                    <input type="text" id="inputINDapkSingleLinkXCI${linkType}" name="inputINDapkSingleLinkXCI${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+    }
+    
+    // Part INDapk Links
+    if (partNSPLinkCount > 0 || partXCILinkCount > 0) {
+        const divider = document.createElement("div");
+        divider.className = "section-divider";
+        divider.textContent = "INPUTAN PART LINK VIA INDAPK";
+        container.appendChild(divider);
+        
+        // Generate Part NSP INDapk Links
+        if (partNSPLinkCount > 0 && selectedPartNSPLinksOrder.length > 0) {
+            selectedPartNSPLinksOrder.slice(0, partNSPLinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputINDapkNSPPart${linkType}">PART ${linkType} NSP INDapk:</label>
+                    <input type="text" id="inputINDapkNSPPart${linkType}" name="inputINDapkNSPPart${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+
+        // Generate Part XCI INDapk Links
+        if (partXCILinkCount > 0 && selectedPartXCILinksOrder.length > 0) {
+            selectedPartXCILinksOrder.slice(0, partXCILinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputINDapkXCIPart${linkType}">PART ${linkType} XCI INDapk:</label>
+                    <input type="text" id="inputINDapkXCIPart${linkType}" name="inputINDapkXCIPart${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+    }
+    
+    // Single SEMAWUR Links
+    if (singleNSPLinkCount > 0 || singleXCILinkCount > 0) {
+        const divider = document.createElement("div");
+        divider.className = "section-divider";
+        divider.textContent = "INPUTAN SINGLE LINK VIA SEMAWUR";
+        container.appendChild(divider);
+        
+        // Generate Single NSP SEMAWUR Links
+        if (singleNSPLinkCount > 0 && selectedSingleNSPLinksOrder.length > 0) {
+            selectedSingleNSPLinksOrder.slice(0, singleNSPLinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputNSPSingleLink${linkType}">Single ${linkType} NSP SEMAWUR:</label>
+                    <input type="text" id="inputNSPSingleLink${linkType}" name="inputNSPSingleLink${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+        
+        // Generate Single XCI SEMAWUR Links
+        if (singleXCILinkCount > 0 && selectedSingleXCILinksOrder.length > 0) {
+            selectedSingleXCILinksOrder.slice(0, singleXCILinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputSingleLinkXCI${linkType}">Single ${linkType} XCI SEMAWUR:</label>
+                    <input type="text" id="inputSingleLinkXCI${linkType}" name="inputSingleLinkXCI${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+    }
+    
+    // Part SEMAWUR Links
+    if (partNSPLinkCount > 0 || partXCILinkCount > 0) {
+        const divider = document.createElement("div");
+        divider.className = "section-divider";
+        divider.textContent = "INPUTAN PART LINK VIA SEMAWUR";
+        container.appendChild(divider);
+        
+        // Generate Part NSP SEMAWUR Links
+        if (partNSPLinkCount > 0 && selectedPartNSPLinksOrder.length > 0) {
+            selectedPartNSPLinksOrder.slice(0, partNSPLinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputSEMAWURNSPPart${linkType}">PART ${linkType} NSP SEMAWUR:</label>
+                    <input type="text" id="inputSEMAWURNSPPart${linkType}" name="inputSEMAWURNSPPart${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+
+        // Generate Part XCI SEMAWUR Links
+        if (partXCILinkCount > 0 && selectedPartXCILinksOrder.length > 0) {
+            selectedPartXCILinksOrder.slice(0, partXCILinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputSEMAWURXCIPart${linkType}">PART ${linkType} XCI SEMAWUR:</label>
+                    <input type="text" id="inputSEMAWURXCIPart${linkType}" name="inputSEMAWURXCIPart${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+    }
+}
+
+
+
+function clearCode() {
+    document.getElementById("result").innerText = "";
+    document.getElementById("myTextarea").value = "";
+    
+    // Hapus semua input kecuali END 1, END 2, dan END 3
+    const inputsToClear = document.querySelectorAll(`
+        input:not(#inputEND1):not(#inputEND2):not(#inputEND3),
+        textarea
+    `);
+    
+    inputsToClear.forEach(input => {
+        input.value = '';
+    });
+}
+
+function copyCode() {
+    const resultDiv = document.getElementById("result");
+    const generatedHtml = resultDiv.innerText;
+
+    if (generatedHtml.trim() === "") {
+        showNotification("Maaf Codingannya Belum Dibuat");
+        return;
+    }
+
+    const tempTextarea = document.createElement("textarea");
+    tempTextarea.value = generatedHtml;
+    document.body.appendChild(tempTextarea);
+    tempTextarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempTextarea); 
+    showNotification("Codingan Berhasil Disalin!");
+}
+
+const textarea = document.getElementById('myTextarea');
+const form = document.getElementById('myForm');
+
+// Textarea event listener dengan urutan yang benar
+textarea.addEventListener('input', () => {
+    const text = textarea.value.trim();
+    const values = text.split('\n').filter(line => line.trim() !== '');
+    
+    // Isi field utama secara eksplisit
+    if (values.length > 0) document.getElementById("inputName").value = values[0];
+    if (values.length > 1) document.getElementById("inputSingleNSPSize").value = values[1];
+    if (values.length > 2) document.getElementById("inputSingleXCISize").value = values[2];
+    if (values.length > 3) document.getElementById("inputCategory").value = values[3];
+    if (values.length > 4) document.getElementById("inputGameID").value = values[4];
+    if (values.length > 5) document.getElementById("inputRegion").value = values[5];
+    if (values.length > 6) document.getElementById("inputLanguage").value = values[6];
+    
+    // Isi link inputs mulai dari index 7
+    const linkInputs = document.querySelectorAll('#linkInputsContainer input[type="text"]');
+    for (let i = 0; i < linkInputs.length && (i + 7) < values.length; i++) {
+        linkInputs[i].value = values[i + 7];
+    }
+    
+    // Isi END fields jika ada nilai lebih
+    if (values.length > 7 + linkInputs.length) {
+        document.getElementById("inputEND1").value = values[7 + linkInputs.length] || "END1";
+    }
+    if (values.length > 8 + linkInputs.length) {
+        document.getElementById("inputEND2").value = values[8 + linkInputs.length] || "END1";
+    }
+    if (values.length > 9 + linkInputs.length) {
+        document.getElementById("inputEND3").value = values[9 + linkInputs.length] || "END1";
+    }
+});
+
+function generateCode() {
+    // Get values from game form
+    const inputName = document.getElementById("inputName").value;
+    const inputSingleNSPSize = document.getElementById("inputSingleNSPSize").value;
+    const inputSingleXCISize = document.getElementById("inputSingleXCISize").value;
+    const inputCategory = document.getElementById("inputCategory").value;
+    const inputGameID = document.getElementById("inputGameID").value;
+    const inputRegion = document.getElementById("inputRegion").value;
+    const inputLanguage = document.getElementById("inputLanguage").value;
+    const inputEND1 = document.getElementById("inputEND1").value;
+    const inputEND2 = document.getElementById("inputEND2").value;
+    const inputEND3 = document.getElementById("inputEND3").value;
+
+    // Create arrays to hold the link values
+    const indapkNspSingleLinks = [];
+    const indapkXciSingleLinks = [];
+    const indapkNspPartLinks = [];
+    const indapkXciPartLinks = [];
+    const semawurNspSingleLinks = [];
+    const semawurXciSingleLinks = [];
+    const semawurNspPartLinks = [];
+    const semawurXciPartLinks = [];
+
+    // Collect single NSP INDapk link values
+    selectedSingleNSPLinksOrder.slice(0, singleNSPLinkCount).forEach(type => {
+        const nspSingleLink = document.getElementById(`inputINDapkNSPSingleLink${type}`)?.value || "";
+        if (nspSingleLink) indapkNspSingleLinks.push({type, link: nspSingleLink});
+    });
+
+    // Collect single XCI INDapk link values
+    selectedSingleXCILinksOrder.slice(0, singleXCILinkCount).forEach(type => {
+        const xciSingleLink = document.getElementById(`inputINDapkSingleLinkXCI${type}`)?.value || "";
+        if (xciSingleLink) indapkXciSingleLinks.push({type, link: xciSingleLink});
+    });
+
+    // Collect part NSP INDapk link values
+    selectedPartNSPLinksOrder.slice(0, partNSPLinkCount).forEach(type => {
+        const nspPartLink = document.getElementById(`inputINDapkNSPPart${type}`)?.value || "";
+        if (nspPartLink) indapkNspPartLinks.push({type, link: nspPartLink});
+    });
+
+    // Collect part XCI INDapk link values
+    selectedPartXCILinksOrder.slice(0, partXCILinkCount).forEach(type => {
+        const xciPartLink = document.getElementById(`inputINDapkXCIPart${type}`)?.value || "";
+        if (xciPartLink) indapkXciPartLinks.push({type, link: xciPartLink});
+    });
+
+    // Collect single NSP SEMAWUR link values
+    selectedSingleNSPLinksOrder.slice(0, singleNSPLinkCount).forEach(type => {
+        const semawurNspLink = document.getElementById(`inputNSPSingleLink${type}`)?.value || "";
+        if (semawurNspLink) semawurNspSingleLinks.push({type, link: semawurNspLink});
+    });
+
+    // Collect single XCI SEMAWUR link values
+    selectedSingleXCILinksOrder.slice(0, singleXCILinkCount).forEach(type => {
+        const semawurXciLink = document.getElementById(`inputSingleLinkXCI${type}`)?.value || "";
+        if (semawurXciLink) semawurXciSingleLinks.push({type, link: semawurXciLink});
+    });
+
+    // Collect part NSP SEMAWUR link values
+    selectedPartNSPLinksOrder.slice(0, partNSPLinkCount).forEach(type => {
+        const semawurNspPartLink = document.getElementById(`inputSEMAWURNSPPart${type}`)?.value || "";
+        if (semawurNspPartLink) semawurNspPartLinks.push({type, link: semawurNspPartLink});
+    });
+
+    // Collect part XCI SEMAWUR link values
+    selectedPartXCILinksOrder.slice(0, partXCILinkCount).forEach(type => {
+        const semawurXciPartLink = document.getElementById(`inputSEMAWURXCIPart${type}`)?.value || "";
+        if (semawurXciPartLink) semawurXciPartLinks.push({type, link: semawurXciPartLink});
+    });
+
+    function generateDownloadLinksSection(links, size) {
+    let html = '';
+    
+    // Pastikan kita menggunakan urutan yang sama dengan yang dipilih user
+    const orderedLinks = [];
+    const selectedOrder = links === indapkNspSingleLinks ? selectedSingleNSPLinksOrder :
+                         links === indapkXciSingleLinks ? selectedSingleXCILinksOrder :
+                         links === indapkNspPartLinks ? selectedPartNSPLinksOrder :
+                         links === indapkXciPartLinks ? selectedPartXCILinksOrder :
+                         links === semawurNspSingleLinks ? selectedSingleNSPLinksOrder :
+                         links === semawurXciSingleLinks ? selectedSingleXCILinksOrder :
+                         links === semawurNspPartLinks ? selectedPartNSPLinksOrder :
+                         selectedPartXCILinksOrder;
+    
+    // Urutkan link sesuai dengan urutan yang dipilih user
+    selectedOrder.forEach(linkType => {
+        const foundLink = links.find(link => link.type === linkType);
+        if (foundLink) {
+            orderedLinks.push(foundLink);
+        }
+    });
+    
+    // Generate HTML dengan urutan yang benar
+    orderedLinks.forEach(item => {
+        html += `
+            <div class="download-link">
+                <a href="${item.link}" rel="nofollow">${item.type}</a>
+                <span class="file-size">(${size})</span>
+            </div>
+        `;
+    });
+    
+    return html;
+}
+    // Create more complete HTML string with template
+    let generatedHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Download</title>
+<style>
+/* Theme Variables */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --dark-color: #2c3e50;
+  --light-color: #ecf0f1;
+  --background-color: #f0f5f9;
+  --text-color: #333;
+  --card-bg: white;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --border-radius: 15px;
+  --section-heading-bg: #e3f2fd;
+  --transition-time: 0.3s;
+}
+
+/* Dark Theme Variables */
+.dark-theme {
+  --primary-color: #3a86ff;
+  --secondary-color: #8338ec;
+  --dark-color: #121212;
+  --light-color: #f5f5f5;
+  --background-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --card-bg: #2d2d2d;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --section-heading-bg: #333;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 20px;
+  transition: all var(--transition-time) ease;
+}
+
+/* Layout Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Theme Switcher */
+.theme-switcher-container {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  margin-left: auto;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(145deg, var(--dark-color), #1a1a2e);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-radius: 34px;
+  box-shadow: 
+    0 2px 5px rgba(0, 0, 0, 0.2),
+    inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.slider:before {
+  position: absolute;
+  content: "🌙";
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  bottom: 3px;
+  background: linear-gradient(145deg, #f5f5f5, #ffffff);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  z-index: 2;
+  box-shadow: 
+    0 2px 3px rgba(0, 0, 0, 0.2),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.slider:hover {
+  box-shadow: 
+    0 0 10px rgba(58, 134, 255, 0.5),
+    inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+input:checked + .slider {
+  background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+}
+
+input:checked + .slider:before {
+  content: "☀️";
+  transform: translateX(30px);
+  background: linear-gradient(145deg, #fffb00, #ffffff);
+  color: #ff9500;
+}
+
+.dark-theme .slider {
+  animation: pulsate 2s infinite alternate;
+}
+
+@keyframes pulsate {
+  0% {
+    box-shadow: 
+      0 0 5px rgba(58, 134, 255, 0.3),
+      inset 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    box-shadow: 
+      0 0 15px rgba(58, 134, 255, 0.6),
+      inset 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Main Container Styling */
+.tabs {
+  max-width: 100%;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 30px var(--shadow-color);
+  overflow: hidden;
+  transition: all var(--transition-time) ease;
+}
+
+/* Tabs Styling */
+.tab-links {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--dark-color);
+}
+
+.tab-links li {
+  flex: 1 0 auto;
+  text-align: center;
+  min-width: 80px;
+}
+
+.tab-links a {
+  display: block;
+  padding: 15px 5px;
+  color: var(--light-color);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all var(--transition-time) ease;
+}
+
+.tab-links li.active a, 
+.tab-links a:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Tab Content */
+.tab-content {
+  padding: 20px;
+}
+
+.tab {
+  display: none;
+}
+
+.tab.active {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Info Box Styling */
+.info-box {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--primary-color);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all var(--transition-time) ease;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  line-height: 1.7;
+}
+
+.info-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px var(--shadow-color);
+}
+
+.info-box a {
+  color: var(--primary-color);
+  font-weight: bold;
+  text-decoration: none;
+  transition: all var(--transition-time) ease;
+}
+
+.info-box a:hover {
+  text-decoration: underline;
+  color: var(--secondary-color);
+}
+
+/* Game Info Styling */
+.game-details {
+  margin: 15px 0;
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 5px 15px var(--shadow-color);
+  line-height: 1.8;
+}
+
+.game-details br {
+  margin-bottom: 8px;
+  display: block;
+  content: "";
+}
+
+/* Section Headings */
+.section-heading {
+  background-color: var(--section-heading-bg);
+  border: 1px solid var(--primary-color);
+  padding: 12px;
+  text-align: center;
+  margin: 20px 0 15px 0;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--dark-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+}
+
+/* Game Title */
+.game-title {
+  background-color: var(--dark-color);
+  color: var(--light-color);
+  border-left: 5px solid var(--primary-color);
+  border-radius: 0 10px 10px 0;
+  padding: 15px;
+  text-align: left;
+  margin-bottom: 15px;
+  font-size: 18px;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  word-break: break-word;
+}
+
+/* Download Links */
+.download-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 0;
+}
+
+.download-button {
+  display: inline-block;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 30px;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+}
+
+.download-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px var(--shadow-color);
+}
+
+.download-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.download-button:hover::before {
+  left: 100%;
+}
+
+/* Download Links Grid */
+.download-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.download-link {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  transition: all var(--transition-time) ease;
+  box-shadow: 0 2px 5px var(--shadow-color);
+  border: 1px solid var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.download-link:hover {
+  background-color: var(--section-heading-bg);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.download-link a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  display: block;
+  word-break: break-all;
+}
+
+.download-link a:hover {
+  color: var(--secondary-color);
+}
+
+.file-size {
+  font-size: 12px;
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Password Section */
+.password-image {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.password-image img {
+  border-radius: 8px;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--primary-color);
+}
+
+/* Donation & Download Section Styles */
+.donation-section {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 25px;
+  margin: 25px 0;
+  box-shadow: 0 8px 20px var(--shadow-color);
+  border: 2px solid var(--primary-color);
+  transition: all var(--transition-time) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.donation-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px var(--shadow-color);
+}
+
+.donation-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+}
+
+.donation-section h3, 
+.donation-section h4 {
+  color: var(--primary-color);
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px dashed var(--primary-color);
+  font-size: 1.4em;
+  position: relative;
+}
+
+.donation-section h3::after,
+.donation-section h4::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 30%;
+  height: 2px;
+  background: var(--secondary-color);
+}
+
+.donation-section p {
+  margin: 15px 0;
+  line-height: 1.7;
+  position: relative;
+  padding-left: 25px;
+}
+
+.donation-section p::before {
+  content: '•';
+  color: var(--secondary-color);
+  font-weight: bold;
+  font-size: 1.5em;
+  position: absolute;
+  left: 0;
+  top: -3px;
+}
+
+.donation-section strong {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.donation-section a {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition-time) ease;
+  background-color: rgba(58, 134, 255, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.donation-section a:hover {
+  color: var(--secondary-color);
+  background-color: rgba(131, 56, 236, 0.1);
+  border-color: var(--secondary-color);
+  text-decoration: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .tab-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .tab-links li {
+    flex: 1 0 50%;
+  }
+  
+  .tab-links a {
+    padding: 12px 5px;
+    font-size: 13px;
+  }
+  
+  .download-links {
+    grid-template-columns: 1fr;
+  }
+  
+  .download-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    width: 100%;
+  }
+  
+  .donation-section {
+    padding: 20px 15px;
+  }
+  
+  .donation-section h3, 
+  .donation-section h4 {
+    font-size: 1.2em;
+  }
+  
+  .donation-section p {
+    padding-left: 20px;
+    font-size: 0.95em;
+  }
+  
+  .game-details, 
+  .info-box {
+    padding: 15px;
+  }
+  
+  .section-heading {
+    font-size: 16px;
+    padding: 10px;
+  }
+  
+  .game-title {
+    font-size: 16px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tab-links li {
+    flex: 1 0 100%;
+  }
+  
+  .tab-links a {
+    padding: 10px 5px;
+  }
+  
+  .download-button {
+    font-size: 15px;
+    padding: 10px 15px;
+  }
+  
+  .tab-content {
+    padding: 15px;
+  }
+  
+  .info-box, 
+  .game-details {
+    padding: 12px;
+  }
+  
+  .donation-section {
+    padding: 15px 10px;
+  }
+  
+  .donation-section h3,
+  .donation-section h4 {
+    font-size: 1.1em;
+  }
+}
+
+/* Animation Enhancements */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.download-button:active {
+  animation: pulse 0.3s ease;
+}
+
+/* Accessibility Improvements */
+a:focus,
+button:focus,
+input:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Loading State */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Tooltip Styles */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: var(--dark-color);
+  color: var(--light-color);
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+
+/* ========= VIDEO TUTORIAL STYLING ========= */
+.wp-block-video.aligncenter {
+max-width: 800px;
+margin: 30px auto;
+border-radius: 12px;
+overflow: hidden;
+box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+background: #000;
+position: relative;
+}
+
+.wp-block-video.aligncenter video {
+width: 100%;
+height: auto;
+display: block;
+aspect-ratio: 16/9;
+}
+
+.wp-element-caption {
+text-align: center;
+margin-top: 15px;
+font-size: 1.1rem;
+color: var(--text-color);
+padding: 0 20px;
+}
+
+.wp-element-caption strong {
+color: var(--primary-color);
+font-weight: 600;
+}
+
+/* Video Controls Styling */
+.wp-block-video.aligncenter video::-webkit-media-controls-panel {
+background: rgba(0,0,0,0.7);
+}
+
+.wp-block-video.aligncenter video::-webkit-media-controls-play-button,
+.wp-block-video.aligncenter video::-webkit-media-controls-volume-slider {
+filter: invert(1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+.wp-block-video.aligncenter {
+margin: 20px auto;
+border-radius: 8px;
+}
+
+.wp-element-caption {
+font-size: 1rem;
+}
+}
+
+@media (max-width: 480px) {
+.wp-block-video.aligncenter {
+margin: 15px auto;
+border-radius: 6px;
+}
+
+.wp-element-caption {
+font-size: 0.9rem;
+padding: 0 10px;
+}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<ul class="tab-links">
+  <li class="active"><a href="#tab1">INFO</a></li>
+  <li><a href="#tab2">NSP</a></li>
+  <li><a href="#tab3">XCI</a></li>
+  <li><a href="#tab4">Tutorial</a></li>
+  <!-- Theme Switcher -->
+  <li class="theme-switcher-container">
+    <label class="switch tooltip" data-tooltip="Toggle Dark Mode">
+      <input type="checkbox" id="theme-toggle">
+      <span class="slider"></span>
+      <span class="tooltiptext">Toggle Dark Mode</span>
+    </label>
+  </li>
+</ul>
+
+<div class="tab-content">
+<div id="tab1" class="tab active">
+<div class="info-box">
+Join Telegram : <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a>
+</div>
+
+<div class="game-details">
+<strong>Nama Game:</strong> ${inputName}<br>
+<strong>Ukuran Single NSP:</strong> ${inputSingleNSPSize}<br>
+<strong>Ukuran Single XCI:</strong> ${inputSingleXCISize} [XCI UPDATE + DLC]<br>
+<strong>Category:</strong> ${inputCategory}<br>
+<strong>Game ID:</strong> ${inputGameID}<br>
+<strong>Format:</strong> NSP BASE GAME<br>
+<strong>Format:</strong> XCI UPDATE + DLC<br>
+<strong>Region:</strong> ${inputRegion}<br>
+<strong>Language:</strong> ${inputLanguage}<br>
+<strong>Emulator:</strong> Eggns/Skyline/Strato<br>
+<strong>Game Switch Lainnya:</strong> <a href="https://indapk.com/game-switch/" rel="nofollow">Klik Disini</a><br>
+<strong>Request Game:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik disini</a><br>
+<strong>Laporkan Link Rusak:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik disini</a>
+</div>
+</div>
+
+<div id="tab2" class="tab">
+<div class="info-box">
+<span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Jika ingin mendownload file part maka file part tersebut harus lengkap !!!
+<br><br>
+<div class="section-heading">
+<strong>Gunakan Bot Telegram untuk download tanpa iklan</strong>
+</div>
+<br>
+<strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">@INDapkBot</a><br>
+<strong>Telegram Bot Web:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">@WebINDapkBot</a><br>
+<strong>ID tiktok:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">@INDapk</a><br>
+<strong>Telegram:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">Klik Disini</a> (Wajib Join)
+<br><br>
+Follow Facebook dan IG Mimin juga dong (Optional)<br>
+<strong>Instagram:</strong> <a href="https://www.instagram.com/indapk" rel="nofollow">@INDapk</a><br>
+<strong>Facebook:</strong> <a href="https://www.facebook.com/IDNApk" rel="nofollow">@INDapk</a>
+<br><br>
+<span style="color: var(--primary-color);"><strong>Rekomendasi Download:</strong></span> Google Drive, Mediafire, Pixeldrain, Qiwi (Jika Google Drive Terkena Limit, Gunakan Link Alternatif Lain)<br>
+<span style="color: var(--primary-color);"><strong>Password:</strong></span> indapk
+</div>
+
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="password-image">
+<img alt="Password" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnMnh52UxSnW5OS41N5rguqSspGatcqhG2sKoyhOzsfuUWz9CopJTq8YhTrvr067UsXVnY4r5RUCFb5n2meOK3a_qA88Yw7J_-f2OIW7Ji28sU0E90v3AlkaVSEpyHdSrAkZ73_-vl_De8uSbpTLhN33VygUpFUt0_ImFP_-Nf0sU6jXI2trggYymstwQ/s400/Password.png"/>
+</div>`;
+
+    // NSP Single Links sections
+    if (singleNSPLinkCount > 0) {
+        generatedHtml += `
+<div class="info-box">
+<div class="section-heading"> 
+<strong>DOWNLOAD SINGLE FILE</strong> 
+</div> 
+</div>
+<div class="section-heading">
+<strong>Format NSP SINGLE Base Via INDapk Safelink</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via INDapk Safelink (Tanpa Ekstrak)
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="download-links">
+${generateDownloadLinksSection(indapkNspSingleLinks, inputSingleNSPSize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>
+<br><br>
+<div class="section-heading">
+<strong>Format NSP SINGLE Base Via (SEMAWUR ADS)</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via (SEMAWUR ADS) (Tanpa Ekstrak)
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+<div class="download-links">
+${generateDownloadLinksSection(semawurNspSingleLinks, inputSingleNSPSize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>`;
+    }
+
+    // NSP Part Links sections
+    if (partNSPLinkCount > 0) {
+        generatedHtml += `
+<div class="section-heading">
+<strong>Cara Download File</strong>
+</div>
+Tutorial Download <a href="https://t.me/INDapkBot" rel="nofollow">Klik Disini/Click Here</a>
+<div class="info-box" style="margin-top: 20px;">
+Jangan lupa join telegramnya, biar gak ketinggalan info seputar game <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a>
+</div>
+<br><br>
+<!-- NSP Part Format - First INDapk Safelink section --> 
+<div class="info-box">
+<div class="section-heading"> 
+<strong>DOWNLOAD PART FILE</strong> 
+</div> 
+</div>
+<div class="section-heading"> 
+<strong>Format NSP PART BASE GAME Via INDapk Safelink</strong> 
+</div> 
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via INDapk Safelink (Harus Ekstrak)
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button"target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="download-links">
+${generateDownloadLinksSection(indapkNspPartLinks, inputSingleNSPSize)}
+<div class="download-link password">
+<span class="password-text"><strong>Password:</strong> indapk</span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>
+<br><br>
+<!-- NSP Part Format - Semawur section -->
+<div class="section-heading">
+<strong>Format NSP PART BASE GAME Via (SEMAWUR ADS)</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via (SEMAWUR ADS) (Harus Ekstrak)
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+<div class="download-links">
+${generateDownloadLinksSection(semawurNspPartLinks, inputSingleNSPSize)}
+<div class="download-link password">
+<span class="password-text"><strong>Password:</strong> indapk</span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>`;
+    }
+
+    generatedHtml += `
+</div>
+
+<div id="tab3" class="tab">
+<div class="info-box">
+<span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Jika ingin mendownload file part maka file part tersebut harus lengkap !!!
+<br><br>
+<div class="section-heading">
+<strong>Gunakan Bot Telegram untuk download tanpa iklan</strong>
+</div>
+<br>
+<strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">@INDapkBot</a><br>
+<strong>Telegram Bot Web:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">@WebINDapkBot</a><br>
+<strong>ID tiktok:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">@INDapk</a><br>
+<strong>Telegram:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">Klik Disini</a> (Wajib Join)
+<br><br>
+Follow Facebook dan IG Mimin juga dong (Optional)<br>
+<strong>Instagram:</strong> <a href="https://www.instagram.com/indapk" rel="nofollow">@INDapk</a><br>
+<strong>Facebook:</strong> <a href="https://www.facebook.com/IDNApk" rel="nofollow">@INDapk</a>
+<br><br>
+<span style="color: var(--primary-color);"><strong>Rekomendasi Download:</strong></span> Google Drive, Mediafire, Pixeldrain, Qiwi (Jika Google Drive Terkena Limit, Gunakan Link Alternatif Lain)<br>
+<span style="color: var(--primary-color);"><strong>Password:</strong></span> indapk
+</div>
+
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="password-image">
+<img alt="Password" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnMnh52UxSnW5OS41N5rguqSspGatcqhG2sKoyhOzsfuUWz9CopJTq8YhTrvr067UsXVnY4r5RUCFb5n2meOK3a_qA88Yw7J_-f2OIW7Ji28sU0E90v3AlkaVSEpyHdSrAkZ73_-vl_De8uSbpTLhN33VygUpFUt0_ImFP_-Nf0sU6jXI2trggYymstwQ/s400/Password.png"/>
+</div>`;
+
+    // XCI Single Links sections
+    if (singleXCILinkCount > 0) {
+        generatedHtml += `
+<div class="info-box">
+<div class="section-heading"> 
+<strong>DOWNLOAD SINGLE FILE</strong> 
+</div> 
+</div>
+<div class="section-heading">
+<strong>Format XCI SINGLE UPDATE + DLC Via INDapk Safelink</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via INDapk Safelink (Tanpa Ekstrak)
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="download-links">
+${generateDownloadLinksSection(indapkXciSingleLinks, inputSingleXCISize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>
+<br><br>
+<div class="section-heading">
+<strong>Format XCI SINGLE UPDATE + DLC Via (SEMAWUR ADS)</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via (SEMAWUR ADS) (Tanpa Ekstrak)
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+<div class="download-links">
+${generateDownloadLinksSection(semawurXciSingleLinks, inputSingleXCISize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>`;
+    }
+
+    // XCI Part Links sections
+    if (partXCILinkCount > 0) {
+        generatedHtml += `
+<div class="section-heading">
+<strong>Cara Download File</strong>
+</div>
+Tutorial Download <a href="https://t.me/INDapkBot" rel="nofollow">Klik Disini/Click Here</a>
+<div class="info-box" style="margin-top: 20px;">
+Jangan lupa join telegramnya, biar gak ketinggalan info seputar game <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a>
+</div>
+<br><br>
+<!-- XCI Part Format - First INDapk Safelink section --> 
+<div class="info-box">
+<div class="section-heading"> 
+<strong>DOWNLOAD PART FILE</strong> 
+</div> 
+</div>
+<div class="section-heading"> 
+<strong>Format XCI PART UPDATE + DLC Via INDapk Safelink</strong> 
+</div> 
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via INDapk Safelink (Harus Ekstrak)
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="download-links">
+${generateDownloadLinksSection(indapkXciPartLinks, inputSingleXCISize)}
+<div class="download-link password">
+<span class="password-text"><strong>Password:</strong> indapk</span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>
+<br><br>
+<!-- XCI Part Format - Semawur section -->
+<div class="section-heading">
+<strong>Format XCI PART UPDATE + DLC Via (SEMAWUR ADS)</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via No Ads (Harus Ekstrak)
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+<div class="download-links">
+${generateDownloadLinksSection(semawurXciPartLinks, inputSingleXCISize)}
+<div class="download-link password">
+<span class="password-text"><strong>Password:</strong> indapk</span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>`;
+    }
+
+    generatedHtml += `
+</div>
+
+
+<div id="tab4" class="tab">
+
+
+<div class="donation-section">
+<h3>Tutorial Download Game:</h3>
+<figure class="wp-block-video aligncenter"><video controls loop muted src="https://indapk.com/wp-content/uploads/2025/05/Cara-Download-Via-INDapk-Safelink.mp4"></video><figcaption class="wp-element-caption"><strong>Tutorial Download Game</strong></figcaption></figure>
+</div>
+
+<div class="donation-section">
+<h3>Cara Download:</h3>
+<p>Cara downloadnya ada di Telegram Dibawah ini:</p>
+<p><strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Klik Disini</a></p>
+<p>Jika Web bermasalah, beralih kesini:</p>
+<p><strong>Telegram Web Bot:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">Klik Disini</a></p>
+</div>
+
+
+<div class="donation-section">
+<h3>Download Tutorial:</h3>
+<p>The download instructions are available on Telegram below:</p>
+<p><strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">Click Here</a></p>
+<p>If the website has issues, switch to this option:</p>
+<p><strong>Telegram Web Bot:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">Click Here</a></p>
+</div>
+
+
+<div class="donation-section">
+<h3>Donasi:</h3>
+<p><strong>Saweria:</strong> <a href="https://saweria.co/indapk" rel="nofollow">Klik Disini</a></p>
+<p><strong>Paypal:</strong> <a href="https://www.paypal.me/indapk" rel="nofollow">Klik Disini</a></p>
+<p><strong>Mandiri:</strong> 1740010499515 [Alfina Febrianty]</p>
+<p><strong>BNI:</strong> 1211254450 [Alfina Febrianty]</p>
+<p><strong>Gopay:</strong> 082286344446 [AnggaPutraJN]</p>
+<p><strong>Dana:</strong> 082286344446 [A.P JATI NEGARA MA]</p>
+<p><strong>Shopeepay:</strong> 082286344446 [AnggaPutraJN]</p>
+</div>
+<div class="info-box">
+<p>Jika ada yang ingin ditanyakan silahkan DM ke <a href="https://t.me/INDapk" rel="nofollow">@INDapk</a></p>
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+// Simple tab switching functionality
+document.querySelectorAll('.tab-links a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    // Remove active class from all tabs and tab links
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-links li').forEach(li => li.classList.remove('active'));
+
+    // Add active class to current tab and tab link
+    const targetId = this.getAttribute('href').substring(1);
+    document.getElementById(targetId).classList.add('active');
+    this.closest('li').classList.add('active');
+    
+    // Smooth scroll to top of tab content
+    document.getElementById(targetId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// Theme switcher functionality
+const themeToggle = document.getElementById('theme-toggle');
+const currentTheme = localStorage.getItem('theme');
+
+if (currentTheme) {
+  document.body.classList.add(currentTheme);
+  if (currentTheme === 'dark-theme') {
+    themeToggle.checked = true;
+  }
+}
+
+themeToggle.addEventListener('change', function() {
+  if (this.checked) {
+    document.body.classList.add('dark-theme');
+    localStorage.setItem('theme', 'dark-theme');
+  } else {
+    document.body.classList.remove('dark-theme');
+    localStorage.setItem('theme', '');
+  }
+});
+
+// Add loading state to buttons when clicked
+document.querySelectorAll('.download-button').forEach(button => {
+  button.addEventListener('click', function() {
+    this.classList.add('loading');
+    setTimeout(() => {
+      this.classList.remove('loading');
+    }, 1500);
+  });
+});
+
+// Responsive adjustments on window resize
+function handleResize() {
+  const tabs = document.querySelector('.tab-links');
+  if (window.innerWidth < 768) {
+    tabs.classList.add('mobile-view');
+  } else {
+    tabs.classList.remove('mobile-view');
+  }
+}
+
+window.addEventListener('resize', handleResize);
+handleResize();
+${inputEND1}
+${inputEND2}
+${inputEND3}
+`;
+
+    // Display the generated HTML
+    document.getElementById("result").innerText = generatedHtml;
+}
+
+//SEttingan Save and load
+    // Fungsi untuk menyimpan settingan
+function saveLinkSettings() {
+    // Validasi dulu apakah sudah memilih sesuai jumlah yang ditentukan
+    if ((singleNSPLinkCount > 0 && selectedSingleNSPLinksOrder.length !== singleNSPLinkCount) || 
+        (singleXCILinkCount > 0 && selectedSingleXCILinksOrder.length !== singleXCILinkCount) || 
+        (partNSPLinkCount > 0 && selectedPartNSPLinksOrder.length !== partNSPLinkCount) ||
+        (partXCILinkCount > 0 && selectedPartXCILinksOrder.length !== partXCILinkCount)) {
+        showNotification("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
+        return;
+    }
+
+    // Tampilkan modal input nama settingan
+    const modal = new bootstrap.Modal(document.getElementById('saveSettingsModal'));
+    modal.show();
+}
+
+function confirmSaveSettings() {
+    const settingsName = document.getElementById('settingsName').value.trim();
+    if (!settingsName) {
+        showNotification("Harap isi nama settingan");
+        return;
+    }
+
+    // Buat objek settingan
+    const settings = {
+        name: settingsName,
+        singleNSPLinkCount: singleNSPLinkCount,
+        singleXCILinkCount: singleXCILinkCount,
+        partNSPLinkCount: partNSPLinkCount,
+        partXCILinkCount: partXCILinkCount,
+        singleNSPLinks: selectedSingleNSPLinksOrder,
+        singleXCILinks: selectedSingleXCILinksOrder,
+        partNSPLinks: selectedPartNSPLinksOrder,
+        partXCILinks: selectedPartXCILinksOrder,
+        timestamp: new Date().toISOString()
+    };
+
+    // Ambil settingan yang sudah ada dari localStorage
+    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2') || '[]');
+    
+    // Tambahkan settingan baru
+    savedSettings.push(settings);
+    
+    // Simpan ke localStorage
+    localStorage.setItem('linkSettingsV2', JSON.stringify(savedSettings));
+    
+    // Tutup modal dan reset input
+    document.getElementById('settingsName').value = '';
+    bootstrap.Modal.getInstance(document.getElementById('saveSettingsModal')).hide();
+    
+    showNotification(`Settingan "${settingsName}" berhasil disimpan!`);
+}
+
+// Ganti nama fungsi dari loadLinkSettings() menjadi loadLinkSettingsModal()
+function loadLinkSettingsModal() {
+    // Ambil settingan dari localStorage
+    const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2') || []);
+    
+    if (savedSettings.length === 0) {
+        showNotification("Belum ada settingan yang disimpan");
+        return;
+    }
+
+    // Tampilkan modal
+    const modal = new bootstrap.Modal(document.getElementById('loadSettingsModal'));
+    
+    // Isi daftar settingan
+    const settingsList = document.getElementById('savedSettingsList');
+    settingsList.innerHTML = '';
+    
+    savedSettings.forEach((setting, index) => {
+        const settingItem = document.createElement('div');
+        settingItem.className = 'list-group-item';
+        settingItem.innerHTML = `
+            <div class="d-flex w-100 justify-content-between">
+                <h6 class="text-muted">${setting.name}</h6>
+                <small class="text-muted">${new Date(setting.timestamp).toLocaleString()}</small>
+            </div>
+            <div class="mb-2">
+                <small class="text-muted">Single NSP: ${setting.singleNSPLinkCount} link (${setting.singleNSPLinks?.join(', ') || '-'})</small><br>
+                <small class="text-muted">Single XCI: ${setting.singleXCILinkCount} link (${setting.singleXCILinks?.join(', ') || '-'})</small><br>
+                <small class="text-muted">Part NSP: ${setting.partNSPLinkCount} link (${setting.partNSPLinks?.join(', ') || '-'})</small><br>
+                <small class="text-muted">Part XCI: ${setting.partXCILinkCount} link (${setting.partXCILinks?.join(', ') || '-'})</small>
+            </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-success" onclick="applyLinkSettings(${index})">Load</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteLinkSettings(${index})">Hapus</button>
+    </div>
+`;
+        settingsList.appendChild(settingItem);
+    });
+    
+    modal.show();
+}
+
+// Ganti juga nama fungsi applySavedSettings() menjadi applyLinkSettings()
+function applyLinkSettings(index) {
+    try {
+        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2')) || [];
+        
+        if (index < 0 || index >= savedSettings.length) {
+            showNotification("Settingan tidak ditemukan");
+            return;
+        }
+        
+        const settings = savedSettings[index];
+        
+        // Set jumlah link dan update variabel global
+        document.getElementById('singleNSPLinkCount').value = settings.singleNSPLinkCount || 0;
+        document.getElementById('singleXCILinkCount').value = settings.singleXCILinkCount || 0;
+        document.getElementById('partNSPLinkCount').value = settings.partNSPLinkCount || 0;
+        document.getElementById('partXCILinkCount').value = settings.partXCILinkCount || 0;
+        
+        // Update variabel global
+        singleNSPLinkCount = settings.singleNSPLinkCount || 0;
+        singleXCILinkCount = settings.singleXCILinkCount || 0;
+        partNSPLinkCount = settings.partNSPLinkCount || 0;
+        partXCILinkCount = settings.partXCILinkCount || 0;
+        
+        // Update urutan link yang dipilih
+        selectedSingleNSPLinksOrder = settings.singleNSPLinks || [];
+        selectedSingleXCILinksOrder = settings.singleXCILinks || [];
+        selectedPartNSPLinksOrder = settings.partNSPLinks || [];
+        selectedPartXCILinksOrder = settings.partXCILinks || [];
+        
+        // Uncheck semua checkbox terlebih dahulu
+        document.querySelectorAll('input[name="singleNSPLinkType"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('input[name="singleXCILinkType"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('input[name="partNSPLinkType"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('input[name="partXCILinkType"]').forEach(cb => cb.checked = false);
+        
+        // Check yang sesuai dengan settingan dan set timestamp
+        const now = Date.now();
+        if (settings.singleNSPLinks) {
+            settings.singleNSPLinks.forEach((linkType, idx) => {
+                const checkbox = document.querySelector(`input[name="singleNSPLinkType"][value="${linkType}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = now + idx; // Untuk mempertahankan urutan
+                }
+            });
+        }
+        
+        // Lakukan hal yang sama untuk tipe link lainnya...
+        if (settings.singleXCILinks) {
+            settings.singleXCILinks.forEach((linkType, idx) => {
+                const checkbox = document.querySelector(`input[name="singleXCILinkType"][value="${linkType}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = now + idx;
+                }
+            });
+        }
+        
+        if (settings.partNSPLinks) {
+            settings.partNSPLinks.forEach((linkType, idx) => {
+                const checkbox = document.querySelector(`input[name="partNSPLinkType"][value="${linkType}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = now + idx;
+                }
+            });
+        }
+
+        if (settings.partXCILinks) {
+            settings.partXCILinks.forEach((linkType, idx) => {
+                const checkbox = document.querySelector(`input[name="partXCILinkType"][value="${linkType}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.dataset.checkedTime = now + idx;
+                }
+            });
+        }
+        
+        // Panggil showTripleLinkTypeSelection untuk menampilkan section yang sesuai
+        showTripleLinkTypeSelection();
+        
+        // Update tampilan link yang dipilih
+        updateSelectedLinksDisplay('singleNSP');
+        updateSelectedLinksDisplay('singleXCI');
+        updateSelectedLinksDisplay('partNSP');
+        updateSelectedLinksDisplay('partXCI');
+        
+        // Tutup modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('loadSettingsModal'));
+        if (modal) {
+            modal.hide();
+        }
+        
+        showNotification(`Settingan "${settings.name}" berhasil dimuat!`);
+        
+    } catch (error) {
+        console.error("Error applying settings:", error);
+        showNotification("Terjadi error saat memuat settingan: " + error.message);
+    }
+}
+
+// Ganti juga nama fungsi deleteSavedSettings() menjadi deleteLinkSettings()
+function deleteLinkSettings(index) {
+    if (!confirm("Apakah Anda yakin ingin menghapus settingan ini?")) {
+        return;
+    }
+    
+    // Ambil settingan dari localStorage
+    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsV2') || '[]');
+    
+    // Hapus settingan yang dipilih
+    const deletedSetting = savedSettings.splice(index, 1);
+    
+    // Simpan kembali ke localStorage
+    localStorage.setItem('linkSettingsV2', JSON.stringify(savedSettings));
+    
+    // Refresh daftar settingan
+    loadLinkSettingsModal();
+    
+    showNotification(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Modal untuk Simpan Settingan -->
+<div class="modal fade" id="saveSettingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Simpan Settingan Link</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="settingsName" class="form-label">Nama Settingan:</label>
+                    <input type="text" class="form-control" id="settingsName" placeholder="Contoh: Settingan Game Besar">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="confirmSaveSettings()">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal untuk Load Settingan -->
+<div class="modal fade" id="loadSettingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Load Settingan Link</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="savedSettingsList" class="list-group">
+                    <!-- Daftar settingan akan muncul di sini -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal untuk Lihat Detail Game -->
+<div class="modal fade" id="gameDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-gamepad me-2"></i>Detail Game</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Kolom Informasi Utama -->
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <i class="fas fa-info-circle me-2"></i>Informasi Dasar
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th width="30%">Nama Game</th>
+                                        <td id="detailGameName">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ukuran NSP</th>
+                                        <td id="detailNspSize">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ukuran XCI</th>
+                                        <td id="detailXciSize">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kategori</th>
+                                        <td id="detailCategory">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Game ID</th>
+                                        <td id="detailGameId">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Region</th>
+                                        <td id="detailRegion">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Bahasa</th>
+                                        <td id="detailLanguage">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tanggal Update</th>
+                                        <td id="detailTimestamp">-</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kolom Statistik Link -->
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-success text-white">
+                                <i class="fas fa-link me-2"></i>Statistik Link
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card bg-light mb-3">
+                                            <div class="card-header fw-bold">NSP</div>
+                                            <div class="card-body">
+                                                <p class="mb-1"><i class="fas fa-file-alt me-2"></i> Single: <span id="detailNspSingleCount" class="badge bg-primary">0</span></p>
+                                                <p class="mb-1"><i class="fas fa-file-archive me-2"></i> Part: <span id="detailNspPartCount" class="badge bg-primary">0</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card bg-light mb-3">
+                                            <div class="card-header fw-bold">XCI</div>
+                                            <div class="card-body">
+                                                <p class="mb-1"><i class="fas fa-file-alt me-2"></i> Single: <span id="detailXciSingleCount" class="badge bg-primary">0</span></p>
+                                                <p class="mb-1"><i class="fas fa-file-archive me-2"></i> Part: <span id="detailXciPartCount" class="badge bg-primary">0</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <h6><i class="fas fa-list-check me-2"></i>Jenis Link yang Digunakan:</h6>
+                                    <div id="detailLinkTypes" class="small">
+                                        Loading...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab untuk Link Download -->
+                <ul class="nav nav-tabs" id="detailTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="nsp-single-tab" data-bs-toggle="tab" data-bs-target="#nsp-single" type="button" role="tab">
+                            <i class="fas fa-file-alt me-1"></i> NSP Single
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="nsp-part-tab" data-bs-toggle="tab" data-bs-target="#nsp-part" type="button" role="tab">
+                            <i class="fas fa-file-archive me-1"></i> NSP Part
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="xci-single-tab" data-bs-toggle="tab" data-bs-target="#xci-single" type="button" role="tab">
+                            <i class="fas fa-compact-disc me-1"></i> XCI Single
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="xci-part-tab" data-bs-toggle="tab" data-bs-target="#xci-part" type="button" role="tab">
+                            <i class="fas fa-layer-group me-1"></i> XCI Part
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content p-3 border border-top-0 rounded-bottom" id="detailTabsContent">
+                    <!-- Tab NSP Single -->
+                    <div class="tab-pane fade show active" id="nsp-single" role="tabpanel">
+                        <div id="detailNspSingleLinks" class="list-group">
+                            <div class="list-group-item text-center text-muted">
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link single NSP</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab NSP Part -->
+                    <div class="tab-pane fade" id="nsp-part" role="tabpanel">
+                        <div id="detailNspPartLinks" class="list-group">
+                            <div class="list-group-item text-center text-muted">
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link part NSP</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab XCI Single -->
+                    <div class="tab-pane fade" id="xci-single" role="tabpanel">
+                        <div id="detailXciSingleLinks" class="list-group">
+                            <div class="list-group-item text-center text-muted">
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link single XCI</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab XCI Part -->
+                    <div class="tab-pane fade" id="xci-part" role="tabpanel">
+                        <div id="detailXciPartLinks" class="list-group">
+                            <div class="list-group-item text-center text-muted">
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link part XCI</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Tutup
+                </button>
+                <button type="button" id="btnEditGame" class="btn btn-warning">
+                    <i class="fas fa-edit me-1"></i> Edit
+                </button>
+                <button type="button" id="btnGenerateQR" class="btn btn-outline-secondary">
+                    <i class="fas fa-qrcode me-1"></i> QR Code
+                </button>
+                <button type="button" id="btnCopyLinks" class="btn btn-info">
+                    <i class="fas fa-copy me-1"></i> Salin Link
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <style>
+        /* Base styling */
+        .link-hover-effect {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .link-hover-effect:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left-width: 6px !important;
+        }
+
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .modal-dialog {
+            transition: all 0.3s ease;
+        }
+
+        /* Badge pulse animation for counters */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .badge-animated {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        /* Improved tab styling */
+        .nav-tabs .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border-radius: 2px 2px 0 0;
+        }
+
+        /* Toast container */
+        #toast-container {
+            z-index: 9999;
+        }
+
+        .toast {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* FIXED: Ensure table content doesn't overflow the card */
+        .table-responsive {
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+
+        .table td, .table th {
+            word-wrap: break-word;
+            word-break: break-word;
+            max-width: 200px;
+        }
+
+        /* FIXED: Better link type display styling */
+        .link-type-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .link-type-item {
+            background: rgba(13, 110, 253, 0.1);
+            border: 1px solid rgba(13, 110, 253, 0.2);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .link-type-item:hover {
+            background: rgba(13, 110, 253, 0.15);
+            transform: translateY(-1px);
+        }
+
+        /* Dark Mode Styles - FIXED */
+        [data-theme="dark"] {
+            background-color: #1a202c;
+            color: #0067ee;
+        }
+
+        [data-theme="dark"] #gameDetailModal .modal-content {
+            background-color: #2d3748;
+            color: #0067ee;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .modal-header {
+            background-color: #2c5282 !important;
+            border-bottom-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .card {
+            background-color: #1a202c;
+            border-color: #4a5568;
+            color: #0067ee;
+        }
+
+        [data-theme="dark"] #gameDetailModal .card-header {
+            background-color: #2d3748 !important;
+            border-bottom-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        /* FIXED: Table styling in dark mode */
+        [data-theme="dark"] #gameDetailModal .table {
+            color: #0067ee;
+            background-color: transparent;
+        }
+
+        [data-theme="dark"] #gameDetailModal .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(74, 85, 104, 0.2);
+        }
+
+        [data-theme="dark"] #gameDetailModal .table th {
+            color: #4895ef;
+            background-color: transparent;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .table td {
+            border-color: #4a5568;
+            background-color: transparent;
+        }
+
+        /* FIXED: Link type container in dark mode */
+        [data-theme="dark"] .link-type-container {
+            background-color: #1a202c;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] .link-type-item {
+            background: rgba(72, 149, 239, 0.15);
+            border-color: rgba(72, 149, 239, 0.3);
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .link-type-item:hover {
+            background: rgba(72, 149, 239, 0.25);
+        }
+
+        /* FIXED: Link types section heading */
+        [data-theme="dark"] .link-types-heading {
+            color: #0067ee !important;
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs {
+            border-bottom-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs .nav-link {
+            color: #4895ef;
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] #gameDetailModal .nav-tabs .nav-link.active {
+            background-color: #1a202c;
+            border-color: #4a5568 #4a5568 #1a202c;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .tab-content {
+            background-color: #1a202c;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .list-group-item {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] #gameDetailModal .list-group-item-action:hover {
+            background-color: #4a5568;
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] #gameDetailModal .text-muted {
+            color: #0067ee !important;
+        }
+
+        [data-theme="dark"] .toast {
+            background-color: rgba(45, 55, 72, 0.95);
+            color: #e2e8f0;
+        }
+
+        /* FIXED: Badge and code elements */
+        [data-theme="dark"] .badge {
+            color: white !important;
+        }
+
+        [data-theme="dark"] code {
+            background-color: #2d3748 !important;
+            color: #ff9292 !important;
+            border: 1px solid #4a5568;
+        }
+
+        /* FIXED: Responsive table wrapper */
+        .card-body .table-responsive {
+            margin: -0.5rem;
+            padding: 0.5rem;
+        }
+
+        /* Loading states */
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        [data-theme="dark"] .loading-shimmer {
+            background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+            background-size: 200% 100%;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
