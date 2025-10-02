@@ -600,6 +600,9 @@
                 <div class="section">
                     <h2>📊 Manajemen Link</h2>
                     <button onclick="loadLinks()" class="btn btn-success">🔄 Refresh Data</button>
+                    <button onclick="resetDuplicateGameIds()" class="btn btn-warning">🔄 Reset ID Game Duplikat</button>
+                    <button onclick="checkDuplicateGameIds()" class="btn btn-info">🔍 Cek ID Duplikat</button>
+                    <button onclick="resetAllGameIds()" class="btn btn-warning">🔄 ID Game Reset</button>
                     <button onclick="deleteSelectedLinks()" class="btn btn-danger" id="deleteSelectedBtn" style="display: none;">🗑️ Hapus yang Dipilih</button>
                     
                     <!-- Sorting and Pagination Controls -->
@@ -1045,6 +1048,56 @@ LINK IKLAN 2</pre>
             }
         }
 
+/**
+ * Reset semua ID Game untuk game dengan nama yang sama
+ */
+function resetAllGameIds() {
+    if (!confirm('Apakah Anda yakin ingin mereset semua ID Game?\n\nSemua link dengan nama game yang sama akan memiliki ID Game yang identik (menggunakan ID dari entry pertama yang ditemukan).')) {
+        return;
+    }
+    
+    showNotification('Sedang mereset ID Game...', 'info');
+    
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'action=resetGameIds'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification(data.message + ' - Total ' + data.totalUpdated + ' link diupdate', 'success');
+            
+            // Tampilkan detail hasil
+            if (data.details && data.details.length > 0) {
+                let detailMessage = 'Detail Reset:\n\n';
+                data.details.forEach(detail => {
+                    detailMessage += `${detail.gameName}\n`;
+                    detailMessage += `  - ID Game: ${detail.standardId}\n`;
+                    detailMessage += `  - Total Links: ${detail.totalLinks}\n`;
+                    detailMessage += `  - Updated: ${detail.updated}\n\n`;
+                });
+                
+                console.log(detailMessage);
+                
+                // Optional: tampilkan di alert jika tidak terlalu banyak
+                if (data.details.length <= 10) {
+                    alert(detailMessage);
+                }
+            }
+            
+            // Refresh tampilan
+            loadLinks();
+        } else {
+            showNotification('Error: ' + (data.message || 'Gagal mereset ID Game'), 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Error: ' + error.message, 'error');
+    });
+}
         // Update pagination controls
         function updatePaginationControls() {
             const prevButton = document.getElementById('prevPage');
@@ -1314,6 +1367,58 @@ LINK IKLAN 2</pre>
                 `;
             }
         }
+// Fungsi untuk mengecek ID Game duplikat
+function checkDuplicateGameIds() {
+    showAlert('Memeriksa ID Game duplikat...', 'info');
+    
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'action=checkDuplicateGameIds'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            displayDuplicateResults(data.data);
+        } else {
+            showAlert(data.message || 'Gagal memeriksa ID duplikat', 'error');
+        }
+    })
+    .catch(error => {
+        showAlert('Error: ' + error.message, 'error');
+    });
+}
+
+// Fungsi untuk menampilkan hasil duplikat
+function displayDuplicateResults(duplicates) {
+    if (!duplicates || duplicates.length === 0) {
+        showAlert('✅ Tidak ditemukan ID Game duplikat', 'success');
+        return;
+    }
+    
+    let message = `🔍 Ditemukan ${duplicates.length} ID Game duplikat:\n\n`;
+    
+    duplicates.forEach((duplicate, index) => {
+        message += `${index + 1}. ID: ${duplicate.gameId}\n`;
+        message += `   Game yang menggunakan ID ini:\n`;
+        
+        duplicate.games.forEach((game, gameIndex) => {
+            message += `   ${gameIndex + 1}. ${game.namaGame} (Baris: ${game.row})\n`;
+        });
+        
+        message += '\n';
+    });
+    
+    message += `\nKlik tombol "🔄 Reset ID Game Duplikat" untuk memperbaiki.`;
+    
+    // Tampilkan dalam alert box
+    alert(message);
+    
+    // Juga tampilkan di notification untuk quick view
+    showNotification(`Ditemukan ${duplicates.length} ID duplikat - lihat alert untuk detail`, 'warning');
+}
 
         // Generate new key
         function generateNewKey(linkId) {
@@ -1518,6 +1623,42 @@ function extractDomainName(url) {
         
         return 'Unknown Domain';
     }
+}
+
+
+// Reset duplicate Game IDs
+function resetDuplicateGameIds() {
+    if (!confirm('Apakah Anda yakin ingin mereset semua ID Game yang duplikat? ID baru akan digenerate otomatis.')) {
+        return;
+    }
+    
+    showAlert('Memeriksa dan mereset ID Game duplikat...', 'info');
+    
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'action=resetGameDuplicateIds'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showAlert(
+                `Reset selesai!\n` +
+                `Total dicek: ${data.data.totalChecked}\n` +
+                `Duplikat ditemukan: ${data.data.duplicatesFound}\n` +
+                `Berhasil direset: ${data.data.duplicatesFixed}`,
+                'success'
+            );
+            loadLinks(); // Refresh tabel
+        } else {
+            showAlert(data.message || 'Gagal reset ID Game', 'error');
+        }
+    })
+    .catch(error => {
+        showAlert('Error: ' + error.message, 'error');
+    });
 }
 
         // Bulk Generator V3 Functions
