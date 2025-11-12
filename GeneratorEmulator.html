@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emulator Database System</title>
+<style>
+  :root {
+    --primary-color: #4a94bb;
+    --secondary-color: #f0f7fc;
+    --accent-color: #e74c3c;
+    --text-color: #333;
+    --light-text: #777;
+    --border-color: #ddd;
+    --success-color: #2ecc71;
+    --error-color: #e74c3c;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-color: #f9f9f9;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  h1, h2, h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+  }
+  
+  .container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 148, 187, 0.2);
+  }
+  
+  button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+  }
+  
+  button:hover {
+    background-color: #3a7a9a;
+  }
+  
+  button.secondary {
+    background-color: #95a5a6;
+  }
+  
+  button.secondary:hover {
+    background-color: #7f8c8d;
+  }
+  
+  button.danger {
+    background-color: var(--accent-color);
+  }
+  
+  button.danger:hover {
+    background-color: #c0392b;
+  }
+  
+  .alert {
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+  }
+  
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  .tab.active {
+    border-bottom-color: var(--primary-color);
+    font-weight: 600;
+  }
+  
+  .tab.home-tab {
+    background-color: var(--success-color);
+    color: white;
+    border-radius: 4px 4px 0 0;
+    margin-right: 10px;
+  }
+  
+  .tab.home-tab:hover {
+    background-color: #27ae60;
+  }
+  
+  .tab-content {
+    display: none;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  th {
+    background-color: var(--secondary-color);
+    font-weight: 600;
+  }
+  
+  tr:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .action-buttons button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+  }
+  
+  .url-preview {
+    font-size: 12px;
+    color: var(--light-text);
+    margin-top: 3px;
+    word-break: break-all;
+  }
+  
+  .loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+    
+    .tabs {
+      flex-wrap: wrap;
+    }
+    
+    .tab.home-tab {
+      margin-bottom: 5px;
+    }
+  }
+</style>
+</head>
+<body>
+  <h1>Emulator Database System</h1>
+  
+<div class="tabs">
+  <a href="index.html" class="tab home-btn">🏠 Home</a>
+  <div class="tab active" data-tab="add">Tambah Emulator</div>
+  <div class="tab" data-tab="view">Lihat Database</div>
+  <div class="tab" data-tab="bulk">Input Bulk</div>
+</div>
+
+
+  <div id="message"></div>
+  
+  <!-- Tab: Add Emulator -->
+  <div class="tab-content active" id="add-tab">
+    <div class="container">
+      <h2>Tambah Emulator Baru</h2>
+      <form id="emulatorForm">
+        <div class="form-group">
+          <label for="nama_emulator">Nama Emulator *</label>
+          <input type="text" id="nama_emulator" name="nama_emulator" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="platform">Platform</label>
+            <input type="text" id="platform" name="platform">
+          </div>
+          
+          <div class="form-group">
+            <label for="ukuran">Ukuran Emulator</label>
+            <input type="text" id="ukuran" name="ukuran" placeholder="Contoh: 10 MB">
+          </div>
+          
+          <div class="form-group">
+            <label for="versi">Versi Emulator</label>
+            <input type="text" id="versi" name="versi" placeholder="Contoh: v1.0.1">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="link_emulator">Link Emulator *</label>
+          <input type="text" id="link_emulator" name="link_emulator" required>
+          <div class="url-preview" id="preview-link-emulator"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="link_iklan">Link Iklan Emulator (Opsional)</label>
+          <input type="text" id="link_iklan" name="link_iklan">
+          <div class="url-preview" id="preview-link-iklan"></div>
+        </div>
+        
+        <button type="submit" id="submitBtn">Simpan Emulator</button>
+        <button type="button" id="resetBtn" class="secondary">Reset Form</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Tab: View Database -->
+  <div class="tab-content" id="view-tab">
+    <div class="container">
+      <h2>Database Emulator</h2>
+      <button id="refreshBtn">Refresh Data</button>
+      <div id="table-container">
+        <p>Memuat data emulator...</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tab: Bulk Input -->
+  <div class="tab-content" id="bulk-tab">
+    <div class="container">
+      <h2>Input Data Bulk</h2>
+      <div class="form-group">
+        <label for="bulkData">Masukkan data emulator (format: Nama Emulator → Platform → Ukuran → Versi → Link Emulator [→ Link Iklan])</label>
+        <textarea id="bulkData" rows="10" placeholder="Contoh:
+DamonPS2
+PS2
+10 MB
+v1.0.1
+https://buzzheavier.com/xz88zlarwgrp
+http://link.indapk.com/8cKCApt
+
+PPSSPP
+PSP
+15 MB
+v1.14.4
+https://drive.google.com/ppsspp-download
+"></textarea>
+      </div>
+      <button id="processBulkBtn">Proses Data Bulk</button>
+    </div>
+  </div>
+
+  <script>
+    // URL Google Apps Script Anda
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsXDL0iknPvS-KhQXEzODz_fcBkNm_aieq3eTSN33di7A7mqlX2y0O0XhMAbgBY8DV/exec';
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tab navigation
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.getAttribute('data-tab');
+          
+          // Update active tab
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          // Show active content
+          tabContents.forEach(content => {
+            content.classList.remove('active');
+            if (content.id === `${tabId}-tab`) {
+              content.classList.add('active');
+            }
+          });
+          
+          // If viewing database tab, load data
+          if (tabId === 'view') {
+            loadEmulators();
+          }
+        });
+      });
+      
+      // URL preview
+      document.getElementById('link_emulator').addEventListener('input', function() {
+        document.getElementById('preview-link-emulator').textContent = this.value;
+      });
+      
+      document.getElementById('link_iklan').addEventListener('input', function() {
+        document.getElementById('preview-link-iklan').textContent = this.value;
+      });
+      
+      // Form submission
+      document.getElementById('emulatorForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveEmulator();
+      });
+      
+      // Reset form
+      document.getElementById('resetBtn').addEventListener('click', function() {
+        document.getElementById('emulatorForm').reset();
+        document.getElementById('preview-link-emulator').textContent = '';
+        document.getElementById('preview-link-iklan').textContent = '';
+      });
+      
+      // Refresh data
+      document.getElementById('refreshBtn').addEventListener('click', function() {
+        loadEmulators();
+      });
+      
+      // Process bulk data
+      document.getElementById('processBulkBtn').addEventListener('click', function() {
+        processBulkData();
+      });
+      
+      // Load initial data if on view tab
+      if (document.getElementById('view-tab').classList.contains('active')) {
+        loadEmulators();
+      }
+    });
+    
+    function showMessage(message, type = 'success') {
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        messageDiv.innerHTML = '';
+      }, 5000);
+    }
+    
+    function setLoading(button, isLoading) {
+      if (isLoading) {
+        button.innerHTML = '<span class="loading"></span> Memproses...';
+        button.disabled = true;
+      } else {
+        button.innerHTML = button.getAttribute('data-originaltext');
+        button.disabled = false;
+      }
+    }
+    
+    // Fungsi untuk melakukan request ke Google Apps Script
+    function callGoogleScript(action, data = {}) {
+      // Membuat URL dengan parameter
+      const url = new URL(SCRIPT_URL);
+      const params = new URLSearchParams();
+      
+      // Menambahkan action dan data lainnya
+      params.append('action', action);
+      for (const key in data) {
+        if (data[key] !== undefined && data[key] !== null) {
+          params.append(key, data[key]);
+        }
+      }
+      
+      // Menggunakan fetch API untuk mengirim request
+      return fetch(url, {
+        method: 'POST',
+        body: params,
+        redirect: 'follow'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        throw error;
+      });
+    }
+    
+    function saveEmulator() {
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.setAttribute('data-originaltext', submitBtn.textContent);
+      setLoading(submitBtn, true);
+      
+      // Mengumpulkan data dari form
+      const formData = {
+        nama_emulator: document.getElementById('nama_emulator').value,
+        platform: document.getElementById('platform').value,
+        ukuran: document.getElementById('ukuran').value,
+        versi: document.getElementById('versi').value,
+        link_emulator: document.getElementById('link_emulator').value,
+        link_iklan: document.getElementById('link_iklan').value
+      };
+      
+      // Memanggil Google Apps Script
+      callGoogleScript('createEmulator', formData)
+        .then(response => {
+          setLoading(submitBtn, false);
+          
+          if (response.status === 'success') {
+            showMessage(response.message);
+            document.getElementById('emulatorForm').reset();
+            document.getElementById('preview-link-emulator').textContent = '';
+            document.getElementById('preview-link-iklan').textContent = '';
+          } else {
+            showMessage(response.message, 'error');
+          }
+        })
+        .catch(error => {
+          setLoading(submitBtn, false);
+          showMessage('Terjadi kesalahan: ' + error, 'error');
+        });
+    }
+    
+    function loadEmulators() {
+      const tableContainer = document.getElementById('table-container');
+      tableContainer.innerHTML = '<p>Memuat data emulator...</p>';
+      
+      // Memanggil Google Apps Script
+      callGoogleScript('getEmulators')
+        .then(response => {
+          if (response.status === 'success') {
+            if (response.data.length === 0) {
+              tableContainer.innerHTML = '<p>Belum ada data emulator.</p>';
+              return;
+            }
+            
+            let tableHTML = `
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Emulator</th>
+                    <th>Platform</th>
+                    <th>Ukuran</th>
+                    <th>Versi</th>
+                    <th>Link Emulator</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            response.data.forEach((emulator, index) => {
+              tableHTML += `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${emulator.nama_emulator}</td>
+                  <td>${emulator.platform}</td>
+                  <td>${emulator.ukuran}</td>
+                  <td>${emulator.versi}</td>
+                  <td><a href="${emulator.link_emulator}" target="_blank">Link</a></td>
+                  <td class="action-buttons">
+                    <button class="secondary" onclick="editEmulator(${emulator.row})">Edit</button>
+                    <button class="danger" onclick="deleteEmulator(${emulator.row})">Hapus</button>
+                  </td>
+                </tr>
+              `;
+            });
+            
+            tableHTML += `
+                </tbody>
+              </table>
+            `;
+            
+            tableContainer.innerHTML = tableHTML;
+          } else {
+            tableContainer.innerHTML = `<p>Error: ${response.message}</p>`;
+          }
+        })
+        .catch(error => {
+          tableContainer.innerHTML = `<p>Terjadi kesalahan: ${error}</p>`;
+        });
+    }
+    
+    function editEmulator(row) {
+      // Memanggil Google Apps Script
+      callGoogleScript('getEmulatorById', { id: row })
+        .then(response => {
+          if (response.status === 'success') {
+            const emulator = response.data;
+            
+            // Fill form with existing data
+            document.getElementById('nama_emulator').value = emulator.nama_emulator;
+            document.getElementById('platform').value = emulator.platform;
+            document.getElementById('ukuran').value = emulator.ukuran;
+            document.getElementById('versi').value = emulator.versi;
+            document.getElementById('link_emulator').value = emulator.link_emulator;
+            document.getElementById('link_iklan').value = emulator.link_iklan;
+            
+            // Update previews
+            document.getElementById('preview-link-emulator').textContent = emulator.link_emulator;
+            document.getElementById('preview-link-iklan').textContent = emulator.link_iklan;
+            
+            // Change form to update mode
+            const form = document.getElementById('emulatorForm');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Add hidden field for row ID
+            let rowInput = document.getElementById('rowId');
+            if (!rowInput) {
+              rowInput = document.createElement('input');
+              rowInput.type = 'hidden';
+              rowInput.id = 'rowId';
+              rowInput.name = 'row';
+              form.appendChild(rowInput);
+            }
+            rowInput.value = emulator.row;
+            
+            // Change submit button text and action
+            submitBtn.textContent = 'Update Emulator';
+            form.onsubmit = function(e) {
+              e.preventDefault();
+              updateEmulator();
+            };
+            
+            // Switch to add tab
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector('[data-tab="add"]').classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('add-tab').classList.add('active');
+            
+            showMessage('Siap mengedit emulator. Perubahan data dan klik "Update Emulator".');
+          } else {
+            showMessage(response.message, 'error');
+          }
+        })
+        .catch(error => {
+          showMessage('Terjadi kesalahan: ' + error, 'error');
+        });
+    }
+    
+    function updateEmulator() {
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.setAttribute('data-originaltext', submitBtn.textContent);
+      setLoading(submitBtn, true);
+      
+      // Mengumpulkan data dari form
+      const formData = {
+        row: document.getElementById('rowId').value,
+        nama_emulator: document.getElementById('nama_emulator').value,
+        platform: document.getElementById('platform').value,
+        ukuran: document.getElementById('ukuran').value,
+        versi: document.getElementById('versi').value,
+        link_emulator: document.getElementById('link_emulator').value,
+        link_iklan: document.getElementById('link_iklan').value
+      };
+      
+      // Memanggil Google Apps Script
+      callGoogleScript('updateEmulator', formData)
+        .then(response => {
+          setLoading(submitBtn, false);
+          
+          if (response.status === 'success') {
+            showMessage(response.message);
+            
+            // Reset form and revert to create mode
+            document.getElementById('emulatorForm').reset();
+            document.getElementById('preview-link-emulator').textContent = '';
+            document.getElementById('preview-link-iklan').textContent = '';
+            
+            const rowInput = document.getElementById('rowId');
+            if (rowInput) rowInput.remove();
+            
+            submitBtn.textContent = 'Simpan Emulator';
+            document.getElementById('emulatorForm').onsubmit = function(e) {
+              e.preventDefault();
+              saveEmulator();
+            };
+            
+            // Reload emulator list
+            loadEmulators();
+          } else {
+            showMessage(response.message, 'error');
+          }
+        })
+        .catch(error => {
+          setLoading(submitBtn, false);
+          showMessage('Terjadi kesalahan: ' + error, 'error');
+        });
+    }
+    
+    function deleteEmulator(row) {
+      if (!confirm('Apakah Anda yakin ingin menghapus emulator ini?')) {
+        return;
+      }
+      
+      // Memanggil Google Apps Script
+      callGoogleScript('deleteEmulator', { id: row })
+        .then(response => {
+          if (response.status === 'success') {
+            showMessage(response.message);
+            loadEmulators();
+          } else {
+            showMessage(response.message, 'error');
+          }
+        })
+        .catch(error => {
+          showMessage('Terjadi kesalahan: ' + error, 'error');
+        });
+    }
+    
+    function processBulkData() {
+      const processBtn = document.getElementById('processBulkBtn');
+      processBtn.setAttribute('data-originaltext', processBtn.textContent);
+      setLoading(processBtn, true);
+      
+      const bulkData = document.getElementById('bulkData').value;
+      
+      if (!bulkData.trim()) {
+        showMessage('Data bulk tidak boleh kosong', 'error');
+        setLoading(processBtn, false);
+        return;
+      }
+      
+      // Memanggil Google Apps Script
+      callGoogleScript('processBulk', { data: bulkData })
+        .then(response => {
+          setLoading(processBtn, false);
+          
+          if (response.status === 'success') {
+            showMessage(response.message);
+            document.getElementById('bulkData').value = '';
+            
+            // Switch to view tab and reload data
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector('[data-tab="view"]').classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('view-tab').classList.add('active');
+            
+            loadEmulators();
+          } else {
+            showMessage(response.message, 'error');
+          }
+        })
+        .catch(error => {
+          setLoading(processBtn, false);
+          showMessage('Terjadi kesalahan: ' + error, 'error');
+        });
+    }
+  </script>
+</body>
+</html>
