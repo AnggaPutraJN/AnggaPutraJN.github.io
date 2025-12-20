@@ -390,19 +390,41 @@ button:hover, .btn:hover {
 
 /* Modal styles */
 .modal-content {
-  border-radius: 15px;
-  background-color: var(--card-bg);
-  color: var(--text-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.modal-header {
+    background-color: var(--dark-color);
+    color: var(--light-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+}
+
+.form-control {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
 }
 
 .list-group-item {
-  padding: 1rem;
-  border-radius: 0.5rem !important;
-  margin-bottom: 0.5rem;
-  border: 1px solid var(--border-color);
-  background-color: var(--light-color);
-  transition: all 0.3s ease;
+    background-color: var(--light-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    margin-bottom: 5px;
+    border-radius: 5px;
 }
+
+.list-group-item:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+
 
 .list-group-item h6 {
   color: var(--text-color);
@@ -789,6 +811,10 @@ button:hover, .btn:hover {
 
 <!--Script-->
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inisialisasi Bootstrap modals jika diperlukan
+    console.log('Page loaded, settings functionality ready');
+});
 // Fungsi untuk menyimpan data ke spreadsheet
 // Enhanced saveToSpreadsheet function with comma-separated links
 function saveToSpreadsheet() {
@@ -3020,12 +3046,23 @@ if (currentTheme === 'dark') {
 
 //SEttingan Save and load
     // Fungsi untuk menyimpan settingan
+// Perbaikan fungsi saveLinkSettings() yang benar:
 function saveLinkSettings() {
     // Validasi dulu apakah sudah memilih sesuai jumlah yang ditentukan
-    if ((singleExeLinkCount > 0 && selectedSingleExeLinksOrder.length !== singleExeLinkCount) || 
-        (singleISOLinkCount > 0 && selectedSingleISOLinksOrder.length !== singleISOLinkCount)) {
-        showNotification("Harap pilih jenis link sesuai jumlah yang ditentukan terlebih dahulu");
-        return;
+    if (singleExeLinkCount > 0) {
+        const selectedCount = document.querySelectorAll('input[name="singleExeLinkType"]:checked').length;
+        if (selectedCount !== singleExeLinkCount) {
+            showNotification(`Harap pilih tepat ${singleExeLinkCount} jenis link untuk Single Exe`);
+            return;
+        }
+    }
+    
+    if (singleISOLinkCount > 0) {
+        const selectedCount = document.querySelectorAll('input[name="singleISOLinkType"]:checked').length;
+        if (selectedCount !== singleISOLinkCount) {
+            showNotification(`Harap pilih tepat ${singleISOLinkCount} jenis link untuk Single Part`);
+            return;
+        }
     }
 
     // Tampilkan modal input nama settingan
@@ -3033,6 +3070,7 @@ function saveLinkSettings() {
     modal.show();
 }
 
+// Perbaikan fungsi confirmSaveSettings() yang benar:
 function confirmSaveSettings() {
     const settingsName = document.getElementById('settingsName').value.trim();
     if (!settingsName) {
@@ -3040,78 +3078,115 @@ function confirmSaveSettings() {
         return;
     }
 
-    // Buat objek settingan
+    // Buat objek settingan dengan data yang lengkap
     const settings = {
         name: settingsName,
         singleExeLinkCount: singleExeLinkCount,
         singleISOLinkCount: singleISOLinkCount,
-        singleExeLinks: selectedSingleExeLinksOrder,
-        singleISOLinks: selectedSingleISOLinksOrder,
-        timestamp: new Date().String()
+        selectedSingleExeLinksOrder: selectedSingleExeLinksOrder,
+        selectedSingleISOLinksOrder: selectedSingleISOLinksOrder,
+        timestamp: new Date().toISOString()
     };
 
-    // Ambil settingan yang sudah ada dari localStorage
-    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsPCGHTML') || '[]');
-    
-    // Tambahkan settingan baru
-    savedSettings.push(settings);
-    
-    // Simpan ke localStorage
-    localStorage.setItem('linkSettingsPCGHTML', JSON.stringify(savedSettings));
-    
-    // Tutup modal dan reset input
-    document.getElementById('settingsName').value = '';
-    bootstrap.Modal.getInstance(document.getElementById('saveSettingsModal')).hide();
-    
-    showNotification(`Settingan "${settingsName}" berhasil disimpan!`);
-}
-
-// Ganti nama fungsi dari loadLinkSettings() menjadi loadLinkSettingsModal()
-function loadLinkSettingsModal() {
-    // Ambil settingan dari localStorage
-    const savedSettings = JSON.parse(localStorage.getItem('linkSettingsPCGHTML') || []);
-    
-    if (savedSettings.length === 0) {
-        showNotification("Belum ada settingan yang disimpan");
-        return;
+    try {
+        // Ambil settingan yang sudah ada dari localStorage
+        let savedSettings = [];
+        try {
+            const saved = localStorage.getItem('linkSettingsPCGHTML');
+            savedSettings = saved ? JSON.parse(saved) : [];
+        } catch (e) {
+            savedSettings = [];
+        }
+        
+        // Cek apakah nama sudah ada
+        const existingIndex = savedSettings.findIndex(s => s.name === settingsName);
+        
+        if (existingIndex !== -1) {
+            if (!confirm(`Settingan "${settingsName}" sudah ada. Apakah Anda ingin menggantinya?`)) {
+                return;
+            }
+            // Ganti settingan yang sudah ada
+            savedSettings[existingIndex] = settings;
+        } else {
+            // Tambahkan settingan baru
+            savedSettings.push(settings);
+        }
+        
+        // Simpan ke localStorage
+        localStorage.setItem('linkSettingsPCGHTML', JSON.stringify(savedSettings));
+        
+        // Tutup modal dan reset input
+        document.getElementById('settingsName').value = '';
+        const modal = bootstrap.Modal.getInstance(document.getElementById('saveSettingsModal'));
+        if (modal) modal.hide();
+        
+        showNotification(`Settingan "${settingsName}" berhasil disimpan!`);
+    } catch (error) {
+        console.error('Error saving settings:', error);
+        showNotification('Terjadi kesalahan saat menyimpan settingan');
     }
-
-    // Tampilkan modal
-    const modal = new bootstrap.Modal(document.getElementById('loadSettingsModal'));
-    
-    // Isi daftar settingan
-    const settingsList = document.getElementById('savedSettingsList');
-    settingsList.innerHTML = '';
-    
-    savedSettings.forEach((setting, index) => {
-        const settingItem = document.createElement('div');
-        settingItem.className = 'list-group-item';
-        settingItem.innerHTML = `
-            <div class="d-flex w-100 justify-content-between">
-                <h6 class="mb-1">${setting.name}</h6>
-                <small class="text-muted">${new Date(setting.timestamp).toLocaleString()}</small>
-            </div>
-            <div class="mb-2">
-                <small class="text-muted">Single Exe: ${setting.singleExeLinkCount} link (${setting.singleExeLinks?.join(', ') || '-'})</small><br>
-                <small class="text-muted">Single Part: ${setting.singleISOLinkCount} link (${setting.singleISOLinks?.join(', ') || '-'})</small>
-            </div>
-    <div class="d-flex gap-2">
-        <button class="btn btn-sm btn-success" onclick="applyLinkSettings(${index})">Load</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteLinkSettings(${index})">Hapus</button>
-    </div>
-`;
-        settingsList.appendChild(settingItem);
-    });
-    
-    modal.show();
 }
 
-// Ganti juga nama fungsi applySavedSettings() menjadi applyLinkSettings()
-// Fungsi untuk menerapkan settingan yang dipilih
+// Perbaikan fungsi loadLinkSettingsModal() yang benar:
+function loadLinkSettingsModal() {
+    try {
+        // Ambil settingan dari localStorage
+        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsPCGHTML') || '[]');
+        
+        if (savedSettings.length === 0) {
+            showNotification("Belum ada settingan yang disimpan");
+            return;
+        }
+
+        // Tampilkan modal
+        const modal = new bootstrap.Modal(document.getElementById('loadSettingsModal'));
+        
+        // Isi daftar settingan
+        const settingsList = document.getElementById('savedSettingsList');
+        settingsList.innerHTML = '';
+        
+        savedSettings.forEach((setting, index) => {
+            const settingItem = document.createElement('div');
+            settingItem.className = 'list-group-item';
+            settingItem.innerHTML = `
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${setting.name}</h6>
+                    <small class="text-muted">${new Date(setting.timestamp).toLocaleString('id-ID')}</small>
+                </div>
+                <div class="mb-2">
+                    <small class="text-muted">
+                        <i class="fas fa-file-alt"></i> Single Exe: ${setting.singleExeLinkCount || 0} link
+                        ${setting.selectedSingleExeLinksOrder ? `(${setting.selectedSingleExeLinksOrder.join(', ')})` : ''}
+                    </small><br>
+                    <small class="text-muted">
+                        <i class="fas fa-compact-disc"></i> Single Part: ${setting.singleISOLinkCount || 0} link
+                        ${setting.selectedSingleISOLinksOrder ? `(${setting.selectedSingleISOLinksOrder.join(', ')})` : ''}
+                    </small>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-success" onclick="applyLinkSettings(${index})">
+                        <i class="fas fa-download"></i> Load
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteLinkSettings(${index})">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                </div>
+            `;
+            settingsList.appendChild(settingItem);
+        });
+        
+        modal.show();
+    } catch (error) {
+        console.error('Error loading settings modal:', error);
+        showNotification('Terjadi kesalahan saat memuat settingan');
+    }
+}
+
+// Perbaikan fungsi applyLinkSettings() yang benar:
 function applyLinkSettings(index) {
     try {
         // Ambil settingan dari localStorage
-        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsPCGHTML')) || [];
+        const savedSettings = JSON.parse(localStorage.getItem('linkSettingsPCGHTML') || '[]');
         
         if (index < 0 || index >= savedSettings.length) {
             showNotification("Settingan tidak ditemukan");
@@ -3120,51 +3195,56 @@ function applyLinkSettings(index) {
         
         const settings = savedSettings[index];
         
-        // Set jumlah link
+        // Set jumlah link di input form
         document.getElementById('singleExeLinkCount').value = settings.singleExeLinkCount || 0;
         document.getElementById('singleISOLinkCount').value = settings.singleISOLinkCount || 0;
+        
+        // Update variabel global
         singleExeLinkCount = settings.singleExeLinkCount || 0;
         singleISOLinkCount = settings.singleISOLinkCount || 0;
         
         // Uncheck semua checkbox terlebih dahulu
         document.querySelectorAll('input[name="singleExeLinkType"]').forEach(cb => {
             cb.checked = false;
-            cb.dataset.checkedTime = ''; // Reset waktu check
-        });
-        document.querySelectorAll('input[name="singleISOLinkType"]').forEach(cb => {
-            cb.checked = false;
-            cb.dataset.checkedTime = ''; // Reset waktu check
+            cb.dataset.checkedTime = '';
         });
         
-        // Check yang sesuai dengan settingan dan simpan urutan aslinya
-        if (settings.singleExeLinks) {
-            selectedSingleExeLinksOrder = settings.singleExeLinks;
-            settings.singleExeLinks.forEach((linkType, index) => {
+        document.querySelectorAll('input[name="singleISOLinkType"]').forEach(cb => {
+            cb.checked = false;
+            cb.dataset.checkedTime = '';
+        });
+        
+        // Check checkbox sesuai settingan untuk Single Exe
+        if (settings.selectedSingleExeLinksOrder) {
+            selectedSingleExeLinksOrder = [...settings.selectedSingleExeLinksOrder];
+            settings.selectedSingleExeLinksOrder.forEach((linkType, idx) => {
                 const checkbox = document.querySelector(`input[name="singleExeLinkType"][value="${linkType}"]`);
                 if (checkbox) {
                     checkbox.checked = true;
-                    checkbox.dataset.checkedTime = index; // Simpan urutan asli
+                    checkbox.dataset.checkedTime = idx;
                 }
             });
         }
         
-        if (settings.singleISOLinks) {
-            selectedSingleISOLinksOrder = settings.singleISOLinks;
-            settings.singleISOLinks.forEach((linkType, index) => {
+        // Check checkbox sesuai settingan untuk Single Part
+        if (settings.selectedSingleISOLinksOrder) {
+            selectedSingleISOLinksOrder = [...settings.selectedSingleISOLinksOrder];
+            settings.selectedSingleISOLinksOrder.forEach((linkType, idx) => {
                 const checkbox = document.querySelector(`input[name="singleISOLinkType"][value="${linkType}"]`);
                 if (checkbox) {
                     checkbox.checked = true;
-                    checkbox.dataset.checkedTime = index; // Simpan urutan asli
+                    checkbox.dataset.checkedTime = idx;
                 }
             });
         }
         
         // Tampilkan section pemilihan link
-        document.getElementById("tripleLinkTypeSelection").classList.remove("hidden");
-        document.getElementById("singleExeLinkSection").style.display = singleExeLinkCount > 0 ? "block" : "none";
-        document.getElementById("singleISOLinkSection").style.display = singleISOLinkCount > 0 ? "block" : "none";
+        const linkTypeSelection = document.getElementById("tripleLinkTypeSelection");
+        if (linkTypeSelection) {
+            linkTypeSelection.classList.remove("hidden");
+        }
         
-        // Update tampilan
+        // Update tampilan checkbox yang dipilih
         updateSelectedLinksDisplay('singleExe');
         updateSelectedLinksDisplay('singleISO');
         
@@ -3174,32 +3254,43 @@ function applyLinkSettings(index) {
             modal.hide();
         }
         
+        showNotification(`Settingan "${settings.name}" berhasil diterapkan!`);
+        
     } catch (error) {
         console.error("Error applying settings:", error);
-        showNotification("Terjadi error saat memuat settingan: " + error.message);
+        showNotification("Terjadi kesalahan saat memuat settingan");
     }
 }
 
-// Ganti juga nama fungsi deleteSavedSettings() menjadi deleteLinkSettings()
+// Perbaikan fungsi deleteLinkSettings() yang benar:
 function deleteLinkSettings(index) {
     if (!confirm("Apakah Anda yakin ingin menghapus settingan ini?")) {
         return;
     }
     
-    // Ambil settingan dari localStorage
-    let savedSettings = JSON.parse(localStorage.getItem('linkSettingsPCGHTML') || '[]');
-    
-    // Hapus settingan yang dipilih
-    const deletedSetting = savedSettings.splice(index, 1);
-    
-    // Simpan kembali ke localStorage
-    localStorage.setItem('linkSettingsPCGHTML', JSON.stringify(savedSettings));
-    
-    // Refresh daftar settingan
-    loadLinkSettingsModal();
-    
-    showNotification(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
+    try {
+        // Ambil settingan dari localStorage
+        let savedSettings = JSON.parse(localStorage.getItem('linkSettingsPCGHTML') || '[]');
+        
+        if (index >= 0 && index < savedSettings.length) {
+            const deletedSetting = savedSettings.splice(index, 1);
+            
+            // Simpan kembali ke localStorage
+            localStorage.setItem('linkSettingsPCGHTML', JSON.stringify(savedSettings));
+            
+            // Refresh daftar settingan
+            loadLinkSettingsModal();
+            
+            showNotification(`Settingan "${deletedSetting[0].name}" telah dihapus!`);
+        } else {
+            showNotification("Settingan tidak ditemukan");
+        }
+    } catch (error) {
+        console.error('Error deleting settings:', error);
+        showNotification('Terjadi kesalahan saat menghapus settingan');
+    }
 }
+
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
