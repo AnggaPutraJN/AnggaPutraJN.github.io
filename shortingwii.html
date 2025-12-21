@@ -88,6 +88,10 @@
             background: linear-gradient(135deg, #9b59b6, #8e44ad);
         }
 
+        .btn-gradient-bg6 {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -470,6 +474,32 @@
             margin-bottom: 1rem;
             display: block;
         }
+
+        .generator-type-selector {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-item input[type="radio"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+        }
     </style>
 </head>
 <body>
@@ -485,6 +515,9 @@
             </a>
             <a href="wii2" class="nav-btn btn-gradient-bg5">
                 <i class="fas fa-exclamation-triangle"></i>Generator HTML Wii v2
+            </a>
+            <a href="generatorv2" class="nav-btn btn-gradient-bg6">
+                <i class="fas fa-cogs"></i>Generator V2
             </a>
         </div>
     </div>
@@ -664,6 +697,20 @@
 
 <!-- Main content (hidden initially) -->
 <div id="mainContent" class="container-fluid hidden">
+    <div class="generator-type-selector">
+        <h3 style="text-align: center; margin-bottom: 1rem;">Pilih Jenis Generator</h3>
+        <div class="radio-group">
+            <div class="radio-item">
+                <input type="radio" id="generatorV1" name="generatorType" value="v1" checked>
+                <label for="generatorV1">Generator V1 (Urut berdasarkan jenis link)</label>
+            </div>
+            <div class="radio-item">
+                <input type="radio" id="generatorV2" name="generatorType" value="v2">
+                <label for="generatorV2">Generator V2 (Urut berdasarkan format file)</label>
+            </div>
+        </div>
+    </div>
+
     <div class="main-grid">
         <div>
             <div class="textarea-container">
@@ -1254,6 +1301,18 @@ function loadSettings(settingsName) {
 
     // Generate code function
     function generateCode() {
+        // Check which generator type is selected
+        const generatorType = document.querySelector('input[name="generatorType"]:checked').value;
+        
+        if (generatorType === 'v1') {
+            generateCodeV1();
+        } else {
+            generateCodeV2();
+        }
+    }
+
+    // Generator V1 (original - urut berdasarkan jenis link)
+    function generateCodeV1() {
         let generatedText = '';
 
         // Get values for each game
@@ -1287,6 +1346,7 @@ function loadSettings(settingsName) {
             generatedText += `${gameName} Wii Edition All Format [Google Drive & MediaFire] (Tanpa Ekstrak) [CISO, GCZ, ISO, RVZ, WBFS] (USA) (Dolphin) [IDGAME]\n\n`;
             generatedText += `${gameName}\n`;
             
+            generatedText += `GENERATOR WII V1\n`;
             // Add sizes for all formats
             wiiFormats.forEach(format => {
                 const size = document.getElementById(`inputSizeGame${i}${format}`).value;
@@ -1299,6 +1359,46 @@ function loadSettings(settingsName) {
             // Add links for all formats
             selectedLinkTypes.forEach(linkType => {
                 wiiFormats.forEach(format => {
+                    const link = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`).value;
+                    if (link.trim() !== '') {
+                        generatedText += `${link}\n`;
+                    }
+                });
+            });
+            
+            generatedText += `\n\n`;
+        }
+
+        // Display the generated text
+        document.getElementById("result").innerText = generatedText.trim();
+    }
+
+    // Generator V2 (urut berdasarkan format file)
+    function generateCodeV2() {
+        let generatedText = '';
+
+        // Get values for each game
+        for (let i = 1; i <= gameCount; i++) {
+            const gameName = document.getElementById(`inputNameGame${i}`).value;
+
+            // Generated untuk web
+            generatedText += `========================================================================\nUPLOAD WEB\n========================================================================\n\n\n`;
+            generatedText += `${gameName} Wii Edition All Format [Google Drive & MediaFire] (Tanpa Ekstrak) [CISO, GCZ, ISO, RVZ, WBFS] (USA) (Dolphin) [IDGAME]\n\n`;
+            generatedText += `${gameName}\n`;
+            
+            generatedText += `GENERATOR WII V2\n`;
+            // Add sizes for all formats
+            wiiFormats.forEach(format => {
+                const size = document.getElementById(`inputSizeGame${i}${format}`).value;
+                generatedText += `${size}\n`;
+            });
+            
+            generatedText += `CATEGORY\n`;
+            generatedText += `USA\n`;
+            
+            // Group links by format first, then by link type
+            wiiFormats.forEach(format => {
+                selectedLinkTypes.forEach(linkType => {
                     const link = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`).value;
                     if (link.trim() !== '') {
                         generatedText += `${link}\n`;
