@@ -536,6 +536,13 @@ button:hover, .btn:hover {
             <input type="number" id="singleCISOLinkCount" class="link-count-input" min="0" max="10" placeholder="Jumlah Single CISO (0-10)">
         </div>
         
+
+        <div class="link-type-section">
+            <h5>Single Link GCZ</h5>
+            <p>Maksimal 10 link</p>
+            <input type="number" id="singleGCZLinkCount" class="link-count-input" min="0" max="10" placeholder="Jumlah Single GCZ (0-10)">
+        </div>
+
         <div class="link-type-section">
             <h5>Single Link ISO</h5>
             <p>Maksimal 10 link</p>
@@ -601,6 +608,45 @@ button:hover, .btn:hover {
                     </label>
                 </div>
                 <div id="selectedSingleCISOLinksContainer" class="mt-3"></div>
+            </div>
+
+
+            <!-- Single GCZ Link Selection -->
+            <div class="link-type-section" id="singleGCZLinkSection">
+                <h5>Pilih Jenis Link untuk Single GCZ:</h5>
+                <div class="link-checkboxes" id="singleGCZLinkCheckboxes">
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="Google Drive"> Google Drive
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="Mediafire"> Mediafire
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="Vikingfile"> Vikingfile
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="PixelDrain"> PixelDrain
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="1Fichier"> 1Fichier
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="MultiUp"> MultiUp
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="Qiwi"> Qiwi
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="Mega"> Mega
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="Megaup"> Megaup
+                    </label>
+                    <label class="link-checkbox-item">
+                        <input type="checkbox" name="singleGCZLinkType" value="uploadmobi"> uploadmobi
+                    </label>
+                </div>
+                <div id="selectedSingleGCZLinksContainer" class="mt-3"></div>
             </div>
             
             <!-- Single ISO Link Selection -->
@@ -731,7 +777,7 @@ button:hover, .btn:hover {
 <div class="row">
 <div class="col-md-6">
 <div class="mb-3 gradient-bg">
-<h2>Wii CISO x ISO x RVZ x WBFS</h2>
+<h2>Wii CISO x GCZ x ISO x RVZ x WBFS</h2>
 <textarea id="myTextarea" class="form-control"></textarea>
 </div>
 <div class="d-flex justify-content-center">
@@ -757,6 +803,9 @@ button:hover, .btn:hover {
 
 <label for="inputSingleCISOSize">Ukuran Single CISO:</label>
 <input type="text" id="inputSingleCISOSize" name="inputSingleCISOSize"><br><br>
+
+<label for="inputSingleGCZSize">Ukuran Single GCZ:</label>
+<input type="text" id="inputSingleGCZSize" name="inputSingleGCZSize"><br><br>
 
 <label for="inputSingleISOSize">Ukuran Single ISO:</label>
 <input type="text" id="inputSingleISOSize" name="inputSingleISOSize"><br><br>
@@ -801,10 +850,12 @@ button:hover, .btn:hover {
 <script>
 // Global variables for storing selections
 let selectedSingleCISOLinksOrder = [];
+let selectedSingleGCZLinksOrder = [];
 let selectedSingleISOLinksOrder = [];
 let selectedSingleRVZLinksOrder = [];
 let selectedSingleWBFSLinksOrder = [];
 let singleCISOLinkCount = 0;
+let singleGCZLinkCount = 0;
 let singleISOLinkCount = 0;
 let singleRVZLinkCount = 0;
 let singleWBFSLinkCount = 0;
@@ -821,20 +872,24 @@ function saveToSpreadsheet() {
         id: document.getElementById("inputGameId")?.value || '',
         nama_game: document.getElementById("inputName").value,
         ukuran_ciso: document.getElementById("inputSingleCISOSize").value,
+        ukuran_gcz: document.getElementById("inputSingleGCZSize").value,
         ukuran_iso: document.getElementById("inputSingleISOSize").value,
         ukuran_rvz: document.getElementById("inputSingleRVZSize").value,
         ukuran_wbfs: document.getElementById("inputSingleWBFSSize").value,
         category: document.getElementById("inputCategory")?.value || '',
         region: document.getElementById("inputRegion")?.value || '',
         jumlah_link_ciso: singleCISOLinkCount,
+        jumlah_link_gcz: singleGCZLinkCount,
         jumlah_link_iso: singleISOLinkCount,
         jumlah_link_rvz: singleRVZLinkCount,
         jumlah_link_wbfs: singleWBFSLinkCount,
         link_single_ciso: formatLinks(getLinkValues('singleCISO')),
+        link_single_gcz: formatLinks(getLinkValues('singleGCZ')),
         link_single_iso: formatLinks(getLinkValues('singleISO')),
         link_single_rvz: formatLinks(getLinkValues('singleRVZ')),
         link_single_wbfs: formatLinks(getLinkValues('singleWBFS')),
         jenis_link_ciso: selectedSingleCISOLinksOrder.join(', '),
+        jenis_link_gcz: selectedSingleGCZLinksOrder.join(', '),
         jenis_link_iso: selectedSingleISOLinksOrder.join(', '),
         jenis_link_rvz: selectedSingleRVZLinksOrder.join(', '),
         jenis_link_wbfs: selectedSingleWBFSLinksOrder.join(', ')
@@ -905,13 +960,14 @@ function displayDatabase(data) {
                                                 <td>${game.region || '-'}</td>
                                                 <td>
                                                     <small>CISO: ${game.ukuran_ciso || '-'}<br>
+                                                    GCZ: ${game.ukuran_gcz || '-'}<br>
                                                     ISO: ${game.ukuran_iso || '-'}<br>
                                                     RVZ: ${game.ukuran_rvz || '-'}<br>
                                                     WBFS: ${game.ukuran_wbfs || '-'}</small>
                                                 </td>
                                                 <td>
                                                     <small>
-                                                        CISO: ${game.jumlah_link_ciso || 0} link<br>
+                                                        GCZ: ${game.jumlah_link_gcz || 0} link<br>
                                                         ISO: ${game.jumlah_link_iso || 0} link<br>
                                                         RVZ: ${game.jumlah_link_rvz || 0} link<br>
                                                         WBFS: ${game.jumlah_link_wbfs || 0} link
@@ -977,12 +1033,13 @@ function displayDatabase(data) {
 // Function to show quad link type selection
 function showQuadLinkTypeSelection() {
     singleCISOLinkCount = parseInt(document.getElementById("singleCISOLinkCount").value) || 0;
+    singleGCZLinkCount = parseInt(document.getElementById("singleGCZLinkCount").value) || 0;
     singleISOLinkCount = parseInt(document.getElementById("singleISOLinkCount").value) || 0;
     singleRVZLinkCount = parseInt(document.getElementById("singleRVZLinkCount").value) || 0;
     singleWBFSLinkCount = parseInt(document.getElementById("singleWBFSLinkCount").value) || 0;
     
     if (singleCISOLinkCount < 1 && singleISOLinkCount < 1 && singleRVZLinkCount < 1 && singleWBFSLinkCount < 1) {
-     showNotification("Masukkan minimal 1 link untuk salah satu tipe (CISO, ISO, RVZ atau WBFS)");
+     showNotification("Masukkan minimal 1 link untuk salah satu tipe (CISO, GCZ, ISO, RVZ atau WBFS)");
         return;
     }
     
@@ -995,6 +1052,7 @@ function showQuadLinkTypeSelection() {
     
     // Show/hide sections based on link count
     document.getElementById("singleCISOLinkSection").style.display = singleCISOLinkCount > 0 ? "block" : "none";
+    document.getElementById("singleGCZLinkSection").style.display = singleGCZLinkCount > 0 ? "block" : "none";
     document.getElementById("singleISOLinkSection").style.display = singleISOLinkCount > 0 ? "block" : "none";
     document.getElementById("singleRVZLinkSection").style.display = singleRVZLinkCount > 0 ? "block" : "none";
     document.getElementById("singleWBFSLinkSection").style.display = singleWBFSLinkCount > 0 ? "block" : "none";
@@ -1003,6 +1061,10 @@ function showQuadLinkTypeSelection() {
     if (singleCISOLinkCount > 0) {
         document.getElementById("selectedSingleCISOLinksContainer").innerHTML = 
             `<p>Silahkan pilih tepat ${singleCISOLinkCount} jenis link untuk single CISO link</p>`;
+    }
+    if (singleGCZLinkCount > 0) {
+        document.getElementById("selectedSingleGCZLinksContainer").innerHTML = 
+            `<p>Silahkan pilih tepat ${singleGCZLinkCount} jenis link untuk single GCZ link</p>`;
     }
     
     if (singleISOLinkCount > 0) {
@@ -1033,6 +1095,16 @@ function addCheckboxEventListeners() {
                 this.dataset.checkedTime = Date.now();
             }
             updateSelectedLinksDisplay('singleCISO');
+        });
+    });
+    
+    // Single GCZ link checkboxes
+    document.querySelectorAll('input[name="singleGCZLinkType"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                this.dataset.checkedTime = Date.now();
+            }
+            updateSelectedLinksDisplay('singleGCZ');
         });
     });
     
@@ -1076,7 +1148,12 @@ function updateSelectedLinksDisplay(type) {
         container = document.getElementById("selectedSingleCISOLinksContainer");
         checkboxes = Array.from(document.querySelectorAll('input[name="singleCISOLinkType"]:checked'));
         selectedLinksOrder = selectedSingleCISOLinksOrder;
-    } else if (type === 'singleISO') {
+    }  else if (type === 'singleGCZ') {
+        requiredCount = singleGCZLinkCount;
+        container = document.getElementById("selectedSingleGCZLinksContainer");
+        checkboxes = Array.from(document.querySelectorAll('input[name="singleGCZLinkType"]:checked'));
+        selectedLinksOrder = selectedSingleGCZLinksOrder;
+    }else if (type === 'singleISO') {
         requiredCount = singleISOLinkCount;
         container = document.getElementById("selectedSingleISOLinksContainer");
         checkboxes = Array.from(document.querySelectorAll('input[name="singleISOLinkType"]:checked'));
@@ -1110,6 +1187,8 @@ function updateSelectedLinksDisplay(type) {
     // Store the ordered selection
     if (type === 'singleCISO') {
         selectedSingleCISOLinksOrder = checkboxes.map(cb => cb.value);
+    } else if (type === 'singleGCZ') {
+        selectedSingleGCZLinksOrder = checkboxes.map(cb => cb.value);
     } else if (type === 'singleISO') {
         selectedSingleISOLinksOrder = checkboxes.map(cb => cb.value);
     } else if (type === 'singleRVZ') {
@@ -1146,6 +1225,7 @@ function updateSelectedLinksDisplay(type) {
 // Function to proceed to generator
 function proceedToQuadGenerator() {
     const totalSingleCISOSelected = selectedSingleCISOLinksOrder.length;
+    const totalSingleGCZSSelected = selectedSingleGCZLinksOrder.length;
     const totalSingleISOSSelected = selectedSingleISOLinksOrder.length;
     const totalSingleRVZSelected = selectedSingleRVZLinksOrder.length;
     const totalSingleWBFSSelected = selectedSingleWBFSLinksOrder.length;
@@ -1169,6 +1249,18 @@ function proceedToQuadGenerator() {
         }
         if (totalSingleISOSSelected !== singleISOLinkCount) {
          showNotification(`Anda harus memilih tepat ${singleISOLinkCount} jenis link untuk Single ISO Link (sekarang ${totalSingleISOSSelected})`);
+            return;
+        }
+    }
+
+
+    if (singleGCZLinkCount > 0) {
+        if (totalSingleGCZSSelected === 0) {
+         showNotification("Pilih jenis link untuk Single GCZ Link");
+            return;
+        }
+        if (totalSingleGCZSSelected !== singleGCZLinkCount) {
+         showNotification(`Anda harus memilih tepat ${singleGCZLinkCount} jenis link untuk Single GCZ Link (sekarang ${totalSingleGCZSSelected})`);
             return;
         }
     }
@@ -1226,7 +1318,18 @@ function generateQuadLinkInputs() {
                 container.appendChild(inputDiv);
             });
         }
-        
+         // Generate Single GCZ INDapk Links
+        if (singleGCZLinkCount > 0 && selectedSingleGCZLinksOrder.length > 0) {
+            selectedSingleGCZLinksOrder.slice(0, singleGCZLinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputINDapkSingleLinkGCZ${linkType}">Single ${linkType} GCZ INDapk:</label>
+                    <input type="text" id="inputINDapkSingleLinkGCZ${linkType}" name="inputINDapkSingleLinkGCZ${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+
         // Generate Single ISO INDapk Links
         if (singleISOLinkCount > 0 && selectedSingleISOLinksOrder.length > 0) {
             selectedSingleISOLinksOrder.slice(0, singleISOLinkCount).forEach((linkType, index) => {
@@ -1283,6 +1386,18 @@ function generateQuadLinkInputs() {
             });
         }
         
+        // Generate Single GCZ SEMAWUR Links
+        if (singleGCZLinkCount > 0 && selectedSingleGCZLinksOrder.length > 0) {
+            selectedSingleGCZLinksOrder.slice(0, singleGCZLinkCount).forEach((linkType, index) => {
+                const inputDiv = document.createElement("div");
+                inputDiv.innerHTML = `
+                    <label for="inputSingleLinkGCZ${linkType}">Single ${linkType} GCZ SEMAWUR:</label>
+                    <input type="text" id="inputSingleLinkGCZ${linkType}" name="inputSingleLinkGCZ${linkType}"><br><br>
+                `;
+                container.appendChild(inputDiv);
+            });
+        }
+
         // Generate Single ISO SEMAWUR Links
         if (singleISOLinkCount > 0 && selectedSingleISOLinksOrder.length > 0) {
             selectedSingleISOLinksOrder.slice(0, singleISOLinkCount).forEach((linkType, index) => {
@@ -1386,27 +1501,28 @@ textarea.addEventListener('input', () => {
     // Isi field utama secara eksplisit
     if (values.length > 0) document.getElementById("inputName").value = values[0];
     if (values.length > 1) document.getElementById("inputSingleCISOSize").value = values[1];
-    if (values.length > 2) document.getElementById("inputSingleISOSize").value = values[2];
-    if (values.length > 3) document.getElementById("inputSingleRVZSize").value = values[3];
-    if (values.length > 4) document.getElementById("inputSingleWBFSSize").value = values[4];
-    if (values.length > 5) document.getElementById("inputCategory").value = values[5];
-    if (values.length > 6) document.getElementById("inputRegion").value = values[6];
+    if (values.length > 2) document.getElementById("inputSingleGCZSize").value = values[2];
+    if (values.length > 3) document.getElementById("inputSingleISOSize").value = values[3];
+    if (values.length > 4) document.getElementById("inputSingleRVZSize").value = values[4];
+    if (values.length > 5) document.getElementById("inputSingleWBFSSize").value = values[5];
+    if (values.length > 6) document.getElementById("inputCategory").value = values[6];
+    if (values.length > 7) document.getElementById("inputRegion").value = values[7];
     
-    // Isi link inputs mulai dari index 7
+    // Isi link inputs mulai dari index 8
     const linkInputs = document.querySelectorAll('#linkInputsContainer input[type="text"]');
-    for (let i = 0; i < linkInputs.length && (i + 7) < values.length; i++) {
-        linkInputs[i].value = values[i + 7];
+    for (let i = 0; i < linkInputs.length && (i + 8) < values.length; i++) {
+        linkInputs[i].value = values[i + 8];
     }
     
     // Isi END fields jika ada nilai lebih
-    if (values.length > 7 + linkInputs.length) {
-        document.getElementById("inputEND1").value = values[7 + linkInputs.length] || "END1";
-    }
     if (values.length > 8 + linkInputs.length) {
-        document.getElementById("inputEND2").value = values[8 + linkInputs.length] || "END1";
+        document.getElementById("inputEND1").value = values[8 + linkInputs.length] || "END1";
     }
     if (values.length > 9 + linkInputs.length) {
-        document.getElementById("inputEND3").value = values[9 + linkInputs.length] || "END1";
+        document.getElementById("inputEND2").value = values[9 + linkInputs.length] || "END1";
+    }
+    if (values.length > 10 + linkInputs.length) {
+        document.getElementById("inputEND3").value = values[10 + linkInputs.length] || "END1";
     }
 });
 
@@ -1414,6 +1530,7 @@ function generateCode() {
     // Get values from game form
     const inputName = document.getElementById("inputName").value;
     const inputSingleCISOSize = document.getElementById("inputSingleCISOSize").value;
+    const inputSingleGCZSize = document.getElementById("inputSingleGCZSize").value;
     const inputSingleISOSize = document.getElementById("inputSingleISOSize").value;
     const inputSingleRVZSize = document.getElementById("inputSingleRVZSize").value;
     const inputSingleWBFSSize = document.getElementById("inputSingleWBFSSize").value;
@@ -1425,10 +1542,12 @@ function generateCode() {
 
     // Create arrays to hold the link values
     const indapkCisoSingleLinks = [];
+    const indapkGczSingleLinks = [];
     const indapkIsoSingleLinks = [];
     const indapkRvzSingleLinks = [];
     const indapkWbfsSingleLinks = [];
     const semawurCisoSingleLinks = [];
+    const semawurGczSingleLinks = [];
     const semawurIsoSingleLinks = [];
     const semawurRvzSingleLinks = [];
     const semawurWbfsSingleLinks = [];
@@ -1438,6 +1557,13 @@ function generateCode() {
         const cisoSingleLink = document.getElementById(`inputINDapkCISOSingleLink${type}`)?.value || "";
         if (cisoSingleLink) indapkCisoSingleLinks.push({type, link: cisoSingleLink});
     });
+
+    // Collect single GCZ INDapk link values
+    selectedSingleGCZLinksOrder.slice(0, singleGCZLinkCount).forEach(type => {
+        const gczSingleLink = document.getElementById(`inputINDapkSingleLinkGCZ${type}`)?.value || "";
+        if (gczSingleLink) indapkGczSingleLinks.push({type, link: gczSingleLink});
+    });
+
 
     // Collect single ISO INDapk link values
     selectedSingleISOLinksOrder.slice(0, singleISOLinkCount).forEach(type => {
@@ -1461,6 +1587,12 @@ function generateCode() {
     selectedSingleCISOLinksOrder.slice(0, singleCISOLinkCount).forEach(type => {
         const semawurCisoLink = document.getElementById(`inputCISOSingleLink${type}`)?.value || "";
         if (semawurCisoLink) semawurCisoSingleLinks.push({type, link: semawurCisoLink});
+    });
+
+    // Collect single GCZ SEMAWUR link values
+    selectedSingleGCZLinksOrder.slice(0, singleGCZLinkCount).forEach(type => {
+        const semawurGczLink = document.getElementById(`inputSingleLinkGCZ${type}`)?.value || "";
+        if (semawurGczLink) semawurGczSingleLinks.push({type, link: semawurGczLink});
     });
 
     // Collect single ISO SEMAWUR link values
@@ -2242,10 +2374,11 @@ padding: 0 10px;
 <ul class="tab-links">
   <li class="active"><a href="#tab1">INFO</a></li>
   <li><a href="#tab2">CISO</a></li>
-  <li><a href="#tab3">ISO</a></li>
-  <li><a href="#tab4">RVZ</a></li>
-  <li><a href="#tab5">WBFS</a></li>
-  <li><a href="#tab6">Tutorial</a></li>
+  <li><a href="#tab3">GCZ</a></li>
+  <li><a href="#tab4">ISO</a></li>
+  <li><a href="#tab5">RVZ</a></li>
+  <li><a href="#tab6">WBFS</a></li>
+  <li><a href="#tab7">Tutorial</a></li>
   <!-- Theme Switcher -->
   <li class="theme-switcher-container">
     <label class="switch tooltip" data-tooltip="Toggle Dark Mode">
@@ -2265,6 +2398,7 @@ Join Telegram : <a href="https://t.me/iindapk" rel="nofollow">Klik Disini</a>
 <div class="game-details">
 <strong>Nama Game:</strong> ${inputName}<br>
 <strong>Ukuran Single CISO:</strong> ${inputSingleCISOSize}<br>
+<strong>Ukuran Single GCZ:</strong> ${inputSingleGCZSize}<br>
 <strong>Ukuran Single ISO:</strong> ${inputSingleISOSize}<br>
 <strong>Ukuran Single RVZ:</strong> ${inputSingleRVZSize}<br>
 <strong>Ukuran Single WBFS:</strong> ${inputSingleWBFSSize}<br>
@@ -2448,7 +2582,180 @@ ${generateDownloadLinksSection(semawurIsoSingleLinks, inputSingleISOSize)}
     generatedHtml += `
 </div>
 
+<div id="tab3" class="tab">
+<div class="info-box">
+<span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Pastikan untuk mendownload file dengan benar!
+<br><br>
+<div class="section-heading">
+<strong>Gunakan Bot Telegram untuk download tanpa iklan</strong>
+</div>
+<br>
+<strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">@INDapkBot</a><br>
+<strong>Telegram Bot Web:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">@WebINDapkBot</a><br>
+<strong>ID tiktok:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">@INDapk</a><br>
+<strong>Telegram:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">Klik Disini</a> (Wajib Join)
+<br><br>
+Follow Facebook dan IG Mimin juga dong (Optional)<br>
+<strong>Instagram:</strong> <a href="https://www.instagram.com/indapk" rel="nofollow">@INDapk</a><br>
+<strong>Facebook:</strong> <a href="https://www.facebook.com/IDNApk" rel="nofollow">@INDapk</a>
+<br><br>
+<span style="color: var(--primary-color);"><strong>Rekomendasi Download:</strong></span> Google Drive, Mediafire, Pixeldrain, Qiwi (Jika Google Drive Terkena Limit, Gunakan Link Alternatif Lain)<br>
+<span style="color: var(--primary-color);"><strong>Password:</strong></span> indapk
+</div>
+
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="password-image">
+<img alt="Password" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnMnh52UxSnW5OS41N5rguqSspGatcqhG2sKoyhOzsfuUWz9CopJTq8YhTrvr067UsXVnY4r5RUCFb5n2meOK3a_qA88Yw7J_-f2OIW7Ji28sU0E90v3AlkaVSEpyHdSrAkZ73_-vl_De8uSbpTLhN33VygUpFUt0_ImFP_-Nf0sU6jXI2trggYymstwQ/s400/Password.png"/>
+</div>`;
+
+    // GCZ Single Links sections
+    if (singleGCZLinkCount > 0) {
+        generatedHtml += `
+<div class="info-box">
+<div class="section-heading"> 
+<strong>DOWNLOAD SINGLE FILE</strong> 
+</div> 
+</div>
+<div class="section-heading">
+<strong>Format GCZ SINGLE Via INDapk Safelink</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via INDapk Safelink
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="download-links">
+${generateDownloadLinksSection(indapkGczSingleLinks, inputSingleGCZSize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>
+<br><br>
+<div class="section-heading">
+<strong>Format GCZ SINGLE Via Semawur</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via Semawur
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+<div class="download-links">
+${generateDownloadLinksSection(semawurGczSingleLinks, inputSingleGCZSize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>`;
+    }
+
+    generatedHtml += `
+</div>
+
+
 <div id="tab4" class="tab">
+<div class="info-box">
+<span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Pastikan untuk mendownload file dengan benar!
+<br><br>
+<div class="section-heading">
+<strong>Gunakan Bot Telegram untuk download tanpa iklan</strong>
+</div>
+<br>
+<strong>Telegram Bot:</strong> <a href="https://t.me/INDapkBot" rel="nofollow">@INDapkBot</a><br>
+<strong>Telegram Bot Web:</strong> <a href="https://t.me/WebINDapkBot" rel="nofollow">@WebINDapkBot</a><br>
+<strong>ID tiktok:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">@INDapk</a><br>
+<strong>Telegram:</strong> <a href="https://www.tiktok.com/@indapk" rel="nofollow">Klik Disini</a> (Wajib Join)
+<br><br>
+Follow Facebook dan IG Mimin juga dong (Optional)<br>
+<strong>Instagram:</strong> <a href="https://www.instagram.com/indapk" rel="nofollow">@INDapk</a><br>
+<strong>Facebook:</strong> <a href="https://www.facebook.com/IDNApk" rel="nofollow">@INDapk</a>
+<br><br>
+<span style="color: var(--primary-color);"><strong>Rekomendasi Download:</strong></span> Google Drive, Mediafire, Pixeldrain, Qiwi (Jika Google Drive Terkena Limit, Gunakan Link Alternatif Lain)<br>
+<span style="color: var(--primary-color);"><strong>Password:</strong></span> indapk
+</div>
+
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="password-image">
+<img alt="Password" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnMnh52UxSnW5OS41N5rguqSspGatcqhG2sKoyhOzsfuUWz9CopJTq8YhTrvr067UsXVnY4r5RUCFb5n2meOK3a_qA88Yw7J_-f2OIW7Ji28sU0E90v3AlkaVSEpyHdSrAkZ73_-vl_De8uSbpTLhN33VygUpFUt0_ImFP_-Nf0sU6jXI2trggYymstwQ/s400/Password.png"/>
+</div>`;
+
+    // ISO Single Links sections
+    if (singleISOLinkCount > 0) {
+        generatedHtml += `
+<div class="info-box">
+<div class="section-heading"> 
+<strong>DOWNLOAD SINGLE FILE</strong> 
+</div> 
+</div>
+<div class="section-heading">
+<strong>Format ISO SINGLE Via INDapk Safelink</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via INDapk Safelink
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+
+<div class="download-links">
+${generateDownloadLinksSection(indapkIsoSingleLinks, inputSingleISOSize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>
+<br><br>
+<div class="section-heading">
+<strong>Format ISO SINGLE Via Semawur</strong>
+</div>
+<div class="game-title">
+<i class='icon download'></i><strong>${inputName}</strong> Via Semawur
+</div>
+<div class="download-container">
+<a href="https://www.effectiveratecpm.com/a0u1xk79?key=5b07f80a8c301b8ff1987ee96cfb9da4" class="download-button" target="_blank">
+📥 Direct Download
+</a>
+</div>
+<div class="download-links">
+${generateDownloadLinksSection(semawurIsoSingleLinks, inputSingleISOSize)}
+<div class="download-link password">
+<span class="password-text"><strong>Join Whatsapp:</strong> <a href="https://whatsapp.com/channel/0029Vb326pM0lwguAfx6pD3f" rel="nofollow">Click To Join Whatsapp</a></span>
+</div>
+<div class="download-link password">
+<span class="password-text"><strong>Join Telegram:</strong> <a href="https://t.me/indapkgroup" rel="nofollow">Click To Join Telegram</a></span>
+</div>
+</div>`;
+    }
+
+    generatedHtml += `
+</div>
+
+<div id="tab5" class="tab">
 <div class="info-box">
 <span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Pastikan untuk mendownload file dengan benar!
 <br><br>
@@ -2534,7 +2841,7 @@ ${generateDownloadLinksSection(semawurRvzSingleLinks, inputSingleRVZSize)}
     generatedHtml += `
 </div>
 
-<div id="tab5" class="tab">
+<div id="tab6" class="tab">
 <div class="info-box">
 <span style="color: var(--primary-color);"><strong>NOTE: </strong></span> Pastikan untuk mendownload file dengan benar!
 <br><br>
@@ -2620,7 +2927,7 @@ ${generateDownloadLinksSection(semawurWbfsSingleLinks, inputSingleWBFSSize)}
     generatedHtml += `
 </div>
 
-<div id="tab6" class="tab">
+<div id="tab7" class="tab">
 
 
 <div class="donation-section">
@@ -2760,6 +3067,13 @@ function getLinkValues(type) {
                 if (value) links.push(value);
             });
             break;
+        case 'singleGCZ':
+            prefix = 'inputINDapkSingleLinkGCZ';
+            selectedSingleGCZLinksOrder.forEach(linkType => {
+                const value = document.getElementById(prefix + linkType)?.value || "";
+                if (value) links.push(value);
+            });
+            break;
         case 'singleISO':
             prefix = 'inputINDapkSingleLinkISO';
             selectedSingleISOLinksOrder.forEach(linkType => {
@@ -2824,6 +3138,7 @@ function displayFilteredData(filteredData) {
             <td>${game.region || '-'}</td>
             <td>
                 <small>CISO: ${game.ukuran_ciso || '-'}<br>
+                GCZ: ${game.ukuran_gcz || '-'}<br>
                 ISO: ${game.ukuran_iso || '-'}<br>
                 RVZ: ${game.ukuran_rvz || '-'}<br>
                 WBFS: ${game.ukuran_wbfs || '-'}</small>
@@ -2831,6 +3146,7 @@ function displayFilteredData(filteredData) {
             <td>
                 <small>
                     CISO: ${game.jumlah_link_ciso || 0} link<br>
+                    GCZ: ${game.jumlah_link_gcz || 0} link<br>
                     ISO: ${game.jumlah_link_iso || 0} link<br>
                     RVZ: ${game.jumlah_link_rvz || 0} link<br>
                     WBFS: ${game.jumlah_link_wbfs || 0} link
@@ -2898,10 +3214,10 @@ function exportToCSV() {
     
     const headers = [
         'Timestamp', 'Nama Game', 'Category', 'Region',
-        'Ukuran CISO', 'Ukuran ISO', 'Ukuran RVZ', 'Ukuran WBFS',
-        'Jumlah Link CISO', 'Jumlah Link ISO', 'Jumlah Link RVZ', 'Jumlah Link WBFS',
-        'Link Single CISO', 'Link Single ISO', 'Link Single RVZ', 'Link Single WBFS',
-        'Jenis Link CISO', 'Jenis Link ISO', 'Jenis Link RVZ', 'Jenis Link WBFS'
+        'Ukuran CISO', 'Ukuran ISO', 'Ukuran GCZ', 'Ukuran RVZ', 'Ukuran WBFS',
+        'Jumlah Link CISO', 'Jumlah Link ISO', 'Jumlah Link GCZ', 'Jumlah Link RVZ', 'Jumlah Link WBFS',
+        'Link Single CISO', 'Link Single ISO', 'Link Single GCZ', 'Link Single RVZ', 'Link Single WBFS',
+        'Jenis Link CISO', 'Jenis Link ISO', 'Jenis Link GCZ', 'Jenis Link RVZ', 'Jenis Link WBFS'
     ];
     
     const csvContent = [
@@ -2912,18 +3228,22 @@ function exportToCSV() {
             `"${game.category || ''}"`,
             `"${game.region || ''}"`,
             `"${game.ukuran_ciso || ''}"`,
+            `"${game.ukuran_gcz || ''}"`,
             `"${game.ukuran_iso || ''}"`,
             `"${game.ukuran_rvz || ''}"`,
             `"${game.ukuran_wbfs || ''}"`,
             game.jumlah_link_ciso || 0,
+            game.jumlah_link_gcz || 0,
             game.jumlah_link_iso || 0,
             game.jumlah_link_rvz || 0,
             game.jumlah_link_wbfs || 0,
             `"${game.link_single_ciso || ''}"`,
+            `"${game.link_single_gcz || ''}"`,
             `"${game.link_single_iso || ''}"`,
             `"${game.link_single_rvz || ''}"`,
             `"${game.link_single_wbfs || ''}"`,
             `"${game.jenis_link_ciso || ''}"`,
+            `"${game.jenis_link_gcz || ''}"`,
             `"${game.jenis_link_iso || ''}"`,
             `"${game.jenis_link_rvz || ''}"`,
             `"${game.jenis_link_wbfs || ''}"`
@@ -2982,6 +3302,7 @@ function editGame(gameId) {
 
             setFieldValue("inputName", game.nama_game);
             setFieldValue("inputSingleCISOSize", game.ukuran_ciso);
+            setFieldValue("inputSingleGCZSize", game.ukuran_gcz);
             setFieldValue("inputSingleISOSize", game.ukuran_iso);
             setFieldValue("inputSingleRVZSize", game.ukuran_rvz);
             setFieldValue("inputSingleWBFSSize", game.ukuran_wbfs);
@@ -2990,6 +3311,7 @@ function editGame(gameId) {
 
             // Set link counts
             setFieldValue("singleCISOLinkCount", game.jumlah_link_ciso || 0);
+            setFieldValue("singleGCZLinkCount", game.jumlah_link_gcz || 0);
             setFieldValue("singleISOLinkCount", game.jumlah_link_iso || 0);
             setFieldValue("singleRVZLinkCount", game.jumlah_link_rvz || 0);
             setFieldValue("singleWBFSLinkCount", game.jumlah_link_wbfs || 0);
@@ -2997,6 +3319,9 @@ function editGame(gameId) {
             // Update global variables if they exist
             if (typeof singleCISOLinkCount !== 'undefined') {
                 singleCISOLinkCount = game.jumlah_link_ciso || 0;
+            }
+            if (typeof singleGCZLinkCount !== 'undefined') {
+                singleISOLinkCount = game.jumlah_link_gcz || 0;
             }
             if (typeof singleISOLinkCount !== 'undefined') {
                 singleISOLinkCount = game.jumlah_link_iso || 0;
@@ -3011,6 +3336,9 @@ function editGame(gameId) {
             // Set link types if arrays exist
             if (typeof selectedSingleCISOLinksOrder !== 'undefined') {
                 selectedSingleCISOLinksOrder = game.jenis_link_ciso ? game.jenis_link_ciso.split(', ') : [];
+            }
+            if (typeof selectedSingleGCZLinksOrder !== 'undefined') {
+                selectedSingleISOLinksOrder = game.jenis_link_gcz ? game.jenis_link_gcz.split(', ') : [];
             }
             if (typeof selectedSingleISOLinksOrder !== 'undefined') {
                 selectedSingleISOLinksOrder = game.jenis_link_iso ? game.jenis_link_iso.split(', ') : [];
@@ -3044,6 +3372,20 @@ function editGame(gameId) {
                     }
                 });
             }
+
+            if (game.link_single_gcz && typeof selectedSingleGCZLinksOrder !== 'undefined') {
+                const linkArray = game.link_single_gcz.split(', ');
+                linkArray.forEach((link, index) => {
+                    if (selectedSingleGCZLinksOrder[index]) {
+                        const inputId = `inputINDapkSingleLinkGCZ${selectedSingleGCZLinksOrder[index]}`;
+                        const input = document.getElementById(inputId);
+                        if (input) {
+                            input.value = link;
+                        }
+                    }
+                });
+            }
+
 
             if (game.link_single_iso && typeof selectedSingleISOLinksOrder !== 'undefined') {
                 const linkArray = game.link_single_iso.split(', ');
@@ -3133,6 +3475,7 @@ function viewGameDetails(gameId) {
         // Isi informasi dasar
         document.getElementById('detailGameName').innerHTML = `<i class="fas fa-gamepad me-2 text-primary"></i><span class="text-info">${game.nama_game || '-'}</span>`;
         document.getElementById('detailCisoSize').innerHTML = `<span class="badge bg-info">${game.ukuran_ciso || '-'}</span>`;
+        document.getElementById('detailGczSize').innerHTML = `<span class="badge bg-info">${game.ukuran_gcz || '-'}</span>`;
         document.getElementById('detailIsoSize').innerHTML = `<span class="badge bg-info">${game.ukuran_iso || '-'}</span>`;
         document.getElementById('detailRvzSize').innerHTML = `<span class="badge bg-info">${game.ukuran_rvz || '-'}</span>`;
         document.getElementById('detailWbfsSize').innerHTML = `<span class="badge bg-info">${game.ukuran_wbfs || '-'}</span>`;
@@ -3151,6 +3494,7 @@ function viewGameDetails(gameId) {
 
         // Isi statistik link dengan animasi counter
         animateCounter('detailCisoCount', game.jumlah_link_ciso || 0);
+        animateCounter('detailGczCount', game.jumlah_link_gcz || 0);
         animateCounter('detailIsoCount', game.jumlah_link_iso || 0);
         animateCounter('detailRvzCount', game.jumlah_link_rvz || 0);
         animateCounter('detailWbfsCount', game.jumlah_link_wbfs || 0);
@@ -3159,6 +3503,7 @@ function viewGameDetails(gameId) {
         let linkTypesHtml = '';
         const linkTypeData = [
             { type: game.jenis_link_ciso, label: 'CISO', icon: 'fas fa-file-alt', color: 'primary' },
+            { type: game.jenis_link_gcz, label: 'GCZ', icon: 'fas fa-compact-disc', color: 'success' },
             { type: game.jenis_link_iso, label: 'ISO', icon: 'fas fa-compact-disc', color: 'success' },
             { type: game.jenis_link_rvz, label: 'RVZ', icon: 'fas fa-file-archive', color: 'info' },
             { type: game.jenis_link_wbfs, label: 'WBFS', icon: 'fas fa-file-code', color: 'warning' }
@@ -3266,6 +3611,7 @@ function viewGameDetails(gameId) {
 
     // Isi link download dengan delay untuk effect
     createLinkList(game.link_single_ciso, 'detailCisoLinks');
+    createLinkList(game.link_single_gcz, 'detailGczLinks');
     createLinkList(game.link_single_iso, 'detailIsoLinks');
     createLinkList(game.link_single_rvz, 'detailRvzLinks');
     createLinkList(game.link_single_wbfs, 'detailWbfsLinks');
@@ -3286,6 +3632,10 @@ function viewGameDetails(gameId) {
         if (game.link_single_ciso) {
             allLinks += `CISO Links:\n${game.link_single_ciso}\n\n`;
             linkCount += game.link_single_ciso.split(', ').length;
+        }
+        if (game.link_single_gcz) {
+            allLinks += `GCZ Links:\n${game.link_single_gcz}\n\n`;
+            linkCount += game.link_single_gcz.split(', ').length;
         }
         if (game.link_single_iso) {
             allLinks += `ISO Links:\n${game.link_single_iso}\n\n`;
@@ -3405,6 +3755,7 @@ function showToast(message, type = 'info') {
 function updateTabCounters(game) {
     const tabs = [
         { id: 'ciso-tab', count: game.jumlah_link_ciso || 0 },
+        { id: 'gcz-tab', count: game.jumlah_link_gcz || 0 },
         { id: 'iso-tab', count: game.jumlah_link_iso || 0 },
         { id: 'rvz-tab', count: game.jumlah_link_rvz || 0 },
         { id: 'wbfs-tab', count: game.jumlah_link_wbfs || 0 }
@@ -3458,6 +3809,7 @@ if (currentTheme === 'dark') {
 function saveLinkSettings() {
     // Validasi dulu apakah sudah memilih sesuai jumlah yang ditentukan
     if ((singleCISOLinkCount > 0 && selectedSingleCISOLinksOrder.length !== singleCISOLinkCount) || 
+        (singleGCZLinkCount > 0 && selectedSingleGCZLinksOrder.length !== singleGCZLinkCount) ||
         (singleISOLinkCount > 0 && selectedSingleISOLinksOrder.length !== singleISOLinkCount) ||
         (singleRVZLinkCount > 0 && selectedSingleRVZLinksOrder.length !== singleRVZLinkCount) ||
         (singleWBFSLinkCount > 0 && selectedSingleWBFSLinksOrder.length !== singleWBFSLinkCount)) {
@@ -3481,10 +3833,12 @@ function confirmSaveSettings() {
     const settings = {
         name: settingsName,
         singleCISOLinkCount: singleCISOLinkCount,
+        singleGCZLinkCount: singleGCZLinkCount,
         singleISOLinkCount: singleISOLinkCount,
         singleRVZLinkCount: singleRVZLinkCount,
         singleWBFSLinkCount: singleWBFSLinkCount,
         singleCISOLinks: selectedSingleCISOLinksOrder,
+        singleGCZLinks: selectedSingleGCZLinksOrder,
         singleISOLinks: selectedSingleISOLinksOrder,
         singleRVZLinks: selectedSingleRVZLinksOrder,
         singleWBFSLinks: selectedSingleWBFSLinksOrder,
@@ -3534,6 +3888,7 @@ function loadLinkSettingsModal() {
             </div>
             <div class="mb-2">
                 <small class="text-muted">Single CISO: ${setting.singleCISOLinkCount} link (${setting.singleCISOLinks?.join(', ') || '-'})</small><br>
+                <small class="text-muted">Single GCZ: ${setting.singleGCZLinkCount} link (${setting.singleGCZLinks?.join(', ') || '-'})</small><br>
                 <small class="text-muted">Single ISO: ${setting.singleISOLinkCount} link (${setting.singleISOLinks?.join(', ') || '-'})</small><br>
                 <small class="text-muted">Single RVZ: ${setting.singleRVZLinkCount} link (${setting.singleRVZLinks?.join(', ') || '-'})</small><br>
                 <small class="text-muted">Single WBFS: ${setting.singleWBFSLinkCount} link (${setting.singleWBFSLinks?.join(', ') || '-'})</small>
@@ -3564,16 +3919,19 @@ function applyLinkSettings(index) {
         
         // Set jumlah link
         document.getElementById('singleCISOLinkCount').value = settings.singleCISOLinkCount || 0;
+        document.getElementById('singleGCZLinkCount').value = settings.singleGCZLinkCount || 0;
         document.getElementById('singleISOLinkCount').value = settings.singleISOLinkCount || 0;
         document.getElementById('singleRVZLinkCount').value = settings.singleRVZLinkCount || 0;
         document.getElementById('singleWBFSLinkCount').value = settings.singleWBFSLinkCount || 0;
         singleCISOLinkCount = settings.singleCISOLinkCount || 0;
+        singleGCZLinkCount = settings.singleGCZLinkCount || 0;
         singleISOLinkCount = settings.singleISOLinkCount || 0;
         singleRVZLinkCount = settings.singleRVZLinkCount || 0;
         singleWBFSLinkCount = settings.singleWBFSLinkCount || 0;
         
         // Uncheck semua checkbox terlebih dahulu
         document.querySelectorAll('input[name="singleCISOLinkType"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('input[name="singleGCZLinkType"]').forEach(cb => cb.checked = false);
         document.querySelectorAll('input[name="singleISOLinkType"]').forEach(cb => cb.checked = false);
         document.querySelectorAll('input[name="singleRVZLinkType"]').forEach(cb => cb.checked = false);
         document.querySelectorAll('input[name="singleWBFSLinkType"]').forEach(cb => cb.checked = false);
@@ -3586,6 +3944,13 @@ function applyLinkSettings(index) {
             });
         }
         
+        if (settings.singleGCZLinks) {
+            settings.singleGCZLinks.forEach(linkType => {
+                const checkbox = document.querySelector(`input[name="singleGCZLinkType"][value="${linkType}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+        }
+
         if (settings.singleISOLinks) {
             settings.singleISOLinks.forEach(linkType => {
                 const checkbox = document.querySelector(`input[name="singleISOLinkType"][value="${linkType}"]`);
@@ -3609,6 +3974,7 @@ function applyLinkSettings(index) {
         
         // Update tampilan
         updateSelectedLinksDisplay('singleCISO');
+        updateSelectedLinksDisplay('singleGCZ');
         updateSelectedLinksDisplay('singleISO');
         updateSelectedLinksDisplay('singleRVZ');
         updateSelectedLinksDisplay('singleWBFS');
@@ -3716,6 +4082,10 @@ function deleteLinkSettings(index) {
                                         <td id="detailCisoSize">-</td>
                                     </tr>
                                     <tr>
+                                        <th>Ukuran GCZ</th>
+                                        <td id="detailGczSize">-</td>
+                                    </tr>
+                                    <tr>
                                         <th>Ukuran ISO</th>
                                         <td id="detailIsoSize">-</td>
                                     </tr>
@@ -3757,6 +4127,14 @@ function deleteLinkSettings(index) {
                                             <div class="card-header fw-bold">CISO</div>
                                             <div class="card-body">
                                                 <p class="mb-1"><i class="fas fa-file-alt me-2"></i> Link: <span id="detailCisoCount" class="badge bg-primary">0</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card bg-light mb-3">
+                                            <div class="card-header fw-bold">GCZ</div>
+                                            <div class="card-body">
+                                                <p class="mb-1"><i class="fas fa-file-alt me-2"></i> Link: <span id="detailGczCount" class="badge bg-primary">0</span></p>
                                             </div>
                                         </div>
                                     </div>
@@ -3805,6 +4183,11 @@ function deleteLinkSettings(index) {
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="gcz-tab" data-bs-toggle="tab" data-bs-target="#gcz" type="button" role="tab">
+                            <i class="fas fa-compact-disc me-1"></i> GCZ
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="iso-tab" data-bs-toggle="tab" data-bs-target="#iso" type="button" role="tab">
                             <i class="fas fa-compact-disc me-1"></i> ISO
                         </button>
@@ -3831,6 +4214,16 @@ function deleteLinkSettings(index) {
                             </div>
                         </div>
                     </div>
+                    <!-- Tab GCZ -->
+                    <div class="tab-pane fade" id="gcz" role="tabpanel">
+                        <div id="detailGczLinks" class="list-group">
+                            <div class="list-group-item text-center text-muted">
+                                <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                                <p class="mb-0">Tidak ada link GCZ</p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     
                     <!-- Tab ISO -->
                     <div class="tab-pane fade" id="iso" role="tabpanel">
