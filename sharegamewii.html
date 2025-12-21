@@ -459,6 +459,9 @@ label {
 <label for="inputSizeCISO"><i class="fas fa-save"></i> Ukuran CISO Game:</label>
 <input type="text" id="inputSizeCISO" name="inputSizeCISO" placeholder="Contoh: 2.1 GB">
 
+<label for="inputSizeGCZ"><i class="fas fa-compact-disc"></i> Ukuran ISO Game:</label>
+<input type="text" id="inputSizeGCZ" name="inputSizeGCZ" placeholder="Contoh: 4.3 GB">
+
 <label for="inputSizeISO"><i class="fas fa-compact-disc"></i> Ukuran ISO Game:</label>
 <input type="text" id="inputSizeISO" name="inputSizeISO" placeholder="Contoh: 4.3 GB">
 
@@ -644,6 +647,7 @@ function generateCode() {
         // Get values from game form
         const inputName = document.getElementById("inputName").value;
         const inputSizeCISO = document.getElementById("inputSizeCISO").value;
+        const inputSizeGCZ = document.getElementById("inputSizeGCZ").value;
         const inputSizeISO = document.getElementById("inputSizeISO").value;
         const inputSizeRVZ = document.getElementById("inputSizeRVZ").value;
         const inputSizeWBFS = document.getElementById("inputSizeWBFS").value;
@@ -660,6 +664,7 @@ function generateCode() {
             generatedHtml = `🎮Update Game Wii:
 Nama Game: ${inputName}
 Ukuran Game CISO: ${inputSizeCISO}
+Ukuran Game GCZ: ${inputSizeGCZ}
 Ukuran Game ISO: ${inputSizeISO}
 Ukuran Game RVZ: ${inputSizeRVZ}
 Ukuran Game WBFS: ${inputSizeWBFS}
@@ -668,7 +673,7 @@ Region: ${inputRegion}
 Emulator: Dolphin (Android/Windows), Wii Console
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: CISO, ISO, RVZ, dan WBFS
+Format: CISO, GCZ, ISO, RVZ, dan WBFS
 
 🌐Link Game:
 ${inputLink}
@@ -682,6 +687,7 @@ NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD`;
 🎮Update Game Wii:
 Nama Game: ${inputName}
 Ukuran Game CISO: ${inputSizeCISO}
+Ukuran Game GCZ: ${inputSizeGCZ}
 Ukuran Game ISO: ${inputSizeISO}
 Ukuran Game RVZ: ${inputSizeRVZ}
 Ukuran Game WBFS: ${inputSizeWBFS}
@@ -690,7 +696,7 @@ Region: ${inputRegion}
 Emulator: Dolphin (Android/Windows), Wii Console
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: CISO, ISO, RVZ, dan WBFS
+Format: CISO, GCZ, ISO, RVZ, dan WBFS
 
 🌐Link Game:
 ${inputLink}
@@ -704,6 +710,7 @@ NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD`;
 🎮Update Game Wii:
 Nama Game: ${inputName}
 Ukuran Game CISO: ${inputSizeCISO}
+Ukuran Game GCZ: ${inputSizeGCZ}
 Ukuran Game ISO: ${inputSizeISO}
 Ukuran Game RVZ: ${inputSizeRVZ}
 Ukuran Game WBFS: ${inputSizeWBFS}
@@ -712,7 +719,7 @@ Region: ${inputRegion}
 Emulator: Dolphin (Android/Windows), Wii Console
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: CISO, ISO, RVZ, dan WBFS
+Format: CISO, GCZ, ISO, RVZ, dan WBFS
 
 🌐Link Game:
 ${inputLink}
