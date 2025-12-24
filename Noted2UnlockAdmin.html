@@ -597,28 +597,43 @@
       color: var(--text-muted);
     }
 
-    /* Bulk Mode Styles */
+    /* Mode Switcher Styles */
     .mode-switcher {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     .mode-btn {
       flex: 1;
       padding: 10px;
       text-align: center;
-      border-radius: 8px;
       cursor: pointer;
       transition: var(--transition);
       border: 1px solid var(--card-border);
       background-color: var(--card-bg);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 500;
     }
 
     .mode-btn.active {
       background-color: var(--primary);
       color: white;
       border-color: var(--primary);
+    }
+
+    .mode-form {
+      display: none;
+    }
+
+    .mode-form.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
     }
 
     .bulk-textarea {
@@ -726,20 +741,29 @@
         flex: 1;
         justify-content: center;
       }
+      
+      .mode-switcher {
+        flex-direction: column;
+      }
+      
+      .mode-btn {
+        width: 100%;
+      }
     }
-    /* Tambahkan di bagian CSS */
-#copyAllLinksBtn, #copyAllLinksWithNameBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  font-weight: 500;
-}
+    
+    /* Copy buttons */
+    #copyAllLinksBtn, #copyAllLinksWithNameBtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-weight: 500;
+    }
 
-#copyAllLinksBtn:hover, #copyAllLinksWithNameBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
+    #copyAllLinksBtn:hover, #copyAllLinksWithNameBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 <body data-theme="dark">
@@ -803,55 +827,60 @@
             
             <!-- Mode Switcher -->
             <div class="mode-switcher mb-3">
-              <div class="mode-btn active" id="singleModeBtn">
+              <div class="mode-btn active" id="singleModeBtn" data-mode="single">
                 <i class="bi bi-file-earmark-text me-2"></i>Single Mode
               </div>
-              <div class="mode-btn" id="bulkModeBtn">
+              <div class="mode-btn" id="bulkModeBtn" data-mode="bulk">
                 <i class="bi bi-collection me-2"></i>Bulk Mode
+              </div>
+              <div class="mode-btn" id="videoModeBtn" data-mode="video">
+                <i class="bi bi-camera-video me-2"></i>Bulk Mode Video V1
               </div>
             </div>
             
             <!-- Single Mode Form -->
-            <form id="bulkNoteForm" class="single-mode-form">
-              <div id="notesContainer">
-                <div class="note-item" data-index="0">
-                  <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0">
-                      <i class="bi bi-sticky me-2"></i>
-                      Note #1
-                    </h6>
-                    <button class="btn btn-danger btn-sm remove-note-btn" style="display: none;" type="button">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </div>
-                  
-                  <div class="row">
-                    <div class="col-md-12 mb-3">
-                      <label class="form-label">
-                        <i class="bi bi-tag text-primary me-2"></i>
-                        Nama Note
-                      </label>
-                      <input class="form-control nama-note" placeholder="Masukkan nama note..." required type="text">
+            <div class="mode-form active" id="singleModeForm">
+              <form id="bulkNoteForm">
+                <div id="notesContainer">
+                  <div class="note-item" data-index="0">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <h6 class="mb-0">
+                        <i class="bi bi-sticky me-2"></i>
+                        Note #1
+                      </h6>
+                      <button class="btn btn-danger btn-sm remove-note-btn" style="display: none;" type="button">
+                        <i class="bi bi-trash"></i>
+                      </button>
                     </div>
                     
-                    <div class="col-md-12 mb-3">
-                      <label class="form-label">
-                        <i class="bi bi-pencil text-primary me-2"></i>
-                        Konten Note
-                      </label>
-                      <textarea class="form-control note-content" placeholder="Masukkan konten note..." required></textarea>
+                    <div class="row">
+                      <div class="col-md-12 mb-3">
+                        <label class="form-label">
+                          <i class="bi bi-tag text-primary me-2"></i>
+                          Nama Note
+                        </label>
+                        <input class="form-control nama-note" placeholder="Masukkan nama note..." required type="text">
+                      </div>
+                      
+                      <div class="col-md-12 mb-3">
+                        <label class="form-label">
+                          <i class="bi bi-pencil text-primary me-2"></i>
+                          Konten Note
+                        </label>
+                        <textarea class="form-control note-content" placeholder="Masukkan konten note..." required></textarea>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              
-              <button class="btn btn-primary w-100 mt-3" type="submit">
-                <i class="bi bi-magic me-2"></i> Generate Semua Note Link
-              </button>
-            </form>
+                
+                <button class="btn btn-primary w-100 mt-3" type="submit">
+                  <i class="bi bi-magic me-2"></i> Generate Semua Note Link
+                </button>
+              </form>
+            </div>
             
             <!-- Bulk Mode Form -->
-            <div class="bulk-mode-form" style="display: none;">
+            <div class="mode-form" id="bulkModeForm">
               <div class="mb-3">
                 <label class="form-label">
                   <i class="bi bi-pencil text-primary me-2"></i>
@@ -901,6 +930,43 @@ https://multiup.io/download/8eaf27c89836286b141f894e749820ac/%5BINDapk.com%5D%20
               <div class="parse-result" id="parseResult" style="display: none;">
                 <h5><i class="bi bi-list-check me-2"></i>Parsing Result</h5>
                 <div id="parseResultContent"></div>
+              </div>
+            </div>
+            
+            <!-- Video Mode Form -->
+            <div class="mode-form" id="videoModeForm">
+              <div class="mb-3">
+                <label class="form-label">
+                  <i class="bi bi-camera-video text-primary me-2"></i>
+                  Paste konten video bulk di sini (Format: Adelia sarah artis sound horeg<br>https://d-s.io/e/eolqd1dw0x68)
+                </label>
+                <textarea class="form-control bulk-textarea" id="videoNoteTextarea" placeholder="Contoh format:
+Adelia sarah artis sound horeg
+https://d-s.io/e/eolqd1dw0x68
+Tobrut Brutal
+https://d-s.io/e/d3zgjx1tzfom
+
+atau format dengan multiple videos:
+Video 1 Title
+https://link1.com
+Video 2 Title
+https://link2.com
+Video 3 Title
+https://link3.com"></textarea>
+              </div>
+              
+              <div class="d-flex gap-2 mb-3">
+                <button class="btn btn-primary" id="parseVideoBtn">
+                  <i class="bi bi-search me-2"></i> Parse Konten Video
+                </button>
+                <button class="btn btn-success" id="generateFromVideoBtn" disabled>
+                  <i class="bi bi-magic me-2"></i> Generate Video Notes
+                </button>
+              </div>
+              
+              <div class="parse-result" id="videoParseResult" style="display: none;">
+                <h5><i class="bi bi-list-check me-2"></i>Parsing Result - Video</h5>
+                <div id="videoParseResultContent"></div>
               </div>
             </div>
             
@@ -1086,6 +1152,8 @@ https://multiup.io/download/8eaf27c89836286b141f894e749820ac/%5BINDapk.com%5D%20
     let notedData = [];
     let currentSort = 'date'; // default sorting
     let parsedNotes = []; // Untuk menyimpan hasil parsing bulk mode
+    let parsedVideoNotes = []; // Untuk menyimpan hasil parsing video mode
+    let currentMode = 'single'; // single, bulk, video
     
     // Theme switch functionality
     const toggleSwitch = document.querySelector('#checkbox');
@@ -1142,20 +1210,39 @@ https://multiup.io/download/8eaf27c89836286b141f894e749820ac/%5BINDapk.com%5D%20
     });
 
     // Mode switcher functionality
-    document.getElementById('singleModeBtn').addEventListener('click', function() {
-      document.getElementById('singleModeBtn').classList.add('active');
-      document.getElementById('bulkModeBtn').classList.remove('active');
-      document.querySelector('.single-mode-form').style.display = 'block';
-      document.querySelector('.bulk-mode-form').style.display = 'none';
+    function switchMode(mode) {
+      // Update active button
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById(`${mode}ModeBtn`).classList.add('active');
+      
+      // Hide all forms
+      document.querySelectorAll('.mode-form').forEach(form => {
+        form.classList.remove('active');
+      });
+      
+      // Show selected form
+      document.getElementById(`${mode}ModeForm`).classList.add('active');
+      
+      // Hide result container
       document.getElementById('resultContainer').style.display = 'none';
+      
+      // Update current mode
+      currentMode = mode;
+    }
+
+    // Attach event listeners to mode buttons
+    document.getElementById('singleModeBtn').addEventListener('click', function() {
+      switchMode('single');
     });
 
     document.getElementById('bulkModeBtn').addEventListener('click', function() {
-      document.getElementById('bulkModeBtn').classList.add('active');
-      document.getElementById('singleModeBtn').classList.remove('active');
-      document.querySelector('.single-mode-form').style.display = 'none';
-      document.querySelector('.bulk-mode-form').style.display = 'block';
-      document.getElementById('resultContainer').style.display = 'none';
+      switchMode('bulk');
+    });
+
+    document.getElementById('videoModeBtn').addEventListener('click', function() {
+      switchMode('video');
     });
 
     // Parse bulk content
@@ -1180,6 +1267,30 @@ https://multiup.io/download/8eaf27c89836286b141f894e749820ac/%5BINDapk.com%5D%20
       displayParseResult(parsedNotes);
       document.getElementById('parseResult').style.display = 'block';
       document.getElementById('generateFromBulkBtn').disabled = false;
+    });
+
+    // Parse video content
+    document.getElementById('parseVideoBtn').addEventListener('click', function() {
+      const videoContent = document.getElementById('videoNoteTextarea').value.trim();
+      if (!videoContent) {
+        showNotification('Mohon masukkan konten video terlebih dahulu', 'error');
+        return;
+      }
+
+      // Parse the content
+      parsedVideoNotes = parseVideoContent(videoContent);
+      
+      if (parsedVideoNotes.length === 0) {
+        showNotification('Tidak dapat menemukan format video yang valid', 'error');
+        document.getElementById('videoParseResult').style.display = 'none';
+        document.getElementById('generateFromVideoBtn').disabled = true;
+        return;
+      }
+
+      // Display parse result
+      displayVideoParseResult(parsedVideoNotes);
+      document.getElementById('videoParseResult').style.display = 'block';
+      document.getElementById('generateFromVideoBtn').disabled = false;
     });
 
     // Generate notes from bulk content
@@ -1208,162 +1319,293 @@ https://multiup.io/download/8eaf27c89836286b141f894e749820ac/%5BINDapk.com%5D%20
       updateNoteNumbers();
 
       // Switch back to single mode
-      document.getElementById('singleModeBtn').click();
+      switchMode('single');
 
       showNotification(`${parsedNotes.length} note berhasil diparsing dan siap digenerate!`, 'success');
     });
 
+    // Generate notes from video content
+    document.getElementById('generateFromVideoBtn').addEventListener('click', function() {
+      if (parsedVideoNotes.length === 0) {
+        showNotification('Tidak ada video note yang bisa digenerate', 'error');
+        return;
+      }
 
+      // Clear existing notes in single mode
+      const notesContainer = document.getElementById('notesContainer');
+      notesContainer.innerHTML = '';
 
-// Function to parse bulk content and create separate notes per domain
-function parseBulkContent(content) {
-  const lines = content.split('\n');
-  const notes = [];
-  
-  // Domain mapping
-  const domainMap = {
-    'drive.google.com': 'Google Drive',
-    'mediafire.com': 'Mediafire',
-    'vikingfile.com': 'Vikingfile',
-    'pixeldrain.com': 'Pixeldrain',
-    '1fichier.com': '1Fichier',
-    'multiup.io': 'Multiup'
-  };
-  
-  let currentBaseName = '';
-  let sizeInfo = [];
-  let urlsForCurrentNote = [];
-  
-  // Process each line
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    
-    // Skip empty lines
-    if (!line) continue;
-    
-    // Check if line is a note name (not URL, not size info)
-    if (!line.match(/^https?:\/\//i) && !line.match(/^\d+\.\d+\s*(GB|MB|KB)$/i)) {
-      // If we have a previous note to process, process it first
+      // Create note items for each video note
+      parsedVideoNotes.forEach((note, index) => {
+        const noteItem = createNoteItem(index);
+        noteItem.querySelector('.nama-note').value = note.name;
+        noteItem.querySelector('.note-content').value = note.content;
+        notesContainer.appendChild(noteItem);
+      });
+
+      // Update counters
+      noteIndex = parsedVideoNotes.length;
+      updateNoteCount();
+      updateRemoveButtons();
+      updateNoteNumbers();
+
+      // Switch back to single mode
+      switchMode('single');
+
+      showNotification(`${parsedVideoNotes.length} video note berhasil diparsing dan siap digenerate!`, 'success');
+    });
+
+    // Function to parse bulk content and create separate notes per domain
+    function parseBulkContent(content) {
+      const lines = content.split('\n');
+      const notes = [];
+      
+      // Domain mapping
+      const domainMap = {
+        'drive.google.com': 'Google Drive',
+        'mediafire.com': 'Mediafire',
+        'vikingfile.com': 'Vikingfile',
+        'pixeldrain.com': 'Pixeldrain',
+        '1fichier.com': '1Fichier',
+        'multiup.io': 'Multiup'
+      };
+      
+      let currentBaseName = '';
+      let sizeInfo = [];
+      let urlsForCurrentNote = [];
+      
+      // Process each line
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        // Skip empty lines
+        if (!line) continue;
+        
+        // Check if line is a note name (not URL, not size info)
+        if (!line.match(/^https?:\/\//i) && !line.match(/^\d+\.\d+\s*(GB|MB|KB)$/i)) {
+          // If we have a previous note to process, process it first
+          if (currentBaseName && urlsForCurrentNote.length > 0) {
+            const notesByDomain = groupUrlsByDomain(currentBaseName, sizeInfo, urlsForCurrentNote, domainMap);
+            notes.push(...notesByDomain);
+          }
+          
+          // Start new note
+          currentBaseName = line;
+          sizeInfo = [];
+          urlsForCurrentNote = [];
+        } 
+        // Collect size info
+        else if (line.match(/^\d+\.\d+\s*(GB|MB|KB)$/i)) {
+          sizeInfo.push(line);
+        }
+        // Collect URLs
+        else if (line.match(/^https?:\/\//i)) {
+          urlsForCurrentNote.push(line);
+        }
+      }
+      
+      // Process the last note if exists
       if (currentBaseName && urlsForCurrentNote.length > 0) {
         const notesByDomain = groupUrlsByDomain(currentBaseName, sizeInfo, urlsForCurrentNote, domainMap);
         notes.push(...notesByDomain);
       }
       
-      // Start new note
-      currentBaseName = line;
-      sizeInfo = [];
-      urlsForCurrentNote = [];
-    } 
-    // Collect size info
-    else if (line.match(/^\d+\.\d+\s*(GB|MB|KB)$/i)) {
-      sizeInfo.push(line);
+      return notes;
     }
-    // Collect URLs
-    else if (line.match(/^https?:\/\//i)) {
-      urlsForCurrentNote.push(line);
-    }
-  }
-  
-  // Process the last note if exists
-  if (currentBaseName && urlsForCurrentNote.length > 0) {
-    const notesByDomain = groupUrlsByDomain(currentBaseName, sizeInfo, urlsForCurrentNote, domainMap);
-    notes.push(...notesByDomain);
-  }
-  
-  return notes;
-}
 
-// Helper function to group URLs by domain for a single note
-function groupUrlsByDomain(baseName, sizeInfo, urls, domainMap) {
-  const domainGroups = {}; // Reset untuk setiap note
-  const notes = [];
-  
-  // Group URLs by domain
-  urls.forEach(url => {
-    try {
-      const urlObj = new URL(url);
-      const domain = urlObj.hostname.replace('www.', '');
-      const domainName = domainMap[domain] || domain;
+    // Function to parse video content (Format: Title\nURL)
+    function parseVideoContent(content) {
+      const lines = content.split('\n');
+      const notes = [];
+      let currentTitle = '';
+      let currentUrl = '';
       
-      if (!domainGroups[domainName]) {
-        domainGroups[domainName] = [];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        if (!line) continue; // Skip empty lines
+        
+        if (!line.match(/^https?:\/\//i)) {
+          // This is a title line
+          if (currentTitle && currentUrl) {
+            // Create note from previous title and URL
+            const note = createVideoNote(currentTitle, currentUrl);
+            notes.push(note);
+            currentTitle = '';
+            currentUrl = '';
+          }
+          currentTitle = line;
+        } else if (line.match(/^https?:\/\//i)) {
+          // This is a URL line
+          currentUrl = line;
+          
+          // If we have a title, create note
+          if (currentTitle) {
+            const note = createVideoNote(currentTitle, currentUrl);
+            notes.push(note);
+            currentTitle = '';
+            currentUrl = '';
+          }
+        }
       }
-      domainGroups[domainName].push(url);
-    } catch (e) {
-      console.error('Invalid URL:', url);
+      
+      // Create note for the last pair if exists
+      if (currentTitle && currentUrl) {
+        const note = createVideoNote(currentTitle, currentUrl);
+        notes.push(note);
+      }
+      
+      return notes;
     }
-  });
-  
-  // Create notes from domain groups
-  for (const domainName in domainGroups) {
-    const urls = domainGroups[domainName];
-    const noteName = `${baseName} [${domainName}]`;
-    
-    let noteContent = `${noteName}\n`;
-    if (sizeInfo.length > 0) {
-      noteContent += `${sizeInfo.join('\n')}\n\n`;
-    }
-    noteContent += urls.join('\n');
-    
-    // Add footer
-    noteContent += `\n\n⚠️ DOWNLOAD APLIKASI INDapk:\n` +
-      `🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing\n` +
-      `🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file\n` +
-      `🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet`;
-    
-    notes.push({
-      name: noteName,
-      size: sizeInfo.join(', '),
-      content: noteContent
-    });
-  }
-  
-  return notes;
-}
 
-// Function to display parse result with separate notes per domain
-function displayParseResult(notes) {
-  const resultContainer = document.getElementById('parseResultContent');
-  resultContainer.innerHTML = '';
-  
-  if (notes.length === 0) {
-    resultContainer.innerHTML = `
-      <div class="alert alert-warning">
-        <i class="bi bi-exclamation-triangle me-2"></i>
-        Tidak dapat menemukan format note yang valid
-      </div>
-    `;
-    return;
-  }
-  
-  notes.forEach(note => {
-    const item = document.createElement('div');
-    item.className = 'parse-result-item mb-3 p-3 border rounded';
-    
-    // Count links
-    const linkCount = (note.content.match(/https?:\/\/[^\s]+/g) || []).length - 3; // Minus 3 untuk footer links
-    
-    item.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="parse-result-name">
-          <i class="bi bi-sticky me-2"></i>
-          <strong>${note.name}</strong>
-        </div>
-        <div class="badge bg-primary">
-          ${linkCount > 0 ? linkCount : 0} links
-        </div>
-      </div>
-      <div class="mt-2">
-        <small class="text-muted">${note.size}</small>
-      </div>
-    `;
-    
-    resultContainer.appendChild(item);
-  });
-  
-  // Update note count
-  document.getElementById('noteCount').textContent = notes.length;
-}
+    // Helper function to create video note content
+    function createVideoNote(title, url) {
+      const noteContent = `📹 ${title}\n\n` +
+        `🎬 Video Link:\n` +
+        `${url}\n\n` +
+        `⚠️ DOWNLOAD APLIKASI INDapk:\n` +
+        `🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing\n` +
+        `🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file\n` +
+        `🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet`;
+      
+      return {
+        name: `Video: ${title}`,
+        content: noteContent
+      };
+    }
+
+    // Helper function to group URLs by domain for a single note
+    function groupUrlsByDomain(baseName, sizeInfo, urls, domainMap) {
+      const domainGroups = {}; // Reset untuk setiap note
+      const notes = [];
+      
+      // Group URLs by domain
+      urls.forEach(url => {
+        try {
+          const urlObj = new URL(url);
+          const domain = urlObj.hostname.replace('www.', '');
+          const domainName = domainMap[domain] || domain;
+          
+          if (!domainGroups[domainName]) {
+            domainGroups[domainName] = [];
+          }
+          domainGroups[domainName].push(url);
+        } catch (e) {
+          console.error('Invalid URL:', url);
+        }
+      });
+      
+      // Create notes from domain groups
+      for (const domainName in domainGroups) {
+        const urls = domainGroups[domainName];
+        const noteName = `${baseName} [${domainName}]`;
+        
+        let noteContent = `${noteName}\n`;
+        if (sizeInfo.length > 0) {
+          noteContent += `${sizeInfo.join('\n')}\n\n`;
+        }
+        noteContent += urls.join('\n');
+        
+        // Add footer
+        noteContent += `\n\n⚠️ DOWNLOAD APLIKASI INDapk:\n` +
+          `🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing\n` +
+          `🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file\n` +
+          `🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet`;
+        
+        notes.push({
+          name: noteName,
+          size: sizeInfo.join(', '),
+          content: noteContent
+        });
+      }
+      
+      return notes;
+    }
+
+    // Function to display parse result with separate notes per domain
+    function displayParseResult(notes) {
+      const resultContainer = document.getElementById('parseResultContent');
+      resultContainer.innerHTML = '';
+      
+      if (notes.length === 0) {
+        resultContainer.innerHTML = `
+          <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Tidak dapat menemukan format note yang valid
+          </div>
+        `;
+        return;
+      }
+      
+      notes.forEach(note => {
+        const item = document.createElement('div');
+        item.className = 'parse-result-item mb-3 p-3 border rounded';
+        
+        // Count links
+        const linkCount = (note.content.match(/https?:\/\/[^\s]+/g) || []).length - 3; // Minus 3 untuk footer links
+        
+        item.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="parse-result-name">
+              <i class="bi bi-sticky me-2"></i>
+              <strong>${note.name}</strong>
+            </div>
+            <div class="badge bg-primary">
+              ${linkCount > 0 ? linkCount : 0} links
+            </div>
+          </div>
+          <div class="mt-2">
+            <small class="text-muted">${note.size}</small>
+          </div>
+        `;
+        
+        resultContainer.appendChild(item);
+      });
+      
+      // Update note count
+      document.getElementById('noteCount').textContent = notes.length;
+    }
+
+    // Function to display video parse result
+    function displayVideoParseResult(notes) {
+      const resultContainer = document.getElementById('videoParseResultContent');
+      resultContainer.innerHTML = '';
+      
+      if (notes.length === 0) {
+        resultContainer.innerHTML = `
+          <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Tidak dapat menemukan format video yang valid
+          </div>
+        `;
+        return;
+      }
+      
+      notes.forEach((note, index) => {
+        const item = document.createElement('div');
+        item.className = 'parse-result-item mb-3 p-3 border rounded';
+        
+        item.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="parse-result-name">
+              <i class="bi bi-camera-video me-2"></i>
+              <strong>${note.name}</strong>
+            </div>
+            <div class="badge bg-primary">
+              Video ${index + 1}
+            </div>
+          </div>
+          <div class="mt-2">
+            <small class="text-muted">${note.content.split('\n')[0]}</small>
+          </div>
+        `;
+        
+        resultContainer.appendChild(item);
+      });
+      
+      // Update note count
+      document.getElementById('noteCount').textContent = notes.length;
+    }
     
     // Add new note form
     document.getElementById('addNoteBtn').addEventListener('click', function() {
@@ -2106,4 +2348,3 @@ function displayParseResult(notes) {
   </script>
 </body>
 </html>
-
