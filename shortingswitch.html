@@ -1459,38 +1459,43 @@ document.getElementById('copyResultBtn').addEventListener('click', function() {
         return;
     }
     
-    let resultText = `${gameName}\n\n`;
+    let resultText = '';
     
-    // Urutkan berdasarkan section yang diatur pengguna
-    const orderedSections = [...sectionOrder];
+    // Urutan tetap: NSP selalu di atas XCI
+    const fixedOrder = [
+        { section: 'singleNSP', header: `${gameName} Switch NSP` },
+        { section: 'singleXCI', header: `${gameName} Switch XCI` },
+        { section: 'partNSP', header: `${gameName} Switch Part NSP` },
+        { section: 'partXCI', header: `${gameName} Switch Part XCI` }
+    ];
     
-    orderedSections.forEach(section => {
+    fixedOrder.forEach(item => {
         // Cek apakah section ini digunakan
-        const isUsed = selectedLinks.some(link => link.section === section);
+        const isUsed = selectedLinks.some(link => link.section === item.section);
         if (!isUsed) return;
         
         // Tambahkan header section
-        resultText += `${getSectionName(section)}\n`;
+        resultText += `${item.header}\n`;
         
         // Dapatkan semua jenis link untuk section ini, diurutkan sesuai urutan yang diatur pengguna
-        const orderedLinks = linkOrders[section] || [];
+        const orderedLinks = linkOrders[item.section] || [];
         
         orderedLinks.forEach(linkType => {
             const sanitizedType = linkType.replace(/\s+/g, '');
             
             // Untuk single links
-            if (section === 'singleNSP' || section === 'singleXCI') {
-                const input = document.getElementById(`${section}${sanitizedType}`);
+            if (item.section === 'singleNSP' || item.section === 'singleXCI') {
+                const input = document.getElementById(`${item.section}${sanitizedType}`);
                 if (input && input.value) {
                     resultText += `${input.value}\n`;
                 }
             }
             // Untuk part links
-            else if (section === 'partNSP' || section === 'partXCI') {
-                const partCount = section === 'partNSP' ? partNSPCount : partXCICount;
+            else if (item.section === 'partNSP' || item.section === 'partXCI') {
+                const partCount = item.section === 'partNSP' ? partNSPCount : partXCICount;
                 
                 for (let i = 1; i <= partCount; i++) {
-                    const input = document.getElementById(`${section}${sanitizedType}${i}`);
+                    const input = document.getElementById(`${item.section}${sanitizedType}${i}`);
                     if (input && input.value) {
                         resultText += `${input.value}\n`;
                     }
