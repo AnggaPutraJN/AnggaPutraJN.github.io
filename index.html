@@ -2399,14 +2399,14 @@ a.btn.btn-cloud:active {
 
 /* Skala utama. Naikkan kalau masih kecil */
 .switch-game-wrap{
-  font-size: 24px !important;
+  font-size: 20px !important;
   line-height: 1.55 !important;
 }
 
-/* Paksa semua teks dalam wrapper ikut membesar */
-.switch-game-wrap,
+/* Pastikan semua elemen hitung lebar dengan benar */
+
 .switch-game-wrap *{
-  font-size: inherit !important;
+  font-size: inherit;
 }
 
 /* Header login */
@@ -2420,6 +2420,31 @@ a.btn.btn-cloud:active {
 .switch-game-wrap .nav-tabs .nav-link{
   font-size: 18px !important;
   padding: 12px 18px !important;
+  white-space: normal !important;
+  line-height: 1.2 !important;
+  text-align: center;
+}
+
+
+
+/* Tombol di modal (Login, Daftar via Bot) stack di HP */
+@media (max-width: 576px){
+  .switch-game-wrap .login-prompt .btn{
+    width: 100% !important;
+  }
+}
+
+
+/* TAB: izinkan wrap supaya tidak kepotong */
+.switch-game-wrap .nav-tabs{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+
+.switch-game-wrap .nav-tabs .nav-item{
+  flex: 1 1 auto;
 }
 
 /* Judul tab */
@@ -2440,19 +2465,104 @@ a.btn.btn-cloud:active {
 .switch-game-wrap .btn-cloud{
   font-size: 18px !important;
   padding: 12px 22px !important;
+  white-space: normal !important;
+  max-width: 100%;
 }
 
-/* Tombol kecil (Top Up, Logout) biar tetap enak dibaca */
+
+/* Tombol "Login dengan Telegram" dalam box peringatan */
+.switch-game-wrap .login-prompt .btn{
+  height: auto !important;
+  min-height: 48px !important;
+  line-height: 1.25 !important;
+  padding: 12px 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: normal !important;    /* kalau teks panjang, boleh turun baris */
+}
+/* MODAL: pastikan bisa scroll di mobile dan tidak kepotong */
+#loginModal .modal-dialog{
+  max-width: 95vw;
+  margin: 0.75rem auto;
+}
+
+
+/* Body bisa scroll */
+#loginModal .modal-body{
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 88px; /* ruang untuk area tombol bawah */
+}
+
+
+/* Area tombol bawah modal: sticky */
+#loginModal #telegramWidget .d-flex.gap-2{
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 12px 0 6px;
+  margin-top: 12px;
+  z-index: 5;
+  flex-wrap: nowrap;
+}
+
+
+/* Kalau layar sempit, tombol ditumpuk biar aman */
+@media (max-width: 420px){
+  #loginModal #telegramWidget .d-flex.gap-2{
+    flex-direction: column;
+    gap: 8px;
+  }
+  #loginModal #telegramWidget .d-flex.gap-2 .btn{
+    width: 100%;
+  }
+}
+
+/* Tombolnya jangan kepotong */
+#loginModal #telegramWidget .d-flex.gap-2 .btn{
+  height: auto !important;
+  min-height: 48px !important;
+  line-height: 1.2 !important;
+  padding: 12px 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: normal !important;
+}
+
+/* Bikin modal-content fleksibel */
+#loginModal .modal-content{
+  max-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Header tetap */
+#loginModal .modal-header{
+  flex: 0 0 auto;
+}
+
+/* Tombol kecil: tetap enak dibaca */
 .switch-game-wrap .btn-sm{
   font-size: 16px !important;
   padding: 8px 14px !important;
 }
-
 /* Mobile */
 @media (max-width: 768px){
-  .switch-game-wrap{ font-size: 19px !important; }
-  .switch-game-wrap .nav-tabs .nav-link{ font-size: 17px !important; }
-  .switch-game-wrap h1{ font-size: 19px !important; }
+  .switch-game-wrap{ font-size: 20px !important; }
+  .switch-game-wrap .nav-tabs .nav-link{ font-size: 18px !important; }
+  .switch-game-wrap .btn,
+  .switch-game-wrap .btn-cloud{ font-size: 18px !important; }
+}
+
+.switch-game-wrap .login-prompt{
+  overflow: visible !important;      /* jangan clip isi */
+  padding-bottom: 24px !important;   /* kasih ruang bawah */
 }
 
 
