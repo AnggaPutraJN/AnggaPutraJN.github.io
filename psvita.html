@@ -1470,13 +1470,18 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
                     <strong>⚠️ Perhatian:</strong>
                     Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
                     Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
-                    Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
+                    Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram & Key Anda.
+                </p>
+                <p class="mb-2">
+                    <strong>ℹ️ Key:</strong>
+                    Key adalah kode 5 digit angka unik yang Anda dapatkan dari bot @INDapkBot setelah register.
+                    Key diperlukan untuk verifikasi akun Anda.
                 </p>
                 <p class="mb-3 text-muted">
                     <strong>⚠️ Notice:</strong>
                     To access the ad-free download links, you must log in with Telegram.
                     Register via the Telegram bot <strong>@INDapkBot</strong>.
-                    Then type <strong>/profile</strong> in the bot to get your Telegram ID.
+                    Then type <strong>/profile</strong> in the bot to get your Telegram ID & Key.
                 </p>
                 <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
             </div>
@@ -1487,53 +1492,63 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
     </div>
     
     <!-- Login Modal -->
-    <div class="modal fade" id="loginModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Login dengan Telegram</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="telegramWidget">
-                        <div class="alert alert-info py-2 mb-3">
-                            <div><strong>Cara daftar dan ambil Telegram ID:</strong></div>
-                            <ol class="mb-0 ps-3">
-                                <li>Buka bot <strong>@indapkbot</strong></li>
-                                <li>Ketik <strong>/register</strong></li>
-                                <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
-                            </ol>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Telegram ID</label>
-                            <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram">
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary flex-fill" onclick="login(this)">Login</button>
-                            <button class="btn btn-secondary flex-fill" onclick="register()">Daftar via Bot</button>
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Login dengan Telegram</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="telegramWidget">
+                    <div class="alert alert-info py-2 mb-3">
+                        <div><strong>Cara daftar dan ambil Telegram ID & Key:</strong></div>
+                        <ol class="mb-0 ps-3">
+                            <li>Buka bot <strong>@indapkbot</strong></li>
+                            <li>Ketik <strong>/register</strong> untuk daftar</li>
+                            <li>Ketik <strong>/profile</strong> untuk melihat Telegram ID & Key Anda</li>
+                        </ol>
+                        <p class="mb-0 mt-2"><small>Key adalah 5 digit angka unik yang Anda dapatkan dari bot</small></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Telegram ID</label>
+                        <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Key</label>
+                        <input type="text" id="userKey" class="form-control" placeholder="Masukkan Key 5 digit">
+                        <div class="form-text">
+                            <i class="bi bi-info-circle"></i> Key dapat Anda dapatkan dengan mengetik <strong>/profile</strong> di bot @INDapkBot
                         </div>
                     </div>
-                    <div id="userInfo" style="display: none;">
-                        <div class="alert alert-success">
-                            <h5>Login Berhasil!</h5>
-                            <p><strong>Nama:</strong> <span id="userName"></span></p>
-                            <p><strong>Saldo:</strong> Rp <span id="userBalance"></span></p>
-                            <p><strong>ID Telegram:</strong> <span id="userId"></span></p>
-                        </div>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <a class="btn btn-success flex-fill"
-                               href="https://indapk.com/topup.html"
-                               target="_blank" rel="noopener">
-                                Top Up
-                            </a>
-                            <button class="btn btn-danger flex-fill" onclick="logout()">Logout</button>
-                            <button class="btn btn-secondary flex-fill" data-bs-dismiss="modal">Tutup</button>
-                        </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary flex-fill" onclick="login(this)">Login</button>
+                        <button class="btn btn-secondary flex-fill" onclick="register()">Daftar via Bot</button>
+                    </div>
+                </div>
+                <div id="userInfo" style="display: none;">
+                    <div class="alert alert-success">
+                        <h5>Login Berhasil!</h5>
+                        <p><strong>Nama:</strong> <span id="userName"></span></p>
+                        <p><strong>Saldo:</strong> Rp <span id="userBalance"></span></p>
+                        <p><strong>ID Telegram:</strong> <span id="userId"></span></p>
+                        <p><strong>Key:</strong> <span id="userKeyDisplay"></span></p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a class="btn btn-success flex-fill"
+                           href="https://indapk.com/topup.html"
+                           target="_blank" rel="noopener">
+                            Top Up
+                        </a>
+                        <button class="btn btn-danger flex-fill" onclick="logout()">Logout</button>
+                        <button class="btn btn-secondary flex-fill" data-bs-dismiss="modal">Tutup</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"><\/script>
     <script>
@@ -1582,64 +1597,113 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
             }
         }
         
-        async function login(btn) {
-            const telegramIdInput = document.getElementById('telegramId');
-            const telegramId = telegramIdInput.value.trim();
+async function login(btn) {
+    const telegramIdInput = document.getElementById('telegramId');
+    const userKeyInput = document.getElementById('userKey');
+    const telegramId = telegramIdInput.value.trim();
+    const userKey = userKeyInput.value.trim();
+    
+    if (!telegramId) {
+        alert('Masukkan Telegram ID!');
+        return;
+    }
+    
+    if (!userKey) {
+        alert('Masukkan Key Anda!');
+        return;
+    }
+    
+    // Validasi format Key (5 digit angka)
+    if (!/^\d{5}$/.test(userKey)) {
+        alert('Key harus berupa 5 digit angka!');
+        return;
+    }
+    
+    const originalBtnHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Verifikasi...';
+    }
+    telegramIdInput.disabled = true;
+    userKeyInput.disabled = true;
+    
+    try {
+        // Pertama, cek user data
+        const userResponse = await fetch(USER_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
+            body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
+        });
+        
+        if (!userResponse.ok) throw new Error('Network response was not ok');
+        const userResult = await userResponse.json();
+        
+        if (userResult.status === 'success') {
+            // Verifikasi Key user
+            const keyResponse = await fetch(USER_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                body: 'action=getUserKey&wa_number=' + encodeURIComponent(telegramId)
+            });
             
-            if (!telegramId) {
-                alert('Masukkan Telegram ID!');
-                return;
-            }
+            if (!keyResponse.ok) throw new Error('Network response was not ok');
+            const keyResult = await keyResponse.json();
             
-            const originalBtnHtml = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-            }
-            telegramIdInput.disabled = true;
-            
-            try {
-                const response = await fetch(USER_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
-                    },
-                    body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
-                });
+            if (keyResult.status === 'success') {
+                // Verifikasi Key cocok
+                const storedKey = keyResult.data.key || '';
                 
-                if (!response.ok) throw new Error('Network response was not ok');
-                const result = await response.json();
+                if (storedKey !== userKey) {
+                    alert('Key tidak cocok! Pastikan Anda memasukkan Key yang benar.');
+                    throw new Error('Invalid key');
+                }
                 
-                if (result.status === 'success') {
-                    currentUser = result.data;
-                    localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
-                    updateUIForLoggedInUser();
-                    
-                    document.getElementById('telegramWidget').style.display = 'none';
-                    document.getElementById('userInfo').style.display = 'block';
-                    document.getElementById('userName').textContent = currentUser.nama_user;
-                    document.getElementById('userBalance').textContent = currentUser.saldo.toLocaleString();
-                    document.getElementById('userId').textContent = currentUser.wa_number;
-                    
-                    // Close modal after 2 seconds
-                    setTimeout(() => {
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                        if (modal) modal.hide();
-                    }, 2000);
-                } else {
-                    alert('User tidak ditemukan. Silakan daftar dulu lewat @indapkbot.');
-                }
-            } catch (error) {
-                alert('Login gagal: ' + error.message);
-            } finally {
-                telegramIdInput.disabled = false;
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = originalBtnHtml || 'Login';
-                }
+                // Login sukses
+                currentUser = {
+                    ...userResult.data,
+                    key: storedKey
+                };
+                
+                localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
+                updateUIForLoggedInUser();
+                
+                document.getElementById('telegramWidget').style.display = 'none';
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('userName').textContent = currentUser.nama_user;
+                document.getElementById('userBalance').textContent = currentUser.saldo.toLocaleString();
+                document.getElementById('userId').textContent = currentUser.wa_number;
+                document.getElementById('userKeyDisplay').textContent = currentUser.key;
+                
+                // Close modal after 2 seconds
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                    if (modal) modal.hide();
+                }, 2000);
+            } else {
+                alert('Key tidak ditemukan untuk user ini.');
             }
+        } else {
+            alert('User tidak ditemukan. Silakan daftar dulu lewat @indapkbot.');
         }
+    } catch (error) {
+        if (error.message !== 'Invalid key') {
+            alert('Login gagal: ' + error.message);
+        }
+    } finally {
+        telegramIdInput.disabled = false;
+        userKeyInput.disabled = false;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalBtnHtml || 'Login';
+        }
+    }
+}
         
         function register() {
             window.open('https://web.telegram.org/k/#@indapkbot', '_blank');
@@ -1654,97 +1718,108 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
             }
         }
         
-        function updateUIForLoggedInUser() {
-            document.getElementById('userHeader').style.display = 'block';
-            document.getElementById('loggedUserName').textContent = currentUser.nama_user;
-            document.getElementById('loggedUserBalance').textContent = currentUser.saldo.toLocaleString();
-            document.getElementById('loggedUserId').textContent = currentUser.wa_number;
-            
-            document.getElementById('loginPrompt').style.display = 'none';
-            document.getElementById('originalLinksContent').style.display = 'block';
-            startBalanceAutoRefresh();
-        }
+function updateUIForLoggedInUser() {
+    document.getElementById('userHeader').style.display = 'block';
+    document.getElementById('loggedUserName').textContent = currentUser.nama_user;
+    document.getElementById('loggedUserBalance').textContent = currentUser.saldo.toLocaleString();
+    document.getElementById('loggedUserId').textContent = currentUser.wa_number;
+    document.getElementById('loggedUserKey').textContent = currentUser.key || 'Tidak ada';
+    
+    document.getElementById('loginPrompt').style.display = 'none';
+    document.getElementById('originalLinksContent').style.display = 'block';
+    startBalanceAutoRefresh();
+}
         
-        function updateUIForLoggedOutUser() {
-            document.getElementById('userHeader').style.display = 'none';
-            document.getElementById('loginPrompt').style.display = 'block';
-            document.getElementById('originalLinksContent').style.display = 'none';
-            stopBalanceAutoRefresh();
-        }
-        
-        function openLoginModal() {
-            document.getElementById('telegramWidget').style.display = 'block';
-            document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('telegramId').value = '';
-            new bootstrap.Modal(document.getElementById('loginModal')).show();
-        }
+function updateUIForLoggedOutUser() {
+    document.getElementById('userHeader').style.display = 'none';
+    document.getElementById('loginPrompt').style.display = 'block';
+    document.getElementById('originalLinksContent').style.display = 'none';
+    stopBalanceAutoRefresh();
+}
+
+function openLoginModal() {
+    document.getElementById('telegramWidget').style.display = 'block';
+    document.getElementById('userInfo').style.display = 'none';
+    document.getElementById('telegramId').value = '';
+    document.getElementById('userKey').value = '';
+    new bootstrap.Modal(document.getElementById('loginModal')).show();
+}
         
         // Access original link with payment
-        async function accessOriginalLink(index) {
-            if (!currentUser) {
-                openLoginModal();
-                return;
-            }
+// Access original link with payment
+async function accessOriginalLink(index) {
+    if (!currentUser) {
+        openLoginModal();
+        return;
+    }
+    
+    // Validasi Key user
+    if (!currentUser.key || currentUser.key === '') {
+        alert('Akun Anda tidak memiliki Key. Silakan hubungi admin untuk mendapatkan Key.');
+        return;
+    }
+    
+    if (currentUser.saldo < 2000) {
+        alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
+        return;
+    }
+    
+    const button = event.target;
+    const originalText = button.getAttribute('data-original-text') || button.textContent.trim();
+    
+    const confirmed = await showConfirmModal(index);
+    if (!confirmed) return;
+    
+    try {
+        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+        button.classList.add('loading');
+        button.disabled = true;
+        
+        const link = originalLinks[index] || '';
+        const cloudName = cloudTypes[index] || 'Unknown';
+        
+        if (!link) throw new Error('Link tidak ditemukan');
+        
+        const response = await fetch(PSVITA_API_URL, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
+            body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
+                  '&index=' + index + 
+                  '&telegram_id=' + currentUser.wa_number +
+                  '&user_key=' + currentUser.key +
+                  '&key=' + encodeURIComponent(currentUser.key || '')
+        });
+        
+        if (!response.ok) throw new Error('Network response was not ok');
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            currentUser.saldo = result.data.new_balance;
+            localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
+            updateUserBalanceUI();
             
-            if (currentUser.saldo < 2000) {
-                alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
-                return;
-            }
-            
-            const button = event.target;
-            const originalText = button.getAttribute('data-original-text') || button.textContent.trim();
-            
-            const confirmed = await showConfirmModal(index);
-            if (!confirmed) return;
-            
-            try {
-                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-                button.classList.add('loading');
-                button.disabled = true;
-                
-                const link = originalLinks[index] || '';
-                const cloudName = cloudTypes[index] || 'Unknown';
-                
-                if (!link) throw new Error('Link tidak ditemukan');
-                
-                const response = await fetch(PSVITA_API_URL, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
-                    },
-                    body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
-                          '&index=' + index + 
-                          '&telegram_id=' + currentUser.wa_number
-                });
-                
-                if (!response.ok) throw new Error('Network response was not ok');
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    currentUser.saldo = result.data.new_balance;
-                    localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
-                    updateUserBalanceUI();
-                    
-                    showLinkModal(result.data.link || link, {
-                        game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
-                        cloud: result.data.cloud || cloudName,
-                        amount_deducted: result.data.amount_deducted || 2000,
-                        new_balance: result.data.new_balance || currentUser.saldo,
-                        download_id: DOWNLOAD_ID
-                    });
-                } else {
-                    throw new Error(result.message || 'Gagal mengakses link');
-                }
-            } catch (error) {
-                console.error('Access link error:', error);
-                showErrorModal(error.message);
-            } finally {
-                button.innerHTML = originalText;
-                button.classList.remove('loading');
-                button.disabled = false;
-            }
+            showLinkModal(result.data.link || link, {
+                game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
+                cloud: result.data.cloud || cloudName,
+                amount_deducted: result.data.amount_deducted || 2000,
+                new_balance: result.data.new_balance || currentUser.saldo,
+                download_id: DOWNLOAD_ID
+            });
+        } else {
+            throw new Error(result.message || 'Gagal mengakses link');
         }
+    } catch (error) {
+        console.error('Access link error:', error);
+        showErrorModal(error.message);
+    } finally {
+        button.innerHTML = originalText;
+        button.classList.remove('loading');
+        button.disabled = false;
+    }
+}
         
         // Helper functions
         function showConfirmModal(index) {
