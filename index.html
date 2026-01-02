@@ -558,10 +558,16 @@ http://link.indapk.com/FsTh2OSP
                     <div class="modal-body">
                         <div id="telegramWidget">
                             <p>Silakan login menggunakan Telegram untuk mengakses link asli.</p>
-                            <div class="mb-3">
-                                <label class="form-label">Telegram ID</label>
-                                <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram Anda">
-                            </div>
+                                <div class="mb-3">
+                                  <label class="form-label">Telegram ID</label>
+                                  <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram Anda">
+                                </div>
+
+                                <div class="mb-3">
+                                  <label class="form-label">Key</label>
+                                  <input type="password" id="telegramKey" class="form-control" placeholder="Masukkan Key Anda">
+                                  <small class="text-muted">Dapatkan Key dari bot @indapkbot (contoh: ketik /key atau cek menu profil jika tersedia).</small>
+                                </div>
                             <button id="btnLogin" class="btn btn-primary">Login</button>
                             <button id="btnRegister" class="btn btn-secondary">Register</button>
                         <div class="alert alert-info py-2 mt-3 mb-0">
@@ -570,6 +576,7 @@ http://link.indapk.com/FsTh2OSP
                                 <li>Buka bot <strong>@indapkbot</strong></li>
                                 <li>Ketik <strong>/register</strong></li>
                                 <li>Lalu ketik <strong>/profile</strong> untuk melihat Telegram ID</li>
+                                <li>Ketik <strong>/key</strong> untuk melihat Key</li>
                             </ol>
                         </div>
 
@@ -2385,9 +2392,74 @@ a.btn.btn-cloud:active {
                 margin: 5px;
             }
         }
+
+/* =========================
+   WORDPRESS FONT OVERRIDE
+   ========================= */
+
+/* Skala utama. Naikkan kalau masih kecil */
+.switch-game-wrap{
+  font-size: 24px !important;
+  line-height: 1.55 !important;
+}
+
+/* Paksa semua teks dalam wrapper ikut membesar */
+.switch-game-wrap,
+.switch-game-wrap *{
+  font-size: inherit !important;
+}
+
+/* Header login */
+.switch-game-wrap #userHeader,
+.switch-game-wrap #userHeader strong,
+.switch-game-wrap #userHeader span{
+  font-size: 18px !important;
+}
+
+/* Tab menu: Detail Game, Link with ads, Ad-free link */
+.switch-game-wrap .nav-tabs .nav-link{
+  font-size: 18px !important;
+  padding: 12px 18px !important;
+}
+
+/* Judul tab */
+.switch-game-wrap h1{ font-size: 32px !important; }
+.switch-game-wrap h3{ font-size: 24px !important; }
+.switch-game-wrap h4{ font-size: 20px !important; }
+.switch-game-wrap h5{ font-size: 18px !important; }
+
+/* Tabel detail game */
+.switch-game-wrap .table th,
+.switch-game-wrap .table td{
+  font-size: 17px !important;
+  padding: 12px 14px !important;
+}
+
+/* Tombol link (cloud) */
+.switch-game-wrap .btn,
+.switch-game-wrap .btn-cloud{
+  font-size: 18px !important;
+  padding: 12px 22px !important;
+}
+
+/* Tombol kecil (Top Up, Logout) biar tetap enak dibaca */
+.switch-game-wrap .btn-sm{
+  font-size: 16px !important;
+  padding: 8px 14px !important;
+}
+
+/* Mobile */
+@media (max-width: 768px){
+  .switch-game-wrap{ font-size: 19px !important; }
+  .switch-game-wrap .nav-tabs .nav-link{ font-size: 17px !important; }
+  .switch-game-wrap h1{ font-size: 19px !important; }
+}
+
+
     </style>
 </head>
 <body>
+  <div class="switch-game-wrap">
     <div class="container mt-4">
         <!-- User Info & Logout (akan ditampilkan jika login) -->
             <div id="userHeader" class="user-info-box mb-3" style="display: none;">
@@ -2515,6 +2587,11 @@ a.btn.btn-cloud:active {
                             <label class="form-label">Telegram ID</label>
                             <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram">
                             <small class="text-muted">Dapatkan ID Telegram dari @INDapkBot di Telegram</small>
+                        </div>
+                                <div class="mb-3">
+                          <label class="form-label">Key</label>
+                          <input type="password" id="telegramKey" class="form-control" placeholder="Masukkan Key">
+                          <small class="text-muted">Dapatkan Key dari bot @INDapkBot (contoh: /key atau cek profil).</small>
                         </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-primary flex-fill" onclick="login(this)">Login</button>
@@ -2678,61 +2755,81 @@ function stopBalanceAutoRefresh() {
         }
         
 async function login(btn) {
-    const telegramIdInput = document.getElementById('telegramId');
-    const telegramId = telegramIdInput.value.trim();
+  const telegramIdInput = document.getElementById('telegramId');
+  const keyInput = document.getElementById('telegramKey');
 
-    if (!telegramId) {
-        alert('Masukkan Telegram ID!');
+  const telegramId = (telegramIdInput?.value || '').trim();
+  const inputKey = (keyInput?.value || '').trim();
+
+  if (!telegramId) {
+    alert('Masukkan Telegram ID!');
+    return;
+  }
+  if (!inputKey) {
+    alert('Masukkan Key!');
+    return;
+  }
+
+  const originalBtnHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+  }
+  if (telegramIdInput) telegramIdInput.disabled = true;
+  if (keyInput) keyInput.disabled = true;
+
+  try {
+    const response = await fetch(USER_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
+      body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
+    });
+
+    if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
+
+    const result = await response.json();
+
+    if (result.status === 'success' && result.data) {
+      const serverKey = (result.data.key || '').toString().trim();
+
+      if (!serverKey) {
+        alert('Akun ini belum punya Key. Ambil Key di @indapkbot lalu coba lagi.');
         return;
-    }
+      }
 
-    const originalBtnHtml = btn ? btn.innerHTML : '';
+      if (serverKey !== inputKey) {
+        alert('Key tidak sesuai. Pastikan Key milik Telegram ID tersebut.');
+        return;
+      }
+
+      currentUser = { ...result.data, key: serverKey };
+      localStorage.setItem('switchGameUser', JSON.stringify(currentUser));
+      updateUIForLoggedInUser();
+
+      document.getElementById('telegramWidget').style.display = 'none';
+      document.getElementById('userInfo').style.display = 'block';
+      document.getElementById('userName').textContent = currentUser.nama_user;
+      document.getElementById('userBalance').textContent = (currentUser.saldo || 0).toLocaleString();
+      document.getElementById('userId').textContent = currentUser.wa_number;
+    } else {
+      alert('User tidak ditemukan. Silakan daftar dulu lewat @indapkbot.');
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    alert('Login gagal: ' + error.message);
+  } finally {
+    if (telegramIdInput) telegramIdInput.disabled = false;
+    if (keyInput) keyInput.disabled = false;
     if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+      btn.disabled = false;
+      btn.innerHTML = originalBtnHtml || 'Login';
     }
-    telegramIdInput.disabled = true;
-
-    try {
-        const response = await fetch(USER_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/json'
-            },
-            body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.status);
-        }
-
-        const result = await response.json();
-
-        if (result.status === 'success') {
-            currentUser = result.data;
-            localStorage.setItem('switchGameUser', JSON.stringify(currentUser));
-            updateUIForLoggedInUser();
-
-            document.getElementById('telegramWidget').style.display = 'none';
-            document.getElementById('userInfo').style.display = 'block';
-            document.getElementById('userName').textContent = currentUser.nama_user;
-            document.getElementById('userBalance').textContent = currentUser.saldo.toLocaleString();
-            document.getElementById('userId').textContent = currentUser.wa_number;
-        } else {
-            alert('User tidak ditemukan. Silakan daftar dulu lewat @indapkbot.');
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        alert('Login gagal: ' + error.message);
-    } finally {
-        telegramIdInput.disabled = false;
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalBtnHtml || 'Login';
-        }
-    }
+  }
 }
+
 
 
   function register() {
@@ -2798,6 +2895,8 @@ function updateUIForLoggedOutUser() {
             document.getElementById('telegramWidget').style.display = 'block';
             document.getElementById('userInfo').style.display = 'none';
             document.getElementById('telegramId').value = '';
+            const keyEl = document.getElementById('telegramKey');
+            if (keyEl) keyEl.value = '';
             
             new bootstrap.Modal(document.getElementById('loginModal')).show();
         }
@@ -2864,7 +2963,8 @@ function updateUIForLoggedOutUser() {
                     body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
                           '&link_type=' + linkType + 
                           '&index=' + index + 
-                          '&telegram_id=' + currentUser.wa_number
+                          '&telegram_id=' + currentUser.wa_number +
+                          '&key=' + encodeURIComponent(currentUser.key || '')
                 });
                 
                 if (!response.ok) {
@@ -3191,7 +3291,10 @@ function updateUIForLoggedOutUser() {
                     return 'Unknown';
             }
         }
+
     <\/script>
+                </div>
+
 </body>
 </html>`;
 }
@@ -3266,41 +3369,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
 async function loginUser() {
-    const telegramId = document.getElementById('telegramId').value.trim();
-    if (!telegramId) {
-        alert('Masukkan Telegram ID!');
+  const telegramId = document.getElementById('telegramId').value.trim();
+  const inputKey = (document.getElementById('telegramKey')?.value || '').trim();
+
+  if (!telegramId) {
+    alert('Masukkan Telegram ID!');
+    return;
+  }
+  if (!inputKey) {
+    alert('Masukkan Key!');
+    return;
+  }
+
+  const btn = document.getElementById('btnLogin');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Memproses...';
+
+  try {
+    const response = await fetch(USER_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `action=getUser&wa_number=${encodeURIComponent(telegramId)}`
+    });
+
+    const result = await response.json();
+
+    if (result.status === 'success' && result.data) {
+      const serverKey = (result.data.key || '').toString().trim();
+
+      if (!serverKey) {
+        alert('Akun ini belum punya Key. Ambil Key di @indapkbot lalu coba lagi.');
         return;
+      }
+
+      if (serverKey !== inputKey) {
+        alert('Key tidak sesuai. Pastikan Key milik Telegram ID tersebut.');
+        return;
+      }
+
+      // Key valid, login sukses
+      currentUser = { ...result.data, key: serverKey };
+      localStorage.setItem('switchGameUser', JSON.stringify(currentUser));
+      updateLoginUI();
+      alert('✅ Login berhasil!');
+    } else {
+      alert('User tidak ditemukan. Silakan daftar dulu lewat @indapkbot.');
     }
-
-    const btn = document.getElementById('btnLogin');
-    const original = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Memproses...';
-
-    try {
-        const response = await fetch(USER_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `action=getUser&wa_number=${encodeURIComponent(telegramId)}`
-        });
-
-        const result = await response.json();
-
-        if (result.status === 'success') {
-            currentUser = result.data;
-            localStorage.setItem('switchGameUser', JSON.stringify(currentUser));
-            updateLoginUI();
-            alert('✅ Login berhasil!');
-        } else {
-            alert('User tidak ditemukan. Silakan daftar dulu lewat @indapkbot.');
-        }
-    } catch (error) {
-        alert('Login gagal: ' + error.message);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = original;
-    }
+  } catch (error) {
+    alert('Login gagal: ' + error.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 }
+
 
         
         async function registerUser() {
@@ -3352,6 +3475,7 @@ async function loginUser() {
                 telegramWidget.style.display = 'block';
                 userInfo.style.display = 'none';
                 document.getElementById('telegramId').value = '';
+                document.getElementById('telegramKey').value = '';
             }
         }
         
