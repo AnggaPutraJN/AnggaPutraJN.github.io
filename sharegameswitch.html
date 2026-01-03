@@ -91,6 +91,101 @@ body {
   box-shadow: var(--neon-glow) var(--accent-color), 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
+/* Format Selection Modal */
+.format-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(10px);
+}
+
+.format-modal.hidden {
+  display: none;
+}
+
+.format-modal-content {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
+  animation: modalAppear 0.5s ease-out;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.format-modal h2 {
+  color: var(--accent-color);
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.format-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.format-btn {
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid var(--border-color);
+  background: var(--secondary-bg);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.format-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-color);
+  box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+}
+
+.format-btn.active {
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-green));
+  color: white;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.format-btn i {
+  font-size: 1.2rem;
+}
+
+.format-note {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
 /* Theme Switch */
 .theme-switch-container {
   position: fixed;
@@ -252,6 +347,17 @@ label {
   display: block;
 }
 
+/* Size Input Container */
+.size-input-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.size-input {
+  flex: 1;
+}
+
 /* Button Styles */
 .btn-custom {
   padding: 12px 30px;
@@ -317,6 +423,28 @@ label {
   min-height: 100px;
 }
 
+/* Format Indicator */
+.format-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--card-bg);
+  border: 2px solid var(--accent-color);
+  border-radius: 15px;
+  padding: 10px 15px;
+  font-weight: 600;
+  color: var(--accent-color);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.format-indicator i {
+  font-size: 1.2rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .nav-buttons {
@@ -336,6 +464,27 @@ label {
   
   .card-body {
     padding: 1rem;
+  }
+  
+  .format-modal-content {
+    padding: 1.5rem;
+  }
+  
+  .format-btn {
+    padding: 12px;
+    font-size: 1rem;
+  }
+  
+  .format-indicator {
+    bottom: 10px;
+    right: 10px;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+  
+  .size-input-container {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
 
@@ -412,10 +561,47 @@ label {
 </style>
 </head>
 <body>
+<!-- Format Selection Modal -->
+<div id="formatModal" class="format-modal">
+  <div class="format-modal-content">
+    <h2><i class="fas fa-gamepad"></i> Pilih Format Game</h2>
+    <p>Silakan pilih format yang ingin Anda gunakan:</p>
+    
+    <div class="format-options">
+      <button class="format-btn" data-format="only-nsp">
+        <i class="fas fa-gamepad"></i> ONLY NSP
+        <span class="format-desc">Hanya format NSP</span>
+      </button>
+      
+      <button class="format-btn" data-format="only-xci">
+        <i class="fas fa-compact-disc"></i> ONLY XCI
+        <span class="format-desc">Hanya format XCI</span>
+      </button>
+      
+      <button class="format-btn active" data-format="both">
+        <i class="fas fa-layer-group"></i> NSP DAN XCI
+        <span class="format-desc">Kedua format tersedia</span>
+      </button>
+    </div>
+    
+    <p class="format-note">Pilihan ini akan menentukan input field yang tersedia dan template yang digunakan.</p>
+    
+    <button id="confirmFormatBtn" class="btn-custom btn-primary-custom" style="margin-top: 1rem;">
+      <i class="fas fa-check"></i> Konfirmasi Pilihan
+    </button>
+  </div>
+</div>
+
 <!-- Theme Switch -->
 <div class="theme-switch-container">
   <div class="theme-switch" onclick="toggleTheme()" title="Toggle Theme">
   </div>
+</div>
+
+<!-- Format Indicator -->
+<div id="formatIndicator" class="format-indicator" style="display: none;">
+  <i class="fas fa-gamepad"></i>
+  <span id="formatIndicatorText">NSP DAN XCI</span>
 </div>
 
 <!-- Navigation Section -->
@@ -467,6 +653,9 @@ label {
 <button type="button" onclick="clearCode()" class="btn btn-custom btn-danger-custom">
 <i class="fas fa-trash"></i> Clear All
 </button>
+<button type="button" onclick="changeFormat()" class="btn btn-custom" style="background: linear-gradient(45deg, #ff9900, #ff6600); color: white;">
+<i class="fas fa-exchange-alt"></i> Ubah Format
+</button>
 </div>
 <div id="result"></div>
 </div>
@@ -483,11 +672,9 @@ label {
 <label for="inputName"><i class="fas fa-tag"></i> Nama Game:</label>
 <input type="text" id="inputName" name="inputName" placeholder="Masukkan nama game...">
 
-<label for="inputSingleSizeNSP"><i class="fas fa-hdd"></i> Ukuran NSP Game:</label>
-<input type="text" id="inputSingleSizeNSP" name="inputSingleSizeNSP" placeholder="Contoh: 5.2 GB">
-
-<label for="inputSingleSizeXCI"><i class="fas fa-compact-disc"></i> Ukuran XCI Game:</label>
-<input type="text" id="inputSingleSizeXCI" name="inputSingleSizeXCI" placeholder="Contoh: 5.8 GB">
+<div id="sizeInputsContainer">
+  <!-- Ukuran akan ditampilkan sesuai format -->
+</div>
 
 <label for="inputCategory"><i class="fas fa-list"></i> Category:</label>
 <input type="text" id="inputCategory" name="inputCategory" placeholder="Contoh: Platform, RPG, Racing">
@@ -513,6 +700,141 @@ label {
 
 <!--Scripts-->
 <script>
+// Global variable untuk menyimpan format yang dipilih
+let selectedFormat = 'both'; // Default: NSP DAN XCI
+
+// Fungsi untuk mendapatkan nama format
+function getFormatName(format) {
+  switch(format) {
+    case 'only-nsp': return 'ONLY NSP';
+    case 'only-xci': return 'ONLY XCI';
+    case 'both': return 'NSP DAN XCI';
+    default: return 'NSP DAN XCI';
+  }
+}
+
+// Fungsi untuk mengupdate input fields berdasarkan format
+function updateSizeInputs() {
+  const container = document.getElementById('sizeInputsContainer');
+  
+  if (selectedFormat === 'only-nsp') {
+    container.innerHTML = `
+      <label for="inputSingleSizeNSP"><i class="fas fa-hdd"></i> Ukuran NSP Game:</label>
+      <input type="text" id="inputSingleSizeNSP" name="inputSingleSizeNSP" placeholder="Contoh: 5.2 GB">
+    `;
+  } else if (selectedFormat === 'only-xci') {
+    container.innerHTML = `
+      <label for="inputSingleSizeXCI"><i class="fas fa-compact-disc"></i> Ukuran XCI Game:</label>
+      <input type="text" id="inputSingleSizeXCI" name="inputSingleSizeXCI" placeholder="Contoh: 5.8 GB">
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="size-input-container">
+        <div class="size-input">
+          <label for="inputSingleSizeNSP"><i class="fas fa-hdd"></i> Ukuran NSP Game:</label>
+          <input type="text" id="inputSingleSizeNSP" name="inputSingleSizeNSP" placeholder="Contoh: 5.2 GB">
+        </div>
+        <div class="size-input">
+          <label for="inputSingleSizeXCI"><i class="fas fa-compact-disc"></i> Ukuran XCI Game:</label>
+          <input type="text" id="inputSingleSizeXCI" name="inputSingleSizeXCI" placeholder="Contoh: 5.8 GB">
+        </div>
+      </div>
+    `;
+  }
+}
+
+// Format Selection Modal
+document.addEventListener('DOMContentLoaded', function() {
+  const formatModal = document.getElementById('formatModal');
+  const formatButtons = document.querySelectorAll('.format-btn');
+  const confirmBtn = document.getElementById('confirmFormatBtn');
+  const formatIndicator = document.getElementById('formatIndicator');
+  const formatIndicatorText = document.getElementById('formatIndicatorText');
+  
+  // Cek apakah format sudah dipilih sebelumnya
+  const savedFormat = localStorage.getItem('gameFormat');
+  if (savedFormat) {
+    selectedFormat = savedFormat;
+    formatModal.classList.add('hidden');
+    formatIndicator.style.display = 'flex';
+    updateFormatIndicator();
+    updateSizeInputs();
+  }
+  
+  // Format button click handler
+  formatButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      formatButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  
+  // Confirm button click handler
+  confirmBtn.addEventListener('click', function() {
+    const activeBtn = document.querySelector('.format-btn.active');
+    selectedFormat = activeBtn.getAttribute('data-format');
+    
+    // Simpan ke localStorage
+    localStorage.setItem('gameFormat', selectedFormat);
+    
+    // Sembunyikan modal
+    formatModal.classList.add('hidden');
+    
+    // Tampilkan indicator
+    formatIndicator.style.display = 'flex';
+    updateFormatIndicator();
+    
+    // Update input fields
+    updateSizeInputs();
+    
+    // Tampilkan notifikasi
+    showNotification(`Format ${getFormatName(selectedFormat)} dipilih!`, 'success');
+  });
+  
+  // Fungsi untuk mengupdate format indicator
+  function updateFormatIndicator() {
+    formatIndicatorText.textContent = getFormatName(selectedFormat);
+    
+    // Update icon berdasarkan format
+    const icon = formatIndicator.querySelector('i');
+    if (selectedFormat === 'only-nsp') {
+      icon.className = 'fas fa-gamepad';
+      formatIndicator.style.borderColor = '#00ff88';
+    } else if (selectedFormat === 'only-xci') {
+      icon.className = 'fas fa-compact-disc';
+      formatIndicator.style.borderColor = '#ff006e';
+    } else {
+      icon.className = 'fas fa-layer-group';
+      formatIndicator.style.borderColor = '#00d4ff';
+    }
+  }
+  
+  // Tampilkan modal jika format belum dipilih
+  if (!savedFormat) {
+    setTimeout(() => {
+      formatModal.classList.remove('hidden');
+    }, 500);
+  } else {
+    // Jika sudah ada format yang disimpan, update input fields
+    updateSizeInputs();
+  }
+});
+
+// Fungsi untuk mengubah format
+function changeFormat() {
+  const formatModal = document.getElementById('formatModal');
+  formatModal.classList.remove('hidden');
+  
+  // Set active button sesuai dengan format yang dipilih
+  const buttons = document.querySelectorAll('.format-btn');
+  buttons.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-format') === selectedFormat) {
+      btn.classList.add('active');
+    }
+  });
+}
+
 // Theme Toggle Function
 function toggleTheme() {
   const body = document.body;
@@ -526,11 +848,6 @@ function toggleTheme() {
     themeSwitch.classList.add('active');
   }
 }
-
-// Load saved theme
-document.addEventListener('DOMContentLoaded', function() {
-  const themeSwitch = document.querySelector('.theme-switch');
-});
 
 function clearCode() {
   const resultDiv = document.getElementById("result");
@@ -615,15 +932,20 @@ document.head.appendChild(style);
 
 const textarea = document.getElementById('myTextarea');
 const form = document.getElementById('myForm');
-const inputs = form.querySelectorAll('input');
 
+// Event listener untuk textarea
 textarea.addEventListener('input', () => {
   const text = textarea.value.trim();
   const values = text.split('\n');
-
+  
+  // Update input fields yang sesuai dengan format
+  const inputs = form.querySelectorAll('input');
+  let inputIndex = 0;
+  
   inputs.forEach((input, index) => {
-    if (values[index]) {
-      input.value = values[index];
+    if (values[inputIndex]) {
+      input.value = values[inputIndex];
+      inputIndex++;
     } else {
       input.value = '';
     }
@@ -634,6 +956,7 @@ textarea.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault();
 
+    const inputs = form.querySelectorAll('input');
     const currentIndex = Array.from(inputs).findIndex((input) => input === document.activeElement);
 
     if (currentIndex === -1) {
@@ -662,79 +985,215 @@ function generateCode() {
     setTimeout(() => {
         // Get values from game form
         const inputName = document.getElementById("inputName").value;
-        const inputSingleSizeNSP = document.getElementById("inputSingleSizeNSP").value;
-        const inputSingleSizeXCI = document.getElementById("inputSingleSizeXCI").value;
         const inputCategory = document.getElementById("inputCategory").value;
         const inputGameID = document.getElementById("inputGameID").value;
         const inputRegion = document.getElementById("inputRegion").value;
         const inputLanguage = document.getElementById("inputLanguage").value;
         const inputLink = document.getElementById("inputLink").value;
         
+        // Get size based on selected format
+        let inputSizeNSP = '';
+        let inputSizeXCI = '';
+        
+        if (selectedFormat === 'only-nsp') {
+            inputSizeNSP = document.getElementById("inputSingleSizeNSP").value;
+            inputSizeXCI = ''; // Tidak digunakan
+        } else if (selectedFormat === 'only-xci') {
+            inputSizeXCI = document.getElementById("inputSingleSizeXCI").value;
+            inputSizeNSP = ''; // Tidak digunakan
+        } else {
+            inputSizeNSP = document.getElementById("inputSingleSizeNSP").value;
+            inputSizeXCI = document.getElementById("inputSingleSizeXCI").value;
+        }
+        
         // Get selected post type
         const postType = document.querySelector('input[name="postType"]:checked').value;
 
         let generatedHtml;
         
-        if (postType === 'share') {
-            generatedHtml = `🎮SHARE GAME SWITCH
-🎮Update Game Switch (Include Update+DLC):
+        // Determine which template to use based on selected format
+        if (selectedFormat === 'only-nsp') {
+            // Template ONLY NSP
+            if (postType === 'share') {
+                generatedHtml = `🎮SHARE GAME SWITCH
+🎮Update Game Switch:
 Nama Game: ${inputName}
-Ukuran NSP: ${inputSingleSizeNSP}
-Ukuran XCI: ${inputSingleSizeXCI}
+Ukuran NSP: ${inputSizeNSP}
 Category: ${inputCategory}
-Game ID: ${inputGameID}
+Game ID: [${inputGameID}]
 Region: ${inputRegion}
 Language: ${inputLanguage}
 Emulator: Eden/Eggns/Skyline/Strato/Yuzu (Android), Yuzu/Ryujinx (PC)
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: NSP Dan XCI
+Format: NSP
 
 🌐Link Game:
 ${inputLink}
 
-🌐Link Alternative:
+🌐Link Alternative Download:
 https://t.me/INDapkBot
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
 
-NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD
+🌐Request Game:
+https://indapk.com/requestgame.html
+
 
 #INDapk`;
-        } else if (postType === 'upload') {
-            generatedHtml = `🎮Upload Ulang GAME SWITCH
-🎮Update Game Switch (Include Update+DLC):
+            } else if (postType === 'upload') {
+                generatedHtml = `🎮Upload Ulang GAME SWITCH
+🎮Update Game Switch:
 Nama Game: ${inputName}
-Ukuran NSP: ${inputSingleSizeNSP}
-Ukuran XCI: ${inputSingleSizeXCI}
+Ukuran NSP: ${inputSizeNSP}
 Category: ${inputCategory}
-Game ID: ${inputGameID}
+Game ID: [${inputGameID}]
 Region: ${inputRegion}
 Language: ${inputLanguage}
 Emulator: Eden/Eggns/Skyline/Strato/Yuzu (Android), Yuzu/Ryujinx (PC)
 Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: NSP Dan XCI
+Format: NSP
 
 🌐Link Game:
 ${inputLink}
 
-🌐Link Alternative:
+🌐Link Alternative Download:
 https://t.me/INDapkBot
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
 
-NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD
+🌐Request Game:
+https://indapk.com/requestgame.html
+
 
 #INDapk`;
+            } else {
+                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH
+🎮Update Game Switch:
+Nama Game: ${inputName}
+Ukuran NSP: ${inputSizeNSP}
+Category: ${inputCategory}
+Game ID: [${inputGameID}]
+Region: ${inputRegion}
+Language: ${inputLanguage}
+Emulator: Eden/Eggns/Skyline/Strato/Yuzu (Android), Yuzu/Ryujinx (PC)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: NSP
+
+🌐Link Game:
+${inputLink}
+
+🌐Link Alternative Download:
+https://t.me/INDapkBot
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+            }
+        } else if (selectedFormat === 'only-xci') {
+            // Template ONLY XCI
+            if (postType === 'share') {
+                generatedHtml = `🎮SHARE GAME SWITCH
+🎮Update Game Switch:
+Nama Game: ${inputName}
+Ukuran XCI: ${inputSizeXCI}
+Category: ${inputCategory}
+Game ID: [${inputGameID}]
+Region: ${inputRegion}
+Language: ${inputLanguage}
+Emulator: Eden/Eggns/Skyline/Strato/Yuzu (Android), Yuzu/Ryujinx (PC)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: XCI
+
+🌐Link Game:
+${inputLink}
+
+🌐Link Alternative Download:
+https://t.me/INDapkBot
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+            } else if (postType === 'upload') {
+                generatedHtml = `🎮Upload Ulang GAME SWITCH
+🎮Update Game Switch:
+Nama Game: ${inputName}
+Ukuran XCI: ${inputSizeXCI}
+Category: ${inputCategory}
+Game ID: [${inputGameID}]
+Region: ${inputRegion}
+Language: ${inputLanguage}
+Emulator: Eden/Eggns/Skyline/Strato/Yuzu (Android), Yuzu/Ryujinx (PC)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: XCI
+
+🌐Link Game:
+${inputLink}
+
+🌐Link Alternative Download:
+https://t.me/INDapkBot
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+            } else {
+                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH
+🎮Update Game Switch:
+Nama Game: ${inputName}
+Ukuran XCI: ${inputSizeXCI}
+Category: ${inputCategory}
+Game ID: [${inputGameID}]
+Region: ${inputRegion}
+Language: ${inputLanguage}
+Emulator: Eden/Eggns/Skyline/Strato/Yuzu (Android), Yuzu/Ryujinx (PC)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: XCI
+
+🌐Link Game:
+${inputLink}
+
+🌐Link Alternative Download:
+https://t.me/INDapkBot
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+            }
         } else {
-            generatedHtml = `🎮UPDATE REQUEST GAME SWITCH
+            // Template NSP DAN XCI (default)
+            if (postType === 'share') {
+                generatedHtml = `🎮SHARE GAME SWITCH
 🎮Update Game Switch (Include Update+DLC):
 Nama Game: ${inputName}
-Ukuran NSP: ${inputSingleSizeNSP}
-Ukuran XCI: ${inputSingleSizeXCI}
+Ukuran NSP: ${inputSizeNSP}
+Ukuran XCI: ${inputSizeXCI}
 Category: ${inputCategory}
 Game ID: ${inputGameID}
 Region: ${inputRegion}
@@ -747,15 +1206,76 @@ Format: NSP Dan XCI
 🌐Link Game:
 ${inputLink}
 
-🌐Link Alternative:
+🌐Link Alternative Download:
 https://t.me/INDapkBot
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
 
-NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD
+🌐Request Game:
+https://indapk.com/requestgame.html
+
 
 #INDapk`;
+            } else if (postType === 'upload') {
+                generatedHtml = `🎮Upload Ulang GAME SWITCH
+🎮Update Game Switch (Include Update+DLC):
+Nama Game: ${inputName}
+Ukuran NSP: ${inputSizeNSP}
+Ukuran XCI: ${inputSizeXCI}
+Category: ${inputCategory}
+Game ID: ${inputGameID}
+Region: ${inputRegion}
+Language: ${inputLanguage}
+Emulator: Eden/Eggns/Skyline/Strato/Yuzu (Android), Yuzu/Ryujinx (PC)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: NSP Dan XCI
+
+🌐Link Game:
+${inputLink}
+
+🌐Link Alternative Download:
+https://t.me/INDapkBot
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+            } else {
+                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH
+🎮Update Game Switch (Include Update+DLC):
+Nama Game: ${inputName}
+Ukuran NSP: ${inputSizeNSP}
+Ukuran XCI: ${inputSizeXCI}
+Category: ${inputCategory}
+Game ID: ${inputGameID}
+Region: ${inputRegion}
+Language: ${inputLanguage}
+Emulator: Eden/Eggns/Skyline/Strato/Yuzu (Android), Yuzu/Ryujinx (PC)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: NSP Dan XCI
+
+🌐Link Game:
+${inputLink}
+
+🌐Link Alternative Download:
+https://t.me/INDapkBot
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+            }
         }
 
         // Display the generated HTML
@@ -766,7 +1286,7 @@ NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD
         generateBtn.disabled = false;
         
         // Show success notification
-        showNotification("Code berhasil di-generate!", "success");
+        showNotification(`Code berhasil di-generate dengan format ${getFormatName(selectedFormat)}!`, "success");
     }, 1000);
 }
 </script>
