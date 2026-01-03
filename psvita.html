@@ -1567,7 +1567,8 @@ body{
                 <div>
                     <strong>Login sebagai:</strong> <span id="loggedUserName"></span> |
                     <strong>Saldo:</strong> Rp <span id="loggedUserBalance"></span> |
-                    <strong>ID:</strong> <span id="loggedUserId"></span>
+                    <strong>ID:</strong> <span id="loggedUserId"></span> |
+                    <strong>Key:</strong> <span id="loggedUserKey"></span>
                 </div>
                 <div class="mt-2 d-flex gap-2 flex-wrap">
                     <a class="btn btn-success btn-sm"
@@ -1731,7 +1732,6 @@ body{
         
         // Data links
         const cloudTypes = ${JSON.stringify(gameData.cloudTypes || [])};
-        const originalLinks = ${JSON.stringify(gameData.originalLinks || [])};
         const adLinks = ${JSON.stringify(gameData.adLinks || [])};
         
         let currentUser = null;
@@ -1786,10 +1786,10 @@ async function login(btn) {
     }
     
     // Validasi format Key (5 digit angka)
-    if (!/^\d{5}$/.test(userKey)) {
-        alert('Key harus berupa 5 digit angka!');
-        return;
-    }
+if (!/^\d{5}$/.test(userKey)) {
+    alert('Key harus berupa 5 digit angka!');
+    return;
+}
     
     const originalBtnHtml = btn ? btn.innerHTML : '';
     if (btn) {
@@ -1891,16 +1891,30 @@ async function login(btn) {
         }
         
 function updateUIForLoggedInUser() {
-    document.getElementById('userHeader').style.display = 'block';
-    document.getElementById('loggedUserName').textContent = currentUser.nama_user;
-    document.getElementById('loggedUserBalance').textContent = currentUser.saldo.toLocaleString();
-    document.getElementById('loggedUserId').textContent = currentUser.wa_number;
-    document.getElementById('loggedUserKey').textContent = currentUser.key || 'Tidak ada';
-    
-    document.getElementById('loginPrompt').style.display = 'none';
-    document.getElementById('originalLinksContent').style.display = 'block';
-    startBalanceAutoRefresh();
+  const elUserHeader = document.getElementById('userHeader');
+  if (elUserHeader) elUserHeader.style.display = 'block';
+
+  const elName = document.getElementById('loggedUserName');
+  if (elName) elName.textContent = currentUser.nama_user || '';
+
+  const elBal = document.getElementById('loggedUserBalance');
+  if (elBal) elBal.textContent = (currentUser.saldo ?? 0).toLocaleString();
+
+  const elId = document.getElementById('loggedUserId');
+  if (elId) elId.textContent = currentUser.wa_number || '';
+
+  const elKey = document.getElementById('loggedUserKey');
+  if (elKey) elKey.textContent = currentUser.key || 'Tidak ada';
+
+  const elPrompt = document.getElementById('loginPrompt');
+  if (elPrompt) elPrompt.style.display = 'none';
+
+  const elLinks = document.getElementById('originalLinksContent');
+  if (elLinks) elLinks.style.display = 'block';
+
+  startBalanceAutoRefresh();
 }
+
         
 function updateUIForLoggedOutUser() {
     document.getElementById('userHeader').style.display = 'none';
@@ -1919,79 +1933,80 @@ function openLoginModal() {
         
         // Access original link with payment
 // Access original link with payment
-async function accessOriginalLink(index) {
-    if (!currentUser) {
-        openLoginModal();
-        return;
-    }
-    
-    // Validasi Key user
-    if (!currentUser.key || currentUser.key === '') {
-        alert('Akun Anda tidak memiliki Key. Silakan hubungi admin untuk mendapatkan Key.');
-        return;
-    }
-    
-    if (currentUser.saldo < 2000) {
-        alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
-        return;
-    }
-    
-    const button = event.target;
-    const originalText = button.getAttribute('data-original-text') || button.textContent.trim();
-    
-    const confirmed = await showConfirmModal(index);
-    if (!confirmed) return;
-    
-    try {
-        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-        button.classList.add('loading');
-        button.disabled = true;
-        
-        const link = originalLinks[index] || '';
-        const cloudName = cloudTypes[index] || 'Unknown';
-        
-        if (!link) throw new Error('Link tidak ditemukan');
-        
-        const response = await fetch(PSVITA_API_URL, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/json'
-            },
-            body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
-                  '&index=' + index + 
-                  '&telegram_id=' + currentUser.wa_number +
-                  '&user_key=' + currentUser.key +
-                  '&key=' + encodeURIComponent(currentUser.key || '')
-        });
-        
-        if (!response.ok) throw new Error('Network response was not ok');
-        const result = await response.json();
-        
-        if (result.status === 'success') {
-            currentUser.saldo = result.data.new_balance;
-            localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
-            updateUserBalanceUI();
+        async function accessOriginalLink(index) {
+            if (!currentUser) {
+                openLoginModal();
+                return;
+            }
             
-            showLinkModal(result.data.link || link, {
-                game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
-                cloud: result.data.cloud || cloudName,
-                amount_deducted: result.data.amount_deducted || 2000,
-                new_balance: result.data.new_balance || currentUser.saldo,
-                download_id: DOWNLOAD_ID
-            });
-        } else {
-            throw new Error(result.message || 'Gagal mengakses link');
+            // Validasi Key user
+            if (!currentUser.key || currentUser.key === '') {
+                alert('Akun Anda tidak memiliki Key. Silakan hubungi admin untuk mendapatkan Key.');
+                return;
+            }
+            
+            if (currentUser.saldo < 2000) {
+                alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
+                return;
+            }
+            
+            const button = event.target;
+            const originalText = button.getAttribute('data-original-text') || button.textContent.trim();
+            
+            const confirmed = await showConfirmModal(index);
+            if (!confirmed) return;
+            
+            try {
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+                button.classList.add('loading');
+                button.disabled = true;
+                
+                // Request link asli ke API - TAMBAHKAN PARAMETER cloudType
+                const cloudName = cloudTypes[index] || 'Unknown';
+                
+                const response = await fetch(PSVITA_API_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json'
+                    },
+                    body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
+                          '&index=' + index + 
+                          '&cloud_type=' + encodeURIComponent(cloudName) +
+                          '&telegram_id=' + currentUser.wa_number +
+                          '&user_key=' + currentUser.key
+                });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    currentUser.saldo = result.data.new_balance;
+                    localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
+                    updateUserBalanceUI();
+                    
+                    // Gunakan link dari response API
+                    const link = result.data.link;
+                    
+                    showLinkModal(link, {
+                        game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
+                        cloud: result.data.cloud || cloudName,
+                        amount_deducted: result.data.amount_deducted || 2000,
+                        new_balance: result.data.new_balance || currentUser.saldo,
+                        download_id: DOWNLOAD_ID
+                    });
+                } else {
+                    throw new Error(result.message || 'Gagal mengakses link');
+                }
+            } catch (error) {
+                console.error('Access link error:', error);
+                showErrorModal(error.message);
+            } finally {
+                button.innerHTML = originalText;
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
         }
-    } catch (error) {
-        console.error('Access link error:', error);
-        showErrorModal(error.message);
-    } finally {
-        button.innerHTML = originalText;
-        button.classList.remove('loading');
-        button.disabled = false;
-    }
-}
         
         // Helper functions
         function showConfirmModal(index) {
