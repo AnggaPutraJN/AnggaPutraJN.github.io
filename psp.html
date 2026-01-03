@@ -1325,9 +1325,6 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
         const cloudISO = ${JSON.stringify(gameData.cloudISO || [])};
         const cloudCHD = ${JSON.stringify(gameData.cloudCHD || [])};
         
-        const originalLinksISO = ${JSON.stringify(gameData.originalLinksISO || [])};
-        const originalLinksCHD = ${JSON.stringify(gameData.originalLinksCHD || [])};
-        
         let currentUser = null;
         let balanceRefreshInterval = null;
         
@@ -1682,9 +1679,16 @@ p, .table, .table th, .table td{
           <tr><th>Language:</th><td>${escapeHTML(gameData.gameInfo.language)}</td></tr>
         </table>
       </div>
+
+            <div class="mt-3 text-center">
+                <a href="https://indapk.com/requestgame.html"
+                   target="_blank" rel="noopener"
+                   class="btn btn-success">
+                    <i class="bi bi-controller"></i> Request Game
+                </a>
+            </div>
     </div>
   </div>
-
   <div class="tab-pane fade" id="tabAdLinks" role="tabpanel" aria-labelledby="adlinks-tab">
     <h3>Link Dengan Iklan (Link With Ads)</h3>
     ${adLinksHTML}
@@ -1756,9 +1760,6 @@ p, .table, .table th, .table td{
 
   const cloudISO = ${JSON.stringify(gameData.cloudISO || [])};
   const cloudCHD = ${JSON.stringify(gameData.cloudCHD || [])};
-
-  const originalLinksISO = ${JSON.stringify(gameData.originalLinksISO || [])};
-  const originalLinksCHD = ${JSON.stringify(gameData.originalLinksCHD || [])};
 
   let currentUser = null;
 
@@ -1906,24 +1907,11 @@ async function accessOriginalLink(evt, linkType, index) {
   }
 
   const button = evt.currentTarget;
+  const cloudName = linkType === 'iso' 
+    ? cloudISO[index] || 'Unknown'
+    : cloudCHD[index] || 'Unknown';
 
-  let link = '';
-  let cloudName = '';
-
-  if (linkType === 'iso') {
-    link = originalLinksISO[index] || '';
-    cloudName = cloudISO[index] || 'Unknown';
-  } else if (linkType === 'chd') {
-    link = originalLinksCHD[index] || '';
-    cloudName = cloudCHD[index] || 'Unknown';
-  }
-
-  if (!link) {
-    alert('Link tidak ditemukan');
-    return;
-  }
-
-  pendingAccess = { linkType, index, link, cloudName, button };
+  pendingAccess = { linkType, index, cloudName, button };
   openPayConfirmModal(cloudName, saldo);
 }
 
