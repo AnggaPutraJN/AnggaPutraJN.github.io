@@ -425,8 +425,8 @@
                                 <li>Baris 5: Game ID</li>
                                 <li>Baris 6: Region</li>
                                 <li>Baris 7: Language</li>
-                                <li>Baris 8-...: Link Iklan (sesuai jumlah yang diinput di Step 1)</li>
                                 <li>Baris terakhir: Link Asli (sesuai jumlah yang diinput di Step 1)</li>
+                                <li>Baris 8-...: Link Iklan (sesuai jumlah yang diinput di Step 1)</li>
                             </ul>
                         </div>
                         
@@ -502,20 +502,20 @@ http://link.indapk.com/FsTh2OSP
             </div>
             
             <!-- Input Link Iklan -->
-            <div class="mt-4">
-                <h5><i class="bi bi-link-45deg"></i> Link Iklan</h5>
-                <div id="adLinksInput">
-                    <!-- Akan diisi oleh JavaScript -->
+                <div class="mt-4">
+                    <h5><i class="bi bi-link"></i> Link Asli</h5>
+                    <div id="originalLinksInput">
+                        <!-- Akan diisi oleh JavaScript -->
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Input Link Asli -->
-            <div class="mt-4">
-                <h5><i class="bi bi-link"></i> Link Asli</h5>
-                <div id="originalLinksInput">
-                    <!-- Akan diisi oleh JavaScript -->
+
+                <!-- Input Link Iklan (DIBAWAH) -->
+                <div class="mt-4">
+                    <h5><i class="bi bi-link-45deg"></i> Link Iklan</h5>
+                    <div id="adLinksInput">
+                        <!-- Akan diisi oleh JavaScript -->
+                    </div>
                 </div>
-            </div>
             
             <div class="mt-3">
                 <button id="btnPrev3" class="btn btn-secondary">
@@ -953,9 +953,9 @@ function parsePasteData(text) {
     }
     
     // Pisahkan link iklan dan asli
-    const adLinks = remainingLines.slice(0, totalExpectedAdLinks);
-    const originalLinks = remainingLines.slice(totalExpectedAdLinks, totalExpectedAdLinks + totalExpectedOriginalLinks);
-    
+        const originalLinks = remainingLines.slice(0, totalExpectedOriginalLinks);
+        const adLinks = remainingLines.slice(totalExpectedOriginalLinks, totalExpectedOriginalLinks + totalExpectedAdLinks);
+
     // Isi link iklan
     let linkIndex = 0;
     
