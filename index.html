@@ -1852,112 +1852,111 @@ function generateLinkArraysScript() {
         const originalLinksXCIPart = ${JSON.stringify(gameData.originalLinksXCIPart)};
     `;
 }
-        
-function createHTMLTemplate() {
-    // Build link sections manually - SOLUSI SIMPLE
-    // Build link sections manually
-    let adLinksHTML = '';
-    let originalLinksHTML = '';
-    
-    // Helper function untuk cloud color
-    const getCloudColorClass = (cloud) => {
-        const colors = {
-            'Google Drive': 'btn-primary',
-            'MediaFire': 'btn-warning',
-            'VikingFile': 'btn-danger',
-            'PixelDrain': 'btn-info',
-            '1Fichier': 'btn-dark',
-            'MultiUp': 'btn-success'
+     function createHTMLTemplate() {
+        // Helper function untuk cloud color
+        const getCloudColorClass = (cloud) => {
+            const colors = {
+                'Google Drive': 'btn-primary',
+                'MediaFire': 'btn-warning',
+                'VikingFile': 'btn-danger',
+                'PixelDrain': 'btn-info',
+                '1Fichier': 'btn-dark',
+                'MultiUp': 'btn-success'
+            };
+            return colors[cloud] || 'btn-secondary';
         };
-        return colors[cloud] || 'btn-secondary';
-    };
-    
-    // NSP Links
-    if (gameData.nspCount > 0) {
-        adLinksHTML += `<h4>NSP Link (Link Iklan)</h4><div class="mb-3">`;
-        originalLinksHTML += `<h4>NSP Link (Link Asli)</h4><div class="mb-3">`;
         
-        for (let i = 0; i < gameData.nspCount; i++) {
-            const cloudName = gameData.cloudNSP[i] || 'Unknown';
-            const btnColor = getCloudColorClass(cloudName);
-            const adLink = gameData.adLinksNSP[i] || '#';
+        // Build ad links HTML
+        let adLinksHTML = '';
+        let originalLinksHTML = '';
+        
+        // NSP Links
+        if (gameData.nspCount > 0) {
+            adLinksHTML += `<h4>NSP Link (Link Iklan)</h4><div class="mb-3">`;
+            originalLinksHTML += `<h4>NSP Link (Link Asli)</h4><div class="mb-3">`;
             
-            adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-            originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink('nsp', ${i})">${cloudName}</button> `;
+            for (let i = 0; i < gameData.nspCount; i++) {
+                const cloudName = gameData.cloudNSP[i] || 'Unknown';
+                const btnColor = getCloudColorClass(cloudName);
+                const adLink = gameData.adLinksNSP[i] || '#';
+                
+                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                // PERBAIKAN: TANPA data-original-text, link tidak disimpan di HTML
+                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" onclick="accessOriginalLink('nsp', ${i})">${cloudName}</button> `;
+            }
+            
+            adLinksHTML += `</div>`;
+            originalLinksHTML += `</div>`;
         }
         
-        adLinksHTML += `</div>`;
-        originalLinksHTML += `</div>`;
-    }
-    
-    // XCI Links
-    if (gameData.xciCount > 0) {
-        adLinksHTML += `<h4>XCI Link (Link Iklan)</h4><div class="mb-3">`;
-        originalLinksHTML += `<h4>XCI Link (Link Asli)</h4><div class="mb-3">`;
-        
-        for (let i = 0; i < gameData.xciCount; i++) {
-            const cloudName = gameData.cloudXCI[i] || 'Unknown';
-            const btnColor = getCloudColorClass(cloudName);
-            const adLink = gameData.adLinksXCI[i] || '#';
+        // XCI Links
+        if (gameData.xciCount > 0) {
+            adLinksHTML += `<h4>XCI Link (Link Iklan)</h4><div class="mb-3">`;
+            originalLinksHTML += `<h4>XCI Link (Link Asli)</h4><div class="mb-3">`;
             
-            adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-            originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink('xci', ${i})">${cloudName}</button> `;
+            for (let i = 0; i < gameData.xciCount; i++) {
+                const cloudName = gameData.cloudXCI[i] || 'Unknown';
+                const btnColor = getCloudColorClass(cloudName);
+                const adLink = gameData.adLinksXCI[i] || '#';
+                
+                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" onclick="accessOriginalLink('xci', ${i})">${cloudName}</button> `;
+            }
+            
+            adLinksHTML += `</div>`;
+            originalLinksHTML += `</div>`;
         }
         
-        adLinksHTML += `</div>`;
-        originalLinksHTML += `</div>`;
-    }
-    
-    // NSP Part Links
-    if (gameData.nspPartCount > 0) {
-        adLinksHTML += `<h4>NSP Part Link (Link Iklan)</h4><div class="mb-3">`;
-        originalLinksHTML += `<h4>NSP Part Link (Link Asli)</h4><div class="mb-3">`;
-        
-        for (let i = 0; i < gameData.nspPartCount; i++) {
-            const cloudName = gameData.cloudNSPPart[i] || 'Unknown';
-            const btnColor = getCloudColorClass(cloudName);
-            const adLink = gameData.adLinksNSPPart[i] || '#';
+        // NSP Part Links
+        if (gameData.nspPartCount > 0) {
+            adLinksHTML += `<h4>NSP Part Link (Link Iklan)</h4><div class="mb-3">`;
+            originalLinksHTML += `<h4>NSP Part Link (Link Asli)</h4><div class="mb-3">`;
             
-            adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-            originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink('nsp_part', ${i})">${cloudName}</button> `;
+            for (let i = 0; i < gameData.nspPartCount; i++) {
+                const cloudName = gameData.cloudNSPPart[i] || 'Unknown';
+                const btnColor = getCloudColorClass(cloudName);
+                const adLink = gameData.adLinksNSPPart[i] || '#';
+                
+                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" onclick="accessOriginalLink('nsp_part', ${i})">${cloudName}</button> `;
+            }
+            
+            adLinksHTML += `</div>`;
+            originalLinksHTML += `</div>`;
         }
         
-        adLinksHTML += `</div>`;
-        originalLinksHTML += `</div>`;
-    }
-    
-    // XCI Part Links
-    if (gameData.xciPartCount > 0) {
-        adLinksHTML += `<h4>XCI Part Link (Link Iklan)</h4><div class="mb-3">`;
-        originalLinksHTML += `<h4>XCI Part Link (Link Asli)</h4><div class="mb-3">`;
-        
-        for (let i = 0; i < gameData.xciPartCount; i++) {
-            const cloudName = gameData.cloudXCIPart[i] || 'Unknown';
-            const btnColor = getCloudColorClass(cloudName);
-            const adLink = gameData.adLinksXCIPart[i] || '#';
+        // XCI Part Links
+        if (gameData.xciPartCount > 0) {
+            adLinksHTML += `<h4>XCI Part Link (Link Iklan)</h4><div class="mb-3">`;
+            originalLinksHTML += `<h4>XCI Part Link (Link Asli)</h4><div class="mb-3">`;
             
-            adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-            originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink('xci_part', ${i})">${cloudName}</button> `;
+            for (let i = 0; i < gameData.xciPartCount; i++) {
+                const cloudName = gameData.cloudXCIPart[i] || 'Unknown';
+                const btnColor = getCloudColorClass(cloudName);
+                const adLink = gameData.adLinksXCIPart[i] || '#';
+                
+                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" onclick="accessOriginalLink('xci_part', ${i})">${cloudName}</button> `;
+            }
+            
+            adLinksHTML += `</div>`;
+            originalLinksHTML += `</div>`;
         }
         
-        adLinksHTML += `</div>`;
-        originalLinksHTML += `</div>`;
-    }
-    
-    // Data untuk JavaScript
-    const gameApiUrl = GAME_API_URL;
-    const userApiUrl = USER_API_URL;
-    const { hasNSP, hasXCI } = getGameTypeFlags();
+        // Data untuk JavaScript
+        const gameApiUrl = GAME_API_URL;
+        const userApiUrl = USER_API_URL;
+        const { hasNSP, hasXCI } = getGameTypeFlags();
 
-    let sizeRows = '';
-    if (hasNSP) {
-      sizeRows += `<tr><th>Ukuran NSP:</th><td>${escapeHTML(gameData.gameInfo.ukuran_nsp || '-')}</td></tr>`;
-    }
-    if (hasXCI) {
-      sizeRows += `<tr><th>Ukuran XCI:</th><td>${escapeHTML(gameData.gameInfo.ukuran_xci || '-')}</td></tr>`;
-    }
+        let sizeRows = '';
+        if (hasNSP) {
+            sizeRows += `<tr><th>Ukuran NSP:</th><td>${escapeHTML(gameData.gameInfo.ukuran_nsp || '-')}</td></tr>`;
+        }
+        if (hasXCI) {
+            sizeRows += `<tr><th>Ukuran XCI:</th><td>${escapeHTML(gameData.gameInfo.ukuran_xci || '-')}</td></tr>`;
+        }
 
-    return`
+        return`
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -2647,24 +2646,24 @@ a.btn.btn-cloud:active {
         </div>
         
         <div class="tab-content" id="tabOriginalLinks">
-            <h3>Link Download Tanpa Iklan (Download Link Without Ads)</h3>
-            <div class="login-prompt mb-3" id="loginPrompt">
-                <p class="mb-2">
-                    <strong>⚠️ Perhatian:</strong>
-                    Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
-                    Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
-                    Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
-                </p>
+                <h3>Link Download Tanpa Iklan (Download Link Without Ads)</h3>
+                <div class="login-prompt mb-3" id="loginPrompt">
+                    <p class="mb-2">
+                        <strong>⚠️ Perhatian:</strong>
+                        Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
+                        Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
+                        Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
+                    </p>
 
-                <p class="mb-3 text-muted">
-                    <strong>⚠️ Notice:</strong>
-                    To access the ad-free download links, you must log in with Telegram.
-                    Register via the Telegram bot <strong>@INDapkBot</strong>.
-                    Then type <strong>/profile</strong> in the bot to get your Telegram ID.
-                </p>
+                    <p class="mb-3 text-muted">
+                        <strong>⚠️ Notice:</strong>
+                        To access the ad-free download links, you must log in with Telegram.
+                        Register via the Telegram bot <strong>@INDapkBot</strong>.
+                        Then type <strong>/profile</strong> in the bot to get your Telegram ID.
+                    </p>
 
-                <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
-            </div>
+                    <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
+                </div>
 
             <div id="originalLinksContent" style="display: none;">
                 ${originalLinksHTML}
@@ -2743,11 +2742,6 @@ a.btn.btn-cloud:active {
         const cloudXCI = ${JSON.stringify(gameData.cloudXCI || [])};
         const cloudNSPPart = ${JSON.stringify(gameData.cloudNSPPart || [])};
         const cloudXCIPart = ${JSON.stringify(gameData.cloudXCIPart || [])};
-        
-        const originalLinksNSP = ${JSON.stringify(gameData.originalLinksNSP || [])};
-        const originalLinksXCI = ${JSON.stringify(gameData.originalLinksXCI || [])};
-        const originalLinksNSPPart = ${JSON.stringify(gameData.originalLinksNSPPart || [])};
-        const originalLinksXCIPart = ${JSON.stringify(gameData.originalLinksXCIPart || [])};
         
         let currentUser = null;
         let balanceRefreshInterval = null;
@@ -3012,112 +3006,84 @@ function updateUIForLoggedOutUser() {
         }
         
         // Access original link with payment
-        async function accessOriginalLink(linkType, index) {
-            if (!currentUser) {
-                openLoginModal();
-                return;
-            }
-            
-            if (currentUser.saldo < 2000) {
-                alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
-                return;
-            }
-            
-            const button = event.target;
-            const originalText = button.getAttribute('data-original-text') || button.textContent.trim();
-            
-            // Tampilkan konfirmasi
-            const confirmed = await showConfirmModal(linkType, index);
-            if (!confirmed) return;
-            
-            try {
-                // Tampilkan loading di tombol
-                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-                button.classList.add('loading');
-                button.disabled = true;
-                
-                // Get the actual link based on type and index
-                let link = '';
-                let cloudName = '';
-                
-                switch(linkType) {
-                    case 'nsp':
-                        link = originalLinksNSP[index] || '';
-                        cloudName = cloudNSP[index] || 'Unknown';
-                        break;
-                    case 'xci':
-                        link = originalLinksXCI[index] || '';
-                        cloudName = cloudXCI[index] || 'Unknown';
-                        break;
-                    case 'nsp_part':
-                        link = originalLinksNSPPart[index] || '';
-                        cloudName = cloudNSPPart[index] || 'Unknown';
-                        break;
-                    case 'xci_part':
-                        link = originalLinksXCIPart[index] || '';
-                        cloudName = cloudXCIPart[index] || 'Unknown';
-                        break;
-                }
-                
-                if (!link) {
-                    throw new Error('Link tidak ditemukan');
-                }
-                
-                // Call API to deduct balance
-                const response = await fetch(GAME_API_URL, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
-                    },
-                    body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
-                          '&link_type=' + linkType + 
-                          '&index=' + index + 
-                          '&telegram_id=' + currentUser.wa_number +
-                          '&key=' + encodeURIComponent(currentUser.key || '')
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Network response was not ok: ' + response.status);
-                }
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    // Update user balance
-                    currentUser.saldo = result.data.new_balance;
-                    localStorage.setItem('switchGameUser', JSON.stringify(currentUser));
-                    
-                    // Update UI
-                    updateUserBalanceUI();
-                    
-                    // Tampilkan modal dengan link
-                    showLinkModal(result.data.link || link, {
-                        game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
-                        link_type: linkType,
-                        cloud: result.data.cloud || cloudName,
-                        amount_deducted: result.data.amount_deducted || 2000,
-                        new_balance: result.data.new_balance || currentUser.saldo,
-                        download_id: DOWNLOAD_ID
-                    });
-                    
-                } else {
-                    throw new Error(result.message || 'Gagal mengakses link');
-                }
-                
-            } catch (error) {
-                console.error('Access link error:', error);
-                
-                // Tampilkan error modal
-                showErrorModal(error.message);
-                
-            } finally {
-                // Restore button state
-                button.innerHTML = originalText;
-                button.classList.remove('loading');
-                button.disabled = false;
-            }
+// Access original link with payment
+async function accessOriginalLink(linkType, index) {
+    if (!currentUser) {
+        openLoginModal();
+        return;
+    }
+    
+    if (currentUser.saldo < 2000) {
+        alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
+        return;
+    }
+    
+    const button = event.target;
+    const originalText = button.textContent.trim();
+    
+    // Tampilkan konfirmasi
+    const confirmed = await showConfirmModal(linkType, index);
+    if (!confirmed) return;
+    
+    try {
+        // Tampilkan loading
+        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+        button.classList.add('loading');
+        button.disabled = true;
+        
+        // Minta link dari server
+        const response = await fetch(GAME_API_URL, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
+            body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
+                  '&link_type=' + linkType + 
+                  '&index=' + index + 
+                  '&telegram_id=' + currentUser.wa_number +
+                  '&key=' + encodeURIComponent(currentUser.key || '')
+        });
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.status);
         }
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            // Update user balance
+            currentUser.saldo = result.data.new_balance;
+            localStorage.setItem('switchGameUser', JSON.stringify(currentUser));
+            
+            // Update UI
+            updateUserBalanceUI();
+            
+            // Tampilkan modal dengan link dari SERVER
+            showLinkModal(result.data.link, {
+                game_name: result.data.game_name || 'Five Nights at Freddy’s HD',
+                link_type: linkType,
+                cloud: result.data.cloud || getCloudName(linkType, index),
+                amount_deducted: result.data.amount_deducted || 2000,
+                new_balance: result.data.new_balance || currentUser.saldo,
+                download_id: DOWNLOAD_ID
+            });
+            
+        } else {
+            throw new Error(result.message || 'Gagal mengakses link');
+        }
+        
+    } catch (error) {
+        console.error('Access link error:', error);
+        showErrorModal(error.message);
+        
+    } finally {
+        // Restore button state
+        button.innerHTML = originalText;
+        button.classList.remove('loading');
+        button.disabled = false;
+    }
+}
         
         // FUNGSI BARU: Tampilkan modal konfirmasi
         function showConfirmModal(linkType, index) {
@@ -3274,13 +3240,7 @@ function updateUIForLoggedOutUser() {
                 copyLinkToClipboard();
             });
             
-            // Auto buka link setelah 5 detik (opsional)
-            setTimeout(() => {
-                const openLinkBtn = document.getElementById('openLinkBtn');
-                if (openLinkBtn && confirm('Buka link sekarang?')) {
-                    openLinkBtn.click();
-                }
-            }, 5000);
+
             
             // Tampilkan modal
             linkModal.show();
