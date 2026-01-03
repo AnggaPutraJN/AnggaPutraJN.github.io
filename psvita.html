@@ -604,6 +604,8 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
         
         function saveCloudCache() {
             try {
+                    // Tambahan penting: ambil pilihan checkbox terbaru sebelum simpan
+                    syncCloudSelectionToState();
                 const nameEl = document.getElementById('cacheName');
                 const cacheName = (nameEl?.value || '').trim();
                 
@@ -780,19 +782,37 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             
             // Event listeners untuk checkbox
             const checkboxes = section.querySelectorAll('input.cloud-check');
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', function () {
-                    const tile = this.closest('.cloud-tile');
-                    if (tile) tile.classList.toggle('selected', this.checked);
-                    updateCloudSectionState(section);
+                checkboxes.forEach(cb => {
+                    cb.addEventListener('change', function () {
+                        const tile = this.closest('.cloud-tile');
+                        if (tile) tile.classList.toggle('selected', this.checked);
+
+                        updateCloudSectionState(section);
+
+                        // Tambahan penting: simpan pilihan ke gameData biar cache benar
+                        syncCloudSelectionToState();
+                    });
                 });
-            });
+
             
             // Inisialisasi state
             updateCloudSectionState(section);
             container.appendChild(section);
         }
         
+        function syncCloudSelectionToState() {
+    const section = document.querySelector('.cloud-section');
+    if (!section) return;
+
+    const arrayName = section.dataset.array;
+    const selected = Array
+        .from(section.querySelectorAll('input.cloud-check:checked'))
+        .map(cb => cb.value);
+
+    gameData[arrayName] = selected;
+}
+
+
         function updateCloudSectionState(section) {
             const arrayName = section.dataset.array;
             const limit = parseInt(section.dataset.limit, 10) || 0;
