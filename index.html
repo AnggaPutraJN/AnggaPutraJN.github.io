@@ -769,6 +769,7 @@ function applyCloudCache(cache) {
     gameData.xciCount = cache.xciCount || 0;
     gameData.nspPartCount = cache.nspPartCount || 0;
     gameData.xciPartCount = cache.xciPartCount || 0;
+    updateSizeFieldsVisibility();
 
     gameData.cloudNSP = cache.cloudNSP || [];
     gameData.cloudXCI = cache.cloudXCI || [];
@@ -905,130 +906,93 @@ function setupPasteFunctionality() {
 
 // Fungsi untuk parse data dari textarea
 function parsePasteData(text) {
-    const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
-    
-    if (lines.length < 7) {
-        throw new Error('Data terlalu pendek. Minimal 7 baris untuk data dasar.');
-    }
-    
-    // Parse data dasar (7 baris pertama)
-    const basicData = {
-        gameName: lines[0] || '',
-        nspSize: lines[1] || '',
-        xciSize: lines[2] || '',
-        category: lines[3] || '',
-        gameId: lines[4] || '',
-        region: lines[5] || '',
-        language: lines[6] || ''
-    };
-    
-    // Isi form dengan data dasar
-    document.getElementById('gameName').value = basicData.gameName;
-    document.getElementById('nspSize').value = basicData.nspSize;
-    document.getElementById('xciSize').value = basicData.xciSize;
-    document.getElementById('category').value = basicData.category;
-    document.getElementById('gameId').value = basicData.gameId;
-    document.getElementById('region').value = basicData.region;
-    document.getElementById('language').value = basicData.language;
-    
-    // Parse link iklan dan asli
-    const remainingLines = lines.slice(7); // Baris setelah data dasar
-    
-    // Hitung total link yang diharapkan
-    const totalExpectedLinks = 
-        gameData.nspCount + 
-        gameData.xciCount + 
-        gameData.nspPartCount + 
-        gameData.xciPartCount;
-    
-    const totalExpectedAdLinks = totalExpectedLinks; // Link iklan
-    const totalExpectedOriginalLinks = totalExpectedLinks; // Link asli
-    
-    const totalExpectedAllLinks = totalExpectedAdLinks + totalExpectedOriginalLinks;
-    
-    // Validasi jumlah link
-    if (remainingLines.length < totalExpectedAllLinks) {
-        const warning = `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedAdLinks} iklan + ${totalExpectedOriginalLinks} asli).`;
-        showWarningModal(warning);
-    }
-    
-    // Pisahkan link iklan dan asli
-        const originalLinks = remainingLines.slice(0, totalExpectedOriginalLinks);
-        const adLinks = remainingLines.slice(totalExpectedOriginalLinks, totalExpectedOriginalLinks + totalExpectedAdLinks);
+  const lines = text
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l => l !== '');
 
-    // Isi link iklan
-    let linkIndex = 0;
-    
-    // NSP Links
-    for (let i = 0; i < gameData.nspCount; i++) {
-        if (adLinks[linkIndex]) {
-            gameData.adLinksNSP[i] = adLinks[linkIndex];
-        }
-        linkIndex++;
-    }
-    
-    // XCI Links
-    for (let i = 0; i < gameData.xciCount; i++) {
-        if (adLinks[linkIndex]) {
-            gameData.adLinksXCI[i] = adLinks[linkIndex];
-        }
-        linkIndex++;
-    }
-    
-    // NSP Part Links
-    for (let i = 0; i < gameData.nspPartCount; i++) {
-        if (adLinks[linkIndex]) {
-            gameData.adLinksNSPPart[i] = adLinks[linkIndex];
-        }
-        linkIndex++;
-    }
-    
-    // XCI Part Links
-    for (let i = 0; i < gameData.xciPartCount; i++) {
-        if (adLinks[linkIndex]) {
-            gameData.adLinksXCIPart[i] = adLinks[linkIndex];
-        }
-        linkIndex++;
-    }
-    
-    // Isi link asli
-    linkIndex = 0;
-    
-    // NSP Links
-    for (let i = 0; i < gameData.nspCount; i++) {
-        if (originalLinks[linkIndex]) {
-            gameData.originalLinksNSP[i] = originalLinks[linkIndex];
-        }
-        linkIndex++;
-    }
-    
-    // XCI Links
-    for (let i = 0; i < gameData.xciCount; i++) {
-        if (originalLinks[linkIndex]) {
-            gameData.originalLinksXCI[i] = originalLinks[linkIndex];
-        }
-        linkIndex++;
-    }
-    
-    // NSP Part Links
-    for (let i = 0; i < gameData.nspPartCount; i++) {
-        if (originalLinks[linkIndex]) {
-            gameData.originalLinksNSPPart[i] = originalLinks[linkIndex];
-        }
-        linkIndex++;
-    }
-    
-    // XCI Part Links
-    for (let i = 0; i < gameData.xciPartCount; i++) {
-        if (originalLinks[linkIndex]) {
-            gameData.originalLinksXCIPart[i] = originalLinks[linkIndex];
-        }
-        linkIndex++;
-    }
-    
-    // Update UI untuk link
-    updateLinkInputsUI();
+  const { hasNSP, hasXCI } = getGameTypeFlags();
+  const sizeLineCount = (hasNSP ? 1 : 0) + (hasXCI ? 1 : 0);
+
+  const minLines = 1 + sizeLineCount + 4; // nama + ukuran + (category, gameId, region, language)
+  if (lines.length < minLines) {
+    throw new Error(`Data terlalu pendek. Minimal ${minLines} baris (menyesuaikan tipe NSP/XCI).`);
+  }
+
+  let idx = 0;
+
+  const gameName = lines[idx++] || '';
+
+  let nspSize = '';
+  let xciSize = '';
+
+  // ukuran dinamis
+  if (hasNSP && hasXCI) {
+    nspSize = lines[idx++] || '';
+    xciSize = lines[idx++] || '';
+  } else if (hasNSP && !hasXCI) {
+    nspSize = lines[idx++] || '';
+  } else if (!hasNSP && hasXCI) {
+    xciSize = lines[idx++] || '';
+  }
+
+  const category = lines[idx++] || '';
+  const gameId = lines[idx++] || '';
+  const region = lines[idx++] || '';
+  const language = lines[idx++] || '';
+
+  // Isi form dasar
+  document.getElementById('gameName').value = gameName;
+  if (document.getElementById('nspSize')) document.getElementById('nspSize').value = nspSize;
+  if (document.getElementById('xciSize')) document.getElementById('xciSize').value = xciSize;
+  document.getElementById('category').value = category;
+  document.getElementById('gameId').value = gameId;
+  document.getElementById('region').value = region;
+  document.getElementById('language').value = language;
+
+  // Pastikan field ukuran yang tidak dipakai disembunyikan + dikosongkan
+  updateSizeFieldsVisibility();
+
+  // Link parsing
+  const remainingLines = lines.slice(idx);
+
+  const totalExpectedLinks =
+    (gameData.nspCount || 0) +
+    (gameData.xciCount || 0) +
+    (gameData.nspPartCount || 0) +
+    (gameData.xciPartCount || 0);
+
+  const totalExpectedOriginalLinks = totalExpectedLinks;
+  const totalExpectedAdLinks = totalExpectedLinks;
+  const totalExpectedAllLinks = totalExpectedOriginalLinks + totalExpectedAdLinks;
+
+  if (remainingLines.length < totalExpectedAllLinks) {
+    const warning = `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedAdLinks} iklan + ${totalExpectedOriginalLinks} asli).`;
+    showWarningModal(warning);
+  }
+
+  const originalLinks = remainingLines.slice(0, totalExpectedOriginalLinks);
+  const adLinks = remainingLines.slice(totalExpectedOriginalLinks, totalExpectedOriginalLinks + totalExpectedAdLinks);
+
+  // Isi link iklan
+  let linkIndex = 0;
+
+  for (let i = 0; i < (gameData.nspCount || 0); i++) gameData.adLinksNSP[i] = adLinks[linkIndex++] || '';
+  for (let i = 0; i < (gameData.xciCount || 0); i++) gameData.adLinksXCI[i] = adLinks[linkIndex++] || '';
+  for (let i = 0; i < (gameData.nspPartCount || 0); i++) gameData.adLinksNSPPart[i] = adLinks[linkIndex++] || '';
+  for (let i = 0; i < (gameData.xciPartCount || 0); i++) gameData.adLinksXCIPart[i] = adLinks[linkIndex++] || '';
+
+  // Isi link asli
+  linkIndex = 0;
+
+  for (let i = 0; i < (gameData.nspCount || 0); i++) gameData.originalLinksNSP[i] = originalLinks[linkIndex++] || '';
+  for (let i = 0; i < (gameData.xciCount || 0); i++) gameData.originalLinksXCI[i] = originalLinks[linkIndex++] || '';
+  for (let i = 0; i < (gameData.nspPartCount || 0); i++) gameData.originalLinksNSPPart[i] = originalLinks[linkIndex++] || '';
+  for (let i = 0; i < (gameData.xciPartCount || 0); i++) gameData.originalLinksXCIPart[i] = originalLinks[linkIndex++] || '';
+
+  updateLinkInputsUI();
 }
+
 
 // Fungsi untuk update UI input link
 function updateLinkInputsUI() {
@@ -1316,6 +1280,31 @@ function openTelegramRegister() {
             currentStep = step;
         }
         
+
+
+function getGameTypeFlags() {
+  const hasNSP = (gameData.nspCount || 0) > 0 || (gameData.nspPartCount || 0) > 0;
+  const hasXCI = (gameData.xciCount || 0) > 0 || (gameData.xciPartCount || 0) > 0;
+  return { hasNSP, hasXCI };
+}
+
+function toggleSizeField(inputId, show) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+
+  const wrapper = input.closest('.col-md-6') || input.closest('.mb-3') || input.parentElement;
+  if (wrapper) wrapper.style.display = show ? '' : 'none';
+
+  if (!show) input.value = ''; // biar "ukurannya cuman yang di input"
+}
+
+function updateSizeFieldsVisibility() {
+  const { hasNSP, hasXCI } = getGameTypeFlags();
+  toggleSizeField('nspSize', hasNSP);
+  toggleSizeField('xciSize', hasXCI);
+}
+
+
         function nextStep1() {
             const nspCount = parseInt(document.getElementById('nspCount').value) || 0;
             const xciCount = parseInt(document.getElementById('xciCount').value) || 0;
@@ -1331,6 +1320,8 @@ function openTelegramRegister() {
             gameData.xciCount = xciCount;
             gameData.nspPartCount = nspPartCount;
             gameData.xciPartCount = xciPartCount;
+            updateSizeFieldsVisibility();
+
             
             // Reset cloud arrays
             gameData.cloudNSP = [];
@@ -1471,6 +1462,7 @@ function nextStep2() {
 
     generateLinkInputFields();
     setupPasteFunctionality();
+    updateSizeFieldsVisibility();
     showStep(3);
 }
         
@@ -1955,7 +1947,16 @@ function createHTMLTemplate() {
     // Data untuk JavaScript
     const gameApiUrl = GAME_API_URL;
     const userApiUrl = USER_API_URL;
-    
+    const { hasNSP, hasXCI } = getGameTypeFlags();
+
+    let sizeRows = '';
+    if (hasNSP) {
+      sizeRows += `<tr><th>Ukuran NSP:</th><td>${escapeHTML(gameData.gameInfo.ukuran_nsp || '-')}</td></tr>`;
+    }
+    if (hasXCI) {
+      sizeRows += `<tr><th>Ukuran XCI:</th><td>${escapeHTML(gameData.gameInfo.ukuran_xci || '-')}</td></tr>`;
+    }
+
     return`
 <!DOCTYPE html>
 <html lang="id">
@@ -2619,8 +2620,7 @@ a.btn.btn-cloud:active {
                     <table class="table">
                         <tr><th>Nama Game:</th><td>${escapeHTML(gameData.gameInfo.nama_game)}</td></tr>
                         <tr><th>Game ID:</th><td>${escapeHTML(gameData.gameInfo.game_id)}</td></tr>
-                        <tr><th>Ukuran NSP:</th><td>${escapeHTML(gameData.gameInfo.ukuran_nsp || '-')}</td></tr>
-                        <tr><th>Ukuran XCI:</th><td>${escapeHTML(gameData.gameInfo.ukuran_xci || '-')}</td></tr>
+                            ${sizeRows}
                     </table>
                 </div>
                 <div class="col-md-6">
