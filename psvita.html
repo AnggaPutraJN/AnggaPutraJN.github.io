@@ -1686,11 +1686,26 @@ body{
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Telegram ID</label>
-                        <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram">
+                        <input
+                          type="text"
+                          id="telegramId"
+                          class="form-control"
+                          placeholder="Masukkan ID Telegram"
+                          inputmode="numeric"
+                          autocomplete="off"
+                        />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Key</label>
-                        <input type="text" id="userKey" class="form-control" placeholder="Masukkan Key 5 digit">
+                        <input
+                          type="text"
+                          id="userKey"
+                          class="form-control"
+                          placeholder="Masukkan Key 5 digit"
+                          inputmode="numeric"
+                          autocomplete="off"
+                          maxlength="15"
+                        />
                         <div class="form-text">
                             <i class="bi bi-info-circle"></i> Key dapat Anda dapatkan dengan mengetik <strong>/profile</strong> di bot @INDapkBot
                         </div>
@@ -1768,114 +1783,160 @@ body{
                 }
             }
         }
-        
+
+
+function toAsciiDigits(str) {
+  const s = String(str || '').normalize('NFKC');
+
+  const map = {
+    // Arabic-Indic
+    '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9',
+    // Extended Arabic-Indic
+    '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9'
+  };
+
+  return s.replace(/[٠-٩۰-۹]/g, (ch) => map[ch] || ch);
+}
+
+function normalizeKey(raw) {
+  const ascii = toAsciiDigits(raw);
+  return ascii.replace(/[^0-9]/g, '').trim();
+}
+
+function normalizeTelegramId(raw) {
+  const ascii = toAsciiDigits(raw);
+  return ascii.replace(/[^0-9]/g, '').trim();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const keyEl = document.getElementById('userKey');
+  const idEl = document.getElementById('telegramId');
+
+  if (keyEl) {
+    keyEl.addEventListener('input', function () {
+      const cleaned = normalizeKey(this.value);
+      this.value = cleaned;
+    });
+
+    keyEl.addEventListener('paste', function () {
+      setTimeout(() => {
+        this.value = normalizeKey(this.value);
+      }, 0);
+    });
+  }
+
+  if (idEl) {
+    idEl.addEventListener('input', function () {
+      const cleaned = normalizeTelegramId(this.value);
+      this.value = cleaned;
+    });
+
+    idEl.addEventListener('paste', function () {
+      setTimeout(() => {
+        this.value = normalizeTelegramId(this.value);
+      }, 0);
+    });
+  }
+});
+
+
 async function login(btn) {
-    const telegramIdInput = document.getElementById('telegramId');
-    const userKeyInput = document.getElementById('userKey');
-    const telegramId = telegramIdInput.value.trim();
-    const userKey = userKeyInput.value.trim();
-    
-    if (!telegramId) {
-        alert('Masukkan Telegram ID!');
-        return;
-    }
-    
-    if (!userKey) {
-        alert('Masukkan Key Anda!');
-        return;
-    }
-    
-    // Validasi format Key (5 digit angka)
-if (!/^\d{5}$/.test(userKey)) {
+  const telegramIdInput = document.getElementById('telegramId');
+  const userKeyInput = document.getElementById('userKey');
+
+  const telegramIdRaw = telegramIdInput.value;
+  const userKeyRaw = userKeyInput.value;
+
+  const telegramId = normalizeTelegramId(telegramIdRaw);
+  const userKey = normalizeKey(userKeyRaw);
+
+  telegramIdInput.value = telegramId;
+  userKeyInput.value = userKey;
+
+  if (!telegramId) {
+    alert('Masukkan Telegram ID!');
+    return;
+  }
+
+  if (!userKey) {
+    alert('Masukkan Key Anda!');
+    return;
+  }
+
+  if (userKey.length !== 5) {
     alert('Key harus berupa 5 digit angka!');
     return;
-}
-    
-    const originalBtnHtml = btn ? btn.innerHTML : '';
+  }
+
+  const originalBtnHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Verifikasi...';
+  }
+  telegramIdInput.disabled = true;
+  userKeyInput.disabled = true;
+
+  try {
+    const body = new URLSearchParams();
+    body.append('action', 'loginUser');
+    body.append('wa_number', telegramId);
+    body.append('key', userKey);
+
+    const res = await fetch(USER_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
+      body: body.toString()
+    });
+
+    if (!res.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const result = await res.json();
+
+    if (result.status !== 'success' || !result.data) {
+      alert(result.message || 'Login gagal.');
+      return;
+    }
+
+    // Login sukses. Simpan user yang dikirim server
+    currentUser = {
+      ...result.data,
+      wa_number: telegramId,
+      key: userKey
+    };
+
+    localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
+    updateUIForLoggedInUser();
+
+    document.getElementById('telegramWidget').style.display = 'none';
+    document.getElementById('userInfo').style.display = 'block';
+    document.getElementById('userName').textContent = currentUser.nama_user || '';
+    document.getElementById('userBalance').textContent = (currentUser.saldo ?? 0).toLocaleString();
+    document.getElementById('userId').textContent = currentUser.wa_number || '';
+    document.getElementById('userKeyDisplay').textContent = currentUser.key || '';
+
+    setTimeout(() => {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+      if (modal) modal.hide();
+    }, 800);
+
+  } catch (err) {
+    alert('Login gagal: ' + (err.message || err));
+  } finally {
+    telegramIdInput.disabled = false;
+    userKeyInput.disabled = false;
+
     if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Verifikasi...';
+      btn.disabled = false;
+      btn.innerHTML = originalBtnHtml || 'Login';
     }
-    telegramIdInput.disabled = true;
-    userKeyInput.disabled = true;
-    
-    try {
-        // Pertama, cek user data
-        const userResponse = await fetch(USER_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/json'
-            },
-            body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
-        });
-        
-        if (!userResponse.ok) throw new Error('Network response was not ok');
-        const userResult = await userResponse.json();
-        
-        if (userResult.status === 'success') {
-            // Verifikasi Key user
-            const keyResponse = await fetch(USER_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept': 'application/json'
-                },
-                body: 'action=getUserKey&wa_number=' + encodeURIComponent(telegramId)
-            });
-            
-            if (!keyResponse.ok) throw new Error('Network response was not ok');
-            const keyResult = await keyResponse.json();
-            
-            if (keyResult.status === 'success') {
-                // Verifikasi Key cocok
-                const storedKey = keyResult.data.key || '';
-                
-                if (storedKey !== userKey) {
-                    alert('Key tidak cocok! Pastikan Anda memasukkan Key yang benar.');
-                    throw new Error('Invalid key');
-                }
-                
-                // Login sukses
-                currentUser = {
-                    ...userResult.data,
-                    key: storedKey
-                };
-                
-                localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
-                updateUIForLoggedInUser();
-                
-                document.getElementById('telegramWidget').style.display = 'none';
-                document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('userName').textContent = currentUser.nama_user;
-                document.getElementById('userBalance').textContent = currentUser.saldo.toLocaleString();
-                document.getElementById('userId').textContent = currentUser.wa_number;
-                document.getElementById('userKeyDisplay').textContent = currentUser.key;
-                
-                // Close modal after 2 seconds
-                setTimeout(() => {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                    if (modal) modal.hide();
-                }, 2000);
-            } else {
-                alert('Key tidak ditemukan untuk user ini.');
-            }
-        } else {
-            alert('User tidak ditemukan. Silakan daftar dulu lewat @indapkbot.');
-        }
-    } catch (error) {
-        if (error.message !== 'Invalid key') {
-            alert('Login gagal: ' + error.message);
-        }
-    } finally {
-        telegramIdInput.disabled = false;
-        userKeyInput.disabled = false;
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalBtnHtml || 'Login';
-        }
-    }
+  }
 }
+
         
         function register() {
             window.open('https://web.telegram.org/k/#@indapkbot', '_blank');
