@@ -1567,8 +1567,7 @@ body{
                 <div>
                     <strong>Login sebagai:</strong> <span id="loggedUserName"></span> |
                     <strong>Saldo:</strong> Rp <span id="loggedUserBalance"></span> |
-                    <strong>ID:</strong> <span id="loggedUserId"></span> |
-                    <strong>Key:</strong> <span id="loggedUserKey"></span>
+                    <strong>ID:</strong> <span id="loggedUserId"></span>
                 </div>
                 <div class="mt-2 d-flex gap-2 flex-wrap">
                     <a class="btn btn-success btn-sm"
@@ -1696,19 +1695,25 @@ body{
                         />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Key</label>
+                      <label class="form-label">Key</label>
+                      <div class="input-group">
                         <input
-                          type="text"
+                          type="password"
                           id="userKey"
                           class="form-control"
                           placeholder="Masukkan Key 5 digit"
                           inputmode="numeric"
                           autocomplete="off"
-                          maxlength="15"
+                          maxlength="5"
+                          pattern="[0-9]*"
                         />
-                        <div class="form-text">
-                            <i class="bi bi-info-circle"></i> Key dapat Anda dapatkan dengan mengetik <strong>/profile</strong> di bot @INDapkBot
-                        </div>
+                        <button class="btn btn-outline-secondary" type="button" id="toggleKeyBtn" aria-label="Tampilkan key">
+                          <i class="bi bi-eye"></i>
+                        </button>
+                      </div>
+                      <div class="form-text">
+                        <i class="bi bi-info-circle"></i> Key dapat Anda dapatkan dengan mengetik <strong>/profile</strong> di bot @INDapkBot
+                      </div>
                     </div>
                     <div class="d-flex gap-2">
                         <button class="btn btn-primary flex-fill" onclick="login(this)">Login</button>
@@ -1752,37 +1757,9 @@ body{
         let currentUser = null;
         let balanceRefreshInterval = null;
         
-        // Tab functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tab switching
-            document.querySelectorAll('[data-tab]').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.dataset.tab;
-                    document.querySelectorAll('[data-tab]').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                        document.querySelectorAll('.tab-pane-custom').forEach(content => {
-                          content.classList.remove('active');
-                        });
-                    document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
-                });
-            });
-            
-            // Check if user is already logged in
-            checkLogin();
-        });
         
-        // User authentication
-        async function checkLogin() {
-            const savedUser = localStorage.getItem('psvitaGameUser');
-            if (savedUser) {
-                try {
-                    currentUser = JSON.parse(savedUser);
-                    updateUIForLoggedInUser();
-                } catch (e) {
-                    localStorage.removeItem('psvitaGameUser');
-                }
-            }
-        }
+
+     
 
 
 function toAsciiDigits(str) {
@@ -1796,6 +1773,81 @@ function toAsciiDigits(str) {
   };
 
   return s.replace(/[٠-٩۰-۹]/g, (ch) => map[ch] || ch);
+}
+// ===== AUTH STORAGE FIX (PASTIKAN LOGOUT TIDAK BALIK SAAT RELOAD) =====
+const AUTH_KEY = 'psvitaGameUser';
+const LOGOUT_KEY = 'psvitaGameUserLogoutAt';
+
+function getLogoutAt() {
+  const n = parseInt(localStorage.getItem(LOGOUT_KEY) || '0', 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function safeParse(json) {
+  try { return JSON.parse(json); } catch { return null; }
+}
+
+// Tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Reset UI dulu supaya tidak ada state nyangkut
+  updateUIForLoggedOutUser();
+
+  // Tab switching
+  document.querySelectorAll('[data-tab]').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const tabId = this.dataset.tab;
+      document.querySelectorAll('[data-tab]').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+
+      document.querySelectorAll('.tab-pane-custom').forEach(content => {
+        content.classList.remove('active');
+      });
+
+      document
+        .getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1))
+        .classList.add('active');
+    });
+  });
+
+  checkLogin();
+});
+
+// Sinkron logout antar tab
+window.addEventListener('storage', function(e) {
+  if (e.key !== AUTH_KEY && e.key !== LOGOUT_KEY) return;
+  checkLogin();
+});
+
+// User authentication
+async function checkLogin() {
+  const savedUserStr = localStorage.getItem(AUTH_KEY);
+  if (!savedUserStr) {
+    currentUser = null;
+    updateUIForLoggedOutUser();
+    return;
+  }
+
+  const savedUser = safeParse(savedUserStr);
+  if (!savedUser) {
+    localStorage.removeItem(AUTH_KEY);
+    currentUser = null;
+    updateUIForLoggedOutUser();
+    return;
+  }
+
+  const logoutAt = getLogoutAt();
+  const loginAt = parseInt(savedUser.login_at || '0', 10) || 0;
+
+  // Kalau logout lebih baru dari login, paksa logout
+  if (logoutAt && loginAt && logoutAt >= loginAt) {
+    localStorage.removeItem(AUTH_KEY);
+    currentUser = null;
+    updateUIForLoggedOutUser();
+    return;
+  }
+
+  currentUser = savedUser;
+  updateUIForLoggedInUser();
 }
 
 function normalizeKey(raw) {
@@ -1835,6 +1887,22 @@ document.addEventListener('DOMContentLoaded', function () {
       setTimeout(() => {
         this.value = normalizeTelegramId(this.value);
       }, 0);
+    });
+  }
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const keyEl = document.getElementById('userKey');
+  const toggleBtn = document.getElementById('toggleKeyBtn');
+
+  if (toggleBtn && keyEl) {
+    toggleBtn.addEventListener('click', function () {
+      const isHidden = keyEl.type === 'password';
+      keyEl.type = isHidden ? 'text' : 'password';
+      toggleBtn.innerHTML = isHidden
+        ? '<i class="bi bi-eye-slash"></i>'
+        : '<i class="bi bi-eye"></i>';
     });
   }
 });
@@ -1902,14 +1970,19 @@ async function login(btn) {
       return;
     }
 
-    // Login sukses. Simpan user yang dikirim server
+    // Login sukses
     currentUser = {
       ...result.data,
       wa_number: telegramId,
-      key: userKey
+      key: userKey,
+      // Tambahan penting: timestamp login untuk validasi logout
+      login_at: Date.now()
     };
 
-    localStorage.setItem('psvitaGameUser', JSON.stringify(currentUser));
+    // Kalau ada penanda logout lama, biarkan saja.
+    // login_at yang baru akan menang.
+    localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
+
     updateUIForLoggedInUser();
 
     document.getElementById('telegramWidget').style.display = 'none';
@@ -1936,21 +2009,23 @@ async function login(btn) {
     }
   }
 }
-
         
         function register() {
             window.open('https://web.telegram.org/k/#@indapkbot', '_blank');
         }
         
-        function logout() {
-            if (confirm('Yakin ingin logout?')) {
-                currentUser = null;
-                localStorage.removeItem('psvitaGameUser');
-                updateUIForLoggedOutUser();
-                alert('Logout berhasil!');
-            }
-        }
-        
+function logout() {
+  if (confirm('Yakin ingin logout?')) {
+    // Penanda logout global, supaya reload tidak bisa login lagi dari cache lama
+    localStorage.setItem(LOGOUT_KEY, String(Date.now()));
+
+    currentUser = null;
+    localStorage.removeItem(AUTH_KEY);
+
+    updateUIForLoggedOutUser();
+    alert('Logout berhasil!');
+  }
+}
 function updateUIForLoggedInUser() {
   const elUserHeader = document.getElementById('userHeader');
   if (elUserHeader) elUserHeader.style.display = 'block';
