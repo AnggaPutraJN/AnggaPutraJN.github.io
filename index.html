@@ -2746,6 +2746,14 @@ a.btn.btn-cloud:active {
         let currentUser = null;
         let balanceRefreshInterval = null;
 
+const LS_USER_KEY = 'switchGameUser';
+const LS_LOGOUT_AT_KEY = 'switchGameLogoutAt';
+
+function getLogoutAt() {
+  return Number(localStorage.getItem(LS_LOGOUT_AT_KEY) || 0);
+}
+
+
 async function refreshBalanceOnce() {
   if (!currentUser?.wa_number) return;
 
@@ -2845,19 +2853,32 @@ function stopBalanceAutoRefresh() {
         });
         
         // User authentication
-        async function checkLogin() {
-            const savedUser = localStorage.getItem('switchGameUser');
-            if (savedUser) {
-                try {
-                    currentUser = JSON.parse(savedUser);
-                    updateUIForLoggedInUser();
-                } catch (e) {
-                    console.error('Error parsing saved user:', e);
-                    localStorage.removeItem('switchGameUser');
-                }
-            }
-        }
-        
+async function checkLogin() {
+  const savedUser = localStorage.getItem(LS_USER_KEY);
+  if (!savedUser) return;
+
+  try {
+    const u = JSON.parse(savedUser);
+
+    const logoutAt = getLogoutAt();
+    const loginAt = Number(u._loginAt || 0);
+
+    // Kalau logout terjadi setelah login, anggap sudah logout
+    if (logoutAt && logoutAt >= loginAt) {
+      localStorage.removeItem(LS_USER_KEY);
+      currentUser = null;
+      updateUIForLoggedOutUser();
+      return;
+    }
+
+    currentUser = u;
+    updateUIForLoggedInUser();
+  } catch (e) {
+    localStorage.removeItem(LS_USER_KEY);
+  }
+}
+
+
 async function login(btn) {
   const telegramIdInput = document.getElementById('telegramId');
   const keyInput = document.getElementById('telegramKey');
@@ -2909,9 +2930,10 @@ async function login(btn) {
         return;
       }
 
-      currentUser = { ...result.data, key: serverKey };
-      localStorage.setItem('switchGameUser', JSON.stringify(currentUser));
-      updateUIForLoggedInUser();
+        currentUser = { ...result.data, key: serverKey, _loginAt: Date.now() };
+        localStorage.setItem(LS_USER_KEY, JSON.stringify(currentUser));
+        localStorage.setItem(LS_LOGOUT_AT_KEY, '0');
+        updateUIForLoggedInUser();
 
       document.getElementById('telegramWidget').style.display = 'none';
       document.getElementById('userInfo').style.display = 'block';
@@ -2950,26 +2972,30 @@ async function login(btn) {
   }
 
         
-        function logout() {
-            if (confirm('Yakin ingin logout?')) {
-                currentUser = null;
-                localStorage.removeItem('switchGameUser');
-                updateUIForLoggedOutUser();
-                
-                // Update modal jika terbuka
-                document.getElementById('telegramWidget').style.display = 'block';
-                document.getElementById('userInfo').style.display = 'none';
-                document.getElementById('telegramId').value = '';
-                
-                // Tutup modal jika terbuka
-                const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                if (modal) {
-                    modal.hide();
-                }
-                
-                alert('Logout berhasil!');
-            }
-        }
+function logout() {
+  if (!confirm('Yakin ingin logout?')) return;
+
+  // broadcast logout
+  localStorage.setItem(LS_LOGOUT_AT_KEY, String(Date.now()));
+  localStorage.removeItem(LS_USER_KEY);
+
+  currentUser = null;
+  updateUIForLoggedOutUser();
+
+  // Reset modal jika terbuka
+  document.getElementById('telegramWidget').style.display = 'block';
+  document.getElementById('userInfo').style.display = 'none';
+
+  const idEl = document.getElementById('telegramId');
+  if (idEl) idEl.value = '';
+  const keyEl = document.getElementById('telegramKey');
+  if (keyEl) keyEl.value = '';
+
+  const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+  if (modal) modal.hide();
+
+  alert('Logout berhasil!');
+}
         
         function updateUIForLoggedInUser() {
             // Show user header
@@ -2984,7 +3010,16 @@ async function login(btn) {
             startBalanceAutoRefresh();
 
         }
-        
+
+window.addEventListener('storage', (e) => {
+  if (e.key === LS_LOGOUT_AT_KEY) {
+    // logout dilakukan di tab lain
+    currentUser = null;
+    localStorage.removeItem(LS_USER_KEY);
+    updateUIForLoggedOutUser();
+  }
+});
+
 function updateUIForLoggedOutUser() {
   document.getElementById('userHeader').style.display = 'none';
   document.getElementById('loginPrompt').style.display = 'block';
