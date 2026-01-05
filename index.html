@@ -517,6 +517,12 @@ http://link.indapk.com/FsTh2OSP
                     </div>
                 </div>
             
+                <div class="mt-4">
+                  <h5><i class="bi bi-link-45deg"></i> Link Iklan 2</h5>
+                  <div id="adLinks2Input">
+                    <!-- Akan diisi oleh JavaScript -->
+                  </div>
+                </div>
             <div class="mt-3">
                 <button id="btnPrev3" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Kembali
@@ -599,6 +605,8 @@ http://link.indapk.com/FsTh2OSP
         const GAME_API_URL = "https://script.google.com/macros/s/AKfycbytk1iwBYb2xGF2j3fjTmTFBNzQ_ifXsxrddlDWuPPNdMjWbHvyiRppEcoq0V1BGjn-/exec";
         const USER_API_URL = "https://script.google.com/macros/s/AKfycbweRCcVmuWrz2gpvIanBqeIsyubAUgOjSssHhnXBW3WUiOu9QbNeUq-y4-9Ps6BuQ8L/exec";
         
+
+
         // Data state
         let currentStep = 1;
         let gameData = {
@@ -614,6 +622,10 @@ http://link.indapk.com/FsTh2OSP
             adLinksXCI: [],
             adLinksNSPPart: [],
             adLinksXCIPart: [],
+            adLinks2NSP: [],
+            adLinks2XCI: [],
+            adLinks2NSPPart: [],
+            adLinks2XCIPart: [],
             originalLinksNSP: [],
             originalLinksXCI: [],
             originalLinksNSPPart: [],
@@ -963,24 +975,54 @@ function parsePasteData(text) {
     (gameData.xciPartCount || 0);
 
   const totalExpectedOriginalLinks = totalExpectedLinks;
-  const totalExpectedAdLinks = totalExpectedLinks;
-  const totalExpectedAllLinks = totalExpectedOriginalLinks + totalExpectedAdLinks;
+  const totalExpectedAdLinks1 = totalExpectedLinks; // Link Iklan 1
+  const totalExpectedAdLinks2 = totalExpectedLinks; // Link Iklan 2
 
+  const totalExpectedAllLinks =
+    totalExpectedOriginalLinks + totalExpectedAdLinks1 + totalExpectedAdLinks2;
+
+  // Warning kalau kurang
   if (remainingLines.length < totalExpectedAllLinks) {
-    const warning = `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedAdLinks} iklan + ${totalExpectedOriginalLinks} asli).`;
+    const warning =
+      `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link ` +
+      `(${totalExpectedAdLinks1} iklan 1 + ${totalExpectedAdLinks2} iklan 2 + ${totalExpectedOriginalLinks} asli).`;
     showWarningModal(warning);
   }
 
+  // Ambil Original
   const originalLinks = remainingLines.slice(0, totalExpectedOriginalLinks);
-  const adLinks = remainingLines.slice(totalExpectedOriginalLinks, totalExpectedOriginalLinks + totalExpectedAdLinks);
 
-  // Isi link iklan
+  // Ambil Iklan 1
+  const adLinks1Start = totalExpectedOriginalLinks;
+  const adLinks1End = adLinks1Start + totalExpectedAdLinks1;
+  const adLinks = remainingLines.slice(adLinks1Start, adLinks1End);
+
+  // Ambil Iklan 2 (opsional, kalau tidak ada akan jadi array kosong)
+  const adLinks2Start = adLinks1End;
+  const adLinks2End = adLinks2Start + totalExpectedAdLinks2;
+  const adLinks2 = remainingLines.slice(adLinks2Start, adLinks2End);
+
+  // Pastikan array Link Iklan 2 ada, biar aman walau belum diinisialisasi
+  if (!Array.isArray(gameData.adLinks2NSP)) gameData.adLinks2NSP = new Array(gameData.nspCount || 0).fill('');
+  if (!Array.isArray(gameData.adLinks2XCI)) gameData.adLinks2XCI = new Array(gameData.xciCount || 0).fill('');
+  if (!Array.isArray(gameData.adLinks2NSPPart)) gameData.adLinks2NSPPart = new Array(gameData.nspPartCount || 0).fill('');
+  if (!Array.isArray(gameData.adLinks2XCIPart)) gameData.adLinks2XCIPart = new Array(gameData.xciPartCount || 0).fill('');
+
+  // Isi link iklan 1
   let linkIndex = 0;
 
   for (let i = 0; i < (gameData.nspCount || 0); i++) gameData.adLinksNSP[i] = adLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.xciCount || 0); i++) gameData.adLinksXCI[i] = adLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.nspPartCount || 0); i++) gameData.adLinksNSPPart[i] = adLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.xciPartCount || 0); i++) gameData.adLinksXCIPart[i] = adLinks[linkIndex++] || '';
+
+  // Isi link iklan 2
+  linkIndex = 0;
+
+  for (let i = 0; i < (gameData.nspCount || 0); i++) gameData.adLinks2NSP[i] = adLinks2[linkIndex++] || '';
+  for (let i = 0; i < (gameData.xciCount || 0); i++) gameData.adLinks2XCI[i] = adLinks2[linkIndex++] || '';
+  for (let i = 0; i < (gameData.nspPartCount || 0); i++) gameData.adLinks2NSPPart[i] = adLinks2[linkIndex++] || '';
+  for (let i = 0; i < (gameData.xciPartCount || 0); i++) gameData.adLinks2XCIPart[i] = adLinks2[linkIndex++] || '';
 
   // Isi link asli
   linkIndex = 0;
@@ -994,121 +1036,168 @@ function parsePasteData(text) {
 }
 
 
+
 // Fungsi untuk update UI input link
 function updateLinkInputsUI() {
-    // Update link iklan
-    const adLinksContainer = document.getElementById('adLinksInput');
-    const originalLinksContainer = document.getElementById('originalLinksInput');
-    
-    if (adLinksContainer.children.length > 0) {
-        // NSP Links
-        if (gameData.nspCount > 0) {
-            const nspSection = adLinksContainer.querySelector('[data-type="adLinksNSP"]');
-            if (nspSection) {
-                const inputs = nspSection.querySelectorAll('input[type="text"]');
-                inputs.forEach((input, index) => {
-                    if (gameData.adLinksNSP[index]) {
-                        input.value = gameData.adLinksNSP[index];
-                    }
-                });
-            }
-        }
-        
-        // XCI Links
-        if (gameData.xciCount > 0) {
-            const xciSection = adLinksContainer.querySelector('[data-type="adLinksXCI"]');
-            if (xciSection) {
-                const inputs = xciSection.querySelectorAll('input[type="text"]');
-                inputs.forEach((input, index) => {
-                    if (gameData.adLinksXCI[index]) {
-                        input.value = gameData.adLinksXCI[index];
-                    }
-                });
-            }
-        }
-        
-        // NSP Part Links
-        if (gameData.nspPartCount > 0) {
-            const nspPartSection = adLinksContainer.querySelector('[data-type="adLinksNSPPart"]');
-            if (nspPartSection) {
-                const inputs = nspPartSection.querySelectorAll('input[type="text"]');
-                inputs.forEach((input, index) => {
-                    if (gameData.adLinksNSPPart[index]) {
-                        input.value = gameData.adLinksNSPPart[index];
-                    }
-                });
-            }
-        }
-        
-        // XCI Part Links
-        if (gameData.xciPartCount > 0) {
-            const xciPartSection = adLinksContainer.querySelector('[data-type="adLinksXCIPart"]');
-            if (xciPartSection) {
-                const inputs = xciPartSection.querySelectorAll('input[type="text"]');
-                inputs.forEach((input, index) => {
-                    if (gameData.adLinksXCIPart[index]) {
-                        input.value = gameData.adLinksXCIPart[index];
-                    }
-                });
-            }
-        }
+  // Update link iklan 1
+  const adLinksContainer = document.getElementById('adLinksInput');
+  const adLinks2Container = document.getElementById('adLinks2Input'); // ✅ Link Iklan 2
+  const originalLinksContainer = document.getElementById('originalLinksInput');
+
+  // =========================
+  // LINK IKLAN 1 (EXISTING)
+  // =========================
+  if (adLinksContainer && adLinksContainer.children.length > 0) {
+    // NSP Links
+    if (gameData.nspCount > 0) {
+      const nspSection = adLinksContainer.querySelector('[data-type="adLinksNSP"]');
+      if (nspSection) {
+        const inputs = nspSection.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.adLinksNSP[index]) input.value = gameData.adLinksNSP[index];
+        });
+      }
     }
-    
-    // Update link asli
-    if (originalLinksContainer.children.length > 0) {
-        // NSP Links
-        if (gameData.nspCount > 0) {
-            const nspSection = originalLinksContainer.querySelector('[data-type="originalLinksNSP"]');
-            if (nspSection) {
-                const inputs = nspSection.querySelectorAll('input[type="text"]');
-                inputs.forEach((input, index) => {
-                    if (gameData.originalLinksNSP[index]) {
-                        input.value = gameData.originalLinksNSP[index];
-                    }
-                });
-            }
-        }
-        
-        // XCI Links
-        if (gameData.xciCount > 0) {
-            const xciSection = originalLinksContainer.querySelector('[data-type="originalLinksXCI"]');
-            if (xciSection) {
-                const inputs = xciSection.querySelectorAll('input[type="text"]');
-                inputs.forEach((input, index) => {
-                    if (gameData.originalLinksXCI[index]) {
-                        input.value = gameData.originalLinksXCI[index];
-                    }
-                });
-            }
-        }
-        
-        // NSP Part Links
-        if (gameData.nspPartCount > 0) {
-            const nspPartSection = originalLinksContainer.querySelector('[data-type="originalLinksNSPPart"]');
-            if (nspPartSection) {
-                const inputs = nspPartSection.querySelectorAll('input[type="text"]');
-                inputs.forEach((input, index) => {
-                    if (gameData.originalLinksNSPPart[index]) {
-                        input.value = gameData.originalLinksNSPPart[index];
-                    }
-                });
-            }
-        }
-        
-        // XCI Part Links
-        if (gameData.xciPartCount > 0) {
-            const xciPartSection = originalLinksContainer.querySelector('[data-type="originalLinksXCIPart"]');
-            if (xciPartSection) {
-                const inputs = xciPartSection.querySelectorAll('input[type="text"]');
-                inputs.forEach((input, index) => {
-                    if (gameData.originalLinksXCIPart[index]) {
-                        input.value = gameData.originalLinksXCIPart[index];
-                    }
-                });
-            }
-        }
+
+    // XCI Links
+    if (gameData.xciCount > 0) {
+      const xciSection = adLinksContainer.querySelector('[data-type="adLinksXCI"]');
+      if (xciSection) {
+        const inputs = xciSection.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.adLinksXCI[index]) input.value = gameData.adLinksXCI[index];
+        });
+      }
     }
+
+    // NSP Part Links
+    if (gameData.nspPartCount > 0) {
+      const nspPartSection = adLinksContainer.querySelector('[data-type="adLinksNSPPart"]');
+      if (nspPartSection) {
+        const inputs = nspPartSection.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.adLinksNSPPart[index]) input.value = gameData.adLinksNSPPart[index];
+        });
+      }
+    }
+
+    // XCI Part Links
+    if (gameData.xciPartCount > 0) {
+      const xciPartSection = adLinksContainer.querySelector('[data-type="adLinksXCIPart"]');
+      if (xciPartSection) {
+        const inputs = xciPartSection.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.adLinksXCIPart[index]) input.value = gameData.adLinksXCIPart[index];
+        });
+      }
+    }
+  }
+
+  // =========================
+  // ✅ LINK IKLAN 2 (BARU)
+  // =========================
+  if (adLinks2Container && adLinks2Container.children.length > 0) {
+    // Pastikan array ada biar aman
+    if (!Array.isArray(gameData.adLinks2NSP)) gameData.adLinks2NSP = new Array(gameData.nspCount || 0).fill('');
+    if (!Array.isArray(gameData.adLinks2XCI)) gameData.adLinks2XCI = new Array(gameData.xciCount || 0).fill('');
+    if (!Array.isArray(gameData.adLinks2NSPPart)) gameData.adLinks2NSPPart = new Array(gameData.nspPartCount || 0).fill('');
+    if (!Array.isArray(gameData.adLinks2XCIPart)) gameData.adLinks2XCIPart = new Array(gameData.xciPartCount || 0).fill('');
+
+    // NSP Links
+    if (gameData.nspCount > 0) {
+      const nsp2Section = adLinks2Container.querySelector('[data-type="adLinks2NSP"]');
+      if (nsp2Section) {
+        const inputs = nsp2Section.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.adLinks2NSP[index]) input.value = gameData.adLinks2NSP[index];
+        });
+      }
+    }
+
+    // XCI Links
+    if (gameData.xciCount > 0) {
+      const xci2Section = adLinks2Container.querySelector('[data-type="adLinks2XCI"]');
+      if (xci2Section) {
+        const inputs = xci2Section.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.adLinks2XCI[index]) input.value = gameData.adLinks2XCI[index];
+        });
+      }
+    }
+
+    // NSP Part Links
+    if (gameData.nspPartCount > 0) {
+      const nspPart2Section = adLinks2Container.querySelector('[data-type="adLinks2NSPPart"]');
+      if (nspPart2Section) {
+        const inputs = nspPart2Section.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.adLinks2NSPPart[index]) input.value = gameData.adLinks2NSPPart[index];
+        });
+      }
+    }
+
+    // XCI Part Links
+    if (gameData.xciPartCount > 0) {
+      const xciPart2Section = adLinks2Container.querySelector('[data-type="adLinks2XCIPart"]');
+      if (xciPart2Section) {
+        const inputs = xciPart2Section.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.adLinks2XCIPart[index]) input.value = gameData.adLinks2XCIPart[index];
+        });
+      }
+    }
+  }
+
+  // =========================
+  // LINK ASLI (EXISTING)
+  // =========================
+  if (originalLinksContainer && originalLinksContainer.children.length > 0) {
+    // NSP Links
+    if (gameData.nspCount > 0) {
+      const nspSection = originalLinksContainer.querySelector('[data-type="originalLinksNSP"]');
+      if (nspSection) {
+        const inputs = nspSection.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.originalLinksNSP[index]) input.value = gameData.originalLinksNSP[index];
+        });
+      }
+    }
+
+    // XCI Links
+    if (gameData.xciCount > 0) {
+      const xciSection = originalLinksContainer.querySelector('[data-type="originalLinksXCI"]');
+      if (xciSection) {
+        const inputs = xciSection.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.originalLinksXCI[index]) input.value = gameData.originalLinksXCI[index];
+        });
+      }
+    }
+
+    // NSP Part Links
+    if (gameData.nspPartCount > 0) {
+      const nspPartSection = originalLinksContainer.querySelector('[data-type="originalLinksNSPPart"]');
+      if (nspPartSection) {
+        const inputs = nspPartSection.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.originalLinksNSPPart[index]) input.value = gameData.originalLinksNSPPart[index];
+        });
+      }
+    }
+
+    // XCI Part Links
+    if (gameData.xciPartCount > 0) {
+      const xciPartSection = originalLinksContainer.querySelector('[data-type="originalLinksXCIPart"]');
+      if (xciPartSection) {
+        const inputs = xciPartSection.querySelectorAll('input[type="text"]');
+        inputs.forEach((input, index) => {
+          if (gameData.originalLinksXCIPart[index]) input.value = gameData.originalLinksXCIPart[index];
+        });
+      }
+    }
+  }
 }
+
 
 
 // Fungsi untuk menampilkan contoh data
@@ -1466,41 +1555,98 @@ function nextStep2() {
     showStep(3);
 }
         
-        function generateLinkInputFields() {
-            const adLinksContainer = document.getElementById('adLinksInput');
-            const originalLinksContainer = document.getElementById('originalLinksInput');
-            
-            adLinksContainer.innerHTML = '';
-            originalLinksContainer.innerHTML = '';
-            
-            // Reset arrays
-            gameData.adLinksNSP = new Array(gameData.nspCount).fill('');
-            gameData.adLinksXCI = new Array(gameData.xciCount).fill('');
-            gameData.adLinksNSPPart = new Array(gameData.nspPartCount).fill('');
-            gameData.adLinksXCIPart = new Array(gameData.xciPartCount).fill('');
-            
-            gameData.originalLinksNSP = new Array(gameData.nspCount).fill('');
-            gameData.originalLinksXCI = new Array(gameData.xciCount).fill('');
-            gameData.originalLinksNSPPart = new Array(gameData.nspPartCount).fill('');
-            gameData.originalLinksXCIPart = new Array(gameData.xciPartCount).fill('');
-            
-            if (gameData.nspCount > 0) {
-                adLinksContainer.appendChild(createLinkSection('NSP (Link Iklan)', gameData.nspCount, 'adLinksNSP', gameData.cloudNSP));
-                originalLinksContainer.appendChild(createLinkSection('NSP (Link Asli)', gameData.nspCount, 'originalLinksNSP', gameData.cloudNSP));
-            }
-            if (gameData.xciCount > 0) {
-                adLinksContainer.appendChild(createLinkSection('XCI (Link Iklan)', gameData.xciCount, 'adLinksXCI', gameData.cloudXCI));
-                originalLinksContainer.appendChild(createLinkSection('XCI (Link Asli)', gameData.xciCount, 'originalLinksXCI', gameData.cloudXCI));
-            }
-            if (gameData.nspPartCount > 0) {
-                adLinksContainer.appendChild(createLinkSection('NSP Part (Link Iklan)', gameData.nspPartCount, 'adLinksNSPPart', gameData.cloudNSPPart));
-                originalLinksContainer.appendChild(createLinkSection('NSP Part (Link Asli)', gameData.nspPartCount, 'originalLinksNSPPart', gameData.cloudNSPPart));
-            }
-            if (gameData.xciPartCount > 0) {
-                adLinksContainer.appendChild(createLinkSection('XCI Part (Link Iklan)', gameData.xciPartCount, 'adLinksXCIPart', gameData.cloudXCIPart));
-                originalLinksContainer.appendChild(createLinkSection('XCI Part (Link Asli)', gameData.xciPartCount, 'originalLinksXCIPart', gameData.cloudXCIPart));
-            }
-        }
+function generateLinkInputFields() {
+  const adLinksContainer = document.getElementById('adLinksInput');
+  const adLinks2Container = document.getElementById('adLinks2Input'); // ✅ FIX: didefinisikan
+  const originalLinksContainer = document.getElementById('originalLinksInput');
+
+  if (!adLinksContainer || !originalLinksContainer) return;
+
+  adLinksContainer.innerHTML = '';
+  if (adLinks2Container) adLinks2Container.innerHTML = '';
+  originalLinksContainer.innerHTML = '';
+
+  // Reset arrays (biar input dan state sinkron)
+  gameData.adLinksNSP = new Array(gameData.nspCount || 0).fill('');
+  gameData.adLinksXCI = new Array(gameData.xciCount || 0).fill('');
+  gameData.adLinksNSPPart = new Array(gameData.nspPartCount || 0).fill('');
+  gameData.adLinksXCIPart = new Array(gameData.xciPartCount || 0).fill('');
+
+  gameData.adLinks2NSP = new Array(gameData.nspCount || 0).fill('');
+  gameData.adLinks2XCI = new Array(gameData.xciCount || 0).fill('');
+  gameData.adLinks2NSPPart = new Array(gameData.nspPartCount || 0).fill('');
+  gameData.adLinks2XCIPart = new Array(gameData.xciPartCount || 0).fill('');
+
+  gameData.originalLinksNSP = new Array(gameData.nspCount || 0).fill('');
+  gameData.originalLinksXCI = new Array(gameData.xciCount || 0).fill('');
+  gameData.originalLinksNSPPart = new Array(gameData.nspPartCount || 0).fill('');
+  gameData.originalLinksXCIPart = new Array(gameData.xciPartCount || 0).fill('');
+
+  // NSP
+  if ((gameData.nspCount || 0) > 0) {
+    adLinksContainer.appendChild(
+      createLinkSection('NSP (Link Iklan)', gameData.nspCount, 'adLinksNSP', gameData.cloudNSP)
+    );
+    originalLinksContainer.appendChild(
+      createLinkSection('NSP (Link Asli)', gameData.nspCount, 'originalLinksNSP', gameData.cloudNSP)
+    );
+
+    if (adLinks2Container) {
+      adLinks2Container.appendChild(
+        createLinkSection('NSP (Link Iklan 2)', gameData.nspCount, 'adLinks2NSP', gameData.cloudNSP)
+      );
+    }
+  }
+
+  // XCI
+  if ((gameData.xciCount || 0) > 0) {
+    adLinksContainer.appendChild(
+      createLinkSection('XCI (Link Iklan)', gameData.xciCount, 'adLinksXCI', gameData.cloudXCI)
+    );
+    originalLinksContainer.appendChild(
+      createLinkSection('XCI (Link Asli)', gameData.xciCount, 'originalLinksXCI', gameData.cloudXCI)
+    );
+
+    if (adLinks2Container) {
+      adLinks2Container.appendChild(
+        createLinkSection('XCI (Link Iklan 2)', gameData.xciCount, 'adLinks2XCI', gameData.cloudXCI)
+      );
+    }
+  }
+
+  // NSP Part
+  if ((gameData.nspPartCount || 0) > 0) {
+    adLinksContainer.appendChild(
+      createLinkSection('NSP Part (Link Iklan)', gameData.nspPartCount, 'adLinksNSPPart', gameData.cloudNSPPart)
+    );
+    originalLinksContainer.appendChild(
+      createLinkSection('NSP Part (Link Asli)', gameData.nspPartCount, 'originalLinksNSPPart', gameData.cloudNSPPart)
+    );
+
+    if (adLinks2Container) {
+      adLinks2Container.appendChild(
+        createLinkSection('NSP Part (Link Iklan 2)', gameData.nspPartCount, 'adLinks2NSPPart', gameData.cloudNSPPart)
+      );
+    }
+  }
+
+  // XCI Part
+  if ((gameData.xciPartCount || 0) > 0) {
+    adLinksContainer.appendChild(
+      createLinkSection('XCI Part (Link Iklan)', gameData.xciPartCount, 'adLinksXCIPart', gameData.cloudXCIPart)
+    );
+    originalLinksContainer.appendChild(
+      createLinkSection('XCI Part (Link Asli)', gameData.xciPartCount, 'originalLinksXCIPart', gameData.cloudXCIPart)
+    );
+
+    if (adLinks2Container) {
+      adLinks2Container.appendChild(
+        createLinkSection('XCI Part (Link Iklan 2)', gameData.xciPartCount, 'adLinks2XCIPart', gameData.cloudXCIPart)
+      );
+    }
+  }
+}
+
         
 function createLinkSection(title, count, arrayName, clouds) {
     const section = document.createElement('div');
@@ -1868,6 +2014,7 @@ function generateLinkArraysScript() {
         
         // Build ad links HTML
         let adLinksHTML = '';
+        let adLinks2HTML = '';
         let originalLinksHTML = '';
         
         // NSP Links
@@ -1943,6 +2090,53 @@ function generateLinkArraysScript() {
             originalLinksHTML += `</div>`;
         }
         
+                // Build ad links 2 HTML
+        if (gameData.nspCount > 0) {
+          adLinks2HTML += `<h4>NSP Link (Link Iklan 2)</h4><div class="mb-3">`;
+          for (let i = 0; i < gameData.nspCount; i++) {
+            const cloudName = gameData.cloudNSP[i] || 'Unknown';
+            const btnColor = getCloudColorClass(cloudName);
+            const adLink2 = gameData.adLinks2NSP[i] || '#';
+            adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+          }
+          adLinks2HTML += `</div>`;
+        }
+
+        if (gameData.xciCount > 0) {
+          adLinks2HTML += `<h4>XCI Link (Link Iklan 2)</h4><div class="mb-3">`;
+          for (let i = 0; i < gameData.xciCount; i++) {
+            const cloudName = gameData.cloudXCI[i] || 'Unknown';
+            const btnColor = getCloudColorClass(cloudName);
+            const adLink2 = gameData.adLinks2XCI[i] || '#';
+            adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+          }
+          adLinks2HTML += `</div>`;
+        }
+
+        if (gameData.nspPartCount > 0) {
+          adLinks2HTML += `<h4>NSP Part Link (Link Iklan 2)</h4><div class="mb-3">`;
+          for (let i = 0; i < gameData.nspPartCount; i++) {
+            const cloudName = gameData.cloudNSPPart[i] || 'Unknown';
+            const btnColor = getCloudColorClass(cloudName);
+            const adLink2 = gameData.adLinks2NSPPart[i] || '#';
+            adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+          }
+          adLinks2HTML += `</div>`;
+        }
+
+        if (gameData.xciPartCount > 0) {
+          adLinks2HTML += `<h4>XCI Part Link (Link Iklan 2)</h4><div class="mb-3">`;
+          for (let i = 0; i < gameData.xciPartCount; i++) {
+            const cloudName = gameData.cloudXCIPart[i] || 'Unknown';
+            const btnColor = getCloudColorClass(cloudName);
+            const adLink2 = gameData.adLinks2XCIPart[i] || '#';
+            adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+          }
+          adLinks2HTML += `</div>`;
+        }
+
+
+
         // Data untuk JavaScript
         const gameApiUrl = GAME_API_URL;
         const userApiUrl = USER_API_URL;
@@ -2565,6 +2759,57 @@ a.btn.btn-cloud:active {
   padding-bottom: 24px !important;   /* kasih ruang bawah */
 }
 
+  .ad-note-banner{
+    position: relative;
+    border-radius: 16px;
+    padding: 16px 18px;
+    color: #0b2a3a;
+    background: linear-gradient(135deg, rgba(0,210,255,0.18), rgba(255,79,216,0.12));
+    border: 1px solid rgba(13,110,253,0.25);
+    overflow: hidden;
+  }
+  .ad-note-banner:before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    background: radial-gradient(circle at 20% 20%, rgba(0,210,255,0.22), transparent 55%),
+                radial-gradient(circle at 85% 60%, rgba(255,79,216,0.18), transparent 55%);
+    pointer-events:none;
+  }
+  .ad-note-banner .content{
+    position: relative;
+    display:flex;
+    gap:14px;
+    flex-wrap: wrap;
+    align-items:flex-start;
+  }
+  .ad-note-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(13,110,253,0.12);
+    border: 1px solid rgba(13,110,253,0.25);
+    font-weight: 700;
+  }
+  .ad-note-grid{
+    position: relative;
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:10px;
+    width: 100%;
+  }
+  @media (min-width: 768px){
+    .ad-note-grid{ grid-template-columns: 1fr 1fr; }
+  }
+  .ad-note-box{
+    background:#fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+  }
 
     </style>
 </head>
@@ -2640,11 +2885,63 @@ a.btn.btn-cloud:active {
             </div>
         </div>
         
-        <div class="tab-content" id="tabAdLinks">
-            <h3>Link Dengan Iklan ! (Link With Ads !)</h3>
-            ${adLinksHTML}
+<div class="tab-content" id="tabAdLinks">
+  <h3>Link Dengan Iklan ! (Link With Ads !)</h3>
+
+  <!-- NOTE (Banner) -->
+  <div class="ad-note-banner mb-3">
+    <div class="content">
+      <div class="ad-note-pill">
+        <i class="bi bi-lightbulb"></i> Tips
+      </div>
+
+      <div class="ad-note-grid">
+        <div class="ad-note-box">
+          <div class="fw-bold mb-1">Indonesia</div>
+          <div>Gunakan Link Iklan 2 jika susah lewati Link Iklan 1.</div>
         </div>
-        
+        <div class="ad-note-box">
+          <div class="fw-bold mb-1">English</div>
+          <div>Use Ad Link 2 if you have trouble getting past Ad Link 1.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD: LINK IKLAN 1 (UTAMA) -->
+  <div class="card border-primary mb-4" style="border-width: 2px;">
+    <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+      <span><i class="bi bi-star-fill"></i> Link Iklan 1</span>
+      <span class="badge bg-light text-dark">Utama</span>
+    </div>
+    <div class="card-body">
+      <div class="text-muted mb-2">
+        Gunakan ini dulu. Jika sulit lewat iklan, pakai Link Iklan 2.
+      </div>
+
+      <!-- Link Iklan 1 -->
+      ${adLinksHTML}
+    </div>
+  </div>
+
+  <!-- CARD: LINK IKLAN 2 (ALTERNATIF) -->
+  <div class="card border-secondary mb-3">
+    <div class="card-header bg-secondary text-white d-flex align-items-center justify-content-between">
+      <span><i class="bi bi-link-45deg"></i> Link Iklan 2</span>
+      <span class="badge bg-light text-dark">Alternatif</span>
+    </div>
+    <div class="card-body">
+      <div class="text-muted mb-2">
+        Jika Link Iklan 1 sulit, gunakan Link Iklan 2 di bawah.
+      </div>
+
+      <!-- Link Iklan 2 -->
+      ${adLinks2HTML}
+    </div>
+  </div>
+</div>
+
+
         <div class="tab-content" id="tabOriginalLinks">
                 <h3>Link Download Tanpa Iklan (Download Link Without Ads)</h3>
                 <div class="login-prompt mb-3" id="loginPrompt">
