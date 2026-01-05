@@ -1,603 +1,1228 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator HTML Game Switch</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generator HTML Game Switch</title>
 
-    <style>
-        .step {
-            display: none;
-        }
-        .step.active {
-            display: block;
-        }
-        .btn-cloud {
-            margin: 5px;
-            min-width: 120px;
-        }
-        .tab-content {
-            display: none;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-top: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .nav-tabs .nav-link.active {
-            background-color: #4285f4;
-            color: white;
-        }
-        .link-group {
-            margin-bottom: 20px;
-        }
-        .game-preview {
-            max-width: 800px;
-            margin: 20px auto;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .required:after {
-            content: " *";
-            color: red;
-        }
-        .preview-container {
-            background: #f5f5f5;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 15px;
-            max-height: 500px;
-            overflow-y: auto;
-            font-family: monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .toast {
-    min-width: 300px;
-}
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
 
-.badge {
-    font-size: 0.7em;
-    margin-left: 8px;
-    padding: 3px 8px;
-}
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-.card.border-primary {
-    border-width: 2px;
-}
-
-#pasteStatus {
-    animation: fadeInOut 3s ease-in-out;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-.input-group-text {
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-.form-control::placeholder {
-    font-size: 0.9rem;
-    opacity: 0.7;
-}
-
-/* ===== Step 2 Checkbox Cloud UI ===== */
-.cloud-section-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.cloud-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-}
-
-@media (min-width: 768px) {
-    .cloud-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+    :root{
+      --ps: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      --nin: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
+      --oth: linear-gradient(135deg, #0f766e 0%, #10b981 100%);
+      --adm: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+      --bot: linear-gradient(135deg, #111827 0%, #4b5563 100%);
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --accent: #3b82f6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
     }
-}
 
-@media (min-width: 992px) {
-    .cloud-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-}
 
-.cloud-tile {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    user-select: none;
-    background: #fff;
-    transition: 0.15s ease;
-}
+    body { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Inter', sans-serif;
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-.cloud-tile:hover {
-    background: #f8f9fa;
-}
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.3), transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(59, 130, 246, 0.2), transparent 50%);
+      pointer-events: none;
+      animation: gradientShift 15s ease infinite;
+    }
 
-.cloud-tile.selected {
-    border-color: #0d6efd;
-    background: #e7f1ff;
-}
+    @keyframes gradientShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
 
-.cloud-tile.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
 
-.cloud-tile input[type="checkbox"] {
-    transform: scale(1.1);
-    margin: 0;
-}
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.cloud-tile .cloud-name {
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-/* ===== Top Dropdown Bar (mirip contoh gambar) ===== */
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      animation: slideInUp 0.6s ease-out;
+    }
+
+    h1 {
+      color: #fff;
+      font-weight: 900;
+      font-size: 2.5rem;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: slideInDown 0.6s ease-out;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #fff, transparent);
+      border-radius: 2px;
+    }
+
+    .required::after { 
+      content: " *"; 
+      color: var(--danger); 
+      font-weight: 700; 
+    }
+
+    /* Top Menu - Enhanced */
+    .top-menu {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      animation: slideInDown 0.8s ease-out 0.2s both;
+    }
+
+    .menu-dd {
+      position: relative;
+    }
+
+    .menu-dd .menu-btn {
+      border: 0;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 16px;
+      padding: 0.85rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-dd .menu-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .menu-dd .menu-btn:hover::before {
+      left: 100%;
+    }
+
+    .menu-dd .menu-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+
+    .menu-dd .menu-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .menu-ico {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(10px);
+      display: grid;
+      place-items: center;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+
+    .menu-dd .menu-btn:hover .menu-ico {
+      transform: rotate(360deg);
+      background: rgba(255,255,255,0.35);
+    }
+
+    .btn-playstation { background: var(--ps); }
+    .btn-nintendo { background: var(--nin); }
+    .btn-other { background: var(--oth); }
+    .btn-admin { background: var(--adm); }
+    .btn-bot { background: var(--bot); }
+
+    /* Dropdown Enhanced */
+    .dropdown-menu {
+      border-radius: 20px;
+      padding: 0.8rem;
+      border: none;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.98);
+      animation: scaleIn 0.2s ease-out;
+    }
+
+    .dropdown-item {
+      border-radius: 12px;
+      padding: 0.7rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      transition: all 0.2s;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .dropdown-item:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      transform: translateX(5px);
+    }
+
+    .dropdown-item i {
+      transition: transform 0.2s;
+    }
+
+    .dropdown-item:hover i {
+      transform: scale(1.2);
+    }
+
+    /* Steps */
+    .step { 
+      display: none; 
+      animation: scaleIn 0.4s ease-out;
+    }
+    .step.active { display: block; }
+
+    /* Main Tabs */
+    .nav-tabs {
+      border: none;
+      gap: 0.5rem;
+      animation: slideInDown 0.6s ease-out 0.3s both;
+    }
+
+    .nav-tabs .nav-link {
+      border: none;
+      border-radius: 16px 16px 0 0;
+      padding: 1rem 1.5rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-tabs .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #fff, transparent);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    .nav-tabs .nav-link:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .nav-tabs .nav-link.active {
+      color: #fff;
+      background: rgba(255,255,255,0.25);
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    }
+
+    .nav-tabs .nav-link.active::before {
+      transform: scaleX(1);
+    }
+
+    .main-tab-panel { 
+      display: none;
+      animation: scaleIn 0.4s ease-out;
+    }
+    .main-tab-panel.active { display: block; }
+
+    /* Cards - Ultra Modern */
+    .card {
+      border: none;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      overflow: hidden;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      transition: all 0.3s;
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+    }
+
+    .card-header {
+      padding: 1.5rem;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    }
+
+    .card-header h4, .card-header h5 {
+      position: relative;
+      margin: 0;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bg-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    .bg-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    }
+
+    .bg-info {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+    }
+
+    .bg-warning {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    }
+
+    .card-body {
+      padding: 2rem;
+    }
+
+    /* Form Controls - Enhanced */
+    .form-control, .form-select {
+      border-radius: 14px;
+      padding: 0.85rem 1.2rem;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s;
+      font-weight: 500;
+      background: #fff;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .form-label {
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Buttons - Ultra Modern */
+    .btn {
+      border-radius: 14px;
+      padding: 0.85rem 1.5rem;
+      font-weight: 700;
+      border: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(100, 116, 139, 0.3);
+    }
+
+    .btn-outline-primary {
+      background: transparent;
+      border: 2px solid #667eea;
+      color: #667eea;
+    }
+
+    .btn-outline-primary:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .btn-outline-success {
+      background: transparent;
+      border: 2px solid #10b981;
+      color: #10b981;
+    }
+
+    .btn-outline-success:hover {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .btn-outline-danger {
+      background: transparent;
+      border: 2px solid #ef4444;
+      color: #ef4444;
+    }
+
+    .btn-outline-danger:hover {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .btn-info {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+    }
+
+    .btn i {
+      font-size: 1.1rem;
+    }
+
+    /* Preview Container */
+    .preview-container {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 20px;
+      padding: 2rem;
+      min-height: 120px;
+      overflow: auto;
+      transition: all 0.3s;
+    }
+
+    .preview-container:hover {
+      border-color: #667eea;
+      background: #f1f5f9;
+    }
+
+    /* Cloud Grid */
+    .cloud-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .cloud-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 1.2rem;
+      background: #fff;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .cloud-card:hover {
+      border-color: #667eea;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.15);
+    }
+
+    .cloud-title {
+      font-weight: 800;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .small-note { 
+      font-size: 0.88rem; 
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Alerts - Enhanced */
+    .alert {
+      border-radius: 16px;
+      border: none;
+      padding: 1.2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      animation: slideInUp 0.4s ease-out;
+    }
+
+    .alert i {
+      font-size: 1.5rem;
+      margin-top: 2px;
+    }
+
+    .alert-info {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%);
+      color: #0891b2;
+      border-left: 4px solid #06b6d4;
+    }
+
+    /* Table - Modern */
+    .table {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+
+    .table thead th {
+      font-weight: 800;
+      padding: 1.2rem;
+      border: none;
+    }
+
+    .table tbody tr {
+      transition: all 0.2s;
+    }
+
+    .table tbody tr:hover {
+      background: rgba(102, 126, 234, 0.05);
+      transform: scale(1.01);
+    }
+
+    .table tbody td {
+      padding: 1rem;
+      vertical-align: middle;
+      border-color: #e2e8f0;
+    }
+
+    /* Toast - Enhanced */
+    .toast-wrap {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1060;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      pointer-events: auto;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #fff;
+      padding: 1rem 1.2rem;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      max-width: 360px;
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-start;
+      animation: slideInUp 0.4s ease-out;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .toast-item .ico { 
+      font-size: 1.3rem; 
+      margin-top: 2px; 
+      opacity: 0.9;
+      animation: pulse 2s infinite;
+    }
+
+    .toast-item .msg { 
+      font-size: 0.95rem; 
+      line-height: 1.4rem;
+      font-weight: 500;
+    }
+
+    /* Modal - Enhanced */
+    .modal-content {
+      border-radius: 24px;
+      border: none;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 1.5rem;
+      border: none;
+    }
+
+    .modal-title {
+      font-weight: 800;
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    /* Badge */
+    .badge {
+      padding: 0.5rem 0.9rem;
+      border-radius: 10px;
+      font-weight: 700;
+      animation: pulse 2s infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 { font-size: 1.8rem; }
+      .card-body { padding: 1.5rem; }
+      .top-menu { justify-content: center; }
+    }
+
+    /* Loading Animation */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    /* Glassmorphism Effect */
+    .glass {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Hover Glow Effect */
+    .glow-on-hover {
+      position: relative;
+    }
+
+    .glow-on-hover::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #667eea, #764ba2, #667eea);
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+      filter: blur(10px);
+    }
+
+    .glow-on-hover:hover::after {
+      opacity: 1;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+    /* FIX: Dropdown top-menu jangan menutupi tombol lain */
 .top-menu {
+  align-items: flex-start; /* supaya item sejajar atas saat dropdown memanjang */
+}
+
+.top-menu .menu-dd {
   display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  align-items: center;
-  padding: 12px 10px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.35);
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 14px;
+  flex-direction: column; /* tombol di atas, menu di bawah */
 }
 
-.menu-dd .menu-btn{
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border: 0;
-  padding: 10px 18px;
-  border-radius: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #fff;
-  background: #2b2f36;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
-  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+/* Paksa dropdown ikut flow layout (tidak absolute dari Popper) */
+.top-menu .menu-dd .dropdown-menu {
+  position: static !important;
+  transform: none !important;
+  inset: auto !important;
+
+  width: 100%;
+  min-width: 240px; /* boleh kamu ubah */
+  margin-top: 0.6rem;
 }
 
-.menu-dd .menu-btn:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
-  filter: brightness(1.05);
+/* Pastikan tetap muncul saat open */
+.top-menu .menu-dd .dropdown-menu.show {
+  display: block;
 }
 
-.menu-dd.show .menu-btn{
-  box-shadow: 0 0 0 2px rgba(0,255,255,0.35), 0 14px 30px rgba(0,0,0,0.45);
-}
-
-.menu-ico{
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.25);
-}
-
-.menu-dd .dropdown-menu{
-  margin-top: 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: #1f232a;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.55);
-  padding: 8px;
-  min-width: 240px;
-}
-
-.menu-dd .dropdown-item{
-  color: rgba(255,255,255,0.92);
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.menu-dd .dropdown-item:hover{
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-}
-
-.menu-dd .dropdown-divider{
-  border-color: rgba(255,255,255,0.08);
-}
-
-/* ===== Warna per kategori (gradient) ===== */
-.btn-playstation { background: linear-gradient(90deg, #00d2ff, #ff4fd8); }
-.btn-nintendo    { background: linear-gradient(90deg, #4b5563, #9ca3af); }
-.btn-other       { background: linear-gradient(90deg, #3b4252, #6b7280); }
-.btn-admin       { background: linear-gradient(90deg, #ff2d95, #8b5cf6); }
-.btn-bot         { background: linear-gradient(90deg, #00c2ff, #22c55e); }
-
-/* Biar teks tetap putih */
-.btn-playstation, .btn-nintendo, .btn-other, .btn-admin, .btn-bot { color:#fff; }
-
-    </style>
+  </style>
 </head>
+
 <body>
-    <div class="container mt-4">
-        <h1 class="mb-4">Generator HTML Game Switch</h1>
-        <!-- Top Dropdown Buttons -->
-<div class="top-menu mb-4">
-  <!-- PLAYSTATION -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-playstation dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-controller"></i></span>
-      PLAYSTATION
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="psvita"><i class="bi bi-caret-right-fill"></i> PS Vita</a></li>
-      <li><a class="dropdown-item" href="ps2"><i class="bi bi-caret-right-fill"></i> PS2</a></li>
-      <li><a class="dropdown-item" href="psp"><i class="bi bi-caret-right-fill"></i> PSP</a></li>
-    </ul>
-  </div>
+  <div class="container mt-4 mb-5">
+    <h1 class="mb-4">
+      <i class="bi bi-joystick"></i> Generator HTML Game Switch
+    </h1>
 
-  <!-- NINTENDO -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-nintendo dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-nintendo-switch"></i></span>
-      NINTENDO
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="index"><i class="bi bi-caret-right-fill"></i> Generator Switch</a></li>
-      <li><a class="dropdown-item" href="sharegameswitch"><i class="bi bi-caret-right-fill"></i> Share Game Switch</a></li>
-      <li><a class="dropdown-item" href="shortingswitch"><i class="bi bi-caret-right-fill"></i> Shorting Game Switch</a></li>
-      <li><a class="dropdown-item" href="wii"><i class="bi bi-caret-right-fill"></i> Wii</a></li>
-      <li><a class="dropdown-item" href="3ds"><i class="bi bi-caret-right-fill"></i> 3DS</a></li>
-    </ul>
-  </div>
+    <!-- Top Dropdown Buttons -->
+    <div class="top-menu mb-4">
+      <!-- PLAYSTATION -->
+      <div class="dropdown menu-dd">
+        <button class="menu-btn btn-playstation dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="menu-ico"><i class="bi bi-controller"></i></span>
+          PLAYSTATION
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="psvita"><i class="bi bi-caret-right-fill"></i> PS Vita</a></li>
+          <li><a class="dropdown-item" href="ps2"><i class="bi bi-caret-right-fill"></i> PS2</a></li>
+          <li><a class="dropdown-item" href="psp"><i class="bi bi-caret-right-fill"></i> PSP</a></li>
+        </ul>
+      </div>
 
-  <!-- OTHER GAME -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-other dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-joystick"></i></span>
-      OTHER GAME
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="android"><i class="bi bi-caret-right-fill"></i> Android</a></li>
-      <li><a class="dropdown-item" href="GeneratorAndroid"><i class="bi bi-caret-right-fill"></i> Generator Android</a></li>
-      <li><a class="dropdown-item" href="GeneratorPC"><i class="bi bi-caret-right-fill"></i> Generator PC</a></li>
-    </ul>
-  </div>
+      <!-- NINTENDO -->
+      <div class="dropdown menu-dd">
+        <button class="menu-btn btn-nintendo dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="menu-ico"><i class="bi bi-nintendo-switch"></i></span>
+          NINTENDO
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="index"><i class="bi bi-caret-right-fill"></i> Generator Switch</a></li>
+          <li><a class="dropdown-item" href="sharegameswitch"><i class="bi bi-caret-right-fill"></i> Share Game Switch</a></li>
+          <li><a class="dropdown-item" href="shortingswitch"><i class="bi bi-caret-right-fill"></i> Shorting Game Switch</a></li>
+          <li><a class="dropdown-item" href="wii"><i class="bi bi-caret-right-fill"></i> Wii</a></li>
+          <li><a class="dropdown-item" href="3ds"><i class="bi bi-caret-right-fill"></i> 3DS</a></li>
+        </ul>
+      </div>
 
-  <!-- ADMIN -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-admin dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-person-badge"></i></span>
-      ADMIN
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="Link2UnlockKeyAdmin"><i class="bi bi-caret-right-fill"></i> Link2Unlock Key</a></li>
-      <li><a class="dropdown-item" href="Noted2UnlockAdmin"><i class="bi bi-caret-right-fill"></i> Noted2Unlock</a></li>
-    </ul>
-  </div>
+      <!-- OTHER GAME -->
+      <div class="dropdown menu-dd">
+        <button class="menu-btn btn-other dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="menu-ico"><i class="bi bi-joystick"></i></span>
+          OTHER GAME
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="android"><i class="bi bi-caret-right-fill"></i> Android</a></li>
+          <li><a class="dropdown-item" href="GeneratorAndroid"><i class="bi bi-caret-right-fill"></i> Generator Android</a></li>
+          <li><a class="dropdown-item" href="GeneratorPC"><i class="bi bi-caret-right-fill"></i> Generator PC</a></li>
+        </ul>
+      </div>
 
-  <!-- BOT -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-bot dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-robot"></i></span>
-      BOT
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="GeneratorINDapk"><i class="bi bi-caret-right-fill"></i> Generator INDapk</a></li>
-      <li><a class="dropdown-item" href="GeneratorAPKsgi"><i class="bi bi-caret-right-fill"></i> Generator APKsgi</a></li>
-      <li><a class="dropdown-item" href="GeneratorVideo"><i class="bi bi-caret-right-fill"></i> Generator Video</a></li>
-      <li><a class="dropdown-item" href="GeneratorEmulator"><i class="bi bi-caret-right-fill"></i> Generator Emulator</a></li>
-      <li><a class="dropdown-item" href="Noted2UnlockVideo"><i class="bi bi-caret-right-fill"></i> Noted2Unlock Video</a></li>
-    </ul>
-  </div>
-</div>
+      <!-- ADMIN -->
+      <div class="dropdown menu-dd">
+        <button class="menu-btn btn-admin dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="menu-ico"><i class="bi bi-person-badge"></i></span>
+          ADMIN
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="Link2UnlockKeyAdmin"><i class="bi bi-caret-right-fill"></i> Link2Unlock Key</a></li>
+          <li><a class="dropdown-item" href="Noted2UnlockAdmin"><i class="bi bi-caret-right-fill"></i> Noted2Unlock</a></li>
+        </ul>
+      </div>
 
-        <!-- Step 1: Input Jumlah Link -->
-        <div id="step1" class="step active">
-            <div class="card">
+      <!-- BOT -->
+      <div class="dropdown menu-dd">
+        <button class="menu-btn btn-bot dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="menu-ico"><i class="bi bi-robot"></i></span>
+          BOT
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="GeneratorINDapk"><i class="bi bi-caret-right-fill"></i> Generator INDapk</a></li>
+          <li><a class="dropdown-item" href="GeneratorAPKsgi"><i class="bi bi-caret-right-fill"></i> Generator APKsgi</a></li>
+          <li><a class="dropdown-item" href="GeneratorVideo"><i class="bi bi-caret-right-fill"></i> Generator Video</a></li>
+          <li><a class="dropdown-item" href="GeneratorEmulator"><i class="bi bi-caret-right-fill"></i> Generator Emulator</a></li>
+          <li><a class="dropdown-item" href="Noted2UnlockVideo"><i class="bi bi-caret-right-fill"></i> Noted2Unlock Video</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== MAIN TABS ===== -->
+    <ul class="nav nav-tabs mt-3" id="mainTabs">
+      <li class="nav-item">
+        <button class="nav-link active" type="button" data-main-tab="generator">
+          <i class="bi bi-gear-fill"></i> Generator
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" type="button" data-main-tab="saved">
+          <i class="bi bi-table"></i> List Game (Spreadsheet)
+        </button>
+      </li>
+    </ul>
+
+    <!-- ===== TAB PANELS ===== -->
+    <div id="mainTabGenerator" class="main-tab-panel active">
+      <!-- Step 1 -->
+      <div id="step1" class="step active">
+        <div class="card mt-3">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-1-circle-fill"></i> Step 1: Input Jumlah Link</h4>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nspCount" class="form-label required"><i class="bi bi-file-earmark-zip"></i> Jumlah Link NSP</label>
+                <input type="number" id="nspCount" class="form-control" min="0" value="0" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="xciCount" class="form-label required"><i class="bi bi-file-earmark-zip"></i> Jumlah Link XCI</label>
+                <input type="number" id="xciCount" class="form-control" min="0" value="0" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="nspPartCount" class="form-label"><i class="bi bi-files"></i> Jumlah Link NSP Part</label>
+                <input type="number" id="nspPartCount" class="form-control" min="0" value="0" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="xciPartCount" class="form-label"><i class="bi bi-files"></i> Jumlah Link XCI Part</label>
+                <input type="number" id="xciPartCount" class="form-control" min="0" value="0" />
+              </div>
+            </div>
+
+            <button id="btnNext1" class="btn btn-primary glow-on-hover">
+              <i class="bi bi-arrow-right-circle-fill"></i> Lanjutkan
+            </button>
+
+            <div class="mt-4">
+              <hr />
+              <h5><i class="bi bi-cloud-arrow-down"></i> Cloud Cache</h5>
+              <div class="row g-2 align-items-center">
+                <div class="col-md-8">
+                  <select id="cacheListStep1" class="form-select">
+                    <option value="">Tidak ada cache</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-cloud-download-fill"></i> Load Cache (Ke Step 2)
+                  </button>
+                </div>
+              </div>
+              <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="step2" class="step">
+        <div class="card mt-3">
+          <div class="card-header bg-success text-white">
+            <h4 class="mb-0"><i class="bi bi-2-circle-fill"></i> Step 2: Pilih Cloud Download</h4>
+          </div>
+          <div class="card-body">
+            <div id="cloudSelection"></div>
+
+            <!-- Cache Controls -->
+            <div class="row g-2 mb-3 align-items-center mt-3">
+              <div class="col-md-5">
+                <input type="text" id="cacheName" class="form-control" placeholder="Nama cache, contoh: CloudA-NSP-XCI" />
+              </div>
+              <div class="col-md-3 d-grid">
+                <button id="btnSaveCache" class="btn btn-outline-success">
+                  <i class="bi bi-cloud-plus-fill"></i> Simpan Cache
+                </button>
+              </div>
+              <div class="col-md-4 d-grid">
+                <button id="btnDeleteCache" class="btn btn-outline-danger">
+                  <i class="bi bi-trash-fill"></i> Hapus Cache Terpilih
+                </button>
+              </div>
+              <div class="col-12">
+                <div class="small-note">
+                  <i class="bi bi-info-circle-fill"></i> Cache menyimpan pilihan cloud untuk NSP, XCI, NSP Part, XCI Part.
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 d-flex gap-2">
+              <button id="btnPrev2" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle-fill"></i> Kembali
+              </button>
+              <button id="btnNext2" class="btn btn-primary glow-on-hover">
+                <i class="bi bi-arrow-right-circle-fill"></i> Lanjutkan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="step3" class="step">
+        <div class="card mt-3">
+          <div class="card-header bg-info text-white">
+            <h4 class="mb-0"><i class="bi bi-3-circle-fill"></i> Step 3: Input Data Game</h4>
+          </div>
+          <div class="card-body">
+
+            <!-- Quick Paste -->
+            <div class="mb-4">
+              <div class="card border-primary">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Step 1: Input Jumlah Link</h4>
+                  <h5 class="mb-0"><i class="bi bi-clipboard-data-fill"></i> Quick Paste (Copy-Paste Data)</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="nspCount" class="form-label required">Jumlah Link NSP</label>
-                            <input type="number" id="nspCount" class="form-control" min="0" value="0">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="xciCount" class="form-label required">Jumlah Link XCI</label>
-                            <input type="number" id="xciCount" class="form-control" min="0" value="0">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="nspPartCount" class="form-label">Jumlah Link NSP Part</label>
-                            <input type="number" id="nspPartCount" class="form-control" min="0" value="0">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="xciPartCount" class="form-label">Jumlah Link XCI Part</label>
-                            <input type="number" id="xciPartCount" class="form-control" min="0" value="0">
-                        </div>
+                  <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>
+                      <strong>Instruksi:</strong> Paste seluruh data game dalam format berikut:
+                      <ul class="mb-2 mt-2">
+                        <li>Baris 1: Nama Game</li>
+                        <li>Baris 2: Ukuran NSP</li>
+                        <li>Baris 3: Ukuran XCI</li>
+                        <li>Baris 4: Category</li>
+                        <li>Baris 5: Game ID</li>
+                        <li>Baris 6: Region</li>
+                        <li>Baris 7: Language</li>
+                        <li>Baris terakhir: Link Asli (sesuai jumlah yang diinput di Step 1)</li>
+                        <li>Baris 8 dan seterusnya: Link Iklan (sesuai jumlah yang diinput di Step 1)</li>
+                      </ul>
                     </div>
-                    <button id="btnNext1" class="btn btn-primary">Lanjutkan</button>
-                </div>
-                <div class="mt-4">
-                <hr>
-                <h5>Cloud Cache</h5>
-                <div class="row g-2 align-items-center">
-                    <div class="col-md-8">
-                        <select id="cacheListStep1" class="form-select">
-                            <option value="">Tidak ada cache</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
-                            Load Cache (Ke Step 2)
-                        </button>
-                    </div>
-                </div>
-                <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis.</small>
-            </div>
-            </div>
-        </div>
-        
-        <!-- Step 2: Pilih Cloud Download -->
-        <div id="step2" class="step">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">Step 2: Pilih Cloud Download</h4>
-                </div>
-                <div class="card-body">
-                    <div id="cloudSelection">
-                        <!-- Akan diisi oleh JavaScript -->
-                    </div>
-                    <!-- Cloud Cache Controls -->
-                    <div class="row g-2 mb-3 align-items-center">
-                        <div class="col-md-5">
-                            <input type="text" id="cacheName" class="form-control" placeholder="Nama cache, contoh: CloudA-NSP-XCI">
-                        </div>
-                        <div class="col-md-3 d-grid">
-                            <button id="btnSaveCache" class="btn btn-outline-success">
-                                Simpan Cache
-                            </button>
-                        </div>
-                        <div class="col-md-4 d-grid">
-                            <button id="btnDeleteCache" class="btn btn-outline-danger">
-                                Hapus Cache Terpilih
-                            </button>
-                        </div>
+                  </div>
 
-                    </div>
+                  <div class="mb-3">
+                    <label class="form-label">
+                      <i class="bi bi-clipboard-plus-fill"></i> Paste Data Game
+                      <span class="badge bg-success" id="pasteStatus" style="display:none;">Data berhasil diparse</span>
+                    </label>
+                    <textarea class="form-control" id="pasteArea" rows="8" placeholder="Paste data game disini..."></textarea>
+                    <div class="form-text">Paste semua data sekaligus, sistem akan otomatis mengisi form</div>
+                  </div>
 
-                    <div class="mt-3">
-                        <button id="btnPrev2" class="btn btn-secondary">Kembali</button>
-                        <button id="btnNext2" class="btn btn-primary">Lanjutkan</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        
-<!-- Step 3: Input Data Game -->
-<div id="step3" class="step">
-    <div class="card">
-        <div class="card-header bg-info text-white">
-            <h4 class="mb-0">Step 3: Input Data Game</h4>
-        </div>
-        <div class="card-body">
-            <!-- Paste Text Area -->
-            <div class="mb-4">
-                <div class="card border-primary">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-clipboard-data"></i> Quick Paste (Copy-Paste Data)</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i> 
-                            <strong>Instruksi:</strong> Paste seluruh data game dalam format berikut:
-                            <ul class="mb-2 mt-2">
-                                <li>Baris 1: Nama Game</li>
-                                <li>Baris 2: Ukuran NSP</li>
-                                <li>Baris 3: Ukuran XCI</li>
-                                <li>Baris 4: Category</li>
-                                <li>Baris 5: Game ID</li>
-                                <li>Baris 6: Region</li>
-                                <li>Baris 7: Language</li>
-                                <li>Baris terakhir: Link Asli (sesuai jumlah yang diinput di Step 1)</li>
-                                <li>Baris 8-...: Link Iklan (sesuai jumlah yang diinput di Step 1)</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="bi bi-clipboard-plus"></i> Paste Data Game
-                                <span class="badge bg-success" id="pasteStatus" style="display: none;">Data berhasil diparse!</span>
-                            </label>
-                            <textarea class="form-control" id="pasteArea" rows="8" 
-                                      placeholder="Paste data game disini...
-Contoh:
-BioShock
-3.29 GB
-20.74 GB
-Action, First-Person
-[0100D560102C8000]+[v1.0.2 (v65536)]
-USA
-English, German, Spanish, French, Italian, Japanese, Korean, Dutch, Chinese
-http://link.indapk.com/IZivZa4
-http://link.indapk.com/FsTh2OSP
-... dan seterusnya"></textarea>
-                            <div class="form-text">Paste semua data sekaligus, sistem akan otomatis mengisi form</div>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button id="btnParseData" class="btn btn-primary">
-                                <i class="bi bi-magic"></i> Parse & Auto Fill
-                            </button>
-                            <button id="btnClearPaste" class="btn btn-secondary">
-                                <i class="bi bi-trash"></i> Clear
-                            </button>
-                            <button id="btnShowExample" class="btn btn-info">
-                                <i class="bi bi-eye"></i> Show Example
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Manual Input Form -->
-            <div class="mb-4">
-                <h5><i class="bi bi-pencil-square"></i> Manual Input</h5>
-                <div class="row">
-                    <div class="col-md-12 mb-3">
-                        <label for="gameName" class="form-label required">Nama Game</label>
-                        <input type="text" id="gameName" class="form-control" placeholder="Contoh: BioShock Infinite The Complete Edition">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="nspSize" class="form-label">Ukuran NSP</label>
-                        <input type="text" id="nspSize" class="form-control" placeholder="Contoh: 3.29 GB">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="xciSize" class="form-label">Ukuran XCI</label>
-                        <input type="text" id="xciSize" class="form-control" placeholder="Contoh: 20.74 GB">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="category" class="form-label required">Category</label>
-                        <input type="text" id="category" class="form-control" placeholder="Contoh: Action, First-Person">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="gameId" class="form-label required">Game ID</label>
-                        <input type="text" id="gameId" class="form-control" placeholder="Contoh: [0100D560102C8000]+[v1.0.2 (v65536)]">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="region" class="form-label required">Region</label>
-                        <input type="text" id="region" class="form-control" placeholder="Contoh: USA">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="language" class="form-label required">Language</label>
-                        <input type="text" id="language" class="form-control" placeholder="Contoh: English, German, Spanish, French, Italian, Japanese, Korean, Dutch, Chinese">
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Input Link Iklan -->
-                <div class="mt-4">
-                    <h5><i class="bi bi-link"></i> Link Asli</h5>
-                    <div id="originalLinksInput">
-                        <!-- Akan diisi oleh JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Input Link Iklan (DIBAWAH) -->
-                <div class="mt-4">
-                    <h5><i class="bi bi-link-45deg"></i> Link Iklan</h5>
-                    <div id="adLinksInput">
-                        <!-- Akan diisi oleh JavaScript -->
-                    </div>
-                </div>
-            
-                <div class="mt-4">
-                  <h5><i class="bi bi-link-45deg"></i> Link Iklan 2</h5>
-                  <div id="adLinks2Input">
-                    <!-- Akan diisi oleh JavaScript -->
+                  <div class="d-flex gap-2 flex-wrap">
+                    <button id="btnParseData" class="btn btn-primary">
+                      <i class="bi bi-magic"></i> Parse & Auto Fill
+                    </button>
+                    <button id="btnClearPaste" class="btn btn-secondary">
+                      <i class="bi bi-trash-fill"></i> Clear
+                    </button>
+                    <button id="btnShowExample" class="btn btn-info">
+                      <i class="bi bi-eye-fill"></i> Show Example
+                    </button>
                   </div>
                 </div>
-            <div class="mt-3">
-                <button id="btnPrev3" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Kembali
-                </button>
-                <button id="btnSaveGame" class="btn btn-success">
-                    <i class="bi bi-save"></i> Simpan Data Game
-                </button>
-                <button id="btnGenerateHTML" class="btn btn-primary">
-                    <i class="bi bi-code-slash"></i> Generate HTML
-                </button>
+              </div>
             </div>
+
+            <!-- Manual Input -->
+            <div class="mb-4">
+              <h5><i class="bi bi-pencil-square"></i> Manual Input</h5>
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <label for="gameName" class="form-label required"><i class="bi bi-joystick"></i> Nama Game</label>
+                  <input type="text" id="gameName" class="form-control" placeholder="Contoh: BioShock Infinite The Complete Edition" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="nspSize" class="form-label"><i class="bi bi-hdd"></i> Ukuran NSP</label>
+                  <input type="text" id="nspSize" class="form-control" placeholder="Contoh: 3.29 GB" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="xciSize" class="form-label"><i class="bi bi-hdd-fill"></i> Ukuran XCI</label>
+                  <input type="text" id="xciSize" class="form-control" placeholder="Contoh: 20.74 GB" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="category" class="form-label required"><i class="bi bi-tags-fill"></i> Category</label>
+                  <input type="text" id="category" class="form-control" placeholder="Contoh: Action, First-Person" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="gameId" class="form-label required"><i class="bi bi-upc"></i> Game ID</label>
+                  <input type="text" id="gameId" class="form-control" placeholder="Contoh: [0100D560102C8000]+[v1.0.2 (v65536)]" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="region" class="form-label required"><i class="bi bi-geo-alt-fill"></i> Region</label>
+                  <input type="text" id="region" class="form-control" placeholder="Contoh: USA" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="language" class="form-label required"><i class="bi bi-translate"></i> Language</label>
+                  <input type="text" id="language" class="form-control" placeholder="Contoh: English, German, Spanish, French, Italian, Japanese, Korean, Dutch, Chinese" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Links -->
+            <div class="mt-4">
+              <h5><i class="bi bi-link-45deg"></i> Link Asli</h5>
+              <div id="originalLinksInput"></div>
+            </div>
+
+            <div class="mt-4">
+              <h5><i class="bi bi-link"></i> Link Iklan</h5>
+              <div id="adLinksInput"></div>
+            </div>
+
+            <div class="mt-4">
+              <h5><i class="bi bi-link"></i> Link Iklan 2</h5>
+              <div id="adLinks2Input"></div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+              <button id="btnPrev3" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle-fill"></i> Kembali
+              </button>
+              <button id="btnSaveGame" class="btn btn-success glow-on-hover">
+                <i class="bi bi-save-fill"></i> Simpan Data Game
+              </button>
+              <button id="btnGenerateHTML" class="btn btn-primary glow-on-hover">
+                <i class="bi bi-code-slash"></i> Generate HTML
+              </button>
+            </div>
+
+          </div>
         </div>
+      </div>
+
+      <!-- Preview HTML -->
+      <div id="previewSection" class="mt-4" style="display:none;">
+        <div class="card">
+          <div class="card-header bg-warning text-white">
+            <h4 class="mb-0"><i class="bi bi-eye-fill"></i> Preview HTML</h4>
+          </div>
+          <div class="card-body">
+            <div class="preview-container" id="htmlPreview"></div>
+            <div class="d-flex gap-2 flex-wrap mt-3">
+              <button id="btnCopyHTML" class="btn btn-primary"><i class="bi bi-clipboard-check-fill"></i> Copy HTML</button>
+              <button id="btnDownloadHTML" class="btn btn-success"><i class="bi bi-download"></i> Download HTML</button>
+              <button id="btnNewGame" class="btn btn-secondary"><i class="bi bi-plus-circle-fill"></i> Buat Game Baru</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- /#mainTabGenerator -->
+
+    <!-- Saved Tab -->
+    <div id="mainTabSaved" class="main-tab-panel">
+      <div class="d-flex flex-wrap gap-2 align-items-center mb-3 mt-3">
+        <div class="flex-grow-1">
+          <input type="text" id="savedSearch" class="form-control" placeholder="🔍 Cari: nama game, download id, game id" />
+        </div>
+        <button id="btnRefreshSaved" class="btn btn-outline-primary">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead class="table-primary">
+            <tr>
+              <th style="width:120px;">Download ID</th>
+              <th>Nama Game</th>
+              <th style="width:140px;">Region</th>
+              <th style="width:160px;">Updated</th>
+              <th style="width:240px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="savedGamesBody">
+            <tr><td colspan="5" class="text-muted">Belum ada data.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="savedPreviewSection" class="mt-3" style="display:none;">
+        <div class="card">
+          <div class="card-header bg-warning text-white">
+            <h4 class="mb-0"><i class="bi bi-eye-fill"></i> Preview HTML (Dari Spreadsheet)</h4>
+          </div>
+          <div class="card-body">
+            <div class="preview-container" id="savedHtmlPreview"></div>
+            <div class="d-flex gap-2 flex-wrap mt-3">
+              <button id="btnCopySavedHTML" class="btn btn-primary"><i class="bi bi-clipboard-check-fill"></i> Copy HTML</button>
+              <button id="btnDownloadSavedHTML" class="btn btn-success"><i class="bi bi-download"></i> Download HTML</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- /#mainTabSaved -->
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="bi bi-telegram"></i> Login dengan Telegram</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="telegramWidget">
+              <p>Silakan login menggunakan Telegram untuk mengakses link asli.</p>
+
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-person-badge-fill"></i> Telegram ID</label>
+                <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram Anda" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-key-fill"></i> Key</label>
+                <input type="password" id="telegramKey" class="form-control" placeholder="Masukkan Key Anda" />
+                <small class="text-muted">Dapatkan Key dari bot @indapkbot (contoh: ketik /key atau cek menu profil jika tersedia).</small>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button id="btnLogin" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+                <button id="btnRegister" class="btn btn-secondary"><i class="bi bi-person-plus-fill"></i> Register</button>
+              </div>
+
+              <div class="alert alert-info py-2 mt-3 mb-0">
+                <i class="bi bi-info-circle-fill"></i>
+                <div>
+                  <strong>Cara daftar dan ambil Telegram ID:</strong>
+                  <ol class="mb-0 ps-3">
+                    <li>Buka bot <strong>@indapkbot</strong></li>
+                    <li>Ketik <strong>/register</strong></li>
+                    <li>Lalu ketik <strong>/profile</strong> untuk melihat Telegram ID</li>
+                    <li>Ketik <strong>/key</strong> untuk melihat Key</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <div id="userInfo" style="display:none;">
+              <p><strong>Login sebagai:</strong> <span id="userName"></span></p>
+              <p><strong>Saldo:</strong> Rp <span id="userBalance"></span></p>
+              <button id="btnLogout" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
-        
-        <!-- Preview HTML -->
-        <div id="previewSection" class="mt-4" style="display: none;">
-            <div class="card">
-                <div class="card-header bg-warning">
-                    <h4 class="mb-0">Preview HTML</h4>
-                </div>
-                <div class="card-body">
-                    <div class="preview-container" id="htmlPreview"></div>
-                    <button id="btnCopyHTML" class="btn btn-primary mt-3">Copy HTML</button>
-                    <button id="btnDownloadHTML" class="btn btn-success mt-3">Download HTML</button>
-                    <button id="btnNewGame" class="btn btn-secondary mt-3">Buat Game Baru</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Login Modal -->
-        <div class="modal fade" id="loginModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Login dengan Telegram</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="telegramWidget">
-                            <p>Silakan login menggunakan Telegram untuk mengakses link asli.</p>
-                                <div class="mb-3">
-                                  <label class="form-label">Telegram ID</label>
-                                  <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram Anda">
-                                </div>
 
-                                <div class="mb-3">
-                                  <label class="form-label">Key</label>
-                                  <input type="password" id="telegramKey" class="form-control" placeholder="Masukkan Key Anda">
-                                  <small class="text-muted">Dapatkan Key dari bot @indapkbot (contoh: ketik /key atau cek menu profil jika tersedia).</small>
-                                </div>
-                            <button id="btnLogin" class="btn btn-primary">Login</button>
-                            <button id="btnRegister" class="btn btn-secondary">Register</button>
-                        <div class="alert alert-info py-2 mt-3 mb-0">
-                            <div><strong>Cara daftar dan ambil Telegram ID:</strong></div>
-                            <ol class="mb-0 ps-3">
-                                <li>Buka bot <strong>@indapkbot</strong></li>
-                                <li>Ketik <strong>/register</strong></li>
-                                <li>Lalu ketik <strong>/profile</strong> untuk melihat Telegram ID</li>
-                                <li>Ketik <strong>/key</strong> untuk melihat Key</li>
-                            </ol>
-                        </div>
+  </div> <!-- /container -->
 
-                        </div>
-                        <div id="userInfo" style="display: none;">
-                            <p><strong>Login sebagai:</strong> <span id="userName"></span></p>
-                            <p><strong>Saldo:</strong> Rp <span id="userBalance"></span></p>
-                            <button id="btnLogout" class="btn btn-danger">Logout</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Bootstrap Toast Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto" id="toastTitle">Info</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" id="toastBody"></div>
     </div>
+  </div>
 
+  <div class="toast-wrap" id="toastWrap"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // ============= PERBAIKAN URL YANG BENAR =============
@@ -635,6 +1260,16 @@ http://link.indapk.com/FsTh2OSP
         };
         
         let currentUser = null;
+        // Export options (untuk bedain generator vs spreadsheet download)
+        const exportOptions = {
+          includeAd2: true // Generator boleh pakai Link Iklan 2, Spreadsheet tidak
+        };
+
+        // Cache preview spreadsheet
+        let _savedHtmlCache = { html: '', filename: '' };
+        let _mainTabsInited = false;
+        let _savedGamesCache = [];
+
         
         // Cloud options
         const CLOUD_OPTIONS = [
@@ -647,18 +1282,63 @@ http://link.indapk.com/FsTh2OSP
         ];
         
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            refreshCloudCacheUI();
-            setupEventListeners();
-            checkUserLogin();
+document.addEventListener('DOMContentLoaded', function() {
+  refreshCloudCacheUI();
+  setupEventListeners();
+  checkUserLogin();
+  initMainTabs();
+  wireSavedTabControls();
+});
 
-        });
+
        
 
 
 // ===================== CLOUD CACHE (Step 1 & Step 2) =====================
 const CLOUD_CACHE_KEY = 'switchCloudCaches';
 
+function showToast(type, message) {
+  const bg = type === 'success' ? 'success'
+    : type === 'error' ? 'danger'
+    : type === 'warning' ? 'warning'
+    : 'info';
+
+  const icon = type === 'success' ? 'bi-check-circle'
+    : type === 'error' ? 'bi-x-circle'
+    : type === 'warning' ? 'bi-exclamation-triangle'
+    : 'bi-info-circle';
+
+  let toastContainer = document.getElementById('toastContainer');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'toastContainer';
+    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+    toastContainer.style.zIndex = '1060';
+    document.body.appendChild(toastContainer);
+  }
+
+  const toastEl = document.createElement('div');
+  toastEl.className = `toast align-items-center text-white bg-${bg} border-0`;
+  toastEl.setAttribute('role', 'alert');
+  toastEl.setAttribute('aria-live', 'assertive');
+  toastEl.setAttribute('aria-atomic', 'true');
+
+  toastEl.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">
+        <i class="bi ${icon} me-2"></i>${message}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  `;
+
+  toastContainer.appendChild(toastEl);
+
+  const t = new bootstrap.Toast(toastEl, { delay: 3000 });
+  t.show();
+
+  toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+}
 function getCloudCaches() {
     try {
         return JSON.parse(localStorage.getItem(CLOUD_CACHE_KEY) || '[]');
@@ -666,6 +1346,22 @@ function getCloudCaches() {
         return [];
     }
 }
+
+  function saveGameToLocalStorage(game) {
+    const KEY = "switch_saved_games_v1";
+    const list = JSON.parse(localStorage.getItem(KEY) || "[]");
+
+    const idx = list.findIndex(x => x.downloadId === game.downloadId);
+    if (idx >= 0) {
+      list[idx] = game;
+    } else {
+      list.unshift(game);
+    }
+
+    localStorage.setItem(KEY, JSON.stringify(list));
+    return game;
+  }
+
 
 function setCloudCaches(list) {
     localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(list));
@@ -1714,9 +2410,17 @@ function createLinkSection(title, count, arrayName, clouds) {
                 return;
             }
 
-            if (gameData.downloadId && gameData.gameInfo.nama_game) {
-                saveGameToLocalStorage();
-            }
+if (gameData.downloadId && gameData.gameInfo.nama_game) {
+  saveGameToLocalStorage({
+    downloadId: gameData.downloadId,
+    name: gameData.gameInfo.nama_game,
+    region: gameData.gameInfo.region,
+    gameId: gameData.gameInfo.game_id,
+    updatedAt: new Date().toISOString()
+  });
+}
+
+
             
             gameData.gameInfo = {
                 nama_game: gameName,
@@ -1998,159 +2702,126 @@ function generateLinkArraysScript() {
         const originalLinksXCIPart = ${JSON.stringify(gameData.originalLinksXCIPart)};
     `;
 }
-     function createHTMLTemplate() {
-        // Helper function untuk cloud color
-        const getCloudColorClass = (cloud) => {
-            const colors = {
-                'Google Drive': 'btn-primary',
-                'MediaFire': 'btn-warning',
-                'VikingFile': 'btn-danger',
-                'PixelDrain': 'btn-info',
-                '1Fichier': 'btn-dark',
-                'MultiUp': 'btn-success'
-            };
-            return colors[cloud] || 'btn-secondary';
-        };
-        
-        // Build ad links HTML
-        let adLinksHTML = '';
-        let adLinks2HTML = '';
-        let originalLinksHTML = '';
-        
-        // NSP Links
-        if (gameData.nspCount > 0) {
-            adLinksHTML += `<h4>NSP Link (Link Iklan)</h4><div class="mb-3">`;
-            originalLinksHTML += `<h4>NSP Link (Link Asli)</h4><div class="mb-3">`;
-            
-            for (let i = 0; i < gameData.nspCount; i++) {
-                const cloudName = gameData.cloudNSP[i] || 'Unknown';
-                const btnColor = getCloudColorClass(cloudName);
-                const adLink = gameData.adLinksNSP[i] || '#';
-                
-                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-                // PERBAIKAN: TANPA data-original-text, link tidak disimpan di HTML
-                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" onclick="accessOriginalLink('nsp', ${i})">${cloudName}</button> `;
-            }
-            
-            adLinksHTML += `</div>`;
-            originalLinksHTML += `</div>`;
-        }
-        
-        // XCI Links
-        if (gameData.xciCount > 0) {
-            adLinksHTML += `<h4>XCI Link (Link Iklan)</h4><div class="mb-3">`;
-            originalLinksHTML += `<h4>XCI Link (Link Asli)</h4><div class="mb-3">`;
-            
-            for (let i = 0; i < gameData.xciCount; i++) {
-                const cloudName = gameData.cloudXCI[i] || 'Unknown';
-                const btnColor = getCloudColorClass(cloudName);
-                const adLink = gameData.adLinksXCI[i] || '#';
-                
-                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" onclick="accessOriginalLink('xci', ${i})">${cloudName}</button> `;
-            }
-            
-            adLinksHTML += `</div>`;
-            originalLinksHTML += `</div>`;
-        }
-        
-        // NSP Part Links
-        if (gameData.nspPartCount > 0) {
-            adLinksHTML += `<h4>NSP Part Link (Link Iklan)</h4><div class="mb-3">`;
-            originalLinksHTML += `<h4>NSP Part Link (Link Asli)</h4><div class="mb-3">`;
-            
-            for (let i = 0; i < gameData.nspPartCount; i++) {
-                const cloudName = gameData.cloudNSPPart[i] || 'Unknown';
-                const btnColor = getCloudColorClass(cloudName);
-                const adLink = gameData.adLinksNSPPart[i] || '#';
-                
-                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" onclick="accessOriginalLink('nsp_part', ${i})">${cloudName}</button> `;
-            }
-            
-            adLinksHTML += `</div>`;
-            originalLinksHTML += `</div>`;
-        }
-        
-        // XCI Part Links
-        if (gameData.xciPartCount > 0) {
-            adLinksHTML += `<h4>XCI Part Link (Link Iklan)</h4><div class="mb-3">`;
-            originalLinksHTML += `<h4>XCI Part Link (Link Asli)</h4><div class="mb-3">`;
-            
-            for (let i = 0; i < gameData.xciPartCount; i++) {
-                const cloudName = gameData.cloudXCIPart[i] || 'Unknown';
-                const btnColor = getCloudColorClass(cloudName);
-                const adLink = gameData.adLinksXCIPart[i] || '#';
-                
-                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" onclick="accessOriginalLink('xci_part', ${i})">${cloudName}</button> `;
-            }
-            
-            adLinksHTML += `</div>`;
-            originalLinksHTML += `</div>`;
-        }
-        
-                // Build ad links 2 HTML
-        if (gameData.nspCount > 0) {
-          adLinks2HTML += `<h4>NSP Link (Link Iklan 2)</h4><div class="mb-3">`;
-          for (let i = 0; i < gameData.nspCount; i++) {
-            const cloudName = gameData.cloudNSP[i] || 'Unknown';
-            const btnColor = getCloudColorClass(cloudName);
-            const adLink2 = gameData.adLinks2NSP[i] || '#';
-            adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-          }
-          adLinks2HTML += `</div>`;
-        }
-
-        if (gameData.xciCount > 0) {
-          adLinks2HTML += `<h4>XCI Link (Link Iklan 2)</h4><div class="mb-3">`;
-          for (let i = 0; i < gameData.xciCount; i++) {
-            const cloudName = gameData.cloudXCI[i] || 'Unknown';
-            const btnColor = getCloudColorClass(cloudName);
-            const adLink2 = gameData.adLinks2XCI[i] || '#';
-            adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-          }
-          adLinks2HTML += `</div>`;
-        }
-
-        if (gameData.nspPartCount > 0) {
-          adLinks2HTML += `<h4>NSP Part Link (Link Iklan 2)</h4><div class="mb-3">`;
-          for (let i = 0; i < gameData.nspPartCount; i++) {
-            const cloudName = gameData.cloudNSPPart[i] || 'Unknown';
-            const btnColor = getCloudColorClass(cloudName);
-            const adLink2 = gameData.adLinks2NSPPart[i] || '#';
-            adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-          }
-          adLinks2HTML += `</div>`;
-        }
-
-        if (gameData.xciPartCount > 0) {
-          adLinks2HTML += `<h4>XCI Part Link (Link Iklan 2)</h4><div class="mb-3">`;
-          for (let i = 0; i < gameData.xciPartCount; i++) {
-            const cloudName = gameData.cloudXCIPart[i] || 'Unknown';
-            const btnColor = getCloudColorClass(cloudName);
-            const adLink2 = gameData.adLinks2XCIPart[i] || '#';
-            adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-          }
-          adLinks2HTML += `</div>`;
-        }
 
 
+function createHTMLTemplate() {
+  const escapeHTML = (str) =>
+    String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
 
-        // Data untuk JavaScript
-        const gameApiUrl = GAME_API_URL;
-        const userApiUrl = USER_API_URL;
-        const { hasNSP, hasXCI } = getGameTypeFlags();
+  const safeUrl = (url) => {
+    const u = String(url || "").trim();
+    if (!u) return "#";
+    return u;
+  };
 
-        let sizeRows = '';
-        if (hasNSP) {
-            sizeRows += `<tr><th>Ukuran NSP:</th><td>${escapeHTML(gameData.gameInfo.ukuran_nsp || '-')}</td></tr>`;
-        }
-        if (hasXCI) {
-            sizeRows += `<tr><th>Ukuran XCI:</th><td>${escapeHTML(gameData.gameInfo.ukuran_xci || '-')}</td></tr>`;
-        }
+  const gameApiUrl = typeof GAME_API_URL !== "undefined" ? GAME_API_URL : "";
+  const userApiUrl = typeof USER_API_URL !== "undefined" ? USER_API_URL : "";
 
-        return`
+  const gi = gameData?.gameInfo || {};
+  const namaGame = gi.nama_game || "Nintendo Switch Game";
+
+  // ===== sizeRows (FIX ERROR sizeRows is not defined) =====
+  const sizeRows = [
+    gi.ukuran_nsp ? `<tr><th>Ukuran NSP:</th><td>${escapeHTML(gi.ukuran_nsp)}</td></tr>` : "",
+    gi.ukuran_xci ? `<tr><th>Ukuran XCI:</th><td>${escapeHTML(gi.ukuran_xci)}</td></tr>` : "",
+  ].join("");
+
+  // ===== helpers untuk generate button =====
+  const buildAdButtons = (links, clouds) => {
+    const arr = Array.isArray(links) ? links : [];
+    const cld = Array.isArray(clouds) ? clouds : [];
+    if (!arr.length) return "";
+
+    return arr
+      .map((link, i) => {
+        const cloudName = escapeHTML(cld[i] || `Link ${i + 1}`);
+        const href = escapeHTML(safeUrl(link));
+        const disabled = !String(link || "").trim() ? "disabled aria-disabled=\"true\"" : "";
+        const safeHref = String(link || "").trim() ? href : "#";
+
+        return `
+          <a class="btn btn-cloud ${disabled ? "loading" : ""}"
+             href="${safeHref}"
+             target="_blank" rel="noopener noreferrer"
+             ${disabled}>
+            ${cloudName} - Link ${i + 1}
+          </a>
+        `.trim();
+      })
+      .join("\n");
+  };
+
+  const buildOriginalButtons = (links, clouds, linkType) => {
+    const arr = Array.isArray(links) ? links : [];
+    const cld = Array.isArray(clouds) ? clouds : [];
+    if (!arr.length) return "";
+
+    return arr
+      .map((_, i) => {
+        const cloudName = escapeHTML(cld[i] || `Link ${i + 1}`);
+        return `
+          <button class="btn btn-cloud" onclick="accessOriginalLink('${linkType}', ${i})">
+            ${cloudName} - Link ${i + 1}
+          </button>
+        `.trim();
+      })
+      .join("\n");
+  };
+
+  const buildSection = (title, innerHtml) => {
+    const html = String(innerHtml || "").trim();
+    if (!html) return "";
+    return `
+      <div class="mb-3">
+        <h4>${escapeHTML(title)}</h4>
+        <div class="d-flex flex-wrap">
+          ${html}
+        </div>
+      </div>
+    `.trim();
+  };
+
+  // ===== adLinksHTML (Link Iklan 1) =====
+  const adLinksHTML = [
+    buildSection("NSP", buildAdButtons(gameData.adLinksNSP, gameData.cloudNSP)),
+    buildSection("XCI", buildAdButtons(gameData.adLinksXCI, gameData.cloudXCI)),
+    buildSection("NSP Part", buildAdButtons(gameData.adLinksNSPPart, gameData.cloudNSPPart)),
+    buildSection("XCI Part", buildAdButtons(gameData.adLinksXCIPart, gameData.cloudXCIPart)),
+  ].filter(Boolean).join("\n");
+
+  // ===== adLinks2HTML (Link Iklan 2) =====
+  const adLinks2HTML = [
+    buildSection("NSP", buildAdButtons(gameData.adLinks2NSP, gameData.cloudNSP)),
+    buildSection("XCI", buildAdButtons(gameData.adLinks2XCI, gameData.cloudXCI)),
+    buildSection("NSP Part", buildAdButtons(gameData.adLinks2NSPPart, gameData.cloudNSPPart)),
+    buildSection("XCI Part", buildAdButtons(gameData.adLinks2XCIPart, gameData.cloudXCIPart)),
+  ].filter(Boolean).join("\n");
+
+  // Link Iklan 2 dianggap "ada" kalau minimal ada 1 link yang terisi
+  const hasAnyAd2 =
+    [
+      ...(gameData.adLinks2NSP || []),
+      ...(gameData.adLinks2XCI || []),
+      ...(gameData.adLinks2NSPPart || []),
+      ...(gameData.adLinks2XCIPart || []),
+    ].some((x) => String(x || "").trim().length > 0);
+
+  const includeAd2 = !!(exportOptions?.includeAd2 && hasAnyAd2 && adLinks2HTML.trim());
+
+  // ===== originalLinksHTML (Tanpa Iklan) =====
+  const originalLinksHTML = [
+    buildSection("NSP", buildOriginalButtons(gameData.originalLinksNSP, gameData.cloudNSP, "nsp")),
+    buildSection("XCI", buildOriginalButtons(gameData.originalLinksXCI, gameData.cloudXCI, "xci")),
+    buildSection("NSP Part", buildOriginalButtons(gameData.originalLinksNSPPart, gameData.cloudNSPPart, "nsp_part")),
+    buildSection("XCI Part", buildOriginalButtons(gameData.originalLinksXCIPart, gameData.cloudXCIPart, "xci_part")),
+  ].filter(Boolean).join("\n");
+
+  return `
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -2810,6 +3481,39 @@ a.btn.btn-cloud:active {
     padding: 12px 14px;
     box-shadow: 0 10px 24px rgba(0,0,0,0.06);
   }
+/* Biar efek shimmer tidak menghalangi klik tombol */
+.game-header::before{
+  pointer-events: none;
+}
+
+/* Tombol pojok kanan atas di header */
+.game-header .header-actions{
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
+
+/* Supaya isi header tetap di atas overlay */
+.game-header > *{
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile: tombol turun ke bawah dan rata tengah */
+@media (max-width: 576px){
+  .game-header{
+    text-align: center;
+  }
+  .game-header .header-actions{
+    position: static;
+    margin-bottom: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
 
     </style>
 </head>
@@ -2839,6 +3543,20 @@ a.btn.btn-cloud:active {
         
         <!-- Game Header -->
         <div class="game-header rounded p-4 mb-4">
+            <div class="header-actions">
+                <a href="https://indapk.com/requestgame.html"
+                   target="_blank" rel="noopener"
+                   class="btn btn-success btn-sm">
+                    <i class="bi bi-controller"></i> Request Game
+                </a>
+
+                <a href="https://apksgi.github.io/"
+                   target="_blank" rel="noopener"
+                   class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-globe2"></i> Game 18+
+                </a>
+            </div>
+
             <h1>${escapeHTML(gameData.gameInfo.nama_game)}</h1>
             <p class="mb-0">Nintendo Switch Game Download</p>
         </div>
@@ -2898,11 +3616,11 @@ a.btn.btn-cloud:active {
       <div class="ad-note-grid">
         <div class="ad-note-box">
           <div class="fw-bold mb-1">Indonesia</div>
-          <div>Gunakan Link Iklan 2 jika susah lewati Link Iklan 1.</div>
+          <div>Gunakan Semawur jika susah lewati INDapk Short.</div>
         </div>
         <div class="ad-note-box">
           <div class="fw-bold mb-1">English</div>
-          <div>Use Ad Link 2 if you have trouble getting past Ad Link 1.</div>
+          <div>Use Ad Semawur if you have trouble getting past INDapk Short.</div>
         </div>
       </div>
     </div>
@@ -2911,12 +3629,12 @@ a.btn.btn-cloud:active {
   <!-- CARD: LINK IKLAN 1 (UTAMA) -->
   <div class="card border-primary mb-4" style="border-width: 2px;">
     <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
-      <span><i class="bi bi-star-fill"></i> Link Iklan 1</span>
+      <span><i class="bi bi-star-fill"></i> INDapk Short</span>
       <span class="badge bg-light text-dark">Utama</span>
     </div>
     <div class="card-body">
       <div class="text-muted mb-2">
-        Gunakan ini dulu. Jika sulit lewat iklan, pakai Link Iklan 2.
+        Gunakan ini. Jika sulit lewat iklannya, pakai Link Semawur.
       </div>
 
       <!-- Link Iklan 1 -->
@@ -2925,21 +3643,23 @@ a.btn.btn-cloud:active {
   </div>
 
   <!-- CARD: LINK IKLAN 2 (ALTERNATIF) -->
+  ${includeAd2 ? `
+  <!-- CARD: LINK IKLAN 2 (ALTERNATIF) -->
   <div class="card border-secondary mb-3">
     <div class="card-header bg-secondary text-white d-flex align-items-center justify-content-between">
-      <span><i class="bi bi-link-45deg"></i> Link Iklan 2</span>
+      <span><i class="bi bi-link-45deg"></i> Semawurt Short</span>
       <span class="badge bg-light text-dark">Alternatif</span>
     </div>
     <div class="card-body">
       <div class="text-muted mb-2">
-        Jika Link Iklan 1 sulit, gunakan Link Iklan 2 di bawah.
+        Jika Link INDapk Short sulit dilewati, gunakan Link Semawur di bawah.
       </div>
-
-      <!-- Link Iklan 2 -->
       ${adLinks2HTML}
     </div>
   </div>
-</div>
+` : '' }
+
+    </div><!-- ✅ FIX: tutup tabAdLinks -->
 
 
         <div class="tab-content" id="tabOriginalLinks">
@@ -3717,17 +4437,13 @@ function generateHTML() {
     const html = createHTMLTemplate();
     document.getElementById('htmlPreview').textContent = html;
     document.getElementById('previewSection').style.display = 'block';
-    
+    exportOptions.includeAd2 = true;
+
     // Scroll ke preview section
     document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Panggil loadSavedGames saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    setupEventListeners();
-    checkUserLogin();// Tambahkan ini
-});
-        
+
         function copyHTML() {
             const html = document.getElementById('htmlPreview').textContent;
             navigator.clipboard.writeText(html).then(() => {
@@ -3913,6 +4629,245 @@ async function loginUser() {
                 console.warn('Tidak bisa terhubung ke server. Gunakan mode offline.');
             }
         });
+        function initMainTabs() {
+  if (_mainTabsInited) return;
+  _mainTabsInited = true;
+
+  const tabs = document.querySelectorAll('#mainTabs [data-main-tab]');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      const target = btn.dataset.mainTab;
+      document.getElementById('mainTabGenerator').classList.toggle('active', target === 'generator');
+      document.getElementById('mainTabSaved').classList.toggle('active', target === 'saved');
+
+      if (target === 'saved') {
+        loadSavedGames();
+      }
+    });
+  });
+}
+
+async function apiPost(url, paramsObj) {
+  const body = new URLSearchParams();
+  Object.keys(paramsObj).forEach(k => body.append(k, paramsObj[k]));
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+    body: body.toString()
+  });
+
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+function fmtDateTime(v) {
+  try {
+    if (!v) return '-';
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return String(v);
+    return d.toLocaleString();
+  } catch {
+    return String(v || '-');
+  }
+}
+
+function downloadHtmlText(html, filename) {
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function normalizeFilename(name) {
+  return (name || 'game')
+    .replace(/[^a-z0-9]/gi, '_')
+    .toLowerCase()
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+async function loadSavedGames() {
+  const tbody = document.getElementById('savedGamesBody');
+  if (!tbody) return;
+
+  tbody.innerHTML = `<tr><td colspan="5" class="text-muted">Loading...</td></tr>`;
+
+  try {
+    const result = await apiPost(GAME_API_URL, { action: 'getAllGames' });
+    if (result.status !== 'success') throw new Error(result.message || 'Gagal ambil data');
+
+    _savedGamesCache = Array.isArray(result.data) ? result.data : [];
+    renderSavedGamesTable(_savedGamesCache);
+
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-danger">Error: ${escapeHTML(err.message)}</td></tr>`;
+  }
+}
+
+function renderSavedGamesTable(list) {
+  const tbody = document.getElementById('savedGamesBody');
+  if (!tbody) return;
+
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-muted">Belum ada data di spreadsheet.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(g => {
+    const did = escapeHTML(String(g.download_id || ''));
+    const name = escapeHTML(String(g.nama_game || ''));
+    const region = escapeHTML(String(g.region || '-'));
+    const updated = escapeHTML(fmtDateTime(g.timestamp || g.last_updated || g.last_downloaded || ''));
+
+    return `
+      <tr>
+        <td><code>${did}</code></td>
+        <td>${name}</td>
+        <td>${region}</td>
+        <td>${updated}</td>
+        <td class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-sm btn-outline-secondary" onclick="previewSavedHtml('${did}')">
+            <i class="bi bi-eye"></i> Preview
+          </button>
+          <button class="btn btn-sm btn-success" onclick="downloadSavedHtml('${did}')">
+            <i class="bi bi-download"></i> Download
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function fetchGameByDownloadId(downloadId) {
+  const result = await apiPost(GAME_API_URL, {
+    action: 'getGameByDownloadId',
+    download_id: downloadId
+  });
+
+  if (result.status !== 'success' || !result.data) {
+    throw new Error(result.message || 'Game tidak ditemukan');
+  }
+  return result.data;
+}
+
+function applyServerGameToGameData(serverGame) {
+  // Set counts dari panjang cloud array
+  gameData.cloudNSP = serverGame.cloud_nsp || [];
+  gameData.cloudXCI = serverGame.cloud_xci || [];
+  gameData.cloudNSPPart = serverGame.cloud_nsp_part || [];
+  gameData.cloudXCIPart = serverGame.cloud_xci_part || [];
+
+  gameData.nspCount = gameData.cloudNSP.length;
+  gameData.xciCount = gameData.cloudXCI.length;
+  gameData.nspPartCount = gameData.cloudNSPPart.length;
+  gameData.xciPartCount = gameData.cloudXCIPart.length;
+
+  // Link iklan (1) dan link asli
+  gameData.adLinksNSP = serverGame.link_iklan_nsp || [];
+  gameData.adLinksXCI = serverGame.link_iklan_xci || [];
+  gameData.adLinksNSPPart = serverGame.link_iklan_nsp_part || [];
+  gameData.adLinksXCIPart = serverGame.link_iklan_xci_part || [];
+
+  gameData.originalLinksNSP = serverGame.link_asli_nsp || [];
+  gameData.originalLinksXCI = serverGame.link_asli_xci || [];
+  gameData.originalLinksNSPPart = serverGame.link_asli_nsp_part || [];
+  gameData.originalLinksXCIPart = serverGame.link_asli_xci_part || [];
+
+  // Link iklan 2 dikosongkan karena spreadsheet tidak simpan
+  gameData.adLinks2NSP = new Array(gameData.nspCount).fill('');
+  gameData.adLinks2XCI = new Array(gameData.xciCount).fill('');
+  gameData.adLinks2NSPPart = new Array(gameData.nspPartCount).fill('');
+  gameData.adLinks2XCIPart = new Array(gameData.xciPartCount).fill('');
+
+  // Info game
+  gameData.gameInfo = {
+    nama_game: serverGame.nama_game || '',
+    ukuran_nsp: serverGame.ukuran_nsp || '',
+    ukuran_xci: serverGame.ukuran_xci || '',
+    category: serverGame.category || '',
+    game_id: serverGame.game_id || '',
+    region: serverGame.region || '',
+    language: serverGame.language || ''
+  };
+
+  gameData.downloadId = serverGame.download_id || '';
+}
+
+async function previewSavedHtml(downloadId) {
+  try {
+    exportOptions.includeAd2 = false; // penting: export spreadsheet tanpa link iklan 2
+
+    const serverGame = await fetchGameByDownloadId(downloadId);
+    applyServerGameToGameData(serverGame);
+
+    const html = createHTMLTemplate();
+    const filename = `${normalizeFilename(gameData.gameInfo.nama_game)}_${gameData.downloadId}.html`;
+
+    _savedHtmlCache = { html, filename };
+
+    document.getElementById('savedHtmlPreview').textContent = html;
+    document.getElementById('savedPreviewSection').style.display = 'block';
+    document.getElementById('savedPreviewSection').scrollIntoView({ behavior: 'smooth' });
+
+  } catch (err) {
+    alert('❌ Gagal preview: ' + err.message);
+  } finally {
+    exportOptions.includeAd2 = true; // kembalikan default supaya generator tetap normal
+  }
+}
+
+async function downloadSavedHtml(downloadId) {
+  // kalau belum dipreview, generate dulu
+  if (!_savedHtmlCache.html || !_savedHtmlCache.filename || !_savedHtmlCache.filename.includes(downloadId)) {
+    await previewSavedHtml(downloadId);
+  }
+  if (_savedHtmlCache.html) {
+    downloadHtmlText(_savedHtmlCache.html, _savedHtmlCache.filename);
+  }
+}
+
+function wireSavedTabControls() {
+  const refreshBtn = document.getElementById('btnRefreshSaved');
+  const searchEl = document.getElementById('savedSearch');
+
+  refreshBtn?.addEventListener('click', loadSavedGames);
+
+  searchEl?.addEventListener('input', () => {
+    const q = (searchEl.value || '').trim().toLowerCase();
+    if (!q) return renderSavedGamesTable(_savedGamesCache);
+
+    const filtered = _savedGamesCache.filter(g => {
+      const did = String(g.download_id || '').toLowerCase();
+      const name = String(g.nama_game || '').toLowerCase();
+      const gid = String(g.game_id || '').toLowerCase();
+      return did.includes(q) || name.includes(q) || gid.includes(q);
+    });
+
+    renderSavedGamesTable(filtered);
+  });
+
+  document.getElementById('btnCopySavedHTML')?.addEventListener('click', () => {
+    if (!_savedHtmlCache.html) return alert('Belum ada HTML.');
+    navigator.clipboard.writeText(_savedHtmlCache.html).then(() => {
+      alert('✅ HTML berhasil disalin!');
+    }).catch(err => alert('❌ Gagal menyalin: ' + err.message));
+  });
+
+  document.getElementById('btnDownloadSavedHTML')?.addEventListener('click', () => {
+    if (!_savedHtmlCache.html) return alert('Belum ada HTML.');
+    downloadHtmlText(_savedHtmlCache.html, _savedHtmlCache.filename || 'game.html');
+  });
+}
+
     </script>
 </body>
 </html>
