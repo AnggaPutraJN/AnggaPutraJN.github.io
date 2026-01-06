@@ -781,6 +781,83 @@
   display: block;
 }
 
+/* Tombol Preview di Spreadsheet */
+#savedPreviewSection .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#savedPreviewSection .mode-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+#savedPreviewSection .btn-mode {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Container Preview */
+.preview-iframe-container {
+  width: 100%;
+  height: 500px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.preview-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.preview-source-container {
+  width: 100%;
+  max-height: 500px;
+  overflow: auto;
+  border-radius: 8px;
+  background: #212529;
+}
+
+/* Tombol Action */
+.btn-action-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.btn-action-group .btn {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Tombol di tabel List Game */
+#savedGamesBody .btn {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+#savedGamesBody .btn-sm {
+  min-width: 80px;
+}
+
+/* Warna khusus tombol Copy HTML */
+#savedGamesBody .btn-primary {
+  background: linear-gradient(135deg, #4a6cf7 0%, #3a56e8 100%);
+  border-color: #4a6cf7;
+}
+
+#savedGamesBody .btn-primary:hover {
+  background: linear-gradient(135deg, #3a56e8 0%, #2a46d9 100%);
+  border-color: #3a56e8;
+  transform: translateY(-2px);
+}
   </style>
 </head>
 
@@ -1125,6 +1202,7 @@
       </div>
 
       <div class="table-responsive">
+<!-- Di bagian Saved Tab, ubah header tabel: -->
         <table class="table table-striped align-middle">
           <thead class="table-primary">
             <tr>
@@ -1132,7 +1210,7 @@
               <th>Nama Game</th>
               <th style="width:140px;">Region</th>
               <th style="width:160px;">Updated</th>
-              <th style="width:240px;">Aksi</th>
+              <th style="width:280px;">Aksi</th> <!-- Lebarkan kolom aksi -->
             </tr>
           </thead>
           <tbody id="savedGamesBody">
@@ -1141,13 +1219,22 @@
         </table>
       </div>
 
+      <!-- MODIFIKASI: Preview dengan tampilan seperti Android -->
       <div id="savedPreviewSection" class="mt-3" style="display:none;">
         <div class="card">
-          <div class="card-header bg-warning text-white">
+          <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="bi bi-eye-fill"></i> Preview HTML (Dari Spreadsheet)</h4>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-light" id="btnSavedModeLive">
+                <i class="bi bi-eye"></i> Live
+              </button>
+              <button class="btn btn-sm btn-outline-light" id="btnSavedModeSource">
+                <i class="bi bi-code-slash"></i> Source
+              </button>
+            </div>
           </div>
           <div class="card-body">
-            <div class="preview-container" id="savedHtmlPreview"></div>
+            <div id="savedPreviewMode" class="preview-container"></div>
             <div class="d-flex gap-2 flex-wrap mt-3">
               <button id="btnCopySavedHTML" class="btn btn-primary"><i class="bi bi-clipboard-check-fill"></i> Copy HTML</button>
               <button id="btnDownloadSavedHTML" class="btn btn-success"><i class="bi bi-download"></i> Download HTML</button>
@@ -1269,6 +1356,8 @@
         let _savedHtmlCache = { html: '', filename: '' };
         let _mainTabsInited = false;
         let _savedGamesCache = [];
+        let _generatedHtml = '';
+        let _generatedFilename = 'game.html';
 
         
         // Cloud options
@@ -1292,51 +1381,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
        
-
+function safeFilename(name) {
+  return String(name || 'game')
+    .replace(/[\\/:*?"<>|]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 // ===================== CLOUD CACHE (Step 1 & Step 2) =====================
 const CLOUD_CACHE_KEY = 'switchCloudCaches';
 
 function showToast(type, message) {
-  const bg = type === 'success' ? 'success'
-    : type === 'error' ? 'danger'
-    : type === 'warning' ? 'warning'
-    : 'info';
-
-  const icon = type === 'success' ? 'bi-check-circle'
-    : type === 'error' ? 'bi-x-circle'
-    : type === 'warning' ? 'bi-exclamation-triangle'
-    : 'bi-info-circle';
-
+  // Buat elemen toast
+  const toastEl = document.createElement('div');
+  toastEl.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0`;
+  toastEl.setAttribute('role', 'alert');
+  toastEl.setAttribute('aria-live', 'assertive');
+  toastEl.setAttribute('aria-atomic', 'true');
+  
+  toastEl.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">
+        <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle'} me-2"></i>
+        ${message}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  `;
+  
+  // Tambahkan ke container toast
   let toastContainer = document.getElementById('toastContainer');
   if (!toastContainer) {
     toastContainer = document.createElement('div');
     toastContainer.id = 'toastContainer';
     toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-    toastContainer.style.zIndex = '1060';
     document.body.appendChild(toastContainer);
   }
-
-  const toastEl = document.createElement('div');
-  toastEl.className = `toast align-items-center text-white bg-${bg} border-0`;
-  toastEl.setAttribute('role', 'alert');
-  toastEl.setAttribute('aria-live', 'assertive');
-  toastEl.setAttribute('aria-atomic', 'true');
-
-  toastEl.innerHTML = `
-    <div class="d-flex">
-      <div class="toast-body">
-        <i class="bi ${icon} me-2"></i>${message}
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
-  `;
-
+  
   toastContainer.appendChild(toastEl);
-
-  const t = new bootstrap.Toast(toastEl, { delay: 3000 });
-  t.show();
-
+  
+  // Tampilkan toast
+  const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+  toast.show();
+  
+  // Hapus setelah selesai
   toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
 }
 function getCloudCaches() {
@@ -2394,16 +2482,26 @@ function createLinkSection(title, count, arrayName, clouds) {
             }
             
             // Validate all links are filled
-            const allLinks = [
-                ...gameData.adLinksNSP,
-                ...gameData.adLinksXCI,
-                ...gameData.adLinksNSPPart,
-                ...gameData.adLinksXCIPart,
-                ...gameData.originalLinksNSP,
-                ...gameData.originalLinksXCI,
-                ...gameData.originalLinksNSPPart,
-                ...gameData.originalLinksXCIPart
-            ];
+                const allLinks = [
+                  // Iklan 1
+                  ...(gameData.adLinksNSP || []),
+                  ...(gameData.adLinksXCI || []),
+                  ...(gameData.adLinksNSPPart || []),
+                  ...(gameData.adLinksXCIPart || []),
+
+                  // ✅ Iklan 2
+                  ...(gameData.adLinks2NSP || []),
+                  ...(gameData.adLinks2XCI || []),
+                  ...(gameData.adLinks2NSPPart || []),
+                  ...(gameData.adLinks2XCIPart || []),
+
+                  // Asli
+                  ...(gameData.originalLinksNSP || []),
+                  ...(gameData.originalLinksXCI || []),
+                  ...(gameData.originalLinksNSPPart || []),
+                  ...(gameData.originalLinksXCIPart || [])
+                ];
+
             
             if (allLinks.some(link => !link.trim())) {
                 alert('Harap isi semua link!');
@@ -2457,6 +2555,12 @@ if (gameData.downloadId && gameData.gameInfo.nama_game) {
                 params.append('link_iklan_xci', JSON.stringify(gameData.adLinksXCI));
                 params.append('link_iklan_nsp_part', JSON.stringify(gameData.adLinksNSPPart));
                 params.append('link_iklan_xci_part', JSON.stringify(gameData.adLinksXCIPart));
+                                // ✅ TAMBAHAN: Link Iklan 2
+                params.append('link_iklan2_nsp', JSON.stringify(gameData.adLinks2NSP || []));
+                params.append('link_iklan2_xci', JSON.stringify(gameData.adLinks2XCI || []));
+                params.append('link_iklan2_nsp_part', JSON.stringify(gameData.adLinks2NSPPart || []));
+                params.append('link_iklan2_xci_part', JSON.stringify(gameData.adLinks2XCIPart || []));
+
                 params.append('cloud_nsp', JSON.stringify(gameData.cloudNSP));
                 params.append('cloud_xci', JSON.stringify(gameData.cloudXCI));
                 params.append('cloud_nsp_part', JSON.stringify(gameData.cloudNSPPart));
@@ -3553,7 +3657,7 @@ a.btn.btn-cloud:active {
                 <a href="https://apksgi.github.io/"
                    target="_blank" rel="noopener"
                    class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-globe2"></i> Game 18+
+                    <i class="bi bi-globe2"></i> Game 18+ & Videos
                 </a>
             </div>
 
@@ -4423,26 +4527,51 @@ async function accessOriginalLink(linkType, index) {
         
         
 function generateHTML() {
-    if (!gameData.downloadId) {
-        // Jika belum ada downloadId, minta simpan dulu
-        if (confirm('Data belum disimpan ke server. Generate HTML dengan data saat ini?')) {
-            gameData.downloadId = 'TEMP_' + Date.now().toString().slice(-8);
-            // Simpan ke localStorage
-            saveGameToLocalStorage();
-        } else {
-            return;
-        }
-    }
-    
-    const html = createHTMLTemplate();
-    document.getElementById('htmlPreview').textContent = html;
-    document.getElementById('previewSection').style.display = 'block';
-    exportOptions.includeAd2 = true;
+  // pastikan data link terbaru sudah masuk ke gameData (kalau kamu punya fungsi collect, panggil di sini)
 
-    // Scroll ke preview section
-    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+  _generatedHtml = createHTMLTemplate();
+
+  const nm = safeFilename(gameData?.gameInfo?.nama_game || 'switch-game');
+  _generatedFilename = `${nm}.html`;
+
+  // tampilkan section preview
+  const previewSection = document.getElementById('previewSection');
+  if (previewSection) previewSection.style.display = 'block';
+
+  // render preview FULL HTML dengan iframe, biar tidak kepotong
+  const preview = document.getElementById('htmlPreview');
+  if (!preview) return;
+
+  preview.innerHTML = '';
+  const iframe = document.createElement('iframe');
+  iframe.style.width = '100%';
+  iframe.style.height = '650px';
+  iframe.style.border = '0';
+  iframe.style.borderRadius = '16px';
+  iframe.srcdoc = _generatedHtml;
+
+  preview.appendChild(iframe);
 }
+async function copyHTML() {
+  if (!_generatedHtml) {
+    showToast('warning', 'Generate HTML dulu.');
+    return;
+  }
 
+  try {
+    await navigator.clipboard.writeText(_generatedHtml);
+    showToast('success', 'HTML berhasil dicopy.');
+  } catch (e) {
+    // fallback kalau clipboard diblok
+    const ta = document.createElement('textarea');
+    ta.value = _generatedHtml;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('success', 'HTML berhasil dicopy.');
+  }
+}
 
         function copyHTML() {
             const html = document.getElementById('htmlPreview').textContent;
@@ -4453,19 +4582,26 @@ function generateHTML() {
             });
         }
         
-        function downloadHTML() {
-            const html = document.getElementById('htmlPreview').textContent;
-            const blob = new Blob([html], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${gameData.gameInfo.nama_game.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${gameData.downloadId}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            alert('✅ HTML berhasil didownload!');
-        }
+function downloadHTML() {
+  if (!_generatedHtml) {
+    showToast('warning', 'Generate HTML dulu.');
+    return;
+  }
+
+  const blob = new Blob([_generatedHtml], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = _generatedFilename || 'game.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+  showToast('success', 'HTML berhasil didownload.');
+}
+
         
         function newGame() {
             if (confirm('Buat game baru? Semua data yang belum disimpan akan hilang.')) {
@@ -4718,7 +4854,7 @@ function renderSavedGamesTable(list) {
   if (!tbody) return;
 
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="5" class="text-muted">Belum ada data di spreadsheet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="text-muted">Belum ada data di spreadsheet.</td></tr>`; // Ubah colspan jadi 6
     return;
   }
 
@@ -4741,10 +4877,57 @@ function renderSavedGamesTable(list) {
           <button class="btn btn-sm btn-success" onclick="downloadSavedHtml('${did}')">
             <i class="bi bi-download"></i> Download
           </button>
+          <!-- TOMBOL BARU: Copy HTML langsung -->
+          <button class="btn btn-sm btn-primary" onclick="copySavedHtmlDirect('${did}')">
+            <i class="bi bi-clipboard"></i> Copy HTML
+          </button>
         </td>
       </tr>
     `;
   }).join('');
+}
+
+
+async function copySavedHtmlDirect(downloadId) {
+  try {
+    // Tampilkan loading state
+    const buttons = document.querySelectorAll(`[onclick*="${downloadId}"]`);
+    buttons.forEach(btn => {
+      if (btn.textContent.includes('Copy HTML')) {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+        btn.disabled = true;
+        btn.dataset.originalHtml = originalHTML;
+      }
+    });
+
+    // Fetch game data
+    const serverGame = await fetchGameByDownloadId(downloadId);
+    applyServerGameToGameData(serverGame);
+    
+    // Generate HTML
+    const html = createHTMLTemplate();
+    
+    // Copy to clipboard
+    await navigator.clipboard.writeText(html);
+    
+    // Show success toast
+    showToast('success', `HTML game "${serverGame.nama_game}" berhasil disalin!`);
+    
+  } catch (err) {
+    console.error('Copy error:', err);
+    showToast('error', 'Gagal menyalin HTML: ' + err.message);
+  } finally {
+    // Restore button state
+    const buttons = document.querySelectorAll(`[onclick*="${downloadId}"]`);
+    buttons.forEach(btn => {
+      if (btn.dataset.originalHtml) {
+        btn.innerHTML = btn.dataset.originalHtml;
+        btn.disabled = false;
+        delete btn.dataset.originalHtml;
+      }
+    });
+  }
 }
 
 async function fetchGameByDownloadId(downloadId) {
@@ -4782,11 +4965,39 @@ function applyServerGameToGameData(serverGame) {
   gameData.originalLinksNSPPart = serverGame.link_asli_nsp_part || [];
   gameData.originalLinksXCIPart = serverGame.link_asli_xci_part || [];
 
-  // Link iklan 2 dikosongkan karena spreadsheet tidak simpan
-  gameData.adLinks2NSP = new Array(gameData.nspCount).fill('');
-  gameData.adLinks2XCI = new Array(gameData.xciCount).fill('');
-  gameData.adLinks2NSPPart = new Array(gameData.nspPartCount).fill('');
-  gameData.adLinks2XCIPart = new Array(gameData.xciPartCount).fill('');
+  // PERBAIKAN: Baca Link Iklan 2 jika ada di spreadsheet
+  // Versi 1: Coba dari kolom khusus
+  let adLinks2NSP = serverGame.link_iklan2_nsp || [];
+  let adLinks2XCI = serverGame.link_iklan2_xci || [];
+  let adLinks2NSPPart = serverGame.link_iklan2_nsp_part || [];
+  let adLinks2XCIPart = serverGame.link_iklan2_xci_part || [];
+  
+  // Versi 2: Jika tidak ada, coba parse dari kolom lain (misalnya notes/deskripsi)
+  if ((adLinks2NSP.length === 0 || adLinks2XCI.length === 0) && serverGame.notes) {
+    try {
+      const parsed = extractAdLinks2FromNotes(serverGame.notes);
+      if (parsed.adLinks2NSP && parsed.adLinks2NSP.length > 0) {
+        adLinks2NSP = parsed.adLinks2NSP;
+      }
+      if (parsed.adLinks2XCI && parsed.adLinks2XCI.length > 0) {
+        adLinks2XCI = parsed.adLinks2XCI;
+      }
+      if (parsed.adLinks2NSPPart && parsed.adLinks2NSPPart.length > 0) {
+        adLinks2NSPPart = parsed.adLinks2NSPPart;
+      }
+      if (parsed.adLinks2XCIPart && parsed.adLinks2XCIPart.length > 0) {
+        adLinks2XCIPart = parsed.adLinks2XCIPart;
+      }
+    } catch (e) {
+      console.warn('Gagal parse Link Iklan 2 dari notes:', e);
+    }
+  }
+  
+  // Pastikan array memiliki panjang yang sesuai
+  gameData.adLinks2NSP = ensureArrayLength(adLinks2NSP, gameData.nspCount, '');
+  gameData.adLinks2XCI = ensureArrayLength(adLinks2XCI, gameData.xciCount, '');
+  gameData.adLinks2NSPPart = ensureArrayLength(adLinks2NSPPart, gameData.nspPartCount, '');
+  gameData.adLinks2XCIPart = ensureArrayLength(adLinks2XCIPart, gameData.xciPartCount, '');
 
   // Info game
   gameData.gameInfo = {
@@ -4802,10 +5013,83 @@ function applyServerGameToGameData(serverGame) {
   gameData.downloadId = serverGame.download_id || '';
 }
 
+// Helper function: Ensure array has proper length
+function ensureArrayLength(arr, expectedLength, defaultValue = '') {
+  if (!Array.isArray(arr)) {
+    return new Array(expectedLength).fill(defaultValue);
+  }
+  if (arr.length < expectedLength) {
+    return [...arr, ...new Array(expectedLength - arr.length).fill(defaultValue)];
+  }
+  if (arr.length > expectedLength) {
+    return arr.slice(0, expectedLength);
+  }
+  return arr;
+}
+
+// Helper function: Extract Link Iklan 2 from notes/description
+function extractAdLinks2FromNotes(notes) {
+  // Implementasi parsing sesuai format notes Anda
+  // Contoh sederhana: cari pola [AD2_NSP]: ... atau [AD2_XCI]: ...
+  const result = {
+    adLinks2NSP: [],
+    adLinks2XCI: [],
+    adLinks2NSPPart: [],
+    adLinks2XCIPart: []
+  };
+  
+  if (!notes) return result;
+  
+  // Contoh: notes berisi JSON string
+  try {
+    const parsed = JSON.parse(notes);
+    if (parsed.adLinks2NSP) result.adLinks2NSP = parsed.adLinks2NSP;
+    if (parsed.adLinks2XCI) result.adLinks2XCI = parsed.adLinks2XCI;
+    if (parsed.adLinks2NSPPart) result.adLinks2NSPPart = parsed.adLinks2NSPPart;
+    if (parsed.adLinks2XCIPart) result.adLinks2XCIPart = parsed.adLinks2XCIPart;
+  } catch (e) {
+    // Bukan JSON, coba parsing manual
+    const lines = notes.split('\n');
+    let currentSection = '';
+    
+    for (const line of lines) {
+      const trimmed = line.trim();
+      
+      if (trimmed.includes('[AD2_NSP]')) {
+        currentSection = 'adLinks2NSP';
+      } else if (trimmed.includes('[AD2_XCI]')) {
+        currentSection = 'adLinks2XCI';
+      } else if (trimmed.includes('[AD2_NSP_PART]')) {
+        currentSection = 'adLinks2NSPPart';
+      } else if (trimmed.includes('[AD2_XCI_PART]')) {
+        currentSection = 'adLinks2XCIPart';
+      } else if (currentSection && trimmed.startsWith('http')) {
+        result[currentSection].push(trimmed);
+      }
+    }
+  }
+  
+  return result;
+}
+
+function renderSavedPreviewLive(html) {
+  const wrap = document.getElementById('savedPreviewMode');
+  if (!wrap) return;
+
+  wrap.innerHTML = '';
+  const iframe = document.createElement('iframe');
+  iframe.style.width = '100%';
+  iframe.style.height = '650px';
+  iframe.style.border = '0';
+  iframe.style.borderRadius = '16px';
+  iframe.srcdoc = html;
+
+  wrap.appendChild(iframe);
+}
+
+// MODIFIKASI: Fungsi previewSavedHtml dengan mode Live/Source seperti Android
 async function previewSavedHtml(downloadId) {
   try {
-    exportOptions.includeAd2 = false; // penting: export spreadsheet tanpa link iklan 2
-
     const serverGame = await fetchGameByDownloadId(downloadId);
     applyServerGameToGameData(serverGame);
 
@@ -4814,9 +5098,44 @@ async function previewSavedHtml(downloadId) {
 
     _savedHtmlCache = { html, filename };
 
-    document.getElementById('savedHtmlPreview').textContent = html;
-    document.getElementById('savedPreviewSection').style.display = 'block';
-    document.getElementById('savedPreviewSection').scrollIntoView({ behavior: 'smooth' });
+    // Tampilkan preview section
+    const previewSection = document.getElementById('savedPreviewSection');
+    const previewMode = document.getElementById('savedPreviewMode');
+    
+    previewSection.style.display = 'block';
+    
+    // Tampilkan loading dulu
+    previewMode.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div><p class="mt-2">Loading preview...</p></div>';
+    
+    // Mode Live (iframe)
+    const showLive = () => {
+      previewMode.innerHTML = `
+        <div class="preview-iframe-container">
+          <iframe class="preview-iframe" style="width: 100%; min-height: 500px; border: none; border-radius: 8px;"></iframe>
+        </div>
+      `;
+      const iframe = previewMode.querySelector('.preview-iframe');
+      iframe.srcdoc = html;
+    };
+    
+    // Mode Source (kode)
+    const showSource = () => {
+      previewMode.innerHTML = `
+        <div class="preview-source-container">
+          <pre class="bg-dark text-light p-3 rounded" style="max-height: 500px; overflow: auto; font-size: 0.85rem;">${escapeHTML(html)}</pre>
+        </div>
+      `;
+    };
+    
+    // Setup tombol mode
+    document.getElementById('btnSavedModeLive').onclick = showLive;
+    document.getElementById('btnSavedModeSource').onclick = showSource;
+    
+    // Default tampilkan Live mode
+    showLive();
+    
+    // Scroll ke preview section
+    previewSection.scrollIntoView({ behavior: 'smooth' });
 
   } catch (err) {
     alert('❌ Gagal preview: ' + err.message);
@@ -4855,6 +5174,7 @@ function wireSavedTabControls() {
     renderSavedGamesTable(filtered);
   });
 
+  // TOMBOL COPY HTML DI SPREADSHEET
   document.getElementById('btnCopySavedHTML')?.addEventListener('click', () => {
     if (!_savedHtmlCache.html) return alert('Belum ada HTML.');
     navigator.clipboard.writeText(_savedHtmlCache.html).then(() => {
