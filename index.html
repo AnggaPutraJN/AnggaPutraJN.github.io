@@ -858,7 +858,44 @@
   border-color: #3a56e8;
   transform: translateY(-2px);
 }
-  </style>
+  
+
+  /* Toast styling */
+.toast-container {
+    z-index: 9999;
+}
+
+.toast {
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+/* Modal success styling */
+.modal-success .modal-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.modal-warning .modal-header {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+}
+
+/* Code display */
+code {
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+}
+
+/* Loading spinner */
+.spinner-border {
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+</style>
 </head>
 
 <body>
@@ -995,7 +1032,7 @@
                 </div>
                 <div class="col-md-4">
                   <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
-                    <i class="bi bi-cloud-download-fill"></i> Load Cache (Ke Step 2)
+                    <i class="bi bi-cloud-download-fill"></i> Load Cache (Ke Step 3)
                   </button>
                 </div>
               </div>
@@ -1101,6 +1138,19 @@
                       <i class="bi bi-eye-fill"></i> Show Example
                     </button>
                   </div>
+
+
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+              <button id="btnPrev3" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle-fill"></i> Kembali
+              </button>
+              <button id="btnSaveGame" class="btn btn-success glow-on-hover">
+                <i class="bi bi-save-fill"></i> Simpan Data Game
+              </button>
+              <button id="btnGenerateHTML" class="btn btn-primary glow-on-hover">
+                <i class="bi bi-code-slash"></i> Generate HTML
+              </button>
+            </div>
                 </div>
               </div>
             </div>
@@ -1435,20 +1485,20 @@ function getCloudCaches() {
     }
 }
 
-  function saveGameToLocalStorage(game) {
+function saveGameToLocalStorage(game) {
     const KEY = "switch_saved_games_v1";
     const list = JSON.parse(localStorage.getItem(KEY) || "[]");
 
     const idx = list.findIndex(x => x.downloadId === game.downloadId);
     if (idx >= 0) {
-      list[idx] = game;
+        list[idx] = game;
     } else {
-      list.unshift(game);
+        list.unshift(game);
     }
 
     localStorage.setItem(KEY, JSON.stringify(list));
     return game;
-  }
+}
 
 
 function setCloudCaches(list) {
@@ -1560,39 +1610,56 @@ function saveCloudCache() {
 }
 
 function applyCloudCache(cache) {
-    // Isi gameData
-    gameData.nspCount = cache.nspCount || 0;
-    gameData.xciCount = cache.xciCount || 0;
-    gameData.nspPartCount = cache.nspPartCount || 0;
-    gameData.xciPartCount = cache.xciPartCount || 0;
-    updateSizeFieldsVisibility();
+  // Isi gameData
+  gameData.nspCount = cache.nspCount || 0;
+  gameData.xciCount = cache.xciCount || 0;
+  gameData.nspPartCount = cache.nspPartCount || 0;
+  gameData.xciPartCount = cache.xciPartCount || 0;
+  updateSizeFieldsVisibility();
 
-    gameData.cloudNSP = cache.cloudNSP || [];
-    gameData.cloudXCI = cache.cloudXCI || [];
-    gameData.cloudNSPPart = cache.cloudNSPPart || [];
-    gameData.cloudXCIPart = cache.cloudXCIPart || [];
+  gameData.cloudNSP = cache.cloudNSP || [];
+  gameData.cloudXCI = cache.cloudXCI || [];
+  gameData.cloudNSPPart = cache.cloudNSPPart || [];
+  gameData.cloudXCIPart = cache.cloudXCIPart || [];
 
-    // Isi input Step 1
-    const nspEl = document.getElementById('nspCount');
-    const xciEl = document.getElementById('xciCount');
-    const nspPartEl = document.getElementById('nspPartCount');
-    const xciPartEl = document.getElementById('xciPartCount');
+  // Isi input Step 1
+  const nspEl = document.getElementById('nspCount');
+  const xciEl = document.getElementById('xciCount');
+  const nspPartEl = document.getElementById('nspPartCount');
+  const xciPartEl = document.getElementById('xciPartCount');
 
-    if (nspEl) nspEl.value = gameData.nspCount;
-    if (xciEl) xciEl.value = gameData.xciCount;
-    if (nspPartEl) nspPartEl.value = gameData.nspPartCount;
-    if (xciPartEl) xciPartEl.value = gameData.xciPartCount;
+  if (nspEl) nspEl.value = gameData.nspCount;
+  if (xciEl) xciEl.value = gameData.xciCount;
+  if (nspPartEl) nspPartEl.value = gameData.nspPartCount;
+  if (xciPartEl) xciPartEl.value = gameData.xciPartCount;
 
-    // Render Step 2 dengan centangannya
-    generateCloudSelection();
+  // Render Step 2 (biar state cloud tetap konsisten)
+  generateCloudSelection();
 
-    // Set nama cache di input Step 2
-    const nameEl = document.getElementById('cacheName');
-    if (nameEl) nameEl.value = cache.name;
+  // Set nama cache di input Step 2
+  const nameEl = document.getElementById('cacheName');
+  if (nameEl) nameEl.value = cache.name;
 
-    // Lompat ke Step 2
+  // Validasi cepat: kalau cache cloud tidak lengkap, tetap arahkan ke Step 2
+  const ok =
+    (gameData.nspCount === 0 || (gameData.cloudNSP || []).length === gameData.nspCount) &&
+    (gameData.xciCount === 0 || (gameData.cloudXCI || []).length === gameData.xciCount) &&
+    (gameData.nspPartCount === 0 || (gameData.cloudNSPPart || []).length === gameData.nspPartCount) &&
+    (gameData.xciPartCount === 0 || (gameData.cloudXCIPart || []).length === gameData.xciPartCount);
+
+  if (!ok) {
+    showToast?.('warning', 'Cache cloud tidak lengkap. Periksa pilihan cloud di Step 2.');
     showStep(2);
+    return;
+  }
+
+  // Langsung siapkan Step 3 seperti tombol "Lanjutkan" di Step 2
+  generateLinkInputFields();
+  setupPasteFunctionality();
+  updateSizeFieldsVisibility();
+  showStep(3);
 }
+
 
 function loadCloudCacheByName(name) {
     const caches = getCloudCaches();
@@ -1602,7 +1669,8 @@ function loadCloudCacheByName(name) {
         return;
     }
     applyCloudCache(cache);
-    showToast?.('info', `Cache "${name}" dimuat. Kamu sudah di Step 2.`);
+    showToast?.('info', `Cache "${name}" dimuat. Kamu sudah di Step 3.`);
+
 }
 
 function loadCloudCacheFromStep1() {
@@ -1750,7 +1818,8 @@ function parsePasteData(text) {
   updateSizeFieldsVisibility();
 
   // Link parsing
-  const remainingLines = lines.slice(idx);
+let remainingLines = lines.slice(idx);
+
 
   const totalExpectedLinks =
     (gameData.nspCount || 0) +
@@ -1772,6 +1841,19 @@ function parsePasteData(text) {
       `(${totalExpectedAdLinks1} iklan 1 + ${totalExpectedAdLinks2} iklan 2 + ${totalExpectedOriginalLinks} asli).`;
     showWarningModal(warning);
   }
+// Warning kalau lebih (overflow)
+if (remainingLines.length > totalExpectedAllLinks) {
+  const extra = remainingLines.length - totalExpectedAllLinks;
+  const warning =
+    `Peringatan: Data memiliki ${remainingLines.length} link, melebihi kebutuhan ${totalExpectedAllLinks} link. ` +
+    `${extra} link terakhir akan diabaikan.`;
+  showWarningModal(warning);
+
+  // Potong supaya tidak geser mapping NSP/XCI/Part
+  remainingLines.splice(totalExpectedAllLinks);
+}
+
+
 
   // Ambil Original
   const originalLinks = remainingLines.slice(0, totalExpectedOriginalLinks);
@@ -2041,7 +2123,8 @@ function showWarningModal(message) {
                                 ${gameData.nspPartCount > 0 ? `<li>NSP Part: ${gameData.nspPartCount} link</li>` : ''}
                                 ${gameData.xciPartCount > 0 ? `<li>XCI Part: ${gameData.xciPartCount} link</li>` : ''}
                             </ul>
-                            <p>Total: ${gameData.nspCount + gameData.xciCount + gameData.nspPartCount + gameData.xciPartCount} link iklan + ${gameData.nspCount + gameData.xciCount + gameData.nspPartCount + gameData.xciPartCount} link asli</p>
+                            <p>Total: ${(gameData.nspCount + gameData.xciCount + gameData.nspPartCount + gameData.xciPartCount)} link iklan 1 + ${(gameData.nspCount + gameData.xciCount + gameData.nspPartCount + gameData.xciPartCount)} link iklan 2 + ${(gameData.nspCount + gameData.xciCount + gameData.nspPartCount + gameData.xciPartCount)} link asli</p>
+
                         </div>
                         <p>Silakan periksa kembali data yang dipaste atau lanjutkan dengan data yang ada.</p>
                     </div>
@@ -2115,31 +2198,30 @@ function openTelegramRegister() {
     // Paksa ke Telegram Web (versi K)
     window.open('https://web.telegram.org/k/#@indapkbot', '_blank');
 }
-        function setupEventListeners() {
-            // Step navigation
-            document.getElementById('btnNext1').addEventListener('click', nextStep1);
-            document.getElementById('btnPrev2').addEventListener('click', prevStep);
-            document.getElementById('btnNext2').addEventListener('click', nextStep2);
-            document.getElementById('btnPrev3').addEventListener('click', prevStep);
-            document.getElementById('btnSaveGame').addEventListener('click', saveGameData);
-            document.getElementById('btnGenerateHTML').addEventListener('click', generateHTML);
-            document.getElementById('btnCopyHTML').addEventListener('click', copyHTML);
-            document.getElementById('btnDownloadHTML').addEventListener('click', downloadHTML);
-            document.getElementById('btnNewGame').addEventListener('click', newGame);
-            
-            // Login
-            document.getElementById('btnLogin').addEventListener('click', loginUser);
-            document.getElementById('btnRegister').addEventListener('click', registerUser);
-            document.getElementById('btnLogout').addEventListener('click', logoutUser);
+function setupEventListeners() {
+    // Step navigation
+    document.getElementById('btnNext1').addEventListener('click', nextStep1);
+    document.getElementById('btnPrev2').addEventListener('click', prevStep);
+    document.getElementById('btnNext2').addEventListener('click', nextStep2);
+    document.getElementById('btnPrev3').addEventListener('click', prevStep);
+    document.getElementById('btnSaveGame').addEventListener('click', saveGameData);
+    document.getElementById('btnGenerateHTML').addEventListener('click', generateHTML);
+    document.getElementById('btnCopyHTML').addEventListener('click', copyHTML);
+    document.getElementById('btnDownloadHTML').addEventListener('click', downloadHTML);
+    document.getElementById('btnNewGame').addEventListener('click', newGame);
+    
+    // Login
+    document.getElementById('btnLogin').addEventListener('click', loginUser);
+    document.getElementById('btnRegister').addEventListener('click', registerUser);
+    document.getElementById('btnLogout').addEventListener('click', logoutUser);
 
-                    // Cloud Cache
-        document.getElementById('btnSaveCache')?.addEventListener('click', saveCloudCache);
-        document.getElementById('btnLoadCacheStep2')?.addEventListener('click', loadCloudCacheFromStep2);
-        document.getElementById('btnDeleteCache')?.addEventListener('click', deleteSelectedCloudCache);
-
-        document.getElementById('btnLoadCacheStep1')?.addEventListener('click', loadCloudCacheFromStep1);
-
-
+    // Cloud Cache
+    document.getElementById('btnSaveCache')?.addEventListener('click', saveCloudCache);
+    document.getElementById('btnLoadCacheStep2')?.addEventListener('click', loadCloudCacheFromStep2);
+    document.getElementById('btnDeleteCache')?.addEventListener('click', deleteSelectedCloudCache);
+    document.getElementById('btnLoadCacheStep1')?.addEventListener('click', loadCloudCacheFromStep1);
+    
+    // Paste functionality
     setTimeout(() => {
         setupPasteFunctionality();
     }, 500);
@@ -2468,152 +2550,380 @@ function createLinkSection(title, count, arrayName, clouds) {
         }
         
         // ============= PERBAIKAN FUNGSI saveGameData =============
-        async function saveGameData() {
-            // Collect game info
-            const gameName = document.getElementById('gameName').value.trim();
-            const category = document.getElementById('category').value.trim();
-            const gameId = document.getElementById('gameId').value.trim();
-            const region = document.getElementById('region').value.trim();
-            const language = document.getElementById('language').value.trim();
+async function saveGameData() {
+    // Collect game info
+    const gameName = document.getElementById('gameName').value.trim();
+    const category = document.getElementById('category').value.trim();
+    const gameId = document.getElementById('gameId').value.trim();
+    const region = document.getElementById('region').value.trim();
+    const language = document.getElementById('language').value.trim();
+    
+    if (!gameName || !category || !gameId || !region || !language) {
+        showToast('error', 'Harap isi semua field yang wajib!');
+        return;
+    }
+    
+    // Validate all links are filled
+    const allLinks = [
+      // Iklan 1
+      ...(gameData.adLinksNSP || []),
+      ...(gameData.adLinksXCI || []),
+      ...(gameData.adLinksNSPPart || []),
+      ...(gameData.adLinksXCIPart || []),
+
+      // Iklan 2
+      ...(gameData.adLinks2NSP || []),
+      ...(gameData.adLinks2XCI || []),
+      ...(gameData.adLinks2NSPPart || []),
+      ...(gameData.adLinks2XCIPart || []),
+
+      // Asli
+      ...(gameData.originalLinksNSP || []),
+      ...(gameData.originalLinksXCI || []),
+      ...(gameData.originalLinksNSPPart || []),
+      ...(gameData.originalLinksXCIPart || [])
+    ];
+
+    if (allLinks.some(link => !link.trim())) {
+        showToast('error', 'Harap isi semua link!');
+        return;
+    }
+
+    // Update gameData dengan info terbaru
+    gameData.gameInfo = {
+        nama_game: gameName,
+        ukuran_nsp: document.getElementById('nspSize').value.trim(),
+        ukuran_xci: document.getElementById('xciSize').value.trim(),
+        category: category,
+        game_id: gameId,
+        region: region,
+        language: language
+    };
+
+    try {
+        // TAMPILKAN LOADING
+        const saveBtn = document.getElementById('btnSaveGame');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+        saveBtn.disabled = true;
+
+        // Prepare form data
+        const params = new URLSearchParams();
+        params.append('action', 'saveGame');
+        params.append('nama_game', gameData.gameInfo.nama_game);
+        params.append('ukuran_nsp', gameData.gameInfo.ukuran_nsp);
+        params.append('ukuran_xci', gameData.gameInfo.ukuran_xci);
+        params.append('category', gameData.gameInfo.category);
+        params.append('game_id', gameData.gameInfo.game_id);
+        params.append('region', gameData.gameInfo.region);
+        params.append('language', gameData.gameInfo.language);
+        params.append('link_asli_nsp', JSON.stringify(gameData.originalLinksNSP));
+        params.append('link_asli_xci', JSON.stringify(gameData.originalLinksXCI));
+        params.append('link_asli_nsp_part', JSON.stringify(gameData.originalLinksNSPPart));
+        params.append('link_asli_xci_part', JSON.stringify(gameData.originalLinksXCIPart));
+        params.append('link_iklan_nsp', JSON.stringify(gameData.adLinksNSP));
+        params.append('link_iklan_xci', JSON.stringify(gameData.adLinksXCI));
+        params.append('link_iklan_nsp_part', JSON.stringify(gameData.adLinksNSPPart));
+        params.append('link_iklan_xci_part', JSON.stringify(gameData.adLinksXCIPart));
+        params.append('link_iklan2_nsp', JSON.stringify(gameData.adLinks2NSP || []));
+        params.append('link_iklan2_xci', JSON.stringify(gameData.adLinks2XCI || []));
+        params.append('link_iklan2_nsp_part', JSON.stringify(gameData.adLinks2NSPPart || []));
+        params.append('link_iklan2_xci_part', JSON.stringify(gameData.adLinks2XCIPart || []));
+        params.append('cloud_nsp', JSON.stringify(gameData.cloudNSP));
+        params.append('cloud_xci', JSON.stringify(gameData.cloudXCI));
+        params.append('cloud_nsp_part', JSON.stringify(gameData.cloudNSPPart));
+        params.append('cloud_xci_part', JSON.stringify(gameData.cloudXCIPart));
+
+        console.log('Sending data to server...');
+
+        // Kirim ke server
+        const response = await fetch(GAME_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: params.toString()
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Server response:', result);
+
+        if (result.status === 'success') {
+            // Simpan download ID
+            gameData.downloadId = result.data.download_id;
             
-            if (!gameName || !category || !gameId || !region || !language) {
-                alert('Harap isi semua field yang wajib!');
-                return;
+            // Tampilkan modal sukses dengan ID
+            showSuccessModal(
+                '✅ Game Berhasil Disimpan!',
+                gameData.gameInfo.nama_game,
+                result.data.download_id
+            );
+            
+            // Simpan ke localStorage juga
+            if (gameData.downloadId && gameData.gameInfo.nama_game) {
+                saveGameToLocalStorage({
+                    downloadId: gameData.downloadId,
+                    name: gameData.gameInfo.nama_game,
+                    region: gameData.gameInfo.region,
+                    gameId: gameData.gameInfo.game_id,
+                    updatedAt: new Date().toISOString()
+                });
             }
             
-            // Validate all links are filled
-                const allLinks = [
-                  // Iklan 1
-                  ...(gameData.adLinksNSP || []),
-                  ...(gameData.adLinksXCI || []),
-                  ...(gameData.adLinksNSPPart || []),
-                  ...(gameData.adLinksXCIPart || []),
+        } else {
+            throw new Error(result.message || 'Gagal menyimpan');
+        }
 
-                  // ✅ Iklan 2
-                  ...(gameData.adLinks2NSP || []),
-                  ...(gameData.adLinks2XCI || []),
-                  ...(gameData.adLinks2NSPPart || []),
-                  ...(gameData.adLinks2XCIPart || []),
+    } catch (error) {
+        console.error('Save error:', error);
+        
+        // Fallback: coba simpan ke localStorage dengan ID fleksibel
+        const fallbackId = 'LOCAL_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 8).toUpperCase();
+        gameData.downloadId = fallbackId;
+        
+        showFallbackModal(
+            '⚠️ Disimpan Secara Lokal',
+            gameData.gameInfo.nama_game,
+            fallbackId
+        );
+        
+        // Simpan ke localStorage
+        saveGameToLocalStorage({
+            downloadId: fallbackId,
+            name: gameData.gameInfo.nama_game,
+            region: gameData.gameInfo.region,
+            gameId: gameData.gameInfo.game_id,
+            updatedAt: new Date().toISOString()
+        });
 
-                  // Asli
-                  ...(gameData.originalLinksNSP || []),
-                  ...(gameData.originalLinksXCI || []),
-                  ...(gameData.originalLinksNSPPart || []),
-                  ...(gameData.originalLinksXCIPart || [])
-                ];
+    } finally {
+        // Kembalikan tombol ke normal
+        const saveBtn = document.getElementById('btnSaveGame');
+        saveBtn.innerHTML = '<i class="bi bi-save-fill"></i> Simpan Data Game';
+        saveBtn.disabled = false;
+    }
+}
+        
+// ============================================
+// SUCCESS MODAL FUNCTION
+// ============================================
 
-            
-            if (allLinks.some(link => !link.trim())) {
-                alert('Harap isi semua link!');
-                return;
-            }
-
-if (gameData.downloadId && gameData.gameInfo.nama_game) {
-  saveGameToLocalStorage({
-    downloadId: gameData.downloadId,
-    name: gameData.gameInfo.nama_game,
-    region: gameData.gameInfo.region,
-    gameId: gameData.gameInfo.game_id,
-    updatedAt: new Date().toISOString()
-  });
+function showSuccessModal(title, gameName, downloadId) {
+    const modalHtml = `
+        <div class="modal fade" id="saveSuccessModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-check-circle-fill"></i> ${title}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                            </div>
+                            <h4 class="text-success">${gameName}</h4>
+                            <div class="alert alert-success mt-3">
+                                <strong>Download ID (Unik):</strong>
+                                <div class="mt-2">
+                                    <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.2rem;">
+                                        ${downloadId}
+                                    </code>
+                                </div>
+                                <small class="d-block mt-2">
+                                    <i class="bi bi-shield-check"></i>
+                                    ID ini <strong>100% UNIK</strong> dan tidak akan pernah duplikat
+                                </small>
+                            </div>
+                            <p class="text-muted mt-3">
+                                ID digenerate otomatis dengan sistem anti-duplikat
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <i class="bi bi-check"></i> OK
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="copyToClipboard('${downloadId}')">
+                            <i class="bi bi-clipboard"></i> Copy ID
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Tambahkan modal
+    let modalContainer = document.getElementById('saveSuccessModalContainer');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'saveSuccessModalContainer';
+        document.body.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = modalHtml;
+    
+    // Tampilkan modal
+    const successModal = new bootstrap.Modal(document.getElementById('saveSuccessModal'));
+    successModal.show();
 }
 
+// ============================================
+// FALLBACK MODAL FUNCTION
+// ============================================
 
-            
-            gameData.gameInfo = {
-                nama_game: gameName,
-                ukuran_nsp: document.getElementById('nspSize').value.trim(),
-                ukuran_xci: document.getElementById('xciSize').value.trim(),
-                category: category,
-                game_id: gameId,
-                region: region,
-                language: language
-            };
-            
-            try {
-                // TAMPILKAN LOADING
-                const saveBtn = document.getElementById('btnSaveGame');
-                const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
-                saveBtn.disabled = true;
-                
-                // Prepare form data
-                const params = new URLSearchParams();
-                params.append('action', 'saveGame');
-                params.append('nama_game', gameData.gameInfo.nama_game);
-                params.append('ukuran_nsp', gameData.gameInfo.ukuran_nsp);
-                params.append('ukuran_xci', gameData.gameInfo.ukuran_xci);
-                params.append('category', gameData.gameInfo.category);
-                params.append('game_id', gameData.gameInfo.game_id);
-                params.append('region', gameData.gameInfo.region);
-                params.append('language', gameData.gameInfo.language);
-                params.append('link_asli_nsp', JSON.stringify(gameData.originalLinksNSP));
-                params.append('link_asli_xci', JSON.stringify(gameData.originalLinksXCI));
-                params.append('link_asli_nsp_part', JSON.stringify(gameData.originalLinksNSPPart));
-                params.append('link_asli_xci_part', JSON.stringify(gameData.originalLinksXCIPart));
-                params.append('link_iklan_nsp', JSON.stringify(gameData.adLinksNSP));
-                params.append('link_iklan_xci', JSON.stringify(gameData.adLinksXCI));
-                params.append('link_iklan_nsp_part', JSON.stringify(gameData.adLinksNSPPart));
-                params.append('link_iklan_xci_part', JSON.stringify(gameData.adLinksXCIPart));
-                                // ✅ TAMBAHAN: Link Iklan 2
-                params.append('link_iklan2_nsp', JSON.stringify(gameData.adLinks2NSP || []));
-                params.append('link_iklan2_xci', JSON.stringify(gameData.adLinks2XCI || []));
-                params.append('link_iklan2_nsp_part', JSON.stringify(gameData.adLinks2NSPPart || []));
-                params.append('link_iklan2_xci_part', JSON.stringify(gameData.adLinks2XCIPart || []));
+function showFallbackModal(title, gameName, downloadId) {
+    const modalHtml = `
+        <div class="modal fade" id="fallbackModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle-fill"></i> ${title}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h4 class="text-warning">${gameName}</h4>
+                            <div class="alert alert-warning mt-3">
+                                <p><strong>Server tidak dapat diakses</strong></p>
+                                <p>Data disimpan secara lokal di browser Anda</p>
+                                <strong>Download ID (Sementara):</strong>
+                                <div class="mt-2">
+                                    <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.1rem;">
+                                        ${downloadId}
+                                    </code>
+                                </div>
+                                <small class="d-block mt-2">
+                                    <i class="bi bi-info-circle"></i>
+                                    Data akan hilang jika cache browser dibersihkan
+                                </small>
+                            </div>
+                            <p class="text-muted mt-3">
+                                Coba simpan lagi nanti untuk mendapatkan ID permanen
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <i class="bi bi-check"></i> OK
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" onclick="copyToClipboard('${downloadId}')">
+                            <i class="bi bi-clipboard"></i> Copy ID
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Tambahkan modal
+    let modalContainer = document.getElementById('fallbackModalContainer');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'fallbackModalContainer';
+        document.body.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = modalHtml;
+    
+    // Tampilkan modal
+    const fallbackModal = new bootstrap.Modal(document.getElementById('fallbackModal'));
+    fallbackModal.show();
+}
 
-                params.append('cloud_nsp', JSON.stringify(gameData.cloudNSP));
-                params.append('cloud_xci', JSON.stringify(gameData.cloudXCI));
-                params.append('cloud_nsp_part', JSON.stringify(gameData.cloudNSPPart));
-                params.append('cloud_xci_part', JSON.stringify(gameData.cloudXCIPart));
-                
-                // ============= PERBAIKAN: Gunakan pendekatan yang benar =============
-                
-                // SOLUSI 1: Coba dengan fetch biasa dulu
-                try {
-                    console.log('Mencoba save dengan URL:', GAME_API_URL);
-                    
-                    const response = await fetch(GAME_API_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: params.toString()
-                    });
-                    
-                    console.log('Response status:', response.status);
-                    
-                    if (response.ok) {
-                        const result = await response.json();
-                        console.log('Response result:', result);
-                        
-                        if (result.status === 'success') {
-                            gameData.downloadId = result.data.download_id;
-                            alert(`✅ Game berhasil disimpan!\n\nNama Game: ${gameData.gameInfo.nama_game}\nDownload ID: ${result.data.download_id}`);
-                        } else {
-                            throw new Error(result.message || 'Gagal menyimpan');
-                        }
-                    } else {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                } catch (fetchError) {
-                    console.error('Fetch error:', fetchError);
-                    
-                    // SOLUSI 2: Coba dengan pendekatan form submit
-                    await saveWithFormSubmit(params);
-                }
-                
-            } catch (error) {
-                console.error('Save error:', error);
-                alert('❌ Gagal menyimpan game: ' + error.message);
-            } finally {
-                // Kembalikan tombol ke normal
-                const saveBtn = document.getElementById('btnSaveGame');
-                saveBtn.innerHTML = 'Simpan Data Game';
-                saveBtn.disabled = false;
-            }
+// ============================================
+// COPY TO CLIPBOARD FUNCTION
+// ============================================
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('success', '✅ Berhasil disalin ke clipboard!');
+    }).catch(err => {
+        // Fallback untuk browser lama
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showToast('success', '✅ Berhasil disalin ke clipboard!');
+        } catch (err) {
+            showToast('error', '❌ Gagal menyalin');
         }
         
+        document.body.removeChild(textArea);
+    });
+}
+
+// ============================================
+// IMPROVED TOAST FUNCTION
+// ============================================
+
+function showToast(type, message, duration = 3000) {
+    const toastId = 'toast-' + Date.now();
+    const icon = {
+        success: 'bi-check-circle-fill',
+        error: 'bi-x-circle-fill',
+        warning: 'bi-exclamation-triangle-fill',
+        info: 'bi-info-circle-fill'
+    }[type] || 'bi-info-circle-fill';
+    
+    const color = {
+        success: 'bg-success',
+        error: 'bg-danger',
+        warning: 'bg-warning',
+        info: 'bg-info'
+    }[type] || 'bg-info';
+    
+    const toastHtml = `
+        <div id="${toastId}" class="toast ${color} text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body d-flex align-items-center">
+                <i class="bi ${icon} me-2" style="font-size: 1.2rem;"></i>
+                <div class="flex-grow-1">${message}</div>
+                <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+    
+    // Tambahkan ke container
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+    }
+    
+    container.insertAdjacentHTML('beforeend', toastHtml);
+    
+    // Tampilkan toast
+    const toastEl = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastEl, {
+        delay: duration,
+        autohide: true
+    });
+    toast.show();
+    
+    // Hapus setelah selesai
+    toastEl.addEventListener('hidden.bs.toast', () => {
+        toastEl.remove();
+    });
+}
         // SOLUSI ALTERNATIF: Gunakan form submit
         async function saveWithFormSubmit(params) {
             return new Promise((resolve, reject) => {
@@ -4527,30 +4837,36 @@ async function accessOriginalLink(linkType, index) {
         
         
 function generateHTML() {
-  // pastikan data link terbaru sudah masuk ke gameData (kalau kamu punya fungsi collect, panggil di sini)
+    // pastikan data link terbaru sudah masuk ke gameData
+    if (!gameData.downloadId) {
+        showToast('warning', 'Simpan game dulu untuk mendapatkan Download ID');
+        return;
+    }
 
-  _generatedHtml = createHTMLTemplate();
+    _generatedHtml = createHTMLTemplate();
 
-  const nm = safeFilename(gameData?.gameInfo?.nama_game || 'switch-game');
-  _generatedFilename = `${nm}.html`;
+    const nm = safeFilename(gameData?.gameInfo?.nama_game || 'switch-game');
+    _generatedFilename = `${nm}_${gameData.downloadId}.html`;
 
-  // tampilkan section preview
-  const previewSection = document.getElementById('previewSection');
-  if (previewSection) previewSection.style.display = 'block';
+    // tampilkan section preview
+    const previewSection = document.getElementById('previewSection');
+    if (previewSection) previewSection.style.display = 'block';
 
-  // render preview FULL HTML dengan iframe, biar tidak kepotong
-  const preview = document.getElementById('htmlPreview');
-  if (!preview) return;
+    // render preview
+    const preview = document.getElementById('htmlPreview');
+    if (!preview) return;
 
-  preview.innerHTML = '';
-  const iframe = document.createElement('iframe');
-  iframe.style.width = '100%';
-  iframe.style.height = '650px';
-  iframe.style.border = '0';
-  iframe.style.borderRadius = '16px';
-  iframe.srcdoc = _generatedHtml;
+    preview.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '650px';
+    iframe.style.border = '0';
+    iframe.style.borderRadius = '16px';
+    iframe.srcdoc = _generatedHtml;
 
-  preview.appendChild(iframe);
+    preview.appendChild(iframe);
+    
+    showToast('success', 'HTML berhasil digenerate dengan ID: ' + gameData.downloadId);
 }
 async function copyHTML() {
   if (!_generatedHtml) {
