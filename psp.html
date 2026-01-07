@@ -28,7 +28,7 @@
             display: block;
         }
         .nav-tabs .nav-link.active {
-            background-color: #0066cc;
+            background-color: #8B00FF;
             color: white;
         }
         .link-group {
@@ -124,8 +124,8 @@
             background: #f8f9fa;
         }
         .cloud-tile.selected {
-            border-color: #0066cc;
-            background: #e7f1ff;
+            border-color: #8B00FF;
+            background: #f3e6ff;
         }
         .cloud-tile.disabled {
             opacity: 0.6;
@@ -140,16 +140,17 @@
             font-size: 0.95rem;
         }
         
-        /* Top Dropdown Bar */
+        /* Top Dropdown Bar - PSP Theme */
         .top-menu {
             display: flex;
             flex-wrap: wrap;
             gap: 14px;
             align-items: center;
             padding: 12px 10px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.35);
-            background: rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid rgba(255, 105, 180, 0.35);
+            background: linear-gradient(135deg, rgba(139, 0, 255, 0.1) 0%, rgba(255, 105, 180, 0.1) 100%);
             border-radius: 14px;
+            margin-bottom: 20px;
         }
         .menu-dd .menu-btn{
             display: inline-flex;
@@ -161,17 +162,17 @@
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #fff;
-            background: #2b2f36;
-            box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+            background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
+            box-shadow: 0 10px 24px rgba(139, 0, 255, 0.25);
             transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
         }
         .menu-dd .menu-btn:hover{
             transform: translateY(-1px);
-            box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+            box-shadow: 0 14px 30px rgba(139, 0, 255, 0.35);
             filter: brightness(1.05);
         }
         .menu-dd.show .menu-btn{
-            box-shadow: 0 0 0 2px rgba(0,255,255,0.35), 0 14px 30px rgba(0,0,0,0.45);
+            box-shadow: 0 0 0 2px rgba(255, 105, 180, 0.35), 0 14px 30px rgba(139, 0, 255, 0.45);
         }
         .menu-ico{
             width: 26px;
@@ -180,340 +181,609 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.25);
+            background: rgba(255, 255, 255, 0.25);
         }
         .menu-dd .dropdown-menu{
             margin-top: 10px;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: #1f232a;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            background: linear-gradient(135deg, #6a0080 0%, #9d00ff 100%);
+            box-shadow: 0 18px 40px rgba(139, 0, 255, 0.55);
             padding: 8px;
             min-width: 240px;
         }
         .menu-dd .dropdown-item{
-            color: rgba(255,255,255,0.92);
+            color: rgba(255, 255, 255, 0.95);
             border-radius: 10px;
             padding: 10px 12px;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: all 0.2s;
         }
         .menu-dd .dropdown-item:hover{
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 105, 180, 0.3);
             color: #fff;
+            transform: translateX(5px);
         }
         .menu-dd .dropdown-divider{
-            border-color: rgba(255,255,255,0.08);
+            border-color: rgba(255, 105, 180, 0.2);
         }
         
-        /* Warna per kategori */
-        .btn-playstation { background: linear-gradient(90deg, #00d2ff, #ff4fd8); }
-        .btn-nintendo    { background: linear-gradient(90deg, #4b5563, #9ca3af); }
-        .btn-other       { background: linear-gradient(90deg, #3b4252, #6b7280); }
-        .btn-admin       { background: linear-gradient(90deg, #ff2d95, #8b5cf6); }
-        .btn-bot         { background: linear-gradient(90deg, #00c2ff, #22c55e); }
+        /* Warna per kategori - PSP Theme */
+        .btn-playstation { background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%); }
+        .btn-nintendo    { background: linear-gradient(135deg, #4b5563 0%, #9ca3af 100%); }
+        .btn-other       { background: linear-gradient(135deg, #3b4252 0%, #6b7280 100%); }
+        .btn-admin       { background: linear-gradient(135deg, #ff2d95 0%, #8b5cf6 100%); }
+        .btn-bot         { background: linear-gradient(135deg, #00c2ff 0%, #22c55e 100%); }
         .btn-playstation, .btn-nintendo, .btn-other, .btn-admin, .btn-bot { color:#fff; }
         
-        /* PSP Specific */
-        .psp-badge {
-            background: linear-gradient(135deg, #0066cc 0%, #003366 100%);
+        /* PSP Specific Theme */
+        .psp-theme-badge {
+            background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
             color: white;
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(139, 0, 255, 0.3);
+        }
+        
+        .psp-header {
+            background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(139, 0, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .psp-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: moveBackground 20s linear infinite;
+        }
+        
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
+        }
+        
+        /* ===== MAIN TABS - PSP Style ===== */
+        .main-tab-panel {
+            display: none;
+        }
+        .main-tab-panel.active {
+            display: block;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #666;
+            font-weight: 600;
+            padding: 12px 20px;
+            transition: all 0.3s;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
+            color: white;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 -5px 15px rgba(139, 0, 255, 0.2);
+        }
+        
+        /* Saved Games Table - PSP Theme */
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(139, 0, 255, 0.05);
+        }
+        
+        .table-striped tbody tr:hover {
+            background-color: rgba(139, 0, 255, 0.1);
+            transform: translateX(5px);
+            transition: all 0.3s;
+        }
+        
+        /* Toast Container */
+        .toast-wrap {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1055;
+            max-width: 350px;
+        }
+        
+        .toast {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid #dee2e6;
+            margin-bottom: 10px;
+        }
+        
+        .toast-header {
+            background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 8px 8px 0 0;
+            color: white;
+        }
+        
+        .glow-on-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .glow-on-hover:hover {
+            box-shadow: 0 0 15px rgba(139, 0, 255, 0.5);
+        }
+        
+        .small-note {
+            font-size: 0.85rem;
+            color: #6c757d;
+            padding: 4px 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        /* Preview Iframe */
+        .preview-iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        
+        /* PSP Gradient Cards */
+        .psp-gradient-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            border: 1px solid rgba(139, 0, 255, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        
+        .psp-gradient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(139, 0, 255, 0.15);
+            border-color: #8B00FF;
+        }
+        
+        /* Step Headers with PSP Theme */
+        .card-header.psp-step-header {
+            background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 600;
+        }
+        
+        /* PSP Button Styles */
+        .btn-psp-primary {
+            background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-psp-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 0, 255, 0.3);
+        }
+        
+        /* Form Styling */
+        .form-control:focus {
+            border-color: #8B00FF;
+            box-shadow: 0 0 0 0.25rem rgba(139, 0, 255, 0.25);
+        }
+        
+        /* PSP Alert */
+        .alert-psp {
+            background: linear-gradient(135deg, rgba(139, 0, 255, 0.1) 0%, rgba(255, 105, 180, 0.1) 100%);
+            border: 1px solid rgba(139, 0, 255, 0.3);
+            border-left: 4px solid #8B00FF;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
     <div class="container mt-4">
-        <h1 class="mb-4">Generator HTML Game PSP</h1>
+        <!-- PSP Header -->
+        <div class="psp-header">
+            <h1 class="mb-3"><i class="bi bi-phone"></i> Generator HTML Game PSP</h1>
+            <p class="lead mb-0">Buat halaman download game PlayStation Portable dengan tema khas PSP</p>
+        </div>
         
         <!-- Top Dropdown Buttons -->
-                <!-- Top Dropdown Buttons -->
-<div class="top-menu mb-4">
-  <!-- PLAYSTATION -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-playstation dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-controller"></i></span>
-      PLAYSTATION
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="psvita"><i class="bi bi-caret-right-fill"></i> PS Vita</a></li>
-      <li><a class="dropdown-item" href="ps2"><i class="bi bi-caret-right-fill"></i> PS2</a></li>
-      <li><a class="dropdown-item" href="psp"><i class="bi bi-caret-right-fill"></i> PSP</a></li>
-    </ul>
-  </div>
+        <div class="top-menu">
+            <!-- PLAYSTATION -->
+            <div class="dropdown menu-dd">
+                <button class="menu-btn btn-playstation dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="menu-ico"><i class="bi bi-controller"></i></span>
+                    PLAYSTATION
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="psvita"><i class="bi bi-caret-right-fill"></i> PS Vita</a></li>
+                    <li><a class="dropdown-item" href="ps2"><i class="bi bi-caret-right-fill"></i> PS2</a></li>
+                    <li><a class="dropdown-item" href="psp" style="background: rgba(255, 105, 180, 0.3);"><i class="bi bi-caret-right-fill"></i> <strong>PSP</strong></a></li>
+                </ul>
+            </div>
 
-  <!-- NINTENDO -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-nintendo dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-nintendo-switch"></i></span>
-      NINTENDO
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="index"><i class="bi bi-caret-right-fill"></i> Generator Switch</a></li>
-      <li><a class="dropdown-item" href="sharegameswitch"><i class="bi bi-caret-right-fill"></i> Share Game Switch</a></li>
-      <li><a class="dropdown-item" href="shortingswitch"><i class="bi bi-caret-right-fill"></i> Shorting Game Switch</a></li>
-      <li><a class="dropdown-item" href="wii"><i class="bi bi-caret-right-fill"></i> Wii</a></li>
-      <li><a class="dropdown-item" href="3ds"><i class="bi bi-caret-right-fill"></i> 3DS</a></li>
-    </ul>
-  </div>
+            <!-- NINTENDO -->
+            <div class="dropdown menu-dd">
+                <button class="menu-btn btn-nintendo dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="menu-ico"><i class="bi bi-nintendo-switch"></i></span>
+                    NINTENDO
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="index"><i class="bi bi-caret-right-fill"></i> Generator Switch</a></li>
+                    <li><a class="dropdown-item" href="sharegameswitch"><i class="bi bi-caret-right-fill"></i> Share Game Switch</a></li>
+                    <li><a class="dropdown-item" href="shortingswitch"><i class="bi bi-caret-right-fill"></i> Shorting Game Switch</a></li>
+                    <li><a class="dropdown-item" href="wii"><i class="bi bi-caret-right-fill"></i> Wii</a></li>
+                    <li><a class="dropdown-item" href="3ds"><i class="bi bi-caret-right-fill"></i> 3DS</a></li>
+                </ul>
+            </div>
 
-  <!-- OTHER GAME -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-other dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-joystick"></i></span>
-      OTHER GAME
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="android"><i class="bi bi-caret-right-fill"></i> Android</a></li>
-      <li><a class="dropdown-item" href="GeneratorAndroid"><i class="bi bi-caret-right-fill"></i> Generator Android</a></li>
-      <li><a class="dropdown-item" href="GeneratorPC"><i class="bi bi-caret-right-fill"></i> Generator PC</a></li>
-    </ul>
-  </div>
+            <!-- OTHER GAME -->
+            <div class="dropdown menu-dd">
+                <button class="menu-btn btn-other dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="menu-ico"><i class="bi bi-joystick"></i></span>
+                    OTHER GAME
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="android"><i class="bi bi-caret-right-fill"></i> Android</a></li>
+                    <li><a class="dropdown-item" href="GeneratorAndroid"><i class="bi bi-caret-right-fill"></i> Generator Android</a></li>
+                    <li><a class="dropdown-item" href="GeneratorPC"><i class="bi bi-caret-right-fill"></i> Generator PC</a></li>
+                </ul>
+            </div>
 
-  <!-- ADMIN -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-admin dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-person-badge"></i></span>
-      ADMIN
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="Link2UnlockKeyAdmin"><i class="bi bi-caret-right-fill"></i> Link2Unlock Key</a></li>
-      <li><a class="dropdown-item" href="Noted2UnlockAdmin"><i class="bi bi-caret-right-fill"></i> Noted2Unlock</a></li>
-    </ul>
-  </div>
+            <!-- ADMIN -->
+            <div class="dropdown menu-dd">
+                <button class="menu-btn btn-admin dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="menu-ico"><i class="bi bi-person-badge"></i></span>
+                    ADMIN
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="Link2UnlockKeyAdmin"><i class="bi bi-caret-right-fill"></i> Link2Unlock Key</a></li>
+                    <li><a class="dropdown-item" href="Noted2UnlockAdmin"><i class="bi bi-caret-right-fill"></i> Noted2Unlock</a></li>
+                </ul>
+            </div>
 
-  <!-- BOT -->
-  <div class="dropdown menu-dd">
-    <button class="menu-btn btn-bot dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="menu-ico"><i class="bi bi-robot"></i></span>
-      BOT
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="GeneratorINDapk"><i class="bi bi-caret-right-fill"></i> Generator INDapk</a></li>
-      <li><a class="dropdown-item" href="GeneratorAPKsgi"><i class="bi bi-caret-right-fill"></i> Generator APKsgi</a></li>
-      <li><a class="dropdown-item" href="GeneratorVideo"><i class="bi bi-caret-right-fill"></i> Generator Video</a></li>
-      <li><a class="dropdown-item" href="GeneratorEmulator"><i class="bi bi-caret-right-fill"></i> Generator Emulator</a></li>
-      <li><a class="dropdown-item" href="Noted2UnlockVideo"><i class="bi bi-caret-right-fill"></i> Noted2Unlock Video</a></li>
-    </ul>
-  </div>
-</div>
-        
-        <!-- Step 1: Input Jumlah Link -->
-        <div id="step1" class="step active">
-            <div class="card">
-                <div class="card-header" style="background: linear-gradient(135deg, #0066cc 0%, #003366 100%); color: white;">
-                    <h4 class="mb-0">Step 1: Input Jumlah Link</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="isoCount" class="form-label required">Jumlah Link ISO</label>
-                            <input type="number" id="isoCount" class="form-control" min="0" value="0">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="chdCount" class="form-label required">Jumlah Link CHD</label>
-                            <input type="number" id="chdCount" class="form-control" min="0" value="0">
-                        </div>
-                    </div>
-                    <button id="btnNext1" class="btn btn-primary">Lanjutkan</button>
-                </div>
-                <div class="mt-4">
-                    <hr>
-                    <h5>Cloud Cache</h5>
-                    <div class="row g-2 align-items-center">
-                        <div class="col-md-8">
-                            <select id="cacheListStep1" class="form-select">
-                                <option value="">Tidak ada cache</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
-                                Load Cache (Ke Step 2)
-                            </button>
-                        </div>
-                    </div>
-                    <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis.</small>
-                </div>
+            <!-- BOT -->
+            <div class="dropdown menu-dd">
+                <button class="menu-btn btn-bot dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="menu-ico"><i class="bi bi-robot"></i></span>
+                    BOT
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="GeneratorINDapk"><i class="bi bi-caret-right-fill"></i> Generator INDapk</a></li>
+                    <li><a class="dropdown-item" href="GeneratorAPKsgi"><i class="bi bi-caret-right-fill"></i> Generator APKsgi</a></li>
+                    <li><a class="dropdown-item" href="GeneratorVideo"><i class="bi bi-caret-right-fill"></i> Generator Video</a></li>
+                    <li><a class="dropdown-item" href="GeneratorEmulator"><i class="bi bi-caret-right-fill"></i> Generator Emulator</a></li>
+                    <li><a class="dropdown-item" href="Noted2UnlockVideo"><i class="bi bi-caret-right-fill"></i> Noted2Unlock Video</a></li>
+                </ul>
             </div>
         </div>
         
-        <!-- Step 2: Pilih Cloud Download -->
-        <div id="step2" class="step">
-            <div class="card">
-                <div class="card-header" style="background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); color: white;">
-                    <h4 class="mb-0">Step 2: Pilih Cloud Download</h4>
-                </div>
-                <div class="card-body">
-                    <div id="cloudSelection">
-                        <!-- Akan diisi oleh JavaScript -->
+        <!-- ===== MAIN TABS ===== -->
+        <ul class="nav nav-tabs mt-3" id="mainTabs">
+            <li class="nav-item">
+                <button class="nav-link active" type="button" data-main-tab="generator">
+                    <i class="bi bi-magic"></i> Generator PSP
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" type="button" data-main-tab="saved">
+                    <i class="bi bi-collection-play"></i> Game PSP Tersimpan
+                </button>
+            </li>
+        </ul>
+        
+        <!-- ===== TAB PANELS ===== -->
+        <div id="mainTabGenerator" class="main-tab-panel active">
+            <!-- Step 1: Input Jumlah Link -->
+            <div id="step1" class="step active">
+                <div class="card psp-gradient-card">
+                    <div class="card-header psp-step-header">
+                        <h4 class="mb-0"><i class="bi bi-1-circle"></i> Step 1: Input Jumlah Link PSP</h4>
                     </div>
-                    
-                    <!-- Cloud Cache Controls -->
-                    <div class="row g-2 mb-3 align-items-center">
-                        <div class="col-md-5">
-                            <input type="text" id="cacheName" class="form-control" placeholder="Nama cache, contoh: CloudA-ISO-CHD">
+                    <div class="card-body">
+                        <div class="alert alert-psp">
+                            <i class="bi bi-info-circle"></i> 
+                            <strong>Untuk Game PSP:</strong> Masukkan jumlah link ISO dan CHD yang tersedia untuk game PSP ini.
                         </div>
-                        <div class="col-md-3 d-grid">
-                            <button id="btnSaveCache" class="btn btn-outline-success">
-                                Simpan Cache
-                            </button>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="isoCount" class="form-label required">Jumlah Link ISO <span class="psp-theme-badge">PSP Format</span></label>
+                                <input type="number" id="isoCount" class="form-control" min="0" value="0" placeholder="Misal: 3">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="chdCount" class="form-label required">Jumlah Link CHD <span class="psp-theme-badge">PSP Format</span></label>
+                                <input type="number" id="chdCount" class="form-control" min="0" value="0" placeholder="Misal: 2">
+                            </div>
                         </div>
-                        <div class="col-md-4 d-grid">
-                            <button id="btnDeleteCache" class="btn btn-outline-danger">
-                                Hapus Cache Terpilih
-                            </button>
-                        </div>
+                        <button id="btnNext1" class="btn btn-psp-primary">Lanjutkan ke Cloud <i class="bi bi-arrow-right"></i></button>
                     </div>
-                    
-                    <div class="mt-3">
-                        <button id="btnPrev2" class="btn btn-secondary">Kembali</button>
-                        <button id="btnNext2" class="btn btn-primary">Lanjutkan</button>
+                    <div class="card-footer bg-transparent">
+                        <hr>
+                        <h5><i class="bi bi-cloud-arrow-down"></i> Cloud Cache PSP</h5>
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-8">
+                                <select id="cacheListStep1" class="form-select">
+                                    <option value="">Tidak ada cache PSP</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-cloud-download"></i> Load Cache PSP
+                                </button>
+                            </div>
+                        </div>
+                        <small class="text-muted">Load cache PSP akan mengisi Step 1 dan Step 2 otomatis, langsung ke Step 3.</small>
                     </div>
                 </div>
             </div>
-        </div>
+            
+            <!-- Step 2: Pilih Cloud Download -->
+            <div id="step2" class="step">
+                <div class="card psp-gradient-card">
+                    <div class="card-header psp-step-header" style="background: linear-gradient(135deg, #6a0080 0%, #9d00ff 100%);">
+                        <h4 class="mb-0"><i class="bi bi-2-circle"></i> Step 2: Pilih Cloud Download PSP</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="cloudSelection">
+                            <!-- Akan diisi oleh JavaScript -->
+                        </div>
+                        
+                        <!-- Cloud Cache Controls -->
+                        <div class="row g-2 mb-3 align-items-center">
+                            <div class="col-md-5">
+                                <input type="text" id="cacheName" class="form-control" placeholder="Nama cache PSP, contoh: PSP-CloudA-ISO-CHD">
+                            </div>
+                            <div class="col-md-3 d-grid">
+                                <button id="btnSaveCache" class="btn btn-outline-success">
+                                    <i class="bi bi-cloud-upload"></i> Simpan Cache
+                                </button>
+                            </div>
+                            <div class="col-md-4 d-grid">
+                                <button id="btnDeleteCache" class="btn btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Hapus Cache
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button id="btnPrev2" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</button>
+                            <button id="btnNext2" class="btn btn-psp-primary">Lanjutkan ke Input Game <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 3: Input Data Game -->
+            <div id="step3" class="step">
+                <div class="card psp-gradient-card">
+                    <div class="card-header psp-step-header" style="background: linear-gradient(135deg, #FF69B4 0%, #ff8ec6 100%);">
+                        <h4 class="mb-0"><i class="bi bi-3-circle"></i> Step 3: Input Data Game PSP</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Paste Text Area -->
+                        <div class="mb-4">
+                            <div class="card border-primary">
+                                <div class="card-header" style="background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%); color: white;">
+                                    <h5 class="mb-0"><i class="bi bi-clipboard-data"></i> Quick Paste PSP</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle"></i> 
+                                        <strong>Instruksi Khusus PSP:</strong> Paste data game PSP dalam format berikut:
+                                        <ul class="mb-2 mt-2">
+                                            <li>Baris 1: <span class="psp-theme-badge">Nama Game PSP</span></li>
+                                            <li>Baris 3: Ukuran Game ISO</li>
+                                            <li>Baris 2: Ukuran Game CHD</li>
+                                            <li>Baris 4: <span class="psp-theme-badge">Category PSP</span></li>
+                                            <li>Baris 5: <span class="psp-theme-badge">Language PSP</span></li>
+                                            <li>Baris 6-...: <strong>Link Asli PSP</strong></li>
+                                            <li>Baris berikutnya: <strong>Link Iklan 1 PSP</strong></li>
+                                            <li>Baris terakhir: <strong>Link Iklan 2 PSP</strong></li>
+                                        </ul>
+                                        <strong class="text-danger">URUTAN PENTING:</strong> Link Asli → Link Iklan 1 → Link Iklan 2
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="bi bi-clipboard-plus"></i> Paste Data Game PSP
+                                            <span class="psp-theme-badge" id="pasteStatus" style="display: none;">Data PSP berhasil diparse!</span>
+                                        </label>
+                                        <textarea class="form-control" id="pasteArea" rows="8" 
+                                                  placeholder="Paste data game PSP disini...
+Contoh:
+God of War: Chains of Olympus
+1.45 GB
+2.05 GB
+Action Adventure
+USA
+https://drive.google.com/file/d/.../view?usp=sharing
+https://www.mediafire.com/file/.../[PSP]+God+of+War.ISO/file
+...
+https://sfl.gl/kdJj
+https://sfl.gl/987B8T
+...
+http://link.indapk.com/adcMqDr
+http://link.indapk.com/og99VR
+..."></textarea>
+                                        <div class="form-text">Paste semua data PSP sekaligus, sistem akan otomatis mengisi form.</div>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2">
+                                        <button id="btnParseData" class="btn btn-psp-primary">
+                                            <i class="bi bi-magic"></i> Parse & Auto Fill PSP
+                                        </button>
+                                        <button id="btnClearPaste" class="btn btn-secondary">
+                                            <i class="bi bi-trash"></i> Clear
+                                        </button>
+                                        <button id="btnShowExample" class="btn btn-info">
+                                            <i class="bi bi-eye"></i> Contoh PSP
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Manual Input Form -->
+                        <div class="mb-4">
+                            <h5><i class="bi bi-pencil-square"></i> Manual Input PSP</h5>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="gameName" class="form-label required">Nama Game PSP <span class="psp-theme-badge">PSP</span></label>
+                                    <input type="text" id="gameName" class="form-control" placeholder="Contoh: God of War: Chains of Olympus">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="chdSize" class="form-label">Ukuran Game CHD PSP</label>
+                                    <input type="text" id="chdSize" class="form-control" placeholder="Contoh: 2.05 GB">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="isoSize" class="form-label">Ukuran Game ISO PSP</label>
+                                    <input type="text" id="isoSize" class="form-control" placeholder="Contoh: 1.45 GB">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label required">Category PSP</label>
+                                    <input type="text" id="category" class="form-control" placeholder="Contoh: Action Adventure">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="language" class="form-label required">Language PSP</label>
+                                    <input type="text" id="language" class="form-control" placeholder="Contoh: USA">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Input Link Asli -->
+                        <div class="mt-4">
+                            <h5><i class="bi bi-link"></i> Link Asli PSP</h5>
+                            <div id="originalLinksInput">
+                                <!-- Akan diisi oleh JavaScript -->
+                            </div>
+                        </div>
+                        
+
+                        <!-- Input Link Iklan 1 -->
+                        <div class="mt-4">
+                            <h5><i class="bi bi-link-45deg"></i> Link Iklan 1 PSP (INDapk Short)</h5>
+                            <div id="adLinksInput">
+                                <!-- Akan diisi oleh JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <!-- Input Link Iklan 2 -->
+                        <div class="mt-4">
+                            <h5><i class="bi bi-link"></i> Link Iklan 2 PSP (Semawur Short)</h5>
+                            <div id="adLinks2Input">
+                                <!-- Akan diisi oleh JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button id="btnPrev3" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Kembali
+                            </button>
+                            <button id="btnSaveGame" class="btn btn-success">
+                                <i class="bi bi-save"></i> Simpan Game PSP
+                            </button>
+                            <button id="btnGenerateHTML" class="btn btn-psp-primary">
+                                <i class="bi bi-code-slash"></i> Generate HTML PSP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview HTML -->
+            <div id="previewSection" class="mt-4" style="display: none;">
+                <div class="card psp-gradient-card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #FF69B4 0%, #ff8ec6 100%); color: white;">
+                        <h4 class="mb-0"><i class="bi bi-eye"></i> Preview HTML PSP</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="preview-container" id="htmlPreview"></div>
+                        <div class="d-grid gap-2 d-md-flex mt-3">
+                            <button id="btnCopyHTML" class="btn btn-psp-primary"><i class="bi bi-clipboard"></i> Copy HTML PSP</button>
+                            <button id="btnDownloadHTML" class="btn btn-success"><i class="bi bi-download"></i> Download HTML PSP</button>
+                            <button id="btnNewGame" class="btn btn-secondary"><i class="bi bi-plus-circle"></i> Game PSP Baru</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- /#mainTabGenerator -->
         
-        <!-- Step 3: Input Data Game -->
-        <div id="step3" class="step">
-            <div class="card">
-                <div class="card-header" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
-                    <h4 class="mb-0">Step 3: Input Data Game PSP</h4>
+        <!-- Saved Tab -->
+        <div id="mainTabSaved" class="main-tab-panel">
+            <div class="card psp-gradient-card">
+                <div class="card-header psp-step-header">
+                    <h4 class="mb-0"><i class="bi bi-collection-play"></i> Daftar Game PSP Tersimpan</h4>
                 </div>
                 <div class="card-body">
-                    <!-- Paste Text Area -->
-                    <div class="mb-4">
-                        <div class="card border-primary">
-                            <div class="card-header" style="background: linear-gradient(135deg, #0066cc 0%, #003366 100%); color: white;">
-                                <h5 class="mb-0"><i class="bi bi-clipboard-data"></i> Quick Paste (Copy-Paste Data PSP)</h5>
+                    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                        <div class="flex-grow-1">
+                            <input type="text" id="savedSearch" class="form-control" placeholder="🔍 Cari game PSP: nama game, download id" />
+                        </div>
+                        <button id="btnRefreshSaved" class="btn btn-psp-primary">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </button>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead style="background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%); color: white;">
+                                <tr>
+                                    <th style="width:120px;">Download ID</th>
+                                    <th>Nama Game PSP</th>
+                                    <th style="width:140px;">Language</th>
+                                    <th style="width:160px;">Updated</th>
+                                    <th style="width:280px;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="savedGamesBody">
+                                <tr><td colspan="5" class="text-muted text-center py-4">Belum ada data game PSP.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Preview dengan tampilan PSP -->
+                    <div id="savedPreviewSection" class="mt-3" style="display:none;">
+                        <div class="card psp-gradient-card">
+                            <div class="card-header" style="background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%); color: white; display: flex; justify-content: space-between; align-items: center;">
+                                <h4 class="mb-0"><i class="bi bi-eye-fill"></i> Preview HTML PSP</h4>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-light" id="btnSavedModeLive">
+                                        <i class="bi bi-eye"></i> Live
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-light" id="btnSavedModeSource">
+                                        <i class="bi bi-code-slash"></i> Source
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
-                                <div class="alert alert-info">
-                                    <i class="bi bi-info-circle"></i> 
-                                    <strong>Instruksi:</strong> Paste seluruh data game PSP dalam format berikut:
-                                    <ul class="mb-2 mt-2">
-                                        <li>Baris 1: Nama Game</li>
-                                        <li>Baris 2: Ukuran Game CHD</li>
-                                        <li>Baris 3: Ukuran Game ISO</li>
-                                        <li>Baris 4: Category</li>
-                                        <li>Baris 5: Language</li>
-                                        <li>Baris 6-...: Link Iklan (sesuai jumlah yang diinput di Step 1)</li>
-                                        <li>Baris terakhir: Link Asli (sesuai jumlah yang diinput di Step 1)</li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="bi bi-clipboard-plus"></i> Paste Data Game PSP
-                                        <span class="badge bg-success" id="pasteStatus" style="display: none;">Data berhasil diparse!</span>
-                                    </label>
-                                    <textarea class="form-control" id="pasteArea" rows="8" 
-                                              placeholder="Paste data game PSP disini...
-Contoh:
-Eiyuu Densetsu: Sora no Kiseki SC Evolution
-2.27 GB
-4.04 GB
-Action RPG
-JAPAN+English Patched
-http://link.indapk.com/IZivZa4
-http://link.indapk.com/FsTh2OSP
-... dan seterusnya
-https://drive.google.com/file/d/1Sq26o5XFsFgLz9U37mXXlTITaGiVW4PB/view?usp=sharing
-https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sora+no+Kiseki+the+3rd+Evolution+(English+v1.0)(PCSG00490)[NoNpDrm].zip/file"></textarea>
-                                    <div class="form-text">Paste semua data sekaligus, sistem akan otomatis mengisi form</div>
-                                </div>
-                                
-                                <div class="d-flex gap-2">
-                                    <button id="btnParseData" class="btn btn-primary">
-                                        <i class="bi bi-magic"></i> Parse & Auto Fill
-                                    </button>
-                                    <button id="btnClearPaste" class="btn btn-secondary">
-                                        <i class="bi bi-trash"></i> Clear
-                                    </button>
-                                    <button id="btnShowExample" class="btn btn-info">
-                                        <i class="bi bi-eye"></i> Show Example
-                                    </button>
+                                <div id="savedPreviewMode" class="preview-container"></div>
+                                <div class="d-flex gap-2 flex-wrap mt-3">
+                                    <button id="btnCopySavedHTML" class="btn btn-psp-primary"><i class="bi bi-clipboard-check-fill"></i> Copy HTML PSP</button>
+                                    <button id="btnDownloadSavedHTML" class="btn btn-success"><i class="bi bi-download"></i> Download HTML PSP</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Manual Input Form -->
-                    <div class="mb-4">
-                        <h5><i class="bi bi-pencil-square"></i> Manual Input</h5>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label for="gameName" class="form-label required">Nama Game</label>
-                                <input type="text" id="gameName" class="form-control" placeholder="Contoh: Eiyuu Densetsu: Sora no Kiseki SC Evolution">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="chdSize" class="form-label">Ukuran Game CHD</label>
-                                <input type="text" id="chdSize" class="form-control" placeholder="Contoh: 2.27 GB">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="isoSize" class="form-label">Ukuran Game ISO</label>
-                                <input type="text" id="isoSize" class="form-control" placeholder="Contoh: 4.04 GB">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="category" class="form-label required">Category</label>
-                                <input type="text" id="category" class="form-control" placeholder="Contoh: Action RPG">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="language" class="form-label required">Language</label>
-                                <input type="text" id="language" class="form-control" placeholder="Contoh: JAPAN+English Patched">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Input Link Iklan -->
-                    <div class="mt-4">
-                        <h5><i class="bi bi-link-45deg"></i> Link Iklan</h5>
-                        <div id="adLinksInput">
-                            <!-- Akan diisi oleh JavaScript -->
-                        </div>
-                    </div>
-                    
-                    <!-- Input Link Asli -->
-                    <div class="mt-4">
-                        <h5><i class="bi bi-link"></i> Link Asli</h5>
-                        <div id="originalLinksInput">
-                            <!-- Akan diisi oleh JavaScript -->
-                        </div>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <button id="btnPrev3" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Kembali
-                        </button>
-                        <button id="btnSaveGame" class="btn btn-success">
-                            <i class="bi bi-save"></i> Simpan Data Game PSP
-                        </button>
-                        <button id="btnGenerateHTML" class="btn btn-primary">
-                            <i class="bi bi-code-slash"></i> Generate HTML
-                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Preview HTML -->
-        <div id="previewSection" class="mt-4" style="display: none;">
-            <div class="card">
-                <div class="card-header bg-warning">
-                    <h4 class="mb-0">Preview HTML</h4>
-                </div>
-                <div class="card-body">
-                    <div class="preview-container" id="htmlPreview"></div>
-                    <button id="btnCopyHTML" class="btn btn-primary mt-3">Copy HTML</button>
-                    <button id="btnDownloadHTML" class="btn btn-success mt-3">Download HTML</button>
-                    <button id="btnNewGame" class="btn btn-secondary mt-3">Buat Game Baru</button>
-                </div>
-            </div>
-        </div>
+        </div> <!-- /#mainTabSaved -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -531,6 +801,8 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             cloudCHD: [],
             adLinksISO: [],
             adLinksCHD: [],
+            adLinks2ISO: [],  // Link Iklan 2 untuk ISO
+            adLinks2CHD: [],  // Link Iklan 2 untuk CHD
             originalLinksISO: [],
             originalLinksCHD: [],
             gameInfo: {},
@@ -538,6 +810,16 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
         };
         
         let currentUser = null;
+        const exportOptions = {
+            includeAd2: true // Generator boleh pakai Link Iklan 2
+        };
+
+        // Cache preview spreadsheet
+        let _savedHtmlCache = { html: '', filename: '' };
+        let _mainTabsInited = false;
+        let _savedGamesCache = [];
+        let _generatedHtml = '';
+        let _generatedFilename = 'psp-game.html';
         
         // Cloud options untuk PSP
         const CLOUD_OPTIONS = [
@@ -553,9 +835,14 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
         document.addEventListener('DOMContentLoaded', function() {
             refreshCloudCacheUI();
             setupEventListeners();
+            initMainTabs();
+            wireSavedTabControls();
             setTimeout(() => {
                 setupPasteFunctionality();
             }, 500);
+            
+            // Add PSP theme class to body
+            document.body.classList.add('psp-theme');
         });
         
         // ===================== CLOUD CACHE =====================
@@ -582,13 +869,13 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             
             const opt0 = document.createElement('option');
             opt0.value = '';
-            opt0.textContent = caches.length ? 'Pilih cache' : 'Tidak ada cache';
+            opt0.textContent = caches.length ? 'Pilih cache PSP' : 'Tidak ada cache PSP';
             step1Select.appendChild(opt0);
             
             caches.forEach(c => {
                 const opt = document.createElement('option');
                 opt.value = c.name;
-                opt.textContent = `${c.name} (saved ${new Date(c.savedAt).toLocaleString()})`;
+                opt.textContent = `🎮 ${c.name} (saved ${new Date(c.savedAt).toLocaleString()})`;
                 step1Select.appendChild(opt);
             });
         }
@@ -620,13 +907,13 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
                 const cacheName = (nameEl?.value || '').trim();
                 
                 if (!cacheName) {
-                    alert('Isi nama cache dulu.');
+                    alert('Isi nama cache PSP dulu.');
                     return;
                 }
                 
                 const total = (gameData.isoCount || 0) + (gameData.chdCount || 0);
                 if (total === 0) {
-                    alert('Isi Step 1 dulu (jumlah link).');
+                    alert('Isi Step 1 dulu (jumlah link PSP).');
                     return;
                 }
                 
@@ -646,7 +933,7 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
                 };
                 
                 if (existingIndex >= 0) {
-                    const ok = confirm(`Cache "${cacheName}" sudah ada. Timpa?`);
+                    const ok = confirm(`Cache PSP "${cacheName}" sudah ada. Timpa?`);
                     if (!ok) return;
                     caches[existingIndex] = payload;
                 } else {
@@ -655,45 +942,50 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
                 
                 setCloudCaches(caches);
                 refreshCloudCacheUI();
-                showToast('success', `Cache "${cacheName}" tersimpan.`);
+                showToast('success', `🎮 Cache PSP "${cacheName}" tersimpan.`);
             } catch (err) {
-                showToast('error', err.message || 'Gagal simpan cache.');
+                showToast('error', err.message || 'Gagal simpan cache PSP.');
             }
         }
         
-        function applyCloudCache(cache) {
-            gameData.isoCount = cache.isoCount || 0;
-            gameData.chdCount = cache.chdCount || 0;
-            gameData.cloudISO = cache.cloudISO || [];
-            gameData.cloudCHD = cache.cloudCHD || [];
-            
-            document.getElementById('isoCount').value = gameData.isoCount;
-            document.getElementById('chdCount').value = gameData.chdCount;
-            
-            generateCloudSelection();
-            
-            const nameEl = document.getElementById('cacheName');
-            if (nameEl) nameEl.value = cache.name;
-            
-            showStep(2);
-        }
+function applyCloudCache(cache) {
+    gameData.isoCount = cache.isoCount || 0;
+    gameData.chdCount = cache.chdCount || 0;
+    gameData.cloudISO = cache.cloudISO || [];
+    gameData.cloudCHD = cache.cloudCHD || [];
+    
+    document.getElementById('isoCount').value = gameData.isoCount;
+    document.getElementById('chdCount').value = gameData.chdCount;
+    
+    // tetap dibuat (biar state cloud-nya siap)
+    generateCloudSelection();
+    
+    const nameEl = document.getElementById('cacheName');
+    if (nameEl) nameEl.value = cache.name;
+    
+    // langsung siapkan Step 3
+    generateLinkInputFields();
+    showStep(3);
+}
+
         
         function loadCloudCacheByName(name) {
             const caches = getCloudCaches();
             const cache = caches.find(c => c.name === name);
             if (!cache) {
-                alert('Cache tidak ditemukan.');
+                alert('Cache PSP tidak ditemukan.');
                 return;
             }
             applyCloudCache(cache);
-            showToast('info', `Cache "${name}" dimuat. Kamu sudah di Step 2.`);
+            showToast('info', `🎮 Cache PSP "${name}" dimuat. Kamu sudah di Step 3.`);
+
         }
         
         function loadCloudCacheFromStep1() {
             const select = document.getElementById('cacheListStep1');
             const name = (select?.value || '').trim();
             if (!name) {
-                alert('Pilih cache dulu.');
+                alert('Pilih cache PSP dulu.');
                 return;
             }
             loadCloudCacheByName(name);
@@ -703,11 +995,11 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             const select = document.getElementById('cacheListStep1');
             const name = (select?.value || '').trim();
             if (!name) {
-                alert('Pilih cache dulu.');
+                alert('Pilih cache PSP dulu.');
                 return;
             }
             
-            const ok = confirm(`Hapus cache "${name}"?`);
+            const ok = confirm(`Hapus cache PSP "${name}"?`);
             if (!ok) return;
             
             const caches = getCloudCaches().filter(c => c.name !== name);
@@ -717,7 +1009,7 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             const nameEl = document.getElementById('cacheName');
             if (nameEl && nameEl.value.trim() === name) nameEl.value = '';
             
-            showToast('warning', `Cache "${name}" dihapus.`);
+            showToast('warning', `🎮 Cache PSP "${name}" dihapus.`);
         }
         
         // ===================== SETUP EVENT LISTENERS =====================
@@ -765,6 +1057,15 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             });
             document.getElementById(`step${step}`).classList.add('active');
             currentStep = step;
+            
+            // Add PSP animation to current step
+            const currentStepEl = document.getElementById(`step${step}`);
+            if (currentStepEl) {
+                currentStepEl.style.animation = 'none';
+                setTimeout(() => {
+                    currentStepEl.style.animation = 'fadeIn 0.5s ease';
+                }, 10);
+            }
         }
         
         function nextStep1() {
@@ -772,7 +1073,7 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             const chdCount = parseInt(document.getElementById('chdCount').value) || 0;
             
             if (isoCount === 0 && chdCount === 0) {
-                alert('Minimal harus ada satu link!');
+                alert('Minimal harus ada satu link untuk game PSP!');
                 return;
             }
             
@@ -790,10 +1091,10 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             container.innerHTML = '';
             
             if (gameData.isoCount > 0) {
-                container.appendChild(createCloudSection('ISO', gameData.isoCount, 'cloudISO'));
+                container.appendChild(createCloudSection('ISO PSP', gameData.isoCount, 'cloudISO'));
             }
             if (gameData.chdCount > 0) {
-                container.appendChild(createCloudSection('CHD', gameData.chdCount, 'cloudCHD'));
+                container.appendChild(createCloudSection('CHD PSP', gameData.chdCount, 'cloudCHD'));
             }
         }
         
@@ -807,7 +1108,7 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             
             section.innerHTML = `
                 <div class="cloud-section-title mb-2">
-                    <h5 class="mb-0">${title} (${count} Link)</h5>
+                    <h5 class="mb-0">${title} (${count} Link) <span class="psp-theme-badge">PSP</span></h5>
                     <small class="text-muted">
                         Dipilih: <span id="${arrayName}_selected">0</span> / ${count}
                     </small>
@@ -902,23 +1203,41 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
         
         function generateLinkInputFields() {
             const adLinksContainer = document.getElementById('adLinksInput');
+            const adLinks2Container = document.getElementById('adLinks2Input');
             const originalLinksContainer = document.getElementById('originalLinksInput');
             
+            if (!adLinksContainer || !originalLinksContainer) return;
+            
             adLinksContainer.innerHTML = '';
+            if (adLinks2Container) adLinks2Container.innerHTML = '';
             originalLinksContainer.innerHTML = '';
             
-            gameData.adLinksISO = new Array(gameData.isoCount).fill('');
-            gameData.adLinksCHD = new Array(gameData.chdCount).fill('');
-            gameData.originalLinksISO = new Array(gameData.isoCount).fill('');
-            gameData.originalLinksCHD = new Array(gameData.chdCount).fill('');
+            // Reset arrays
+            gameData.adLinksISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.adLinksCHD = new Array(gameData.chdCount || 0).fill('');
+            gameData.adLinks2ISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.adLinks2CHD = new Array(gameData.chdCount || 0).fill('');
+            gameData.originalLinksISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.originalLinksCHD = new Array(gameData.chdCount || 0).fill('');
             
+            // ISO Links
             if (gameData.isoCount > 0) {
-                adLinksContainer.appendChild(createLinkSection('ISO (Link Iklan)', gameData.isoCount, 'adLinksISO', gameData.cloudISO));
-                originalLinksContainer.appendChild(createLinkSection('ISO (Link Asli)', gameData.isoCount, 'originalLinksISO', gameData.cloudISO));
+                adLinksContainer.appendChild(createLinkSection('ISO PSP (Link Iklan 1)', gameData.isoCount, 'adLinksISO', gameData.cloudISO));
+                originalLinksContainer.appendChild(createLinkSection('ISO PSP (Link Asli)', gameData.isoCount, 'originalLinksISO', gameData.cloudISO));
+                
+                if (adLinks2Container) {
+                    adLinks2Container.appendChild(createLinkSection('ISO PSP (Link Iklan 2)', gameData.isoCount, 'adLinks2ISO', gameData.cloudISO));
+                }
             }
+            
+            // CHD Links
             if (gameData.chdCount > 0) {
-                adLinksContainer.appendChild(createLinkSection('CHD (Link Iklan)', gameData.chdCount, 'adLinksCHD', gameData.cloudCHD));
-                originalLinksContainer.appendChild(createLinkSection('CHD (Link Asli)', gameData.chdCount, 'originalLinksCHD', gameData.cloudCHD));
+                adLinksContainer.appendChild(createLinkSection('CHD PSP (Link Iklan 1)', gameData.chdCount, 'adLinksCHD', gameData.cloudCHD));
+                originalLinksContainer.appendChild(createLinkSection('CHD PSP (Link Asli)', gameData.chdCount, 'originalLinksCHD', gameData.cloudCHD));
+                
+                if (adLinks2Container) {
+                    adLinks2Container.appendChild(createLinkSection('CHD PSP (Link Iklan 2)', gameData.chdCount, 'adLinks2CHD', gameData.cloudCHD));
+                }
             }
         }
         
@@ -927,14 +1246,14 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             section.className = 'link-group mb-3';
             section.setAttribute('data-type', arrayName);
             section.innerHTML = `
-                <h6>${title}</h6>
+                <h6>${title} <span class="psp-theme-badge">PSP</span></h6>
                 ${Array(count).fill().map((_, i) => `
                     <div class="input-group mb-2">
-                        <span class="input-group-text" style="min-width: 150px;">${clouds[i]} - Link ${i + 1}</span>
+                        <span class="input-group-text" style="min-width: 150px; background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%); color: white;">${clouds[i]} - Link ${i + 1}</span>
                         <input type="text" class="form-control" 
                                data-array="${arrayName}" 
                                data-index="${i}" 
-                               placeholder="Masukkan link ${clouds[i]}"
+                               placeholder="Masukkan link ${clouds[i]} PSP"
                                value="${gameData[arrayName][i] || ''}"
                                required>
                     </div>
@@ -956,13 +1275,40 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             showStep(currentStep - 1);
         }
         
+
+   function toStr(v) {
+    return (v === null || v === undefined) ? '' : String(v);
+}
+
+function parseArray(v) {
+    if (Array.isArray(v)) return v;
+
+    if (typeof v === 'string') {
+        const s = v.trim();
+        if (!s) return [];
+        // Coba parse JSON array
+        try {
+            const parsed = JSON.parse(s);
+            if (Array.isArray(parsed)) return parsed;
+        } catch (e) {
+            // lanjut ke fallback
+        }
+        // fallback kalau ternyata string biasa
+        if (s.includes('\n')) return s.split('\n').map(x => x.trim()).filter(Boolean);
+        if (s.includes(','))  return s.split(',').map(x => x.trim()).filter(Boolean);
+        return [s];
+    }
+
+    return [];
+}
+     
         // ===================== PASTE DATA FUNCTIONS =====================
         function parsePasteDataHandler() {
             const pasteArea = document.getElementById('pasteArea');
             const pasteText = pasteArea.value.trim();
             
             if (!pasteText) {
-                showToast('warning', 'Tidak ada data untuk diparse!');
+                showToast('warning', 'Tidak ada data PSP untuk diparse!');
                 return;
             }
             
@@ -975,9 +1321,9 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
                         pasteStatus.style.display = 'none';
                     }, 3000);
                 }
-                showToast('success', 'Data berhasil diparse dan diisi otomatis!');
+                showToast('success', '🎮 Data PSP berhasil diparse dan diisi otomatis!');
             } catch (error) {
-                showToast('error', 'Gagal memparse data: ' + error.message);
+                showToast('error', 'Gagal memparse data PSP: ' + error.message);
             }
         }
         
@@ -985,7 +1331,7 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
             
             if (lines.length < 5) {
-                throw new Error('Data terlalu pendek. Minimal 5 baris untuk data dasar.');
+                throw new Error('Data PSP terlalu pendek. Minimal 5 baris untuk data dasar.');
             }
             
             // Parse data dasar (5 baris pertama)
@@ -1004,44 +1350,35 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
             document.getElementById('category').value = basicData.category;
             document.getElementById('language').value = basicData.language;
             
-            // Parse link iklan dan asli
+            // Parse link dengan urutan BARU: Link Asli -> Link Iklan 1 -> Link Iklan 2
             const remainingLines = lines.slice(5);
             
             const totalExpectedLinks = gameData.isoCount + gameData.chdCount;
-            const totalExpectedAllLinks = totalExpectedLinks * 2; // iklan + asli
+            const totalExpectedAllLinks = totalExpectedLinks * 3; // asli + iklan 1 + iklan 2
             
             if (remainingLines.length < totalExpectedAllLinks) {
-                const warning = `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedLinks} iklan + ${totalExpectedLinks} asli).`;
+                const warning = `Peringatan: Data PSP memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedLinks} asli + ${totalExpectedLinks} iklan 1 + ${totalExpectedLinks} iklan 2).`;
                 showWarningModal(warning);
             }
             
-            // Pisahkan link iklan dan asli
-            const adLinks = remainingLines.slice(0, totalExpectedLinks);
-            const originalLinks = remainingLines.slice(totalExpectedLinks, totalExpectedLinks + totalExpectedLinks);
+            // Pisahkan link dengan urutan BARU:
+            // 1. Link Asli (pertama)
+            // 2. Link Iklan 1 (kedua)
+            // 3. Link Iklan 2 (ketiga)
+            const originalLinks = remainingLines.slice(0, totalExpectedLinks);
+            const adLinks1 = remainingLines.slice(totalExpectedLinks, totalExpectedLinks * 2);
+            const adLinks2 = remainingLines.slice(totalExpectedLinks * 2, totalExpectedLinks * 3);
             
-            // Isi link iklan
+            // Reset arrays
+            gameData.originalLinksISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.originalLinksCHD = new Array(gameData.chdCount || 0).fill('');
+            gameData.adLinksISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.adLinksCHD = new Array(gameData.chdCount || 0).fill('');
+            gameData.adLinks2ISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.adLinks2CHD = new Array(gameData.chdCount || 0).fill('');
+            
+            // Isi Link Asli (ISO)
             let linkIndex = 0;
-            
-            // ISO Links
-            for (let i = 0; i < gameData.isoCount; i++) {
-                if (adLinks[linkIndex]) {
-                    gameData.adLinksISO[i] = adLinks[linkIndex];
-                }
-                linkIndex++;
-            }
-            
-            // CHD Links
-            for (let i = 0; i < gameData.chdCount; i++) {
-                if (adLinks[linkIndex]) {
-                    gameData.adLinksCHD[i] = adLinks[linkIndex];
-                }
-                linkIndex++;
-            }
-            
-            // Isi link asli
-            linkIndex = 0;
-            
-            // ISO Links
             for (let i = 0; i < gameData.isoCount; i++) {
                 if (originalLinks[linkIndex]) {
                     gameData.originalLinksISO[i] = originalLinks[linkIndex];
@@ -1049,10 +1386,44 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
                 linkIndex++;
             }
             
-            // CHD Links
+            // Isi Link Asli (CHD)
             for (let i = 0; i < gameData.chdCount; i++) {
                 if (originalLinks[linkIndex]) {
                     gameData.originalLinksCHD[i] = originalLinks[linkIndex];
+                }
+                linkIndex++;
+            }
+            
+            // Isi Link Iklan 1 (ISO)
+            linkIndex = 0;
+            for (let i = 0; i < gameData.isoCount; i++) {
+                if (adLinks1[linkIndex]) {
+                    gameData.adLinksISO[i] = adLinks1[linkIndex];
+                }
+                linkIndex++;
+            }
+            
+            // Isi Link Iklan 1 (CHD)
+            for (let i = 0; i < gameData.chdCount; i++) {
+                if (adLinks1[linkIndex]) {
+                    gameData.adLinksCHD[i] = adLinks1[linkIndex];
+                }
+                linkIndex++;
+            }
+            
+            // Isi Link Iklan 2 (ISO)
+            linkIndex = 0;
+            for (let i = 0; i < gameData.isoCount; i++) {
+                if (adLinks2[linkIndex]) {
+                    gameData.adLinks2ISO[i] = adLinks2[linkIndex];
+                }
+                linkIndex++;
+            }
+            
+            // Isi Link Iklan 2 (CHD)
+            for (let i = 0; i < gameData.chdCount; i++) {
+                if (adLinks2[linkIndex]) {
+                    gameData.adLinks2CHD[i] = adLinks2[linkIndex];
                 }
                 linkIndex++;
             }
@@ -1061,64 +1432,63 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
         }
         
         function updateLinkInputsUI() {
-            // Update link iklan
             const adLinksContainer = document.getElementById('adLinksInput');
+            const adLinks2Container = document.getElementById('adLinks2Input');
             const originalLinksContainer = document.getElementById('originalLinksInput');
-            
-            if (adLinksContainer.children.length > 0) {
-                // ISO Links
-                if (gameData.isoCount > 0) {
-                    const isoSection = adLinksContainer.querySelector('[data-type="adLinksISO"]');
-                    if (isoSection) {
-                        const inputs = isoSection.querySelectorAll('input[type="text"]');
-                        inputs.forEach((input, index) => {
-                            if (gameData.adLinksISO[index]) {
-                                input.value = gameData.adLinksISO[index];
-                            }
+
+            if (!adLinksContainer || !originalLinksContainer) return;
+
+            // ISO
+            if (gameData.isoCount > 0) {
+                const isoSection = adLinksContainer.querySelector('[data-type="adLinksISO"]');
+                if (isoSection) {
+                    isoSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.adLinksISO[index]) input.value = gameData.adLinksISO[index];
+                    });
+                }
+
+                if (adLinks2Container) {
+                    const iso2Section = adLinks2Container.querySelector('[data-type="adLinks2ISO"]');
+                    if (iso2Section) {
+                        iso2Section.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                            if (gameData.adLinks2ISO[index]) input.value = gameData.adLinks2ISO[index];
                         });
                     }
                 }
-                
-                // CHD Links
-                if (gameData.chdCount > 0) {
-                    const chdSection = adLinksContainer.querySelector('[data-type="adLinksCHD"]');
-                    if (chdSection) {
-                        const inputs = chdSection.querySelectorAll('input[type="text"]');
-                        inputs.forEach((input, index) => {
-                            if (gameData.adLinksCHD[index]) {
-                                input.value = gameData.adLinksCHD[index];
-                            }
-                        });
-                    }
+
+                const isoOriginalSection = originalLinksContainer.querySelector('[data-type="originalLinksISO"]');
+                if (isoOriginalSection) {
+                    isoOriginalSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.originalLinksISO[index]) input.value = gameData.originalLinksISO[index];
+                    });
                 }
             }
-            
-            // Update link asli
-            if (originalLinksContainer.children.length > 0) {
-                // ISO Links
-                if (gameData.isoCount > 0) {
-                    const isoSection = originalLinksContainer.querySelector('[data-type="originalLinksISO"]');
-                    if (isoSection) {
-                        const inputs = isoSection.querySelectorAll('input[type="text"]');
-                        inputs.forEach((input, index) => {
-                            if (gameData.originalLinksISO[index]) {
-                                input.value = gameData.originalLinksISO[index];
+
+            // CHD
+            if (gameData.chdCount > 0) {
+                const chdSection = adLinksContainer.querySelector('[data-type="adLinksCHD"]');
+                if (chdSection) {
+                    chdSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.adLinksCHD[index]) input.value = gameData.adLinksCHD[index];
+                    });
+                }
+
+                if (adLinks2Container) {
+                    const chd2Section = adLinks2Container.querySelector('[data-type="adLinks2CHD"]');
+                    if (chd2Section) {
+                        chd2Section.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                            if (gameData.adLinks2CHD[index]) {
+                                input.value = gameData.adLinks2CHD[index];
                             }
                         });
                     }
                 }
-                
-                // CHD Links
-                if (gameData.chdCount > 0) {
-                    const chdSection = originalLinksContainer.querySelector('[data-type="originalLinksCHD"]');
-                    if (chdSection) {
-                        const inputs = chdSection.querySelectorAll('input[type="text"]');
-                        inputs.forEach((input, index) => {
-                            if (gameData.originalLinksCHD[index]) {
-                                input.value = gameData.originalLinksCHD[index];
-                            }
-                        });
-                    }
+
+                const chdOriginalSection = originalLinksContainer.querySelector('[data-type="originalLinksCHD"]');
+                if (chdOriginalSection) {
+                    chdOriginalSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.originalLinksCHD[index]) input.value = gameData.originalLinksCHD[index];
+                    });
                 }
             }
         }
@@ -1126,30 +1496,54 @@ https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sor
         function clearPasteArea() {
             const pasteArea = document.getElementById('pasteArea');
             if (pasteArea) pasteArea.value = '';
-            showToast('info', 'Text area telah dibersihkan');
+            showToast('info', 'Text area PSP telah dibersihkan');
         }
         
         function showExampleData() {
-            const exampleText = `Eiyuu Densetsu: Sora no Kiseki SC Evolution
-2.27 GB
-4.04 GB
-Action RPG
-JAPAN+English Patched
-http://link.indapk.com/mkbnZEt3
-http://link.indapk.com/HOq6P5lD
-http://link.indapk.com/zqyFIwA5
-http://link.indapk.com/bSQdHB
-http://link.indapk.com/lLEMN
-http://link.indapk.com/U1bZY8
-https://drive.google.com/file/d/1Sq26o5XFsFgLz9U37mXXlTITaGiVW4PB/view?usp=sharing
-https://www.mediafire.com/file/5c2urqbcid8x7ep/[INDapk.com]+Eiyuu+Densetsu+-+Sora+no+Kiseki+the+3rd+Evolution+(English+v1.0)(PCSG00490)[NoNpDrm].zip/file
-https://vikingfile.com/f/HgbiX3rwNs
-https://pixeldrain.com/u/y9bJuTgZ
-https://1fichier.com/?zlyuwxvox3ey5d70v7hj
-https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20Eiyuu%20Densetsu%20-%20Sora%20no%20Kiseki%20the%203rd%20Evolution%20%28English%20v1.0%29%28PCSG00490%29%5BNoNpDrm%5D.zip`;
+            const exampleText = `God of War: Chains of Olympus
+1.45 GB
+2.05 GB
+Action Adventure
+USA
+https://drive.google.com/file/d/1h9dFcgdZEDTDD-ElGDadamRnItDSs5Me/view?usp=sharing
+https://www.mediafire.com/file/xksdur9szp2o1ve/[PSP]+God+of+War+Chains+of+Olympus.iso/file
+https://vikingfile.com/f/RxaKa1zC8V
+https://pixeldrain.com/u/XfvfLtEH
+https://1fichier.com/?3qkg51wdcaukbhox5tmx
+https://multiup.io/download/02e9ca09d6423fe09dece5adc4513f3c/[PSP]%20God%20of%20War%20Chains%20of%20Olympus.iso
+https://drive.google.com/file/d/1emBpO4FugBIxq46SkWRQOlKgTFbHWl2s/view?usp=sharing
+https://www.mediafire.com/file/izf1dns4ljcguvv/[PSP]+God+of+War+Chains+of+Olympus.chd/file
+https://vikingfile.com/f/9XHk8PUb2P
+https://pixeldrain.com/u/R8b1b1qn
+https://1fichier.com/?igvh9eqfmmtiokfk8ds5
+https://multiup.io/download/1ac348326f8df02865713c450d8e0d89/[PSP]%20God%20of%20War%20Chains%20of%20Olympus.chd
+https://sfl.gl/kdJj
+https://sfl.gl/987B8T
+https://sfl.gl/x3pyjzej
+https://sfl.gl/M1v18xiZ
+https://sfl.gl/JhQS5
+https://sfl.gl/jHS2m
+https://sfl.gl/PGTWh
+https://sfl.gl/XBArIr
+https://sfl.gl/CKXpxmtI
+https://sfl.gl/sAX5G
+https://sfl.gl/DoPP
+https://sfl.gl/VBQz
+http://link.indapk.com/adcMqDr
+http://link.indapk.com/og99VR
+http://link.indapk.com/LPTRLigr
+http://link.indapk.com/gnPShuaI
+http://link.indapk.com/MxVNzdh
+http://link.indapk.com/U8LVL
+http://link.indapk.com/pKYGCp
+http://link.indapk.com/tj4z
+http://link.indapk.com/XXtQxz1X
+http://link.indapk.com/mRGRjcX1
+http://link.indapk.com/QLPwH2
+http://link.indapk.com/G8ua`;
             
             document.getElementById('pasteArea').value = exampleText;
-            showToast('info', 'Contoh data PSP telah dimuat. Klik "Parse & Auto Fill" untuk mengisi form.');
+            showToast('info', '🎮 Contoh data game PSP telah dimuat. Klik "Parse & Auto Fill PSP" untuk mengisi form.');
         }
         
         // ===================== SAVE GAME DATA =====================
@@ -1159,19 +1553,21 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
             const language = document.getElementById('language').value.trim();
             
             if (!gameName || !category || !language) {
-                alert('Harap isi semua field yang wajib!');
+                alert('Harap isi semua field yang wajib untuk game PSP!');
                 return;
             }
             
             const allLinks = [
                 ...gameData.adLinksISO,
                 ...gameData.adLinksCHD,
+                ...gameData.adLinks2ISO,
+                ...gameData.adLinks2CHD,
                 ...gameData.originalLinksISO,
                 ...gameData.originalLinksCHD
             ];
             
             if (allLinks.some(link => !link.trim())) {
-                alert('Harap isi semua link!');
+                alert('Harap isi semua link untuk game PSP!');
                 return;
             }
             
@@ -1186,7 +1582,7 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
             try {
                 const saveBtn = document.getElementById('btnSaveGame');
                 const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+                saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan PSP...';
                 saveBtn.disabled = true;
                 
                 const params = new URLSearchParams();
@@ -1200,6 +1596,8 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
                 params.append('link_asli_chd', JSON.stringify(gameData.originalLinksCHD));
                 params.append('link_iklan_iso', JSON.stringify(gameData.adLinksISO));
                 params.append('link_iklan_chd', JSON.stringify(gameData.adLinksCHD));
+                params.append('link_iklan2_iso', JSON.stringify(gameData.adLinks2ISO || []));
+                params.append('link_iklan2_chd', JSON.stringify(gameData.adLinks2CHD || []));
                 params.append('cloud_iso', JSON.stringify(gameData.cloudISO));
                 params.append('cloud_chd', JSON.stringify(gameData.cloudCHD));
                 
@@ -1215,9 +1613,9 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
                     const result = await response.json();
                     if (result.status === 'success') {
                         gameData.downloadId = result.data.download_id;
-                        alert(`✅ Game PSP berhasil disimpan!\n\nNama Game: ${gameData.gameInfo.nama_game}\nDownload ID: ${result.data.download_id}`);
+                        alert(`🎮✅ Game PSP berhasil disimpan!\n\nNama Game: ${gameData.gameInfo.nama_game}\nDownload ID: ${result.data.download_id}`);
                     } else {
-                        throw new Error(result.message || 'Gagal menyimpan');
+                        throw new Error(result.message || 'Gagal menyimpan game PSP');
                     }
                 } else {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -1225,7 +1623,7 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
                 
             } catch (error) {
                 console.error('Save error:', error);
-                alert('❌ Gagal menyimpan game PSP: ' + error.message);
+                alert('❌🎮 Gagal menyimpan game PSP: ' + error.message);
                 
                 // Fallback: Simpan ke localStorage
                 try {
@@ -1234,29 +1632,30 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
                         savedAt: new Date().toISOString()
                     };
                     localStorage.setItem('pspGameData', JSON.stringify(gameDataToSave));
-                    gameData.downloadId = 'LOCAL_' + Date.now().toString().slice(-8);
-                    alert(`⚠️ Data disimpan secara lokal (karena server error).\n\nNama Game: ${gameData.gameInfo.nama_game}\nID Sementara: ${gameData.downloadId}`);
+                    gameData.downloadId = 'PSP_LOCAL_' + Date.now().toString().slice(-8);
+                    alert(`⚠️🎮 Data PSP disimpan secara lokal (karena server error).\n\nNama Game: ${gameData.gameInfo.nama_game}\nID Sementara: ${gameData.downloadId}`);
                 } catch (localError) {
                     console.error('Local storage error:', localError);
                 }
             } finally {
                 const saveBtn = document.getElementById('btnSaveGame');
-                saveBtn.innerHTML = 'Simpan Data Game PSP';
+                saveBtn.innerHTML = '<i class="bi bi-save"></i> Simpan Game PSP';
                 saveBtn.disabled = false;
             }
         }
         
         // ===================== GENERATE HTML =====================
-        function escapeHTML(text) {
-            if (!text) return '';
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;")
-                .replace(/\//g, "&#47;");
-        }
+function escapeHTML(text) {
+    const s = toStr(text);
+    return s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/\//g, "&#47;");
+}
+
         
         function createHTMLTemplate() {
             // Helper function untuk cloud color
@@ -1273,191 +1672,124 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
             };
             
             // Build link sections
-            let adLinksHTML = '';
+            let adLinks1HTML = '';
+            let adLinks2HTML = '';
             let originalLinksHTML = '';
             
             // ISO Links
             if (gameData.isoCount > 0) {
-                adLinksHTML += `<h4>ISO Link (Link Iklan)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-                originalLinksHTML += `<h4>ISO Link (Link Asli)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-
+                adLinks1HTML += `<h4>ISO Link PSP (Link Iklan 1)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                adLinks2HTML += `<h4>ISO Link PSP (Link Iklan 2)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                originalLinksHTML += `<h4>ISO Link PSP (Link Asli)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
                 
                 for (let i = 0; i < gameData.isoCount; i++) {
                     const cloudName = gameData.cloudISO[i] || 'Unknown';
                     const btnColor = getCloudColorClass(cloudName);
-                    const adLink = gameData.adLinksISO[i] || '#';
+                    const adLink1 = gameData.adLinksISO[i] || '#';
+                    const adLink2 = gameData.adLinks2ISO[i] || '#';
                     
-                    adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                    adLinks1HTML += `<a href="${adLink1}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                    adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
                     originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink(event,'iso',${i})">${cloudName}</button> `;
                 }
                 
-                adLinksHTML += `</div>`;
+                adLinks1HTML += `</div>`;
+                adLinks2HTML += `</div>`;
                 originalLinksHTML += `</div>`;
             }
             
             // CHD Links
             if (gameData.chdCount > 0) {
-              adLinksHTML += `<h4>CHD Link (Link Iklan)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-              originalLinksHTML += `<h4>CHD Link (Link Asli)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-
-              for (let i = 0; i < gameData.chdCount; i++) {
-                const cloudName = gameData.cloudCHD[i] || 'Unknown';
-                const btnColor = getCloudColorClass(cloudName);
-                const adLink = gameData.adLinksCHD[i] || '#';
-
-                adLinksHTML += `<a href="${adLink}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-                originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink(event,'chd',${i})">${cloudName}</button> `;
-              }
-
-              adLinksHTML += `</div>`;
-              originalLinksHTML += `</div>`;
-            }
-
-            
-            // Escape script tags untuk mencegah error
-            const escapedScript = `
-        // Configuration
-        const GAME_API_URL = "${GAMEPSP_API_URL}";
-        const USER_API_URL = "${USER_API_URL}";
-        const DOWNLOAD_ID = "${escapeHTML(gameData.downloadId)}";
-        
-        // Data links PSP
-        const cloudISO = ${JSON.stringify(gameData.cloudISO || [])};
-        const cloudCHD = ${JSON.stringify(gameData.cloudCHD || [])};
-        
-        let currentUser = null;
-        let balanceRefreshInterval = null;
-        
-        // Fungsi untuk mengakses link asli
-        async function accessOriginalLink(linkType, index) {
-            if (!currentUser) {
-                openLoginModal();
-                return;
-            }
-            
-            if (currentUser.saldo < 2000) {
-                alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
-                return;
-            }
-            
-            const button = event.target;
-            const originalText = button.getAttribute('data-original-text') || button.textContent.trim();
-            
-            const confirmed = confirm('Akses link ini akan mengurangi saldo Rp 2.000. Lanjutkan?');
-            if (!confirmed) return;
-            
-            try {
-                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-                button.classList.add('loading');
-                button.disabled = true;
+                adLinks1HTML += `<h4>CHD Link PSP (Link Iklan 1)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                adLinks2HTML += `<h4>CHD Link PSP (Link Iklan 2)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                originalLinksHTML += `<h4>CHD Link PSP (Link Asli)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
                 
-                let link = '';
-                let cloudName = '';
-                
-                switch(linkType) {
-                    case 'iso':
-                        link = originalLinksISO[index] || '';
-                        cloudName = cloudISO[index] || 'Unknown';
-                        break;
-                    case 'chd':
-                        link = originalLinksCHD[index] || '';
-                        cloudName = cloudCHD[index] || 'Unknown';
-                        break;
+                for (let i = 0; i < gameData.chdCount; i++) {
+                    const cloudName = gameData.cloudCHD[i] || 'Unknown';
+                    const btnColor = getCloudColorClass(cloudName);
+                    const adLink1 = gameData.adLinksCHD[i] || '#';
+                    const adLink2 = gameData.adLinks2CHD[i] || '#';
+                    
+                    adLinks1HTML += `<a href="${adLink1}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                    adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                    originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink(event,'chd',${i})">${cloudName}</button> `;
                 }
                 
-                if (!link) {
-                    throw new Error('Link tidak ditemukan');
-                }
-                
-                const response = await fetch(GAME_API_URL, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
-                    },
-                    body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
-                          '&link_type=' + linkType + 
-                          '&index=' + index + 
-                          '&telegram_id=' + currentUser.wa_number +
-                          '&key=' + encodeURIComponent(currentUser.key || '')
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Network response was not ok: ' + response.status);
-                }
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    currentUser.saldo = result.data.new_balance;
-                    localStorage.setItem('pspGameUser', JSON.stringify(currentUser));
-                    
-                    updateUserBalanceUI();
-                    
-                    // Buka link di tab baru
-                    window.open(result.data.link || link, '_blank');
-                    
-                    // Tampilkan notifikasi
-                    alert('✅ Link berhasil diakses! Saldo baru: Rp ' + result.data.new_balance.toLocaleString());
-                    
-                } else {
-                    throw new Error(result.message || 'Gagal mengakses link');
-                }
-                
-            } catch (error) {
-                console.error('Access link error:', error);
-                alert('❌ Gagal mengakses link: ' + error.message);
-            } finally {
-                button.innerHTML = originalText;
-                button.classList.remove('loading');
-                button.disabled = false;
+                adLinks1HTML += `</div>`;
+                adLinks2HTML += `</div>`;
+                originalLinksHTML += `</div>`;
             }
-        }
-        
-        // Fungsi lainnya (login, logout, dll) sama seperti versi Switch
-        // ... (kode login/logout sama seperti sebelumnya)`;
             
+            // Cek apakah ada Link Iklan 2
+            const hasAnyAd2 = [...(gameData.adLinks2ISO || []), ...(gameData.adLinks2CHD || [])]
+                .some(link => String(link || '').trim().length > 0);
+            
+            const includeAd2 = !!(exportOptions?.includeAd2 && hasAnyAd2 && adLinks2HTML.trim());
+            
+            // HTML Template dengan tema PSP
             return `<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rogue Galaxy - PSP Download</title>
+    <title>${escapeHTML(gameData.gameInfo.nama_game)} - PSP Download</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         :root {
-            --psp-gradient: linear-gradient(135deg, #0066cc 0%, #003366 100%);
+            --psp-gradient: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
+            --psp-dark: #6a0080;
+            --psp-light: #ff8ec6;
         }
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f9 100%);
         }
         .game-header {
             background: var(--psp-gradient);
             color: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.3);
+            box-shadow: 0 10px 30px rgba(139, 0, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .game-header::before {
+            content: "PSP";
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            font-size: 5rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
         }
         .psp-badge {
             background: var(--psp-gradient);
             color: white;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(139, 0, 255, 0.3);
         }
         .btn-cloud {
-          margin: 0;
-          transition: all 0.3s ease;
-          border-radius: 10px;
-          font-weight: 500;
-          padding: 12px 24px;
+            margin: 0;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 12px 24px;
+            border: none;
         }
-
+        .btn-cloud:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 0, 255, 0.3);
+        }
         .nav-tabs .nav-link.active {
             background: var(--psp-gradient) !important;
             color: white !important;
+            border: none !important;
         }
         .login-prompt {
             background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
@@ -1465,260 +1797,329 @@ https://multiup.io/download/053811e4744976a7a871d402647b328d/%5BINDapk.com%5D%20
             padding: 20px;
             border-radius: 12px;
         }
-
-        /* ===== FIX TAB BUTTONS (anti bentrok theme WP) ===== */
-.psp-tabs-wrap {
-  margin-top: 10px;
-}
-
-.psp-tabs {
-  border-bottom: 0 !important;
-  display: flex !important;
-  gap: 10px !important;
-  flex-wrap: wrap !important;          /* desktop: boleh turun baris */
-  padding: 10px !important;
-  background: #fff !important;
-  border-radius: 14px !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08) !important;
-  overflow: visible !important;
-}
-
-.psp-tabs .nav-item {
-  margin: 0 !important;
-}
-
-.psp-tabs .nav-link {
-  border: 0 !important;
-  border-radius: 12px !important;
-  padding: 10px 16px !important;
-  font-size: 0.95rem !important;
-  font-weight: 700 !important;
-  line-height: 1.2 !important;
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
-  white-space: nowrap !important;       /* teks tidak pecah aneh */
-}
-
-.psp-tabs .nav-link:hover {
-  filter: brightness(0.98) !important;
-}
-
-.psp-tabs .nav-link.active {
-  background: var(--psp-gradient) !important;
-  color: #fff !important;
-}
-
-/* Pastikan konten tab tidak ikut ke-hide oleh CSS theme lain */
-.psp-tab-content {
-  display: block !important;
-}
-
-/* ===== Mobile: tab jadi scroll horizontal biar tidak “hilang” ===== */
-@media (max-width: 576px) {
-  .psp-tabs {
-    flex-wrap: nowrap !important;       /* hp: jangan turun baris */
-    overflow-x: auto !important;        /* hp: geser kiri kanan */
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .psp-tabs .nav-link {
-    font-size: 0.92rem !important;
-    padding: 10px 12px !important;
-  }
-}
-
-/* ===== Perbesar font global (biar tidak “kecil” di theme WP) ===== */
-body{
-  font-size: 16px !important;
-  line-height: 1.5 !important;
-}
-
-h1{ font-size: 26px !important; }
-h3{ font-size: 20px !important; }
-p, .table, .table th, .table td{
-  font-size: 16px !important;
-}
-
-.table th, .table td{
-  padding: 10px 12px !important;
-}
-
-/* ===== Tabs default (biar konsisten) ===== */
-.psp-tabs .nav-link{
-  font-size: 0.95rem !important;
-  padding: 12px 16px !important;
-}
-
-/* ===== Mobile: jangan scroll, jangan kepotong. Pecah jadi 2 baris ===== */
-@media (max-width: 576px){
-  .psp-tabs{
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 8px !important;
-  }
-  .psp-tabs .nav-item:last-child{
-    grid-column: 1 / -1 !important; /* full width */
-  }
-}
-
-
-.psp-tabs{
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 10px !important;
-  padding: 10px !important;
-  background: #fff !important;
-  border-radius: 14px !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08) !important;
-  border: 0 !important;
-  overflow: visible !important;
-}
-
-
-  /* 2 tombol per baris */
-.psp-tabs .nav-item{
-  margin: 0 !important;
-  width: 100% !important;
-}
-  /* tombol ke-3 full width */
-  .psp-tabs .nav-item:last-child{
-    flex-basis: 100% !important;
-  }
-
-.psp-tabs .nav-link{
-  width: 100% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border: 0 !important;
-  border-radius: 12px !important;
-  padding: 12px 10px !important;
-  font-size: 0.95rem !important;
-  font-weight: 800 !important;
-  line-height: 1.15 !important;
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
-  white-space: normal !important;
-  text-align: center !important;
-}
-
-/* aktif */
-.psp-tabs .nav-link.active{
-  background: var(--psp-gradient) !important;
-  color: #fff !important;
-}
+        
+        /* Tabs styling PSP */
+        .psp-tabs-wrap {
+            margin-top: 10px;
+        }
+        .psp-tabs {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+            padding: 10px !important;
+            background: #fff !important;
+            border-radius: 14px !important;
+            box-shadow: 0 8px 22px rgba(139, 0, 255, 0.08) !important;
+            border: 0 !important;
+            overflow: visible !important;
+        }
+        .psp-tabs .nav-item {
+            margin: 0 !important;
+            width: 100% !important;
+        }
+        .psp-tabs .nav-link {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 0 !important;
+            border-radius: 12px !important;
+            padding: 15px 10px !important;
+            font-size: 1rem !important;
+            font-weight: 800 !important;
+            line-height: 1.15 !important;
+            background: linear-gradient(135deg, #f9f0ff 0%, #fff0f9 100%) !important;
+            color: var(--psp-dark) !important;
+            white-space: normal !important;
+            text-align: center !important;
+            transition: all 0.3s !important;
+        }
+        .psp-tabs .nav-link.active {
+            background: var(--psp-gradient) !important;
+            color: #fff !important;
+            box-shadow: 0 8px 20px rgba(139, 0, 255, 0.3) !important;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 576px) {
+            .psp-tabs {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+            }
+            .psp-tabs .nav-item:last-child {
+                grid-column: 1 / -1 !important;
+            }
+            .game-header::before {
+                font-size: 3rem;
+                right: 10px;
+            }
+        }
+        
+        /* Ad note banner PSP */
+        .ad-note-banner {
+            background: linear-gradient(135deg, #f3e6ff 0%, #ffe6f4 100%);
+            border: 2px solid #8B00FF;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .ad-note-pill {
+            background: var(--psp-gradient);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 700;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(139, 0, 255, 0.2);
+        }
+        .ad-note-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .ad-note-box {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        /* Payment modal PSP */
+        .modal-icon-lg {
+            font-size: 3rem;
+            display: block;
+            margin: 0 auto 15px;
+            color: #8B00FF;
+        }
+        .btn-copy-success {
+            background-color: #198754 !important;
+            color: white !important;
+        }
+        
+        /* PSP Specific Styles */
+        .psp-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid rgba(139, 0, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(139, 0, 255, 0.1);
+            transition: all 0.3s;
+        }
+        .psp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(139, 0, 255, 0.15);
+        }
+        .psp-card-header {
+            background: var(--psp-gradient);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 700;
+        }
+        
+        /* PSP Button */
+        .btn-psp {
+            background: var(--psp-gradient);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .btn-psp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 0, 255, 0.3);
+            color: white;
+        }
+        
+        /* PSP Table */
+        .table-psp tbody tr:nth-of-type(odd) {
+            background-color: rgba(139, 0, 255, 0.05);
+        }
+        .table-psp tbody tr:hover {
+            background-color: rgba(139, 0, 255, 0.1);
+        }
+        
+        /* PSP Progress */
+        .psp-progress {
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%);
+        }
+        
+        /* PSP Alert */
+        .alert-psp {
+            background: linear-gradient(135deg, rgba(139, 0, 255, 0.1) 0%, rgba(255, 105, 180, 0.1) 100%);
+            border: 1px solid rgba(139, 0, 255, 0.3);
+            border-left: 4px solid #8B00FF;
+            border-radius: 8px;
+            color: #6a0080;
+        }
     </style>
 </head>
 <body>
     <div class="container mt-4">
         <!-- User Info -->
         <div id="userHeader" class="user-info-box mb-3" style="display: none;">
-            <div>
+            <div class="psp-card p-3">
                 <div>
-                    <strong>Login sebagai:</strong> <span id="loggedUserName"></span> |
-                    <strong>Saldo:</strong> Rp <span id="loggedUserBalance"></span> |
-                    <strong>ID:</strong> <span id="loggedUserId"></span>
+                    <strong><i class="bi bi-person-circle"></i> Login sebagai:</strong> <span id="loggedUserName"></span> |
+                    <strong><i class="bi bi-wallet2"></i> Saldo:</strong> Rp <span id="loggedUserBalance"></span> |
+                    <strong><i class="bi bi-key"></i> ID:</strong> <span id="loggedUserId"></span>
                 </div>
                 <div class="mt-2 d-flex gap-2 flex-wrap">
                     <a class="btn btn-success btn-sm" href="https://indapk.com/topup.html" target="_blank" rel="noopener">
-                        Top Up
+                        <i class="bi bi-arrow-up-circle"></i> Top Up
                     </a>
-                    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+                    <button class="btn btn-danger btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
                 </div>
             </div>
         </div>
         
         <!-- Game Header -->
         <div class="game-header rounded p-4 mb-4">
-            <h1>${escapeHTML(gameData.gameInfo.nama_game)} <span class="psp-badge">PSP</span></h1>
-            <p class="mb-0">Playstation Portable Game Download</p>
+            <h1 class="position-relative z-1">${escapeHTML(gameData.gameInfo.nama_game)} <span class="psp-badge">PLAYSTATION PORTABLE</span></h1>
+            <p class="mb-0 position-relative z-1">🎮 PlayStation Portable Game Download</p>
         </div>
         
         <!-- Tabs -->
-<div class="psp-tabs-wrap">
-  <ul class="nav nav-tabs psp-tabs" id="gameTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="details-tab"
-        data-bs-toggle="tab" data-bs-target="#tabDetails"
-        type="button" role="tab" aria-controls="tabDetails" aria-selected="true">
-        Detail Game
-      </button>
-    </li>
-
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="adlinks-tab"
-        data-bs-toggle="tab" data-bs-target="#tabAdLinks"
-        type="button" role="tab" aria-controls="tabAdLinks" aria-selected="false">
-        Link with ads (Link Iklan)
-      </button>
-    </li>
-
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="original-tab"
-        data-bs-toggle="tab" data-bs-target="#tabOriginalLinks"
-        type="button" role="tab" aria-controls="tabOriginalLinks" aria-selected="false">
-        Ad-free link (Tanpa Iklan)
-      </button>
-    </li>
-  </ul>
-
-
-<div class="tab-content border border-top-0 p-3" id="gameTabContent">
-  <div class="tab-pane fade show active" id="tabDetails" role="tabpanel" aria-labelledby="details-tab">
-    <h3>Detail Game PSP</h3>
-    <div class="row">
-      <div class="col-md-6">
-        <table class="table">
-          <tr><th>Nama Game:</th><td>${escapeHTML(gameData.gameInfo.nama_game)}</td></tr>
-          <tr><th>Ukuran CHD:</th><td>${escapeHTML(gameData.gameInfo.ukuran_chd || '-')}</td></tr>
-          <tr><th>Ukuran ISO:</th><td>${escapeHTML(gameData.gameInfo.ukuran_iso || '-')}</td></tr>
-        </table>
-      </div>
-      <div class="col-md-6">
-        <table class="table">
-          <tr><th>Category:</th><td>${escapeHTML(gameData.gameInfo.category)}</td></tr>
-          <tr><th>Language:</th><td>${escapeHTML(gameData.gameInfo.language)}</td></tr>
-        </table>
-      </div>
-
-            <div class="mt-3 text-center">
-                <a href="https://indapk.com/requestgame.html"
-                   target="_blank" rel="noopener"
-                   class="btn btn-success">
-                    <i class="bi bi-controller"></i> Request Game
-                </a>
+        <div class="psp-tabs-wrap">
+            <ul class="nav nav-tabs psp-tabs" id="gameTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="details-tab"
+                        data-bs-toggle="tab" data-bs-target="#tabDetails"
+                        type="button" role="tab" aria-controls="tabDetails" aria-selected="true">
+                        <i class="bi bi-info-circle me-2"></i>Detail Game PSP
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="adlinks-tab"
+                        data-bs-toggle="tab" data-bs-target="#tabAdLinks"
+                        type="button" role="tab" aria-controls="tabAdLinks" aria-selected="false">
+                        <i class="bi bi-link-45deg me-2"></i>Link dengan Iklan
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="original-tab"
+                        data-bs-toggle="tab" data-bs-target="#tabOriginalLinks"
+                        type="button" role="tab" aria-controls="tabOriginalLinks" aria-selected="false">
+                        <i class="bi bi-download me-2"></i>Link Tanpa Iklan
+                    </button>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="tab-content border border-top-0 p-3" id="gameTabContent">
+            <div class="tab-pane fade show active" id="tabDetails" role="tabpanel" aria-labelledby="details-tab">
+                <h3 class="text-psp-dark mb-4">📋 Detail Game PSP</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="psp-card p-3 mb-3">
+                            <table class="table table-psp">
+                                <tr><th>Nama Game:</th><td>${escapeHTML(gameData.gameInfo.nama_game)}</td></tr>
+                                <tr><th>Ukuran CHD:</th><td>${escapeHTML(gameData.gameInfo.ukuran_chd || '-')}</td></tr>
+                                <tr><th>Ukuran ISO:</th><td>${escapeHTML(gameData.gameInfo.ukuran_iso || '-')}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="psp-card p-3 mb-3">
+                            <table class="table table-psp">
+                                <tr><th>Category:</th><td>${escapeHTML(gameData.gameInfo.category)}</td></tr>
+                                <tr><th>Language:</th><td>${escapeHTML(gameData.gameInfo.language)}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <a href="https://indapk.com/requestgame.html"
+                           target="_blank" rel="noopener"
+                           class="btn btn-psp">
+                            <i class="bi bi-controller me-2"></i> Request Game PSP
+                        </a>
+                    </div>
+                </div>
             </div>
+            
+            <div class="tab-pane fade" id="tabAdLinks" role="tabpanel" aria-labelledby="adlinks-tab">
+                <h3 class="text-psp-dark mb-4">🔗 Link Dengan Iklan ! (Link With Ads !)</h3>
+                
+                <!-- NOTE (Banner) -->
+                <div class="ad-note-banner mb-3">
+                    <div class="content">
+                        <div class="ad-note-pill">
+                            <i class="bi bi-lightbulb"></i> Tips PSP
+                        </div>
+                        <div class="ad-note-grid">
+                            <div class="ad-note-box">
+                                <div class="fw-bold mb-1">Indonesia</div>
+                                <div>Gunakan Semawur jika susah lewati INDapk Short.</div>
+                            </div>
+                            <div class="ad-note-box">
+                                <div class="fw-bold mb-1">English</div>
+                                <div>Use Ad Semawur if you have trouble getting past INDapk Short.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CARD: LINK IKLAN 1 (UTAMA) -->
+                <div class="psp-card mb-4">
+                    <div class="psp-card-header d-flex align-items-center justify-content-between p-3">
+                        <span><i class="bi bi-star-fill"></i> INDapk Short</span>
+                        <span class="badge bg-light text-dark">Utama PSP</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-muted mb-2">
+                            Gunakan ini. Jika sulit lewat iklannya, pakai Link Semawur.
+                        </div>
+                        ${adLinks1HTML}
+                    </div>
+                </div>
+                
+                <!-- CARD: LINK IKLAN 2 (ALTERNATIF) -->
+                ${includeAd2 ? `
+                <div class="psp-card mb-3">
+                    <div class="card-header bg-secondary text-white d-flex align-items-center justify-content-between">
+                        <span><i class="bi bi-link-45deg"></i> Semawurt Short</span>
+                        <span class="badge bg-light text-dark">Alternatif PSP</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-muted mb-2">
+                            Jika Link INDapk Short sulit dilewati, gunakan Link Semawur di bawah.
+                        </div>
+                        ${adLinks2HTML}
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+            
+            <div class="tab-pane fade" id="tabOriginalLinks" role="tabpanel" aria-labelledby="original-tab">
+                <h3 class="text-psp-dark mb-4">🎮 Link Download Tanpa Iklan PSP</h3>
+                
+                <div class="login-prompt mb-3" id="loginPrompt">
+                    <p class="mb-2">
+                        <strong>⚠️ Perhatian PSP:</strong>
+                        Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
+                        Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
+                    </p>
+                    <button class="btn btn-psp" onclick="openLoginModal()"><i class="bi bi-telegram me-2"></i>Login dengan Telegram</button>
+                </div>
+                
+                <div id="originalLinksContent" style="display: none;">
+                    ${originalLinksHTML}
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="tab-pane fade" id="tabAdLinks" role="tabpanel" aria-labelledby="adlinks-tab">
-    <h3>Link Dengan Iklan (Link With Ads)</h3>
-    ${adLinksHTML}
-  </div>
-
-  <div class="tab-pane fade" id="tabOriginalLinks" role="tabpanel" aria-labelledby="original-tab">
-    <h3>Link Download Tanpa Iklan (Download Link Without Ads)</h3>
-
-    <div class="login-prompt mb-3" id="loginPrompt">
-      <p class="mb-2">
-        <strong>⚠️ Perhatian:</strong>
-        Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
-        Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
-      </p>
-      <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
-    </div>
-
-    <div id="originalLinksContent" style="display: none;">
-      ${originalLinksHTML}
-    </div>
-  </div>
-</div>
-
     
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="background: var(--psp-gradient); color: white;">
-                    <h5 class="modal-title">Login dengan Telegram</h5>
+                    <h5 class="modal-title"><i class="bi bi-telegram me-2"></i>Login dengan Telegram</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -1741,7 +2142,7 @@ p, .table, .table th, .table td{
                             <small class="text-muted">Dapatkan Key dari bot @INDapkBot (contoh: /key atau cek profil).</small>
                         </div>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-primary flex-fill" onclick="login(this)">Login</button>
+                            <button class="btn btn-psp flex-fill" onclick="login(this)">Login PSP</button>
                             <button class="btn btn-secondary flex-fill" onclick="register()">Daftar via Bot</button>
                         </div>
                     </div>
@@ -1750,360 +2151,416 @@ p, .table, .table th, .table td{
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js">    <\/script>
-
-<script>
-  // ====== CONFIG ======
-  const GAME_API_URL = "${GAMEPSP_API_URL}";
-  const USER_API_URL = "${USER_API_URL}";
-  const DOWNLOAD_ID = "${escapeHTML(gameData.downloadId)}";
-
-  const cloudISO = ${JSON.stringify(gameData.cloudISO || [])};
-  const cloudCHD = ${JSON.stringify(gameData.cloudCHD || [])};
-
-  let currentUser = null;
-
-  // ====== UI HELPERS ======
-  function openLoginModal() {
-    const el = document.getElementById('loginModal');
-    if (!el) return alert('Login modal tidak ditemukan.');
-    new bootstrap.Modal(el).show();
-  }
-
-  function register() {
-    window.open('https://web.telegram.org/k/#@indapkbot', '_blank');
-  }
-
-  function updateUserBalanceUI() {
-    if (!currentUser) return;
-    document.getElementById('loggedUserBalance').textContent = Number(currentUser.saldo || 0).toLocaleString();
-    document.getElementById('loggedUserName').textContent = currentUser.nama_user || '-';
-    document.getElementById('loggedUserId').textContent = currentUser.wa_number || '-';
-  }
-
-  function logout() {
-    localStorage.removeItem('pspGameUser');
-    currentUser = null;
-
-    document.getElementById('userHeader').style.display = 'none';
-    document.getElementById('loginPrompt').style.display = 'block';
-    document.getElementById('originalLinksContent').style.display = 'none';
-  }
-
-  // ====== LOGIN ======
-  async function login(btn) {
-    const telegramId = document.getElementById('telegramId').value.trim();
-    const key = document.getElementById('telegramKey').value.trim();
-
-    if (!telegramId || !key) {
-      alert('Masukkan Telegram ID dan Key!');
-      return;
-    }
-
-    const originalBtnHtml = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-
-    try {
-      const response = await fetch(USER_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Accept': 'application/json'
-        },
-        body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
-      });
-
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-
-      const result = await response.json();
-
-      if (result.status !== 'success' || !result.data) {
-        alert('User tidak ditemukan!');
-        return;
-      }
-
-      const serverKey = String(result.data.key || '').trim();
-      if (serverKey !== key) {
-        alert('Key tidak sesuai!');
-        return;
-      }
-
-      currentUser = { ...result.data, key: serverKey };
-      localStorage.setItem('pspGameUser', JSON.stringify(currentUser));
-
-      document.getElementById('userHeader').style.display = 'block';
-      document.getElementById('loginPrompt').style.display = 'none';
-      document.getElementById('originalLinksContent').style.display = 'block';
-
-      updateUserBalanceUI();
-
-      const modalEl = document.getElementById('loginModal');
-      const modal = bootstrap.Modal.getInstance(modalEl);
-      if (modal) modal.hide();
-
-      alert('Login berhasil!');
-    } catch (err) {
-      alert('Login gagal: ' + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = originalBtnHtml;
-    }
-  }
-
-  // ====== ACCESS ORIGINAL LINK ======
- const COST_PER_LINK = 2000;
-let pendingAccess = null;
-
-function rupiah(n) {
-  return Number(n || 0).toLocaleString('id-ID');
-}
-
-function openPayConfirmModal(cloudName, saldo) {
-  document.getElementById('payCloudName').textContent = cloudName || '-';
-  document.getElementById('payCost').textContent = rupiah(COST_PER_LINK);
-  document.getElementById('payBalance').textContent = rupiah(saldo);
-  document.getElementById('payAfter').textContent = rupiah(Number(saldo || 0) - COST_PER_LINK);
-
-  const el = document.getElementById('payConfirmModal');
-  new bootstrap.Modal(el).show();
-}
-
-function openLinkReadyModal(link) {
-  const input = document.getElementById('readyLinkInput');
-  input.value = link || '';
-
-  const btnOpen = document.getElementById('btnOpenReadyLink');
-  btnOpen.onclick = function() {
-    if (!link) return;
-    window.open(link, '_blank');
-  };
-
-  const btnCopy = document.getElementById('btnCopyReadyLink');
-  btnCopy.onclick = async function() {
-    if (!link) return;
-    try {
-      await navigator.clipboard.writeText(link);
-      alert('Link berhasil disalin');
-    } catch (e) {
-      alert('Gagal copy link');
-    }
-  };
-
-  const el = document.getElementById('linkReadyModal');
-  new bootstrap.Modal(el).show();
-}
-
-async function accessOriginalLink(evt, linkType, index) {
-  if (!currentUser) {
-    openLoginModal();
-    return;
-  }
-
-  const saldo = Number(currentUser.saldo || 0);
-  if (saldo < COST_PER_LINK) {
-    alert('Saldo tidak mencukupi. Harga per link: Rp ' + rupiah(COST_PER_LINK) + '. Saldo Anda: Rp ' + rupiah(saldo));
-    return;
-  }
-
-  const button = evt.currentTarget;
-  const cloudName = linkType === 'iso' 
-    ? cloudISO[index] || 'Unknown'
-    : cloudCHD[index] || 'Unknown';
-
-  pendingAccess = { linkType, index, cloudName, button };
-  openPayConfirmModal(cloudName, saldo);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  const btnYes = document.getElementById('btnPayYes');
-  if (!btnYes) return;
-
-  btnYes.addEventListener('click', async function() {
-    if (!pendingAccess || !currentUser) return;
-
-    const btn = this;
-    const originalHtml = btn.innerHTML;
-
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-
-    const { linkType, index, link, button } = pendingAccess;
-
-    try {
-      button.disabled = true;
-
-      const body =
-        'action=accessOriginalLink' +
-        '&download_id=' + encodeURIComponent(DOWNLOAD_ID) +
-        '&link_type=' + encodeURIComponent(linkType) +
-        '&index=' + encodeURIComponent(index) +
-        '&telegram_id=' + encodeURIComponent(currentUser.wa_number || '') +
-        '&key=' + encodeURIComponent(currentUser.key || '');
-
-      const response = await fetch(GAME_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Accept': 'application/json'
-        },
-        body
-      });
-
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-
-      const result = await response.json();
-      if (result.status !== 'success') {
-        throw new Error(result.message || 'Gagal mengakses link');
-      }
-
-      const newBalance = Number(result.data.new_balance || 0);
-      currentUser.saldo = newBalance;
-      localStorage.setItem('pspGameUser', JSON.stringify(currentUser));
-      updateUserBalanceUI();
-
-      // Tutup modal konfirmasi
-      const confirmEl = document.getElementById('payConfirmModal');
-      const confirmModal = bootstrap.Modal.getInstance(confirmEl);
-      if (confirmModal) confirmModal.hide();
-
-      // Ambil link dari server jika ada, kalau tidak pakai link lokal
-      const finalLink = result.data.link || link;
-
-      // Tampilkan modal sukses
-      openLinkReadyModal(finalLink);
-
-      pendingAccess = null;
-    } catch (err) {
-      alert('Gagal mengakses link: ' + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = originalHtml;
-
-      if (pendingAccess?.button) pendingAccess.button.disabled = false;
-    }
-  });
-});
-
-    <\/script>
-
-
-<!-- Confirm Payment Modal -->
-<div class="modal fade" id="payConfirmModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header" style="background:#ff5b5b;color:#fff;">
-        <h5 class="modal-title">Konfirmasi Pembayaran</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <h5 class="text-center mb-3">Konfirmasi Akses Link</h5>
-        <p class="text-center mb-3">
-          Anda akan mengakses link <strong id="payCloudName">-</strong>
-        </p>
-
-        <div class="alert alert-warning mb-4">
-          <div class="d-flex justify-content-center gap-2 align-items-center mb-2">
-            <span>⚠️</span>
-            <strong>Biaya: Rp <span id="payCost">0</span></strong>
-          </div>
-          <div class="text-center">Saldo Anda: Rp <span id="payBalance">0</span></div>
-          <div class="text-center">Saldo setelah potongan: Rp <span id="payAfter">0</span></div>
+    <!-- Payment Confirmation Modal -->
+    <div class="modal fade" id="payConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background:#ff5b5b;color:#fff;">
+                    <h5 class="modal-title">Konfirmasi Pembayaran PSP</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="text-center mb-3">Konfirmasi Akses Link PSP</h5>
+                    <p class="text-center mb-3">
+                        Anda akan mengakses link <strong id="payCloudName">-</strong>
+                    </p>
+                    <div class="alert alert-warning mb-4">
+                        <div class="d-flex justify-content-center gap-2 align-items-center mb-2">
+                            <span>⚠️</span>
+                            <strong>Biaya PSP: Rp <span id="payCost">0</span></strong>
+                        </div>
+                        <div class="text-center">Saldo Anda: Rp <span id="payBalance">0</span></div>
+                        <div class="text-center">Saldo setelah potongan: Rp <span id="payAfter">0</span></div>
+                    </div>
+                    <p class="text-center mb-0">Apakah Anda yakin ingin melanjutkan?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-success px-4" id="btnPayYes">
+                        <i class="bi bi-check-circle"></i> Ya, Lanjutkan
+                    </button>
+                    <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Batal
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <p class="text-center mb-0">Apakah Anda yakin ingin melanjutkan?</p>
-      </div>
-
-      <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-success px-4" id="btnPayYes">
-          <i class="bi bi-check-circle"></i> Ya, Lanjutkan
-        </button>
-        <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle"></i> Batal
-        </button>
-      </div>
     </div>
-  </div>
-</div>
-
-<!-- Success Link Modal -->
-<div class="modal fade" id="linkReadyModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header" style="background:#ff5b5b;color:#fff;">
-        <h5 class="modal-title">Link Siap Diakses</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <div class="text-center mb-3">
-          <h5 class="mb-1" style="color:#198754;">✅ Pembayaran Berhasil!</h5>
-          <div>Link game Anda sudah siap diakses</div>
+    
+    <!-- Success Link Modal -->
+    <div class="modal fade" id="linkReadyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background:#ff5b5b;color:#fff;">
+                    <h5 class="modal-title">Link Siap Diakses PSP</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <h5 class="mb-1" style="color:#198754;">✅ Pembayaran Berhasil PSP!</h5>
+                        <div>Link game PSP Anda sudah siap diakses</div>
+                    </div>
+                    <div class="mb-2"><strong>Link Download PSP:</strong></div>
+                    <div class="input-group mb-3">
+                        <input id="readyLinkInput" type="text" class="form-control" readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="btnCopyReadyLink">
+                            Copy PSP
+                        </button>
+                    </div>
+                    <button class="btn btn-success w-100" id="btnOpenReadyLink">
+                        <i class="bi bi-box-arrow-up-right"></i> BUKA LINK PSP DI TAB BARU
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-2"><strong>Link Download:</strong></div>
-
-        <div class="input-group mb-3">
-          <input id="readyLinkInput" type="text" class="form-control" readonly>
-          <button class="btn btn-outline-secondary" type="button" id="btnCopyReadyLink">
-            Copy
-          </button>
-        </div>
-
-        <button class="btn btn-success w-100" id="btnOpenReadyLink">
-          <i class="bi bi-box-arrow-up-right"></i> BUKA LINK DI TAB BARU
-        </button>
-      </div>
     </div>
-  </div>
-</div>
+    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"><\/script>
 
-
+    <script>
+        // ====== CONFIG PSP ======
+        const GAME_API_URL = "${GAMEPSP_API_URL}";
+        const USER_API_URL = "${USER_API_URL}";
+        const DOWNLOAD_ID = "${escapeHTML(gameData.downloadId)}";
+        
+        const cloudISO = ${JSON.stringify(gameData.cloudISO || [])};
+        const cloudCHD = ${JSON.stringify(gameData.cloudCHD || [])};
+        
+        let currentUser = null;
+        const LS_USER_KEY = 'pspGameUser';
+        const LS_LOGOUT_AT_KEY = 'pspGameLogoutAt';
+        let pendingAccess = null;
+        const COST_PER_LINK = 2000;
+        
+        function rupiah(n) {
+            return Number(n || 0).toLocaleString('id-ID');
+        }
+        
+        // ====== UI HELPERS ======
+        function openLoginModal() {
+            const el = document.getElementById('loginModal');
+            if (!el) return alert('Login modal tidak ditemukan.');
+            new bootstrap.Modal(el).show();
+        }
+        
+        function register() {
+            window.open('https://web.telegram.org/k/#@indapkbot', '_blank');
+        }
+        
+        function updateUserBalanceUI() {
+            if (!currentUser) return;
+            document.getElementById('loggedUserBalance').textContent = Number(currentUser.saldo || 0).toLocaleString();
+            document.getElementById('loggedUserName').textContent = currentUser.nama_user || '-';
+            document.getElementById('loggedUserId').textContent = currentUser.wa_number || '-';
+        }
+        
+        function logout() {
+            localStorage.removeItem(LS_USER_KEY);
+            localStorage.setItem(LS_LOGOUT_AT_KEY, String(Date.now()));
+            currentUser = null;
+            
+            document.getElementById('userHeader').style.display = 'none';
+            document.getElementById('loginPrompt').style.display = 'block';
+            document.getElementById('originalLinksContent').style.display = 'none';
+        }
+        
+        // ====== LOGIN ======
+        async function login(btn) {
+            const telegramId = document.getElementById('telegramId').value.trim();
+            const key = document.getElementById('telegramKey').value.trim();
+            
+            if (!telegramId || !key) {
+                alert('Masukkan Telegram ID dan Key!');
+                return;
+            }
+            
+            const originalBtnHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+            
+            try {
+                const response = await fetch(USER_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json'
+                    },
+                    body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
+                });
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status !== 'success' || !result.data) {
+                    alert('User tidak ditemukan!');
+                    return;
+                }
+                
+                const serverKey = String(result.data.key || '').trim();
+                if (serverKey !== key) {
+                    alert('Key tidak sesuai!');
+                    return;
+                }
+                
+                currentUser = { ...result.data, key: serverKey };
+                localStorage.setItem(LS_USER_KEY, JSON.stringify(currentUser));
+                
+                document.getElementById('userHeader').style.display = 'block';
+                document.getElementById('loginPrompt').style.display = 'none';
+                document.getElementById('originalLinksContent').style.display = 'block';
+                
+                updateUserBalanceUI();
+                
+                const modalEl = document.getElementById('loginModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+                
+                alert('Login berhasil!');
+            } catch (err) {
+                alert('Login gagal: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalBtnHtml;
+            }
+        }
+        
+        // ====== PAYMENT MODALS ======
+        function openPayConfirmModal(cloudName, saldo) {
+            document.getElementById('payCloudName').textContent = cloudName || '-';
+            document.getElementById('payCost').textContent = rupiah(COST_PER_LINK);
+            document.getElementById('payBalance').textContent = rupiah(saldo);
+            document.getElementById('payAfter').textContent = rupiah(Number(saldo || 0) - COST_PER_LINK);
+            
+            const el = document.getElementById('payConfirmModal');
+            new bootstrap.Modal(el).show();
+        }
+        
+        function openLinkReadyModal(link) {
+            const input = document.getElementById('readyLinkInput');
+            input.value = link || '';
+            
+            const btnOpen = document.getElementById('btnOpenReadyLink');
+            btnOpen.onclick = function() {
+                if (!link) return;
+                window.open(link, '_blank');
+            };
+            
+            const btnCopy = document.getElementById('btnCopyReadyLink');
+            btnCopy.onclick = async function() {
+                if (!link) return;
+                try {
+                    await navigator.clipboard.writeText(link);
+                    alert('Link PSP berhasil disalin');
+                } catch (e) {
+                    alert('Gagal copy link PSP');
+                }
+            };
+            
+            const el = document.getElementById('linkReadyModal');
+            new bootstrap.Modal(el).show();
+        }
+        
+        // ====== ACCESS ORIGINAL LINK ======
+        async function accessOriginalLink(evt, linkType, index) {
+            if (!currentUser) {
+                openLoginModal();
+                return;
+            }
+            
+            const saldo = Number(currentUser.saldo || 0);
+            if (saldo < COST_PER_LINK) {
+                alert('Saldo tidak mencukupi. Harga per link PSP: Rp ' + rupiah(COST_PER_LINK) + '. Saldo Anda: Rp ' + rupiah(saldo));
+                return;
+            }
+            
+            const button = evt.currentTarget;
+            const cloudName = linkType === 'iso' 
+                ? (cloudISO[index] || 'Unknown')
+                : (cloudCHD[index] || 'Unknown');
+            
+            pendingAccess = { linkType, index, cloudName, button };
+            openPayConfirmModal(cloudName, saldo);
+        }
+        
+        // Event listener untuk tombol konfirmasi pembayaran
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnYes = document.getElementById('btnPayYes');
+            if (!btnYes) return;
+            
+            btnYes.addEventListener('click', async function() {
+                if (!pendingAccess || !currentUser) return;
+                
+                const btn = this;
+                const originalHtml = btn.innerHTML;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+                
+                const { linkType, index, button } = pendingAccess;
+                
+                try {
+                    button.disabled = true;
+                    
+                    const body = 'action=accessOriginalLink' +
+                        '&download_id=' + encodeURIComponent(DOWNLOAD_ID) +
+                        '&link_type=' + encodeURIComponent(linkType) +
+                        '&index=' + encodeURIComponent(index) +
+                        '&telegram_id=' + encodeURIComponent(currentUser.wa_number || '') +
+                        '&key=' + encodeURIComponent(currentUser.key || '');
+                    
+                    const response = await fetch(GAME_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Accept': 'application/json'
+                        },
+                        body
+                    });
+                    
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    
+                    const result = await response.json();
+                    if (result.status !== 'success') {
+                        throw new Error(result.message || 'Gagal mengakses link PSP');
+                    }
+                    
+                    const newBalance = Number(result.data.new_balance || 0);
+                    currentUser.saldo = newBalance;
+                    localStorage.setItem(LS_USER_KEY, JSON.stringify(currentUser));
+                    updateUserBalanceUI();
+                    
+                    // Tutup modal konfirmasi
+                    const confirmEl = document.getElementById('payConfirmModal');
+                    const confirmModal = bootstrap.Modal.getInstance(confirmEl);
+                    if (confirmModal) confirmModal.hide();
+                    
+                    // Ambil link dari server
+                    const finalLink = result.data.link || '';
+                    
+                    // Tampilkan modal sukses
+                    openLinkReadyModal(finalLink);
+                    
+                    pendingAccess = null;
+                } catch (err) {
+                    alert('Gagal mengakses link PSP: ' + err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                    
+                    if (pendingAccess?.button) pendingAccess.button.disabled = false;
+                }
+            });
+        });
+        
+        // Check login saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedUser = localStorage.getItem(LS_USER_KEY);
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    document.getElementById('userHeader').style.display = 'block';
+                    document.getElementById('loginPrompt').style.display = 'none';
+                    document.getElementById('originalLinksContent').style.display = 'block';
+                    updateUserBalanceUI();
+                } catch (e) {
+                    localStorage.removeItem(LS_USER_KEY);
+                }
+            }
+            
+            // Tab functionality
+            document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-bs-target');
+                    document.querySelectorAll('.tab-pane').forEach(pane => {
+                        pane.classList.remove('show', 'active');
+                    });
+                    document.querySelector(targetId).classList.add('show', 'active');
+                });
+            });
+        });
+        <\/script>
 </body>
 </html>`;
         }
         
         function generateHTML() {
             if (!gameData.downloadId) {
-                if (confirm('Data belum disimpan ke server. Generate HTML dengan data saat ini?')) {
-                    gameData.downloadId = 'TEMP_' + Date.now().toString().slice(-8);
+                if (confirm('Data PSP belum disimpan ke server. Generate HTML dengan data saat ini?')) {
+                    gameData.downloadId = 'PSP_TEMP_' + Date.now().toString().slice(-8);
                 } else {
                     return;
                 }
             }
             
-            const html = createHTMLTemplate();
-            document.getElementById('htmlPreview').textContent = html;
-            document.getElementById('previewSection').style.display = 'block';
-            document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+            _generatedHtml = createHTMLTemplate();
+            
+            const nm = safeFilename(gameData?.gameInfo?.nama_game || 'psp-game');
+            _generatedFilename = `PSP_${nm}_${gameData.downloadId}.html`;
+            
+            // tampilkan section preview
+            const previewSection = document.getElementById('previewSection');
+            if (previewSection) previewSection.style.display = 'block';
+            
+            // render preview
+            const preview = document.getElementById('htmlPreview');
+            if (!preview) return;
+            
+            preview.innerHTML = '';
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '100%';
+            iframe.style.height = '650px';
+            iframe.style.border = '0';
+            iframe.style.borderRadius = '16px';
+            iframe.srcdoc = _generatedHtml;
+            
+            preview.appendChild(iframe);
+            
+            showToast('success', '🎮 HTML PSP berhasil digenerate dengan ID: ' + gameData.downloadId);
         }
         
-        function copyHTML() {
-            const html = document.getElementById('htmlPreview').textContent;
-            navigator.clipboard.writeText(html).then(() => {
-                alert('✅ HTML berhasil disalin ke clipboard!');
-            }).catch(err => {
-                alert('❌ Gagal menyalin: ' + err.message);
-            });
+        async function copyHTML() {
+            if (!_generatedHtml) {
+                showToast('warning', 'Generate HTML PSP dulu.');
+                return;
+            }
+            
+            try {
+                await navigator.clipboard.writeText(_generatedHtml);
+                showToast('success', '🎮 HTML PSP berhasil dicopy.');
+            } catch (e) {
+                // fallback kalau clipboard diblok
+                const ta = document.createElement('textarea');
+                ta.value = _generatedHtml;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+                showToast('success', '🎮 HTML PSP berhasil dicopy.');
+            }
         }
         
         function downloadHTML() {
-            const html = document.getElementById('htmlPreview').textContent;
-            const blob = new Blob([html], { type: 'text/html' });
+            if (!_generatedHtml) {
+                showToast('warning', 'Generate HTML PSP dulu.');
+                return;
+            }
+            
+            const blob = new Blob([_generatedHtml], { type: 'text/html;charset=utf-8' });
             const url = URL.createObjectURL(blob);
+            
             const a = document.createElement('a');
             a.href = url;
-            a.download = `psp_${gameData.gameInfo.nama_game.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${gameData.downloadId}.html`;
+            a.download = _generatedFilename || 'psp-game.html';
             document.body.appendChild(a);
             a.click();
-            document.body.removeChild(a);
+            a.remove();
+            
             URL.revokeObjectURL(url);
-            alert('✅ HTML berhasil didownload!');
+            showToast('success', '🎮 HTML PSP berhasil didownload.');
         }
         
         function newGame() {
-            if (confirm('Buat game baru? Semua data yang belum disimpan akan hilang.')) {
+            if (confirm('Buat game PSP baru? Semua data yang belum disimpan akan hilang.')) {
                 location.reload();
             }
         }
@@ -2144,7 +2601,306 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function showWarningModal(message) {
-            alert('Peringatan: ' + message);
+            alert('⚠️ Peringatan PSP: ' + message);
+        }
+        
+        function safeFilename(name) {
+            return String(name || 'psp-game')
+                .replace(/[\\/:*?"<>|]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+        
+        // ===================== LIST GAME FUNCTIONS =====================
+        function initMainTabs() {
+            if (_mainTabsInited) return;
+            _mainTabsInited = true;
+            
+            const tabs = document.querySelectorAll('#mainTabs [data-main-tab]');
+            tabs.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const target = btn.dataset.mainTab;
+                    document.getElementById('mainTabGenerator').classList.toggle('active', target === 'generator');
+                    document.getElementById('mainTabSaved').classList.toggle('active', target === 'saved');
+                    
+                    if (target === 'saved') {
+                        loadSavedGames();
+                    }
+                });
+            });
+        }
+        
+        async function apiPost(url, paramsObj) {
+            const body = new URLSearchParams();
+            Object.keys(paramsObj).forEach(k => body.append(k, paramsObj[k]));
+            
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+                body: body.toString()
+            });
+            
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        }
+        
+        function fmtDateTime(v) {
+            try {
+                if (!v) return '-';
+                const d = new Date(v);
+                if (isNaN(d.getTime())) return String(v);
+                return d.toLocaleString();
+            } catch {
+                return String(v || '-');
+            }
+        }
+        
+        function downloadHtmlText(html, filename) {
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+function normalizeFilename(name) {
+    return toStr(name || 'psp-game')
+        .replace(/[^a-z0-9]/gi, '_')
+        .toLowerCase()
+        .replace(/_+/g, '_')
+        .replace(/^_+|_+$/g, '');
+}
+
+        
+        async function loadSavedGames() {
+            const tbody = document.getElementById('savedGamesBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = `<tr><td colspan="5" class="text-muted text-center py-4"><div class="spinner-border spinner-border-sm text-psp-dark"></div> Loading game PSP...</td></tr>`;
+            
+            try {
+                const result = await apiPost(GAMEPSP_API_URL, { action: 'getAllGames' });
+                if (result.status !== 'success') throw new Error(result.message || 'Gagal ambil data PSP');
+                
+                _savedGamesCache = Array.isArray(result.data) ? result.data : [];
+                renderSavedGamesTable(_savedGamesCache);
+                
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-danger text-center py-4">❌ Error PSP: ${escapeHTML(err.message)}</td></tr>`;
+            }
+        }
+        
+        function renderSavedGamesTable(list) {
+            const tbody = document.getElementById('savedGamesBody');
+            if (!tbody) return;
+            
+            if (!list.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-muted text-center py-4">🎮 Belum ada data game PSP di spreadsheet.</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = list.map(g => {
+                const did = escapeHTML(String(g.download_id || ''));
+                const name = escapeHTML(String(g.nama_game || ''));
+                const language = escapeHTML(String(g.language || '-'));
+                const updated = escapeHTML(fmtDateTime(g.timestamp || g.last_updated || g.last_downloaded || ''));
+                
+                return `
+                    <tr>
+                        <td><code class="psp-theme-badge">${did}</code></td>
+                        <td><strong>${name}</strong></td>
+                        <td>${language}</td>
+                        <td><small>${updated}</small></td>
+                        <td class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="previewSavedHtml('${did}')">
+                                <i class="bi bi-eye"></i> Preview
+                            </button>
+                            <button class="btn btn-sm btn-success" onclick="downloadSavedHtml('${did}')">
+                                <i class="bi bi-download"></i> Download
+                            </button>
+                            <button class="btn btn-sm btn-psp-primary" onclick="copySavedHtmlDirect('${did}')">
+                                <i class="bi bi-clipboard"></i> Copy HTML
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        async function copySavedHtmlDirect(downloadId) {
+            try {
+                const buttons = document.querySelectorAll(`[onclick*="${downloadId}"]`);
+                buttons.forEach(btn => {
+                    if (btn.textContent.includes('Copy HTML')) {
+                        const originalHTML = btn.innerHTML;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading PSP...';
+                        btn.disabled = true;
+                        btn.dataset.originalHtml = originalHTML;
+                    }
+                });
+                
+                const serverGame = await fetchGameByDownloadId(downloadId);
+                applyServerGameToGameData(serverGame);
+                
+                const html = createHTMLTemplate();
+                
+                await navigator.clipboard.writeText(html);
+                
+                showToast('success', `🎮 HTML game PSP "${serverGame.nama_game}" berhasil disalin!`);
+                
+            } catch (err) {
+                console.error('Copy error PSP:', err);
+                showToast('error', 'Gagal menyalin HTML PSP: ' + err.message);
+            } finally {
+                const buttons = document.querySelectorAll(`[onclick*="${downloadId}"]`);
+                buttons.forEach(btn => {
+                    if (btn.dataset.originalHtml) {
+                        btn.innerHTML = btn.dataset.originalHtml;
+                        btn.disabled = false;
+                        delete btn.dataset.originalHtml;
+                    }
+                });
+            }
+        }
+        
+        async function fetchGameByDownloadId(downloadId) {
+            const result = await apiPost(GAMEPSP_API_URL, {
+                action: 'getGameByDownloadId',
+                download_id: downloadId
+            });
+            
+            if (result.status !== 'success' || !result.data) {
+                throw new Error(result.message || 'Game PSP tidak ditemukan');
+            }
+            return result.data;
+        }
+        
+function applyServerGameToGameData(serverGame) {
+    // Parse array yang kadang datang sebagai JSON string
+    gameData.cloudISO = parseArray(serverGame.cloud_iso);
+    gameData.cloudCHD = parseArray(serverGame.cloud_chd);
+
+    gameData.isoCount = gameData.cloudISO.length;
+    gameData.chdCount = gameData.cloudCHD.length;
+
+    gameData.adLinksISO = parseArray(serverGame.link_iklan_iso);
+    gameData.adLinksCHD = parseArray(serverGame.link_iklan_chd);
+
+    gameData.adLinks2ISO = parseArray(serverGame.link_iklan2_iso);
+    gameData.adLinks2CHD = parseArray(serverGame.link_iklan2_chd);
+
+    gameData.originalLinksISO = parseArray(serverGame.link_asli_iso);
+    gameData.originalLinksCHD = parseArray(serverGame.link_asli_chd);
+
+    // Paksa gameInfo jadi string semua
+    gameData.gameInfo = {
+        nama_game: toStr(serverGame.nama_game),
+        ukuran_chd: toStr(serverGame.ukuran_chd),
+        ukuran_iso: toStr(serverGame.ukuran_iso),
+        category: toStr(serverGame.category),
+        language: toStr(serverGame.language)
+    };
+
+    // downloadId juga dipaksa string
+    gameData.downloadId = toStr(serverGame.download_id);
+}
+
+        
+        async function previewSavedHtml(downloadId) {
+            try {
+                const serverGame = await fetchGameByDownloadId(downloadId);
+                applyServerGameToGameData(serverGame);
+                
+                const html = createHTMLTemplate();
+                const filename = `PSP_${normalizeFilename(gameData.gameInfo.nama_game)}_${gameData.downloadId}.html`;
+                
+                _savedHtmlCache = { html, filename };
+                
+                const previewSection = document.getElementById('savedPreviewSection');
+                const previewMode = document.getElementById('savedPreviewMode');
+                
+                previewSection.style.display = 'block';
+                
+                previewMode.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-psp-dark"></div><p class="mt-2">Loading preview PSP...</p></div>';
+                
+                const showLive = () => {
+                    previewMode.innerHTML = `
+                        <div class="preview-iframe-container">
+                            <iframe class="preview-iframe" style="width: 100%; min-height: 500px; border: none; border-radius: 8px;"></iframe>
+                        </div>
+                    `;
+                    const iframe = previewMode.querySelector('.preview-iframe');
+                    iframe.srcdoc = html;
+                };
+                
+                const showSource = () => {
+                    previewMode.innerHTML = `
+                        <div class="preview-source-container">
+                            <pre class="bg-dark text-light p-3 rounded" style="max-height: 500px; overflow: auto; font-size: 0.85rem;">${escapeHTML(html)}</pre>
+                        </div>
+                    `;
+                };
+                
+                document.getElementById('btnSavedModeLive').onclick = showLive;
+                document.getElementById('btnSavedModeSource').onclick = showSource;
+                
+                showLive();
+                
+                previewSection.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (err) {
+                alert('❌🎮 Gagal preview PSP: ' + err.message);
+            } finally {
+                exportOptions.includeAd2 = true;
+            }
+        }
+        
+        async function downloadSavedHtml(downloadId) {
+            if (!_savedHtmlCache.html || !_savedHtmlCache.filename || !_savedHtmlCache.filename.includes(downloadId)) {
+                await previewSavedHtml(downloadId);
+            }
+            if (_savedHtmlCache.html) {
+                downloadHtmlText(_savedHtmlCache.html, _savedHtmlCache.filename);
+            }
+        }
+        
+        function wireSavedTabControls() {
+            const refreshBtn = document.getElementById('btnRefreshSaved');
+            const searchEl = document.getElementById('savedSearch');
+            
+            refreshBtn?.addEventListener('click', loadSavedGames);
+            
+            searchEl?.addEventListener('input', () => {
+                const q = (searchEl.value || '').trim().toLowerCase();
+                if (!q) return renderSavedGamesTable(_savedGamesCache);
+                
+                const filtered = _savedGamesCache.filter(g => {
+                    const did = String(g.download_id || '').toLowerCase();
+                    const name = String(g.nama_game || '').toLowerCase();
+                    return did.includes(q) || name.includes(q);
+                });
+                
+                renderSavedGamesTable(filtered);
+            });
+            
+            document.getElementById('btnCopySavedHTML')?.addEventListener('click', () => {
+                if (!_savedHtmlCache.html) return alert('Belum ada HTML PSP.');
+                navigator.clipboard.writeText(_savedHtmlCache.html).then(() => {
+                    alert('✅🎮 HTML PSP berhasil disalin!');
+                }).catch(err => alert('❌ Gagal menyalin PSP: ' + err.message));
+            });
+            
+            document.getElementById('btnDownloadSavedHTML')?.addEventListener('click', () => {
+                if (!_savedHtmlCache.html) return alert('Belum ada HTML PSP.');
+                downloadHtmlText(_savedHtmlCache.html, _savedHtmlCache.filename || 'psp-game.html');
+            });
         }
     </script>
 </body>
