@@ -536,12 +536,12 @@ http://link.indapk.com/og99VR
                                     <input type="text" id="gameName" class="form-control" placeholder="Contoh: Rogue Galaxy">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="isoSize" class="form-label">Ukuran Game ISO</label>
-                                    <input type="text" id="isoSize" class="form-control" placeholder="Contoh: 4.05 GB">
-                                </div>
-                                <div class="col-md-6 mb-3">
                                     <label for="chdSize" class="form-label">Ukuran Game CHD</label>
                                     <input type="text" id="chdSize" class="form-control" placeholder="Contoh: 6.49 GB">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="isoSize" class="form-label">Ukuran Game ISO</label>
+                                    <input type="text" id="isoSize" class="form-control" placeholder="Contoh: 4.05 GB">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="category" class="form-label required">Category</label>
@@ -1439,8 +1439,8 @@ http://link.indapk.com/G8ua`;
             
             gameData.gameInfo = {
                 nama_game: gameName,
-                ukuran_iso: document.getElementById('isoSize').value.trim(),
                 ukuran_chd: document.getElementById('chdSize').value.trim(),
+                ukuran_iso: document.getElementById('isoSize').value.trim(),
                 category: category,
                 language: language
             };
@@ -1454,8 +1454,8 @@ http://link.indapk.com/G8ua`;
                 const params = new URLSearchParams();
                 params.append('action', 'saveGame');
                 params.append('nama_game', gameData.gameInfo.nama_game);
-                params.append('ukuran_iso', gameData.gameInfo.ukuran_iso);
                 params.append('ukuran_chd', gameData.gameInfo.ukuran_chd);
+                params.append('ukuran_iso', gameData.gameInfo.ukuran_iso);
                 params.append('category', gameData.gameInfo.category);
                 params.append('language', gameData.gameInfo.language);
                 params.append('link_asli_iso', JSON.stringify(gameData.originalLinksISO));
@@ -1791,8 +1791,8 @@ function escapeHTML(text) {
                     <div class="col-md-6">
                         <table class="table">
                             <tr><th>Nama Game:</th><td>${escapeHTML(gameData.gameInfo.nama_game)}</td></tr>
-                            <tr><th>Ukuran ISO:</th><td>${escapeHTML(gameData.gameInfo.ukuran_iso || '-')}</td></tr>
                             <tr><th>Ukuran CHD:</th><td>${escapeHTML(gameData.gameInfo.ukuran_chd || '-')}</td></tr>
+                            <tr><th>Ukuran ISO:</th><td>${escapeHTML(gameData.gameInfo.ukuran_iso || '-')}</td></tr>
                         </table>
                     </div>
                     <div class="col-md-6">
@@ -2572,8 +2572,8 @@ function applyServerGameToGameData(serverGame) {
     // Paksa gameInfo jadi string semua
     gameData.gameInfo = {
         nama_game: toStr(serverGame.nama_game),
-        ukuran_iso: toStr(serverGame.ukuran_iso),
         ukuran_chd: toStr(serverGame.ukuran_chd),
+        ukuran_iso: toStr(serverGame.ukuran_iso),
         category: toStr(serverGame.category),
         language: toStr(serverGame.language)
     };
