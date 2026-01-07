@@ -1203,16 +1203,16 @@ function parseArray(v) {
             // Parse data dasar (5 baris pertama)
             const basicData = {
                 gameName: lines[0] || '',
-                isoSize: lines[1] || '',
-                chdSize: lines[2] || '',
+                chdSize: lines[1] || '',
+                isoSize: lines[2] || '',
                 category: lines[3] || '',
                 language: lines[4] || ''
             };
             
             // Isi form dengan data dasar
             document.getElementById('gameName').value = basicData.gameName;
-            document.getElementById('isoSize').value = basicData.isoSize;
             document.getElementById('chdSize').value = basicData.chdSize;
+            document.getElementById('isoSize').value = basicData.isoSize;
             document.getElementById('category').value = basicData.category;
             document.getElementById('language').value = basicData.language;
             
