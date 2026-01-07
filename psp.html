@@ -503,13 +503,14 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="isoCount" class="form-label required">Jumlah Link ISO <span class="psp-theme-badge">PSP Format</span></label>
-                                <input type="number" id="isoCount" class="form-control" min="0" value="0" placeholder="Misal: 3">
-                            </div>
+                            <!-- CHD Diatas, ISO Dibawahnya (URUTAN DIPERBAIKI) -->
                             <div class="col-md-6 mb-3">
                                 <label for="chdCount" class="form-label required">Jumlah Link CHD <span class="psp-theme-badge">PSP Format</span></label>
                                 <input type="number" id="chdCount" class="form-control" min="0" value="0" placeholder="Misal: 2">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="isoCount" class="form-label required">Jumlah Link ISO <span class="psp-theme-badge">PSP Format</span></label>
+                                <input type="number" id="isoCount" class="form-control" min="0" value="0" placeholder="Misal: 3">
                             </div>
                         </div>
                         <button id="btnNext1" class="btn btn-psp-primary">Lanjutkan ke Cloud <i class="bi bi-arrow-right"></i></button>
@@ -589,15 +590,15 @@
                                         <strong>Instruksi Khusus PSP:</strong> Paste data game PSP dalam format berikut:
                                         <ul class="mb-2 mt-2">
                                             <li>Baris 1: <span class="psp-theme-badge">Nama Game PSP</span></li>
-                                            <li>Baris 3: Ukuran Game ISO</li>
                                             <li>Baris 2: Ukuran Game CHD</li>
+                                            <li>Baris 3: Ukuran Game ISO</li>
                                             <li>Baris 4: <span class="psp-theme-badge">Category PSP</span></li>
                                             <li>Baris 5: <span class="psp-theme-badge">Language PSP</span></li>
-                                            <li>Baris 6-...: <strong>Link Asli PSP</strong></li>
-                                            <li>Baris berikutnya: <strong>Link Iklan 1 PSP</strong></li>
-                                            <li>Baris terakhir: <strong>Link Iklan 2 PSP</strong></li>
+                                            <li>Baris 6-...: <strong>Link Asli PSP</strong> (CHD dulu, baru ISO)</li>
+                                            <li>Baris berikutnya: <strong>Link Iklan 1 PSP</strong> (CHD dulu, baru ISO)</li>
+                                            <li>Baris terakhir: <strong>Link Iklan 2 PSP</strong> (CHD dulu, baru ISO)</li>
                                         </ul>
-                                        <strong class="text-danger">URUTAN PENTING:</strong> Link Asli → Link Iklan 1 → Link Iklan 2
+                                        <strong class="text-danger">URUTAN PENTING:</strong> Link Asli → Link Iklan 1 → Link Iklan 2 (CHD di atas ISO)
                                     </div>
                                     
                                     <div class="mb-3">
@@ -609,18 +610,20 @@
                                                   placeholder="Paste data game PSP disini...
 Contoh:
 God of War: Chains of Olympus
-1.45 GB
 2.05 GB
+1.45 GB
 Action Adventure
 USA
-https://drive.google.com/file/d/.../view?usp=sharing
-https://www.mediafire.com/file/.../[PSP]+God+of+War.ISO/file
+https://drive.google.com/file/d/.../view?usp=sharing  (CHD)
+https://www.mediafire.com/file/.../[PSP]+God+of+War.CHD/file (CHD)
+https://drive.google.com/file/d/.../view?usp=sharing  (ISO)
+https://www.mediafire.com/file/.../[PSP]+God+of+War.ISO/file (ISO)
 ...
-https://sfl.gl/kdJj
-https://sfl.gl/987B8T
+https://sfl.gl/kdJj  (CHD Ad 1)
+https://sfl.gl/987B8T (ISO Ad 1)
 ...
-http://link.indapk.com/adcMqDr
-http://link.indapk.com/og99VR
+http://link.indapk.com/adcMqDr (CHD Ad 2)
+http://link.indapk.com/og99VR (ISO Ad 2)
 ..."></textarea>
                                         <div class="form-text">Paste semua data PSP sekaligus, sistem akan otomatis mengisi form.</div>
                                     </div>
@@ -648,6 +651,7 @@ http://link.indapk.com/og99VR
                                     <label for="gameName" class="form-label required">Nama Game PSP <span class="psp-theme-badge">PSP</span></label>
                                     <input type="text" id="gameName" class="form-control" placeholder="Contoh: God of War: Chains of Olympus">
                                 </div>
+                                <!-- CHD di atas, ISO di bawah -->
                                 <div class="col-md-6 mb-3">
                                     <label for="chdSize" class="form-label">Ukuran Game CHD PSP</label>
                                     <input type="text" id="chdSize" class="form-control" placeholder="Contoh: 2.05 GB">
@@ -674,7 +678,6 @@ http://link.indapk.com/og99VR
                                 <!-- Akan diisi oleh JavaScript -->
                             </div>
                         </div>
-                        
 
                         <!-- Input Link Iklan 1 -->
                         <div class="mt-4">
@@ -791,7 +794,7 @@ http://link.indapk.com/og99VR
         // ============= URL API =============
         const GAMEPSP_API_URL = "https://script.google.com/macros/s/AKfycbxCg1_l60T858d14WKA3N8c23VJ_YYj_XxX2H4Rqad1tSwaolutSrksSw9ippHu1QOA/exec";
         const USER_API_URL = "https://script.google.com/macros/s/AKfycbweRCcVmuWrz2gpvIanBqeIsyubAUgOjSssHhnXBW3WUiOu9QbNeUq-y4-9Ps6BuQ8L/exec";
-        
+
         // Data state untuk PSP
         let currentStep = 1;
         let gameData = {
@@ -947,7 +950,7 @@ http://link.indapk.com/og99VR
                 showToast('error', err.message || 'Gagal simpan cache PSP.');
             }
         }
-        
+
 function applyCloudCache(cache) {
     gameData.isoCount = cache.isoCount || 0;
     gameData.chdCount = cache.chdCount || 0;
@@ -1090,11 +1093,12 @@ function applyCloudCache(cache) {
             const container = document.getElementById('cloudSelection');
             container.innerHTML = '';
             
-            if (gameData.isoCount > 0) {
-                container.appendChild(createCloudSection('ISO PSP', gameData.isoCount, 'cloudISO'));
-            }
+            // CHD Diatas, ISO Dibawahnya
             if (gameData.chdCount > 0) {
                 container.appendChild(createCloudSection('CHD PSP', gameData.chdCount, 'cloudCHD'));
+            }
+            if (gameData.isoCount > 0) {
+                container.appendChild(createCloudSection('ISO PSP', gameData.isoCount, 'cloudISO'));
             }
         }
         
@@ -1220,23 +1224,23 @@ function applyCloudCache(cache) {
             gameData.originalLinksISO = new Array(gameData.isoCount || 0).fill('');
             gameData.originalLinksCHD = new Array(gameData.chdCount || 0).fill('');
             
-            // ISO Links
-            if (gameData.isoCount > 0) {
-                adLinksContainer.appendChild(createLinkSection('ISO PSP (Link Iklan 1)', gameData.isoCount, 'adLinksISO', gameData.cloudISO));
-                originalLinksContainer.appendChild(createLinkSection('ISO PSP (Link Asli)', gameData.isoCount, 'originalLinksISO', gameData.cloudISO));
-                
-                if (adLinks2Container) {
-                    adLinks2Container.appendChild(createLinkSection('ISO PSP (Link Iklan 2)', gameData.isoCount, 'adLinks2ISO', gameData.cloudISO));
-                }
-            }
-            
-            // CHD Links
+            // CHD Links - DIPINDAHKAN KE ATAS
             if (gameData.chdCount > 0) {
                 adLinksContainer.appendChild(createLinkSection('CHD PSP (Link Iklan 1)', gameData.chdCount, 'adLinksCHD', gameData.cloudCHD));
                 originalLinksContainer.appendChild(createLinkSection('CHD PSP (Link Asli)', gameData.chdCount, 'originalLinksCHD', gameData.cloudCHD));
                 
                 if (adLinks2Container) {
                     adLinks2Container.appendChild(createLinkSection('CHD PSP (Link Iklan 2)', gameData.chdCount, 'adLinks2CHD', gameData.cloudCHD));
+                }
+            }
+            
+            // ISO Links - DIPINDAHKAN KE BAWAH
+            if (gameData.isoCount > 0) {
+                adLinksContainer.appendChild(createLinkSection('ISO PSP (Link Iklan 1)', gameData.isoCount, 'adLinksISO', gameData.cloudISO));
+                originalLinksContainer.appendChild(createLinkSection('ISO PSP (Link Asli)', gameData.isoCount, 'originalLinksISO', gameData.cloudISO));
+                
+                if (adLinks2Container) {
+                    adLinks2Container.appendChild(createLinkSection('ISO PSP (Link Iklan 2)', gameData.isoCount, 'adLinks2ISO', gameData.cloudISO));
                 }
             }
         }
@@ -1334,11 +1338,11 @@ function parseArray(v) {
                 throw new Error('Data PSP terlalu pendek. Minimal 5 baris untuk data dasar.');
             }
             
-            // Parse data dasar (5 baris pertama)
+            // Parse data dasar (5 baris pertama) - CHD di atas ISO
             const basicData = {
                 gameName: lines[0] || '',
-                chdSize: lines[1] || '',
-                isoSize: lines[2] || '',
+                chdSize: lines[1] || '',    // Baris 2: Ukuran CHD
+                isoSize: lines[2] || '',    // Baris 3: Ukuran ISO
                 category: lines[3] || '',
                 language: lines[4] || ''
             };
@@ -1362,9 +1366,9 @@ function parseArray(v) {
             }
             
             // Pisahkan link dengan urutan BARU:
-            // 1. Link Asli (pertama)
-            // 2. Link Iklan 1 (kedua)
-            // 3. Link Iklan 2 (ketiga)
+            // 1. Link Asli (pertama) - CHD dulu baru ISO
+            // 2. Link Iklan 1 (kedua) - CHD dulu baru ISO
+            // 3. Link Iklan 2 (ketiga) - CHD dulu baru ISO
             const originalLinks = remainingLines.slice(0, totalExpectedLinks);
             const adLinks1 = remainingLines.slice(totalExpectedLinks, totalExpectedLinks * 2);
             const adLinks2 = remainingLines.slice(totalExpectedLinks * 2, totalExpectedLinks * 3);
@@ -1377,16 +1381,8 @@ function parseArray(v) {
             gameData.adLinks2ISO = new Array(gameData.isoCount || 0).fill('');
             gameData.adLinks2CHD = new Array(gameData.chdCount || 0).fill('');
             
-            // Isi Link Asli (ISO)
+            // Isi Link Asli (CHD) - DIATAS ISO
             let linkIndex = 0;
-            for (let i = 0; i < gameData.isoCount; i++) {
-                if (originalLinks[linkIndex]) {
-                    gameData.originalLinksISO[i] = originalLinks[linkIndex];
-                }
-                linkIndex++;
-            }
-            
-            // Isi Link Asli (CHD)
             for (let i = 0; i < gameData.chdCount; i++) {
                 if (originalLinks[linkIndex]) {
                     gameData.originalLinksCHD[i] = originalLinks[linkIndex];
@@ -1394,16 +1390,16 @@ function parseArray(v) {
                 linkIndex++;
             }
             
-            // Isi Link Iklan 1 (ISO)
-            linkIndex = 0;
+            // Isi Link Asli (ISO)
             for (let i = 0; i < gameData.isoCount; i++) {
-                if (adLinks1[linkIndex]) {
-                    gameData.adLinksISO[i] = adLinks1[linkIndex];
+                if (originalLinks[linkIndex]) {
+                    gameData.originalLinksISO[i] = originalLinks[linkIndex];
                 }
                 linkIndex++;
             }
             
-            // Isi Link Iklan 1 (CHD)
+            // Isi Link Iklan 1 (CHD) - DIATAS ISO
+            linkIndex = 0;
             for (let i = 0; i < gameData.chdCount; i++) {
                 if (adLinks1[linkIndex]) {
                     gameData.adLinksCHD[i] = adLinks1[linkIndex];
@@ -1411,19 +1407,27 @@ function parseArray(v) {
                 linkIndex++;
             }
             
-            // Isi Link Iklan 2 (ISO)
-            linkIndex = 0;
+            // Isi Link Iklan 1 (ISO)
             for (let i = 0; i < gameData.isoCount; i++) {
-                if (adLinks2[linkIndex]) {
-                    gameData.adLinks2ISO[i] = adLinks2[linkIndex];
+                if (adLinks1[linkIndex]) {
+                    gameData.adLinksISO[i] = adLinks1[linkIndex];
                 }
                 linkIndex++;
             }
             
-            // Isi Link Iklan 2 (CHD)
+            // Isi Link Iklan 2 (CHD) - DIATAS ISO
+            linkIndex = 0;
             for (let i = 0; i < gameData.chdCount; i++) {
                 if (adLinks2[linkIndex]) {
                     gameData.adLinks2CHD[i] = adLinks2[linkIndex];
+                }
+                linkIndex++;
+            }
+            
+            // Isi Link Iklan 2 (ISO)
+            for (let i = 0; i < gameData.isoCount; i++) {
+                if (adLinks2[linkIndex]) {
+                    gameData.adLinks2ISO[i] = adLinks2[linkIndex];
                 }
                 linkIndex++;
             }
@@ -1438,33 +1442,7 @@ function parseArray(v) {
 
             if (!adLinksContainer || !originalLinksContainer) return;
 
-            // ISO
-            if (gameData.isoCount > 0) {
-                const isoSection = adLinksContainer.querySelector('[data-type="adLinksISO"]');
-                if (isoSection) {
-                    isoSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                        if (gameData.adLinksISO[index]) input.value = gameData.adLinksISO[index];
-                    });
-                }
-
-                if (adLinks2Container) {
-                    const iso2Section = adLinks2Container.querySelector('[data-type="adLinks2ISO"]');
-                    if (iso2Section) {
-                        iso2Section.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                            if (gameData.adLinks2ISO[index]) input.value = gameData.adLinks2ISO[index];
-                        });
-                    }
-                }
-
-                const isoOriginalSection = originalLinksContainer.querySelector('[data-type="originalLinksISO"]');
-                if (isoOriginalSection) {
-                    isoOriginalSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                        if (gameData.originalLinksISO[index]) input.value = gameData.originalLinksISO[index];
-                    });
-                }
-            }
-
-            // CHD
+            // CHD - DIATAS ISO
             if (gameData.chdCount > 0) {
                 const chdSection = adLinksContainer.querySelector('[data-type="adLinksCHD"]');
                 if (chdSection) {
@@ -1491,6 +1469,32 @@ function parseArray(v) {
                     });
                 }
             }
+
+            // ISO - DIBAWAH CHD
+            if (gameData.isoCount > 0) {
+                const isoSection = adLinksContainer.querySelector('[data-type="adLinksISO"]');
+                if (isoSection) {
+                    isoSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.adLinksISO[index]) input.value = gameData.adLinksISO[index];
+                    });
+                }
+
+                if (adLinks2Container) {
+                    const iso2Section = adLinks2Container.querySelector('[data-type="adLinks2ISO"]');
+                    if (iso2Section) {
+                        iso2Section.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                            if (gameData.adLinks2ISO[index]) input.value = gameData.adLinks2ISO[index];
+                        });
+                    }
+                }
+
+                const isoOriginalSection = originalLinksContainer.querySelector('[data-type="originalLinksISO"]');
+                if (isoOriginalSection) {
+                    isoOriginalSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.originalLinksISO[index]) input.value = gameData.originalLinksISO[index];
+                    });
+                }
+            }
         }
         
         function clearPasteArea() {
@@ -1501,22 +1505,22 @@ function parseArray(v) {
         
         function showExampleData() {
             const exampleText = `God of War: Chains of Olympus
-1.45 GB
 2.05 GB
+1.45 GB
 Action Adventure
 USA
-https://drive.google.com/file/d/1h9dFcgdZEDTDD-ElGDadamRnItDSs5Me/view?usp=sharing
-https://www.mediafire.com/file/xksdur9szp2o1ve/[PSP]+God+of+War+Chains+of+Olympus.iso/file
-https://vikingfile.com/f/RxaKa1zC8V
-https://pixeldrain.com/u/XfvfLtEH
-https://1fichier.com/?3qkg51wdcaukbhox5tmx
-https://multiup.io/download/02e9ca09d6423fe09dece5adc4513f3c/[PSP]%20God%20of%20War%20Chains%20of%20Olympus.iso
 https://drive.google.com/file/d/1emBpO4FugBIxq46SkWRQOlKgTFbHWl2s/view?usp=sharing
 https://www.mediafire.com/file/izf1dns4ljcguvv/[PSP]+God+of+War+Chains+of+Olympus.chd/file
 https://vikingfile.com/f/9XHk8PUb2P
 https://pixeldrain.com/u/R8b1b1qn
 https://1fichier.com/?igvh9eqfmmtiokfk8ds5
 https://multiup.io/download/1ac348326f8df02865713c450d8e0d89/[PSP]%20God%20of%20War%20Chains%20of%20Olympus.chd
+https://drive.google.com/file/d/1h9dFcgdZEDTDD-ElGDadamRnItDSs5Me/view?usp=sharing
+https://www.mediafire.com/file/xksdur9szp2o1ve/[PSP]+God+of+War+Chains+of+Olympus.iso/file
+https://vikingfile.com/f/RxaKa1zC8V
+https://pixeldrain.com/u/XfvfLtEH
+https://1fichier.com/?3qkg51wdcaukbhox5tmx
+https://multiup.io/download/02e9ca09d6423fe09dece5adc4513f3c/[PSP]%20God%20of%20War%20Chains%20of%20Olympus.iso
 https://sfl.gl/kdJj
 https://sfl.gl/987B8T
 https://sfl.gl/x3pyjzej
@@ -1676,29 +1680,7 @@ function escapeHTML(text) {
             let adLinks2HTML = '';
             let originalLinksHTML = '';
             
-            // ISO Links
-            if (gameData.isoCount > 0) {
-                adLinks1HTML += `<h4>ISO Link PSP (Link Iklan 1)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-                adLinks2HTML += `<h4>ISO Link PSP (Link Iklan 2)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-                originalLinksHTML += `<h4>ISO Link PSP (Link Asli)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-                
-                for (let i = 0; i < gameData.isoCount; i++) {
-                    const cloudName = gameData.cloudISO[i] || 'Unknown';
-                    const btnColor = getCloudColorClass(cloudName);
-                    const adLink1 = gameData.adLinksISO[i] || '#';
-                    const adLink2 = gameData.adLinks2ISO[i] || '#';
-                    
-                    adLinks1HTML += `<a href="${adLink1}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-                    adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
-                    originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink(event,'iso',${i})">${cloudName}</button> `;
-                }
-                
-                adLinks1HTML += `</div>`;
-                adLinks2HTML += `</div>`;
-                originalLinksHTML += `</div>`;
-            }
-            
-            // CHD Links
+            // CHD Links - DIATAS ISO
             if (gameData.chdCount > 0) {
                 adLinks1HTML += `<h4>CHD Link PSP (Link Iklan 1)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
                 adLinks2HTML += `<h4>CHD Link PSP (Link Iklan 2)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
@@ -1713,6 +1695,28 @@ function escapeHTML(text) {
                     adLinks1HTML += `<a href="${adLink1}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
                     adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
                     originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink(event,'chd',${i})">${cloudName}</button> `;
+                }
+                
+                adLinks1HTML += `</div>`;
+                adLinks2HTML += `</div>`;
+                originalLinksHTML += `</div>`;
+            }
+            
+            // ISO Links - DIBAWAH CHD
+            if (gameData.isoCount > 0) {
+                adLinks1HTML += `<h4>ISO Link PSP (Link Iklan 1)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                adLinks2HTML += `<h4>ISO Link PSP (Link Iklan 2)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                originalLinksHTML += `<h4>ISO Link PSP (Link Asli)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                
+                for (let i = 0; i < gameData.isoCount; i++) {
+                    const cloudName = gameData.cloudISO[i] || 'Unknown';
+                    const btnColor = getCloudColorClass(cloudName);
+                    const adLink1 = gameData.adLinksISO[i] || '#';
+                    const adLink2 = gameData.adLinks2ISO[i] || '#';
+                    
+                    adLinks1HTML += `<a href="${adLink1}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                    adLinks2HTML += `<a href="${adLink2}" target="_blank" class="btn ${btnColor} btn-cloud">${cloudName}</a> `;
+                    originalLinksHTML += `<button class="btn ${btnColor} btn-cloud" data-original-text="${cloudName}" onclick="accessOriginalLink(event,'iso',${i})">${cloudName}</button> `;
                 }
                 
                 adLinks1HTML += `</div>`;
