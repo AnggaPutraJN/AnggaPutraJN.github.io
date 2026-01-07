@@ -409,11 +409,12 @@
                             </div>
                             <div class="col-md-4">
                                 <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
-                                    Load Cache (Ke Step 2)
+                                    Load Cache (Ke Step 3)
                                 </button>
                             </div>
                         </div>
-                        <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis.</small>
+                        <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis, lalu langsung ke Step 3.</small>
+
                     </div>
                 </div>
             </div>
@@ -477,10 +478,11 @@
                                             <li>Baris 3: Ukuran Game ISO</li>
                                             <li>Baris 4: Category</li>
                                             <li>Baris 5: Language</li>
-                                            <li>Baris 6-...: Link Iklan 1 (sesuai jumlah yang diinput di Step 1)</li>
-                                            <li>Baris berikutnya: Link Iklan 2 (sesuai jumlah yang diinput di Step 1)</li>
-                                            <li>Baris terakhir: Link Asli (sesuai jumlah yang diinput di Step 1)</li>
+                                            <li>Baris 6-...: <strong>Link Asli</strong> (sesuai jumlah yang diinput di Step 1)</li>
+                                            <li>Baris berikutnya: <strong>Link Iklan 1</strong> (sesuai jumlah yang diinput di Step 1)</li>
+                                            <li>Baris terakhir: <strong>Link Iklan 2</strong> (sesuai jumlah yang diinput di Step 1)</li>
                                         </ul>
+                                        <strong>URUTAN PENTING:</strong> Link Asli → Link Iklan 1 → Link Iklan 2
                                     </div>
                                     
                                     <div class="mb-3">
@@ -496,12 +498,16 @@ Rogue Galaxy
 6.49 GB
 Action RPG
 USA
+https://drive.google.com/file/d/1h9dFcgdZEDTDD-ElGDadamRnItDSs5Me/view?usp=sharing
+https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).iso/file
+...
 https://sfl.gl/kdJj
 https://sfl.gl/987B8T
 ...
-https://drive.google.com/file/d/1h9dFcgdZEDTDD-ElGDadamRnItDSs5Me/view?usp=sharing
-https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).iso/file"></textarea>
-                                        <div class="form-text">Paste semua data sekaligus, sistem akan otomatis mengisi form</div>
+http://link.indapk.com/adcMqDr
+http://link.indapk.com/og99VR
+..."></textarea>
+                                        <div class="form-text">Paste semua data sekaligus, sistem akan otomatis mengisi form. <strong>Urutan link: Asli → Iklan 1 → Iklan 2</strong></div>
                                     </div>
                                     
                                     <div class="d-flex gap-2">
@@ -546,6 +552,15 @@ https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).i
                             </div>
                         </div>
                         
+                        <!-- Input Link Asli -->
+                        <div class="mt-4">
+                            <h5><i class="bi bi-link"></i> Link Asli</h5>
+                            <div id="originalLinksInput">
+                                <!-- Akan diisi oleh JavaScript -->
+                            </div>
+                        </div>
+                        
+
                         <!-- Input Link Iklan 1 -->
                         <div class="mt-4">
                             <h5><i class="bi bi-link-45deg"></i> Link Iklan 1 (INDapk Short)</h5>
@@ -558,14 +573,6 @@ https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).i
                         <div class="mt-4">
                             <h5><i class="bi bi-link"></i> Link Iklan 2 (Semawur Short)</h5>
                             <div id="adLinks2Input">
-                                <!-- Akan diisi oleh JavaScript -->
-                            </div>
-                        </div>
-                        
-                        <!-- Input Link Asli -->
-                        <div class="mt-4">
-                            <h5><i class="bi bi-link"></i> Link Asli</h5>
-                            <div id="originalLinksInput">
                                 <!-- Akan diisi oleh JavaScript -->
                             </div>
                         </div>
@@ -814,22 +821,26 @@ https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).i
             }
         }
         
-        function applyCloudCache(cache) {
-            gameData.isoCount = cache.isoCount || 0;
-            gameData.chdCount = cache.chdCount || 0;
-            gameData.cloudISO = cache.cloudISO || [];
-            gameData.cloudCHD = cache.cloudCHD || [];
-            
-            document.getElementById('isoCount').value = gameData.isoCount;
-            document.getElementById('chdCount').value = gameData.chdCount;
-            
-            generateCloudSelection();
-            
-            const nameEl = document.getElementById('cacheName');
-            if (nameEl) nameEl.value = cache.name;
-            
-            showStep(2);
-        }
+function applyCloudCache(cache) {
+    gameData.isoCount = cache.isoCount || 0;
+    gameData.chdCount = cache.chdCount || 0;
+    gameData.cloudISO = cache.cloudISO || [];
+    gameData.cloudCHD = cache.cloudCHD || [];
+    
+    document.getElementById('isoCount').value = gameData.isoCount;
+    document.getElementById('chdCount').value = gameData.chdCount;
+    
+    // tetap dibuat (biar state cloud-nya siap)
+    generateCloudSelection();
+    
+    const nameEl = document.getElementById('cacheName');
+    if (nameEl) nameEl.value = cache.name;
+    
+    // langsung siapkan Step 3
+    generateLinkInputFields();
+    showStep(3);
+}
+
         
         function loadCloudCacheByName(name) {
             const caches = getCloudCaches();
@@ -839,7 +850,8 @@ https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).i
                 return;
             }
             applyCloudCache(cache);
-            showToast('info', `Cache "${name}" dimuat. Kamu sudah di Step 2.`);
+            showToast('info', `Cache "${name}" dimuat. Kamu sudah di Step 3.`);
+
         }
         
         function loadCloudCacheFromStep1() {
@@ -873,6 +885,33 @@ https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).i
             showToast('warning', `Cache "${name}" dihapus.`);
         }
         
+
+function toStr(v) {
+    return (v === null || v === undefined) ? '' : String(v);
+}
+
+function parseArray(v) {
+    if (Array.isArray(v)) return v;
+
+    if (typeof v === 'string') {
+        const s = v.trim();
+        if (!s) return [];
+        // Coba parse JSON array
+        try {
+            const parsed = JSON.parse(s);
+            if (Array.isArray(parsed)) return parsed;
+        } catch (e) {
+            // lanjut ke fallback
+        }
+        // fallback kalau ternyata string biasa
+        if (s.includes('\n')) return s.split('\n').map(x => x.trim()).filter(Boolean);
+        if (s.includes(','))  return s.split(',').map(x => x.trim()).filter(Boolean);
+        return [s];
+    }
+
+    return [];
+}
+
         // ===================== SETUP EVENT LISTENERS =====================
         function setupEventListeners() {
             // Step navigation
@@ -1175,64 +1214,35 @@ https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).i
             document.getElementById('category').value = basicData.category;
             document.getElementById('language').value = basicData.language;
             
-            // Parse link iklan dan asli
+            // Parse link dengan urutan BARU: Link Asli -> Link Iklan 1 -> Link Iklan 2
             const remainingLines = lines.slice(5);
             
             const totalExpectedLinks = gameData.isoCount + gameData.chdCount;
-            const totalExpectedAllLinks = totalExpectedLinks * 3; // iklan 1 + iklan 2 + asli
+            const totalExpectedAllLinks = totalExpectedLinks * 3; // asli + iklan 1 + iklan 2
             
             if (remainingLines.length < totalExpectedAllLinks) {
-                const warning = `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedLinks} iklan 1 + ${totalExpectedLinks} iklan 2 + ${totalExpectedLinks} asli).`;
+                const warning = `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedLinks} asli + ${totalExpectedLinks} iklan 1 + ${totalExpectedLinks} iklan 2).`;
                 showWarningModal(warning);
             }
             
-            // Pisahkan link iklan 1, iklan 2, dan asli
-            const adLinks1 = remainingLines.slice(0, totalExpectedLinks);
-            const adLinks2 = remainingLines.slice(totalExpectedLinks, totalExpectedLinks * 2);
-            const originalLinks = remainingLines.slice(totalExpectedLinks * 2, totalExpectedLinks * 3);
+            // Pisahkan link dengan urutan BARU:
+            // 1. Link Asli (pertama)
+            // 2. Link Iklan 1 (kedua)
+            // 3. Link Iklan 2 (ketiga)
+            const originalLinks = remainingLines.slice(0, totalExpectedLinks);
+            const adLinks1 = remainingLines.slice(totalExpectedLinks, totalExpectedLinks * 2);
+            const adLinks2 = remainingLines.slice(totalExpectedLinks * 2, totalExpectedLinks * 3);
             
-            // Isi link iklan 1
+            // Reset arrays
+            gameData.originalLinksISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.originalLinksCHD = new Array(gameData.chdCount || 0).fill('');
+            gameData.adLinksISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.adLinksCHD = new Array(gameData.chdCount || 0).fill('');
+            gameData.adLinks2ISO = new Array(gameData.isoCount || 0).fill('');
+            gameData.adLinks2CHD = new Array(gameData.chdCount || 0).fill('');
+            
+            // Isi Link Asli (ISO)
             let linkIndex = 0;
-            
-            // ISO Links
-            for (let i = 0; i < gameData.isoCount; i++) {
-                if (adLinks1[linkIndex]) {
-                    gameData.adLinksISO[i] = adLinks1[linkIndex];
-                }
-                linkIndex++;
-            }
-            
-            // CHD Links
-            for (let i = 0; i < gameData.chdCount; i++) {
-                if (adLinks1[linkIndex]) {
-                    gameData.adLinksCHD[i] = adLinks1[linkIndex];
-                }
-                linkIndex++;
-            }
-            
-            // Isi link iklan 2
-            linkIndex = 0;
-            
-            // ISO Links
-            for (let i = 0; i < gameData.isoCount; i++) {
-                if (adLinks2[linkIndex]) {
-                    gameData.adLinks2ISO[i] = adLinks2[linkIndex];
-                }
-                linkIndex++;
-            }
-            
-            // CHD Links
-            for (let i = 0; i < gameData.chdCount; i++) {
-                if (adLinks2[linkIndex]) {
-                    gameData.adLinks2CHD[i] = adLinks2[linkIndex];
-                }
-                linkIndex++;
-            }
-            
-            // Isi link asli
-            linkIndex = 0;
-            
-            // ISO Links
             for (let i = 0; i < gameData.isoCount; i++) {
                 if (originalLinks[linkIndex]) {
                     gameData.originalLinksISO[i] = originalLinks[linkIndex];
@@ -1240,7 +1250,7 @@ https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).i
                 linkIndex++;
             }
             
-            // CHD Links
+            // Isi Link Asli (CHD)
             for (let i = 0; i < gameData.chdCount; i++) {
                 if (originalLinks[linkIndex]) {
                     gameData.originalLinksCHD[i] = originalLinks[linkIndex];
@@ -1248,71 +1258,104 @@ https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).i
                 linkIndex++;
             }
             
+            // Isi Link Iklan 1 (ISO)
+            linkIndex = 0;
+            for (let i = 0; i < gameData.isoCount; i++) {
+                if (adLinks1[linkIndex]) {
+                    gameData.adLinksISO[i] = adLinks1[linkIndex];
+                }
+                linkIndex++;
+            }
+            
+            // Isi Link Iklan 1 (CHD)
+            for (let i = 0; i < gameData.chdCount; i++) {
+                if (adLinks1[linkIndex]) {
+                    gameData.adLinksCHD[i] = adLinks1[linkIndex];
+                }
+                linkIndex++;
+            }
+            
+            // Isi Link Iklan 2 (ISO)
+            linkIndex = 0;
+            for (let i = 0; i < gameData.isoCount; i++) {
+                if (adLinks2[linkIndex]) {
+                    gameData.adLinks2ISO[i] = adLinks2[linkIndex];
+                }
+                linkIndex++;
+            }
+            
+            // Isi Link Iklan 2 (CHD)
+            for (let i = 0; i < gameData.chdCount; i++) {
+                if (adLinks2[linkIndex]) {
+                    gameData.adLinks2CHD[i] = adLinks2[linkIndex];
+                }
+                linkIndex++;
+            }
+            
             updateLinkInputsUI();
         }
         
-function updateLinkInputsUI() {
-    const adLinksContainer = document.getElementById('adLinksInput');
-    const adLinks2Container = document.getElementById('adLinks2Input');
-    const originalLinksContainer = document.getElementById('originalLinksInput');
+        function updateLinkInputsUI() {
+            const adLinksContainer = document.getElementById('adLinksInput');
+            const adLinks2Container = document.getElementById('adLinks2Input');
+            const originalLinksContainer = document.getElementById('originalLinksInput');
 
-    if (!adLinksContainer || !originalLinksContainer) return;
+            if (!adLinksContainer || !originalLinksContainer) return;
 
-    // ISO
-    if (gameData.isoCount > 0) {
-        const isoSection = adLinksContainer.querySelector('[data-type="adLinksISO"]');
-        if (isoSection) {
-            isoSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                if (gameData.adLinksISO[index]) input.value = gameData.adLinksISO[index];
-            });
-        }
+            // ISO
+            if (gameData.isoCount > 0) {
+                const isoSection = adLinksContainer.querySelector('[data-type="adLinksISO"]');
+                if (isoSection) {
+                    isoSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.adLinksISO[index]) input.value = gameData.adLinksISO[index];
+                    });
+                }
 
-        if (adLinks2Container) {
-            const iso2Section = adLinks2Container.querySelector('[data-type="adLinks2ISO"]');
-            if (iso2Section) {
-                iso2Section.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                    if (gameData.adLinks2ISO[index]) input.value = gameData.adLinks2ISO[index];
-                });
-            }
-        }
-
-        const isoOriginalSection = originalLinksContainer.querySelector('[data-type="originalLinksISO"]');
-        if (isoOriginalSection) {
-            isoOriginalSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                if (gameData.originalLinksISO[index]) input.value = gameData.originalLinksISO[index];
-            });
-        }
-    }
-
-    // CHD
-    if (gameData.chdCount > 0) {
-        const chdSection = adLinksContainer.querySelector('[data-type="adLinksCHD"]');
-        if (chdSection) {
-            chdSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                if (gameData.adLinksCHD[index]) input.value = gameData.adLinksCHD[index];
-            });
-        }
-
-        if (adLinks2Container) {
-            const chd2Section = adLinks2Container.querySelector('[data-type="adLinks2CHD"]');
-            if (chd2Section) {
-                chd2Section.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                    if (gameData.adLinks2CHD[index]) {
-                        input.value = gameData.adLinks2CHD[index];
+                if (adLinks2Container) {
+                    const iso2Section = adLinks2Container.querySelector('[data-type="adLinks2ISO"]');
+                    if (iso2Section) {
+                        iso2Section.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                            if (gameData.adLinks2ISO[index]) input.value = gameData.adLinks2ISO[index];
+                        });
                     }
-                });
+                }
+
+                const isoOriginalSection = originalLinksContainer.querySelector('[data-type="originalLinksISO"]');
+                if (isoOriginalSection) {
+                    isoOriginalSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.originalLinksISO[index]) input.value = gameData.originalLinksISO[index];
+                    });
+                }
+            }
+
+            // CHD
+            if (gameData.chdCount > 0) {
+                const chdSection = adLinksContainer.querySelector('[data-type="adLinksCHD"]');
+                if (chdSection) {
+                    chdSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.adLinksCHD[index]) input.value = gameData.adLinksCHD[index];
+                    });
+                }
+
+                if (adLinks2Container) {
+                    const chd2Section = adLinks2Container.querySelector('[data-type="adLinks2CHD"]');
+                    if (chd2Section) {
+                        chd2Section.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                            if (gameData.adLinks2CHD[index]) {
+                                input.value = gameData.adLinks2CHD[index];
+                            }
+                        });
+                    }
+                }
+
+                const chdOriginalSection = originalLinksContainer.querySelector('[data-type="originalLinksCHD"]');
+                if (chdOriginalSection) {
+                    chdOriginalSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
+                        if (gameData.originalLinksCHD[index]) input.value = gameData.originalLinksCHD[index];
+                    });
+                }
             }
         }
-
-        const chdOriginalSection = originalLinksContainer.querySelector('[data-type="originalLinksCHD"]');
-        if (chdOriginalSection) {
-            chdOriginalSection.querySelectorAll('input[type="text"]').forEach((input, index) => {
-                if (gameData.originalLinksCHD[index]) input.value = gameData.originalLinksCHD[index];
-            });
-        }
-    }
-}
-
         
         function clearPasteArea() {
             const pasteArea = document.getElementById('pasteArea');
@@ -1326,6 +1369,18 @@ function updateLinkInputsUI() {
 6.49 GB
 Action RPG
 USA
+https://drive.google.com/file/d/1h9dFcgdZEDTDD-ElGDadamRnItDSs5Me/view?usp=sharing
+https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).iso/file
+https://vikingfile.com/f/RxaKa1zC8V
+https://pixeldrain.com/u/XfvfLtEH
+https://1fichier.com/?3qkg51wdcaukbhox5tmx
+https://multiup.io/download/02e9ca09d6423fe09dece5adc4513f3c/%5BINDapk.com%5D%20Rogue%20Galaxy%20%28USA%29.iso
+https://drive.google.com/file/d/1emBpO4FugBIxq46SkWRQOlKgTFbHWl2s/view?usp=sharing
+https://www.mediafire.com/file/izf1dns4ljcguvv/[INDapk.com]+Rogue+Galaxy+(USA).chd/file
+https://vikingfile.com/f/9XHk8PUb2P
+https://pixeldrain.com/u/R8b1b1qn
+https://1fichier.com/?igvh9eqfmmtiokfk8ds5
+https://multiup.io/download/1ac348326f8df02865713c450d8e0d89/%5BINDapk.com%5D%20Rogue%20Galaxy%20%28USA%29.chd
 https://sfl.gl/kdJj
 https://sfl.gl/987B8T
 https://sfl.gl/x3pyjzej
@@ -1349,19 +1404,7 @@ http://link.indapk.com/tj4z
 http://link.indapk.com/XXtQxz1X
 http://link.indapk.com/mRGRjcX1
 http://link.indapk.com/QLPwH2
-http://link.indapk.com/G8ua
-https://drive.google.com/file/d/1h9dFcgdZEDTDD-ElGDadamRnItDSs5Me/view?usp=sharing
-https://www.mediafire.com/file/xksdur9szp2o1ve/[INDapk.com]+Rogue+Galaxy+(USA).iso/file
-https://vikingfile.com/f/RxaKa1zC8V
-https://pixeldrain.com/u/XfvfLtEH
-https://1fichier.com/?3qkg51wdcaukbhox5tmx
-https://multiup.io/download/02e9ca09d6423fe09dece5adc4513f3c/%5BINDapk.com%5D%20Rogue%20Galaxy%20%28USA%29.iso
-https://drive.google.com/file/d/1emBpO4FugBIxq46SkWRQOlKgTFbHWl2s/view?usp=sharing
-https://www.mediafire.com/file/izf1dns4ljcguvv/[INDapk.com]+Rogue+Galaxy+(USA).chd/file
-https://vikingfile.com/f/9XHk8PUb2P
-https://pixeldrain.com/u/R8b1b1qn
-https://1fichier.com/?igvh9eqfmmtiokfk8ds5
-https://multiup.io/download/1ac348326f8df02865713c450d8e0d89/%5BINDapk.com%5D%20Rogue%20Galaxy%20%28USA%29.chd`;
+http://link.indapk.com/G8ua`;
             
             document.getElementById('pasteArea').value = exampleText;
             showToast('info', 'Contoh data PS2 telah dimuat. Klik "Parse & Auto Fill" untuk mengisi form.');
@@ -1466,17 +1509,17 @@ https://multiup.io/download/1ac348326f8df02865713c450d8e0d89/%5BINDapk.com%5D%20
         }
         
         // ===================== GENERATE HTML =====================
-        function escapeHTML(text) {
-            if (!text) return '';
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;")
-                .replace(/\//g, "&#47;");
-        }
-        
+function escapeHTML(text) {
+    const s = toStr(text);
+    return s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/\//g, "&#47;");
+}
+
         function createHTMLTemplate() {
             // Helper function untuk cloud color
             const getCloudColorClass = (cloud) => {
@@ -2395,13 +2438,14 @@ https://multiup.io/download/1ac348326f8df02865713c450d8e0d89/%5BINDapk.com%5D%20
             URL.revokeObjectURL(url);
         }
         
-        function normalizeFilename(name) {
-            return (name || 'game')
-                .replace(/[^a-z0-9]/gi, '_')
-                .toLowerCase()
-                .replace(/_+/g, '_')
-                .replace(/^_+|_+$/g, '');
-        }
+function normalizeFilename(name) {
+    return toStr(name || 'game')
+        .replace(/[^a-z0-9]/gi, '_')
+        .toLowerCase()
+        .replace(/_+/g, '_')
+        .replace(/^_+|_+$/g, '');
+}
+
         
         async function loadSavedGames() {
             const tbody = document.getElementById('savedGamesBody');
@@ -2506,30 +2550,36 @@ https://multiup.io/download/1ac348326f8df02865713c450d8e0d89/%5BINDapk.com%5D%20
             return result.data;
         }
         
-        function applyServerGameToGameData(serverGame) {
-            gameData.cloudISO = serverGame.cloud_iso || [];
-            gameData.cloudCHD = serverGame.cloud_chd || [];
-            
-            gameData.isoCount = gameData.cloudISO.length;
-            gameData.chdCount = gameData.cloudCHD.length;
-            
-            gameData.adLinksISO = serverGame.link_iklan_iso || [];
-            gameData.adLinksCHD = serverGame.link_iklan_chd || [];
-            gameData.adLinks2ISO = serverGame.link_iklan2_iso || [];
-            gameData.adLinks2CHD = serverGame.link_iklan2_chd || [];
-            gameData.originalLinksISO = serverGame.link_asli_iso || [];
-            gameData.originalLinksCHD = serverGame.link_asli_chd || [];
-            
-            gameData.gameInfo = {
-                nama_game: serverGame.nama_game || '',
-                ukuran_iso: serverGame.ukuran_iso || '',
-                ukuran_chd: serverGame.ukuran_chd || '',
-                category: serverGame.category || '',
-                language: serverGame.language || ''
-            };
-            
-            gameData.downloadId = serverGame.download_id || '';
-        }
+function applyServerGameToGameData(serverGame) {
+    // Parse array yang kadang datang sebagai JSON string
+    gameData.cloudISO = parseArray(serverGame.cloud_iso);
+    gameData.cloudCHD = parseArray(serverGame.cloud_chd);
+
+    gameData.isoCount = gameData.cloudISO.length;
+    gameData.chdCount = gameData.cloudCHD.length;
+
+    gameData.adLinksISO = parseArray(serverGame.link_iklan_iso);
+    gameData.adLinksCHD = parseArray(serverGame.link_iklan_chd);
+
+    gameData.adLinks2ISO = parseArray(serverGame.link_iklan2_iso);
+    gameData.adLinks2CHD = parseArray(serverGame.link_iklan2_chd);
+
+    gameData.originalLinksISO = parseArray(serverGame.link_asli_iso);
+    gameData.originalLinksCHD = parseArray(serverGame.link_asli_chd);
+
+    // Paksa gameInfo jadi string semua
+    gameData.gameInfo = {
+        nama_game: toStr(serverGame.nama_game),
+        ukuran_iso: toStr(serverGame.ukuran_iso),
+        ukuran_chd: toStr(serverGame.ukuran_chd),
+        category: toStr(serverGame.category),
+        language: toStr(serverGame.language)
+    };
+
+    // downloadId juga dipaksa string
+    gameData.downloadId = toStr(serverGame.download_id);
+}
+
         
         async function previewSavedHtml(downloadId) {
             try {
