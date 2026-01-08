@@ -843,7 +843,8 @@
           </div>
           <div class="card-body">
             <div class="row mb-4">
-              <div class="col-md-6">
+              <!-- Only ORI -->
+              <div class="col-md-4">
                 <div class="card text-center h-100">
                   <div class="card-body">
                     <i class="bi bi-phone" style="font-size: 3rem; color: #34a853;"></i>
@@ -855,7 +856,9 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-6">
+              
+              <!-- ORI dan MOD -->
+              <div class="col-md-4">
                 <div class="card text-center h-100">
                   <div class="card-body">
                     <i class="bi bi-phone-fill" style="font-size: 3rem; color: #f59e0b;"></i>
@@ -863,6 +866,20 @@
                     <p class="text-muted">Game dengan versi original dan mod</p>
                     <button id="btnOriMod" class="btn btn-warning w-100">
                       <i class="bi bi-magic"></i> Pilih Game ORI+MOD
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- ONLY MOD (BARU) -->
+              <div class="col-md-4">
+                <div class="card text-center h-100">
+                  <div class="card-body">
+                    <i class="bi bi-stars" style="font-size: 3rem; color: #dc3545;"></i>
+                    <h5 class="mt-3">Game ONLY MOD</h5>
+                    <p class="text-muted">Hanya versi MOD saja, tanpa ORI</p>
+                    <button id="btnOnlyMod" class="btn btn-danger w-100">
+                      <i class="bi bi-magic"></i> Pilih ONLY MOD
                     </button>
                   </div>
                 </div>
@@ -974,16 +991,8 @@
                     <i class="bi bi-info-circle-fill"></i>
                     <div>
                       <strong>Instruksi:</strong> Paste seluruh data game dalam format berikut:
-                      <ul class="mb-2 mt-2">
-                        <li>Baris 1: Nama Game</li>
-                        <li>Baris 2: Ukuran Game ORI</li>
-                        <li>Baris 3: Ukuran Game MOD (jika ada)</li>
-                        <li>Baris 4: Category</li>
-                        <li>Baris 5: Versi Game</li>
-                        <li>Baris 6: Mod Game (jika MOD)</li>
-                        <li>Baris berikutnya: Link Asli (sesuai jumlah yang diinput)</li>
-                        <li>Baris berikutnya: Link Iklan 1 (sesuai jumlah yang diinput)</li>
-                        <li>Baris terakhir: Link Iklan 2 (sesuai jumlah yang diinput)</li>
+                      <ul class="mb-2 mt-2" id="pasteInstructions">
+                        <!-- Instructions will be filled dynamically based on game type -->
                       </ul>
                     </div>
                   </div>
@@ -1108,37 +1117,28 @@
     
     // Data state
     let currentStep = 1;
-    let gameType = ''; // 'ori-only' atau 'ori-mod'
-let gameData = {
-  type: '',
-  modCount: 0,      // INI SEKARANG = JUMLAH FITUR MOD (contoh: 2 MOD)
-  linkCount: 0,
-  cloudSelection: [],
-  oriGame: {
-    name: '',
-    sizeOri: '',
-    sizeMod: '',
-    category: '',
-    version: '',
-    originalLinks: [],
-    adLinks1: [],
-    adLinks2: []
-  },
-  modGame: null,    // INI CUMA 1 DATA MOD
-  downloadId: null
-};
-
+    let gameType = ''; // 'ori-only', 'ori-mod', atau 'only-mod'
+    let gameData = {
+      type: '',
+      modCount: 0,      // JUMLAH FITUR MOD (contoh: 2 MOD)
+      linkCount: 0,
+      cloudSelection: [],
+      oriGame: null,    // NULL untuk only-mod
+      modGame: null,    // 1 DATA MOD
+      downloadId: null
+    };
     
     let currentUser = null;
+    
     function escapeHTML(str) {
-  const s = (str === undefined || str === null) ? '' : String(str);
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
+      const s = (str === undefined || str === null) ? '' : String(str);
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
 
     // Cloud options untuk Game Android
     const CLOUD_OPTIONS = [
@@ -1162,8 +1162,9 @@ let gameData = {
       // Step navigation
       document.getElementById('btnOriOnly').addEventListener('click', () => selectGameType('ori-only'));
       document.getElementById('btnOriMod').addEventListener('click', () => selectGameType('ori-mod'));
+      document.getElementById('btnOnlyMod').addEventListener('click', () => selectGameType('only-mod')); // NEW
       document.getElementById('btnPrev2').addEventListener('click', prevStep);
-     document.getElementById('btnNext2').addEventListener('click', nextStep2);
+      document.getElementById('btnNext2').addEventListener('click', nextStep2);
       document.getElementById('btnNext3').addEventListener('click', showStep4);
       document.getElementById('btnPrev3').addEventListener('click', prevStep);
       document.getElementById('btnPrev4').addEventListener('click', prevStep);
@@ -1173,31 +1174,31 @@ let gameData = {
       document.getElementById('btnDownloadHTML').addEventListener('click', downloadHTML);
       document.getElementById('btnNewGame').addEventListener('click', newGame);
       // Saved tab buttons
-        document.getElementById('btnRefreshSaved').addEventListener('click', loadSavedGames);
+      document.getElementById('btnRefreshSaved').addEventListener('click', loadSavedGames);
 
-        document.getElementById('savedSearch').addEventListener('input', debounce(async (e) => {
-          const keyword = (e.target.value || '').trim();
-          await searchSavedGames(keyword);
-        }, 300));
+      document.getElementById('savedSearch').addEventListener('input', debounce(async (e) => {
+        const keyword = (e.target.value || '').trim();
+        await searchSavedGames(keyword);
+      }, 300));
 
-        document.getElementById('btnCopySavedHTML').addEventListener('click', () => {
-          if (!window.__savedHtmlSource) return alert('Belum ada preview.');
-          navigator.clipboard.writeText(window.__savedHtmlSource);
-          alert('✅ HTML (Saved) berhasil disalin!');
-        });
+      document.getElementById('btnCopySavedHTML').addEventListener('click', () => {
+        if (!window.__savedHtmlSource) return alert('Belum ada preview.');
+        navigator.clipboard.writeText(window.__savedHtmlSource);
+        alert('✅ HTML (Saved) berhasil disalin!');
+      });
 
-        document.getElementById('btnDownloadSavedHTML').addEventListener('click', () => {
-          if (!window.__savedHtmlSource) return alert('Belum ada preview.');
-          const blob = new Blob([window.__savedHtmlSource], { type: 'text/html' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `saved_${Date.now()}.html`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        });
+      document.getElementById('btnDownloadSavedHTML').addEventListener('click', () => {
+        if (!window.__savedHtmlSource) return alert('Belum ada preview.');
+        const blob = new Blob([window.__savedHtmlSource], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `saved_${Date.now()}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
 
       
       // Cache buttons
@@ -1213,12 +1214,12 @@ let gameData = {
     
 
     function debounce(fn, delay = 300) {
-  let t = null;
-  return (...args) => {
-    clearTimeout(t);
-    t = setTimeout(() => fn(...args), delay);
-  };
-}
+      let t = null;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), delay);
+      };
+    }
 
     // ===================== STEP NAVIGATION =====================
     function showStep(step) {
@@ -1230,191 +1231,211 @@ let gameData = {
     }
     
 
-
     async function searchSavedGames(keyword) {
-  const tbody = document.getElementById('savedGamesBody');
-  tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Loading...</td></tr>';
+      const tbody = document.getElementById('savedGamesBody');
+      tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Loading...</td></tr>';
 
-  try {
-    const body = keyword
-      ? ('action=searchGames&keyword=' + encodeURIComponent(keyword))
-      : 'action=getAllGames';
+      try {
+        const body = keyword
+          ? ('action=searchGames&keyword=' + encodeURIComponent(keyword))
+          : 'action=getAllGames';
 
-    const response = await fetch(GAME_ANDROID_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body
-    });
+        const response = await fetch(GAME_ANDROID_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body
+        });
 
-    const result = await response.json();
-    if (result.status !== 'success') throw new Error(result.message || 'Gagal search');
+        const result = await response.json();
+        if (result.status !== 'success') throw new Error(result.message || 'Gagal search');
 
-    const games = result.data || [];
-    if (!games.length) {
-      tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Tidak ada data.</td></tr>';
-      return;
+        const games = result.data || [];
+        if (!games.length) {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Tidak ada data.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = games.map(game => `
+          <tr>
+            <td><code>${escapeHTML(game.download_id)}</code></td>
+            <td>${escapeHTML(game.nama_game)}</td>
+            <td>${escapeHTML(game.category)}</td>
+            <td>${escapeHTML(game.versi_game)}</td>
+            <td>${new Date(game.timestamp).toLocaleString()}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" onclick="previewSavedGame('${escapeHTML(game.download_id)}')">
+                <i class="bi bi-eye"></i> Preview
+              </button>
+            </td>
+          </tr>
+        `).join('');
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Error: ${escapeHTML(err.message)}</td></tr>`;
+      }
     }
 
-    tbody.innerHTML = games.map(game => `
-      <tr>
-        <td><code>${escapeHTML(game.download_id)}</code></td>
-        <td>${escapeHTML(game.nama_game)}</td>
-        <td>${escapeHTML(game.category)}</td>
-        <td>${escapeHTML(game.versi_game)}</td>
-        <td>${new Date(game.timestamp).toLocaleString()}</td>
-        <td>
-          <button class="btn btn-sm btn-outline-primary" onclick="previewSavedGame('${escapeHTML(game.download_id)}')">
-            <i class="bi bi-eye"></i> Preview
-          </button>
-        </td>
-      </tr>
-    `).join('');
+    async function previewSavedGame(downloadId) {
+      const wrap = document.getElementById('savedPreviewSection');
+      const previewBox = document.getElementById('savedHtmlPreview');
 
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Error: ${escapeHTML(err.message)}</td></tr>`;
-  }
-}
+      wrap.style.display = 'block';
+      previewBox.innerHTML = '<div class="text-muted">Loading preview...</div>';
 
-async function previewSavedGame(downloadId) {
-  const wrap = document.getElementById('savedPreviewSection');
-  const previewBox = document.getElementById('savedHtmlPreview');
+      try {
+        const response = await fetch(GAME_ANDROID_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'action=getGameByDownloadId&download_id=' + encodeURIComponent(downloadId)
+        });
 
-  wrap.style.display = 'block';
-  previewBox.innerHTML = '<div class="text-muted">Loading preview...</div>';
+        const result = await response.json();
+        if (result.status !== 'success') throw new Error(result.message || 'Game tidak ditemukan');
 
-  try {
-    const response = await fetch(GAME_ANDROID_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'action=getGameByDownloadId&download_id=' + encodeURIComponent(downloadId)
-    });
+        // Ambil data lengkap dari kolom Notes (game_data)
+        const full = result.data?.game_data;
+        if (!full) throw new Error('game_data kosong. Pastikan kolom Notes menyimpan JSON.');
 
-    const result = await response.json();
-    if (result.status !== 'success') throw new Error(result.message || 'Game tidak ditemukan');
+        // Build HTML pakai template generator yang sama (fungsi createHTMLTemplate kamu)
+        // Kita inject sementara ke gameData supaya hasil template konsisten.
+        const backup = JSON.parse(JSON.stringify(gameData));
+        const backupId = gameData.downloadId;
 
-    // Ambil data lengkap dari kolom Notes (game_data)
-    const full = result.data?.game_data;
-    if (!full) throw new Error('game_data kosong. Pastikan kolom Notes menyimpan JSON.');
+        // bentuk gameData sesuai struktur yang dipakai createHTMLTemplate()
+        gameData = {
+          type: full.type || 'ori-only',
+          modCount: full.modCount || 0,
+          linkCount: full.linkCount || 0,
+          cloudSelection: full.cloud || { original: [], ad1: [], ad2: [] },
+          oriGame: full.oriGame || {},
+          modGame: (full.modGames && full.modGames[0]) ? full.modGames[0] : null,
+          downloadId: result.data.download_id
+        };
 
-    // Build HTML pakai template generator yang sama (fungsi createHTMLTemplate kamu)
-    // Kita inject sementara ke gameData supaya hasil template konsisten.
-    const backup = JSON.parse(JSON.stringify(gameData));
-    const backupId = gameData.downloadId;
+        const html = createHTMLTemplate(); // pakai versi createHTMLTemplate yang sudah kamu update di bagian (2) bawah
+        window.__savedHtmlSource = html;
 
-    // bentuk gameData sesuai struktur yang dipakai createHTMLTemplate()
-    gameData = {
-      type: full.type || 'ori-only',
-      modCount: full.modCount || 0,
-      linkCount: full.linkCount || 0,
-      cloudSelection: full.cloud || { original: [], ad1: [], ad2: [] },
-      oriGame: full.oriGame || {},
-      modGame: (full.modGames && full.modGames[0]) ? full.modGames[0] : null,
-      downloadId: result.data.download_id
-    };
+        // Preview lebih enak pakai iframe
+        previewBox.innerHTML = `
+          <div class="d-flex gap-2 flex-wrap mb-2">
+            <button class="btn btn-sm btn-outline-secondary" id="btnSavedModeLive"><i class="bi bi-eye"></i> Live</button>
+            <button class="btn btn-sm btn-outline-secondary" id="btnSavedModeSource"><i class="bi bi-code-slash"></i> Source</button>
+          </div>
+          <div id="savedPreviewMode"></div>
+        `;
 
-    const html = createHTMLTemplate(); // pakai versi createHTMLTemplate yang sudah kamu update di bagian (2) bawah
-    window.__savedHtmlSource = html;
+        const mode = document.getElementById('savedPreviewMode');
+        const showLive = () => {
+          mode.innerHTML = `<iframe class="w-100" style="min-height:720px;border:0;border-radius:14px;background:#fff;"></iframe>`;
+          mode.querySelector('iframe').srcdoc = html;
+        };
+        const showSource = () => {
+          mode.innerHTML = `<pre class="mb-0" style="white-space:pre-wrap;">${escapeHTML(html)}</pre>`;
+        };
 
-    // Preview lebih enak pakai iframe
-    previewBox.innerHTML = `
-      <div class="d-flex gap-2 flex-wrap mb-2">
-        <button class="btn btn-sm btn-outline-secondary" id="btnSavedModeLive"><i class="bi bi-eye"></i> Live</button>
-        <button class="btn btn-sm btn-outline-secondary" id="btnSavedModeSource"><i class="bi bi-code-slash"></i> Source</button>
-      </div>
-      <div id="savedPreviewMode"></div>
-    `;
+        document.getElementById('btnSavedModeLive').onclick = showLive;
+        document.getElementById('btnSavedModeSource').onclick = showSource;
 
-    const mode = document.getElementById('savedPreviewMode');
-    const showLive = () => {
-      mode.innerHTML = `<iframe class="w-100" style="min-height:720px;border:0;border-radius:14px;background:#fff;"></iframe>`;
-      mode.querySelector('iframe').srcdoc = html;
-    };
-    const showSource = () => {
-      mode.innerHTML = `<pre class="mb-0" style="white-space:pre-wrap;">${escapeHTML(html)}</pre>`;
-    };
+        showLive();
 
-    document.getElementById('btnSavedModeLive').onclick = showLive;
-    document.getElementById('btnSavedModeSource').onclick = showSource;
+        // restore state
+        gameData = backup;
+        gameData.downloadId = backupId;
 
-    showLive();
+        wrap.scrollIntoView({ behavior: 'smooth' });
 
-    // restore state
-    gameData = backup;
-    gameData.downloadId = backupId;
+      } catch (err) {
+        previewBox.innerHTML = `<div class="text-danger">Error: ${escapeHTML(err.message)}</div>`;
+      }
+    }
 
-    wrap.scrollIntoView({ behavior: 'smooth' });
+    function selectGameType(type) {
+      gameType = type;
+      gameData.type = type;
 
-  } catch (err) {
-    previewBox.innerHTML = `<div class="text-danger">Error: ${escapeHTML(err.message)}</div>`;
-  }
-}
+      if (type === 'ori-only') {
+        gameData.modCount = 0;
 
-function selectGameType(type) {
-  gameType = type;
-  gameData.type = type;
+        // Step2 hanya butuh linkCount
+        document.getElementById('modConfigSection').innerHTML = `
+          <div class="mb-4">
+            <label class="form-label required">
+              <i class="bi bi-link"></i> Jumlah Link per Game
+            </label>
+            <input type="number" id="linkCount" class="form-control" min="1" max="20" value="6" />
+            <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
+          </div>
+        `;
+        showStep(2);
+        return;
+      }
 
-  if (type === 'ori-only') {
-    gameData.modCount = 0;
+      if (type === 'only-mod') {
+        // ONLY MOD: butuh jumlah fitur MOD + linkCount
+        document.getElementById('modConfigSection').innerHTML = `
+          <div class="mb-4">
+            <label class="form-label required">
+              <i class="bi bi-stars"></i> Jumlah MOD (Jumlah Fitur MOD)
+            </label>
+            <input type="number" id="modCount" class="form-control" min="1" max="10" value="2" />
+            <div class="form-text">Contoh: 2 MOD artinya ada Mod 1 dan Mod 2 dalam 1 game MOD.</div>
+          </div>
 
-    // Step2 hanya butuh linkCount
-    document.getElementById('modConfigSection').innerHTML = `
-      <div class="mb-4">
-        <label class="form-label required">
-          <i class="bi bi-link"></i> Jumlah Link per Game
-        </label>
-        <input type="number" id="linkCount" class="form-control" min="1" max="20" value="6" />
-        <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
-      </div>
-    `;
-    showStep(2);
-    return;
-  }
+          <div class="mb-4">
+            <label class="form-label required">
+              <i class="bi bi-link"></i> Jumlah Link per Game
+            </label>
+            <input type="number" id="linkCount" class="form-control" min="1" max="20" value="6" />
+            <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
+          </div>
+        `;
+        showStep(2);
+        return;
+      }
 
-  // ori-mod: Step2 butuh jumlah fitur MOD + linkCount
-  document.getElementById('modConfigSection').innerHTML = `
-    <div class="mb-4">
-      <label class="form-label required">
-        <i class="bi bi-stars"></i> Jumlah MOD (Jumlah Fitur MOD)
-      </label>
-      <input type="number" id="modCount" class="form-control" min="1" max="10" value="2" />
-      <div class="form-text">Contoh: 2 MOD artinya ada Mod 1 dan Mod 2 dalam 1 game MOD.</div>
-    </div>
+      // ori-mod: Step2 butuh jumlah fitur MOD + linkCount
+      document.getElementById('modConfigSection').innerHTML = `
+        <div class="mb-4">
+          <label class="form-label required">
+            <i class="bi bi-stars"></i> Jumlah MOD (Jumlah Fitur MOD)
+          </label>
+          <input type="number" id="modCount" class="form-control" min="1" max="10" value="2" />
+          <div class="form-text">Contoh: 2 MOD artinya ada Mod 1 dan Mod 2 dalam 1 game MOD.</div>
+        </div>
 
-    <div class="mb-4">
-      <label class="form-label required">
-        <i class="bi bi-link"></i> Jumlah Link per Game
-      </label>
-      <input type="number" id="linkCount" class="form-control" min="1" max="20" value="6" />
-      <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
-    </div>
-  `;
-  showStep(2);
-}
-
+        <div class="mb-4">
+          <label class="form-label required">
+            <i class="bi bi-link"></i> Jumlah Link per Game
+          </label>
+          <input type="number" id="linkCount" class="form-control" min="1" max="20" value="6" />
+          <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
+        </div>
+      `;
+      showStep(2);
+    }
     
-function nextStep2() {
-  const linkCount = parseInt(document.getElementById('linkCount')?.value, 10) || 6;
-  if (linkCount < 1 || linkCount > 20) {
-    alert('Jumlah link harus antara 1-20');
-    return;
-  }
-  gameData.linkCount = linkCount;
+    function nextStep2() {
+      const linkCount = parseInt(document.getElementById('linkCount')?.value, 10) || 6;
+      if (linkCount < 1 || linkCount > 20) {
+        alert('Jumlah link harus antara 1-20');
+        return;
+      }
+      gameData.linkCount = linkCount;
 
-  if (gameType === 'ori-mod') {
-    const modCount = parseInt(document.getElementById('modCount')?.value, 10) || 2;
-    if (modCount < 1 || modCount > 10) {
-      alert('Jumlah MOD harus antara 1-10');
-      return;
+      if (gameType === 'ori-mod' || gameType === 'only-mod') {
+        const modCount = parseInt(document.getElementById('modCount')?.value, 10) || 2;
+        if (modCount < 1 || modCount > 10) {
+          alert('Jumlah MOD harus antara 1-10');
+          return;
+        }
+        gameData.modCount = modCount;
+      } else {
+        gameData.modCount = 0;
+      }
+
+      generateCloudSelection();
+      showStep(3);
     }
-    gameData.modCount = modCount;
-  } else {
-    gameData.modCount = 0;
-  }
-
-  generateCloudSelection();
-  showStep(3);
-}
-
 
     
     function nextStep3() {
@@ -1696,107 +1717,157 @@ function nextStep2() {
       showStep(4);
     }
     
-function generateGameDataInput() {
-  const container = document.getElementById('gameDataInput');
-  container.innerHTML = '';
+    function generateGameDataInput() {
+      const container = document.getElementById('gameDataInput');
+      container.innerHTML = '';
 
-  // ORI
-  container.innerHTML += `
-    <div class="ori-game-data mb-4">
-      <h5><i class="bi bi-phone"></i> Data Game ORI</h5>
-      <div class="row">
-        <div class="col-md-12 mb-3">
-          <label class="form-label required">Nama Game ORI</label>
-          <input type="text" id="oriGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition ORI">
-        </div>
+      // Update paste instructions berdasarkan tipe game
+      const instructions = document.getElementById('pasteInstructions');
+      if (instructions) {
+        if (gameData.type === 'ori-only') {
+          instructions.innerHTML = `
+            <li>Baris 1: Nama Game</li>
+            <li>Baris 2: Ukuran Game ORI</li>
+            <li>Baris 3: Ukuran Game MOD (jika ada)</li>
+            <li>Baris 4: Category</li>
+            <li>Baris 5: Versi Game</li>
+            <li>Baris berikutnya: Link Asli (sesuai jumlah yang diinput)</li>
+            <li>Baris berikutnya: Link Iklan 1 (sesuai jumlah yang diinput)</li>
+            <li>Baris terakhir: Link Iklan 2 (sesuai jumlah yang diinput)</li>
+          `;
+        } else if (gameData.type === 'ori-mod') {
+          instructions.innerHTML = `
+            <li>Baris 1: Nama Game ORI</li>
+            <li>Baris 2: Ukuran Game ORI</li>
+            <li>Baris 3: Ukuran Game MOD (jika ada)</li>
+            <li>Baris 4: Category</li>
+            <li>Baris 5: Versi Game ORI</li>
+            <li>Baris berikutnya: Link Asli ORI (sesuai jumlah yang diinput)</li>
+            <li>Baris berikutnya: Link Iklan 1 ORI (sesuai jumlah yang diinput)</li>
+            <li>Baris berikutnya: Link Iklan 2 ORI (sesuai jumlah yang diinput)</li>
+            <li>Baris kosong (opsional)</li>
+            <li>Baris berikutnya: Nama Game MOD</li>
+            <li>Baris berikutnya: Ukuran Game MOD</li>
+            <li>Baris berikutnya: Category MOD</li>
+            <li>Baris berikutnya: Versi Game MOD</li>
+            <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
+            <li>Baris berikutnya: Link Asli MOD (sesuai jumlah yang diinput)</li>
+            <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah yang diinput)</li>
+            <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah yang diinput)</li>
+          `;
+        } else if (gameData.type === 'only-mod') {
+          instructions.innerHTML = `
+            <li>Baris 1: Nama Game MOD</li>
+            <li>Baris 2: Ukuran Game MOD</li>
+            <li>Baris 3: Category</li>
+            <li>Baris 4: Versi Game MOD</li>
+            <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
+            <li>Baris berikutnya: Link Asli MOD (sesuai jumlah yang diinput)</li>
+            <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah yang diinput)</li>
+            <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah yang diinput)</li>
+          `;
+        }
+      }
 
-        <div class="col-md-6 mb-3">
-          <label class="form-label required">Ukuran Game ORI</label>
-          <input type="text" id="oriSize" class="form-control" placeholder="Contoh: 2.79 GB">
-        </div>
+      // ORI hanya untuk tipe ori-only dan ori-mod
+      if (gameData.type === 'ori-only' || gameData.type === 'ori-mod') {
+        container.innerHTML += `
+          <div class="ori-game-data mb-4">
+            <h5><i class="bi bi-phone"></i> Data Game ORI</h5>
+            <div class="row">
+              <div class="col-md-12 mb-3">
+                <label class="form-label required">Nama Game ORI</label>
+                <input type="text" id="oriGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition ORI">
+              </div>
 
-        <div class="col-md-6 mb-3">
-          <label class="form-label required">Category</label>
-          <input type="text" id="oriCategory" class="form-control" placeholder="Contoh: Action">
-        </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label required">Ukuran Game ORI</label>
+                <input type="text" id="oriSize" class="form-control" placeholder="Contoh: 2.79 GB">
+              </div>
 
-        <div class="col-md-6 mb-3">
-          <label class="form-label required">Versi Game</label>
-          <input type="text" id="oriVersion" class="form-control" placeholder="Contoh: v1.4.299">
-        </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label required">Category</label>
+                <input type="text" id="oriCategory" class="form-control" placeholder="Contoh: Action">
+              </div>
 
-        <div class="col-md-6 mb-3">
-          <label class="form-label">Ukuran Game MOD (opsional)</label>
-          <input type="text" id="oriModSize" class="form-control" placeholder="Contoh: 2.79 GB (jika ada)">
-        </div>
-      </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label required">Versi Game</label>
+                <input type="text" id="oriVersion" class="form-control" placeholder="Contoh: v1.4.299">
+              </div>
 
-      <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
-      ${generateLinkInputs('oriOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Ukuran Game MOD (opsional)</label>
+                <input type="text" id="oriModSize" class="form-control" placeholder="Contoh: 2.79 GB (jika ada)">
+              </div>
+            </div>
 
-      <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
-      ${generateLinkInputs('oriAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
+            <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
+            ${generateLinkInputs('oriOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
 
-      <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
-      ${generateLinkInputs('oriAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
-    </div>
-  `;
+            <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
+            ${generateLinkInputs('oriAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
 
-  // MOD (CUMA 1 DATA)
-  if (gameData.type === 'ori-mod') {
-    const modFeatureInputs = Array.from({ length: gameData.modCount }).map((_, idx) => {
-      const n = idx + 1;
-      return `
-        <div class="col-md-12 mb-3">
-          <label class="form-label required">Mod ${n}</label>
-          <input type="text" id="modFeature${n}" class="form-control" placeholder="Contoh: Unlimited Money">
-        </div>
-      `;
-    }).join('');
-
-    container.innerHTML += `
-      <div class="mod-game-data mb-4">
-        <div class="mod-header">
-          <h5><i class="bi bi-magic"></i> Data Game MOD (${gameData.modCount} MOD)</h5>
-          <span class="mod-number">MOD</span>
-        </div>
-
-        <div class="row">
-          <div class="col-md-12 mb-3">
-            <label class="form-label required">Nama Game MOD</label>
-            <input type="text" id="modGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition MOD">
+            <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
+            ${generateLinkInputs('oriAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
           </div>
+        `;
+      }
 
-          <div class="col-md-6 mb-3">
-            <label class="form-label required">Ukuran Game MOD</label>
-            <input type="text" id="modSize" class="form-control" placeholder="Contoh: 2.79 GB">
+      // MOD untuk tipe ori-mod dan only-mod
+      if (gameData.type === 'ori-mod' || gameData.type === 'only-mod') {
+        const modFeatureInputs = Array.from({ length: gameData.modCount }).map((_, idx) => {
+          const n = idx + 1;
+          return `
+            <div class="col-md-12 mb-3">
+              <label class="form-label required">Mod ${n}</label>
+              <input type="text" id="modFeature${n}" class="form-control" placeholder="Contoh: Unlimited Money">
+            </div>
+          `;
+        }).join('');
+
+        container.innerHTML += `
+          <div class="mod-game-data mb-4">
+            <div class="mod-header">
+              <h5><i class="bi bi-magic"></i> Data Game MOD (${gameData.modCount} MOD)</h5>
+              <span class="mod-number">MOD</span>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12 mb-3">
+                <label class="form-label required">Nama Game MOD</label>
+                <input type="text" id="modGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition MOD">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label required">Ukuran Game MOD</label>
+                <input type="text" id="modSize" class="form-control" placeholder="Contoh: 2.79 GB">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label required">Category</label>
+                <input type="text" id="modCategory" class="form-control" placeholder="Contoh: Action">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label required">Versi Game</label>
+                <input type="text" id="modVersion" class="form-control" placeholder="Contoh: v1.4.299">
+              </div>
+
+              ${modFeatureInputs}
+            </div>
+
+            <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
+            ${generateLinkInputs('modOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
+
+            <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
+            ${generateLinkInputs('modAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
+
+            <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
+            ${generateLinkInputs('modAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
           </div>
-
-          <div class="col-md-6 mb-3">
-            <label class="form-label required">Category</label>
-            <input type="text" id="modCategory" class="form-control" placeholder="Contoh: Action">
-          </div>
-
-          <div class="col-md-6 mb-3">
-            <label class="form-label required">Versi Game</label>
-            <input type="text" id="modVersion" class="form-control" placeholder="Contoh: v1.4.299">
-          </div>
-
-          ${modFeatureInputs}
-        </div>
-
-        <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
-        ${generateLinkInputs('modOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
-
-        <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
-        ${generateLinkInputs('modAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
-
-        <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
-        ${generateLinkInputs('modAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
-      </div>
-    `;
-  }
-}
+        `;
+      }
+    }
 
     
     function generateLinkInputs(prefix, count, clouds, modIndex = null) {
@@ -1830,8 +1901,10 @@ function generateGameDataInput() {
         
         if (gameData.type === 'ori-only') {
           parseOriOnlyData(lines);
-        } else {
+        } else if (gameData.type === 'ori-mod') {
           parseOriModData(lines);
+        } else if (gameData.type === 'only-mod') {
+          parseOnlyModData(lines);
         }
         
         document.getElementById('pasteStatus').style.display = 'inline-block';
@@ -1845,92 +1918,121 @@ function generateGameDataInput() {
       }
     }
     
-function parseOriOnlyData(lines) {
-  let idx = 0;
+    function parseOriOnlyData(lines) {
+      let idx = 0;
 
-  // ORI: name, size, category, version
-  document.getElementById('oriGameName').value = lines[idx++] || '';
-  document.getElementById('oriSize').value = lines[idx++] || '';
-  document.getElementById('oriCategory').value = lines[idx++] || '';
-  document.getElementById('oriVersion').value = lines[idx++] || '';
+      // ORI: name, size, category, version
+      document.getElementById('oriGameName').value = lines[idx++] || '';
+      document.getElementById('oriSize').value = lines[idx++] || '';
+      document.getElementById('oriCategory').value = lines[idx++] || '';
+      document.getElementById('oriVersion').value = lines[idx++] || '';
 
-  // Link Asli
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
+      // Link Asli
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
 
-  // Link Iklan 1
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
+      // Link Iklan 1
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
 
-  // Link Iklan 2
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
-}
+      // Link Iklan 2
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+    }
 
+    function parseOriModData(lines) {
+      let idx = 0;
 
-function parseOriModData(lines) {
-  let idx = 0;
+      // ORI: name, size, category, version
+      document.getElementById('oriGameName').value = lines[idx++] || '';
+      document.getElementById('oriSize').value = lines[idx++] || '';
+      document.getElementById('oriCategory').value = lines[idx++] || '';
+      document.getElementById('oriVersion').value = lines[idx++] || '';
 
-  // ORI: name, size, category, version
-  document.getElementById('oriGameName').value = lines[idx++] || '';
-  document.getElementById('oriSize').value = lines[idx++] || '';
-  document.getElementById('oriCategory').value = lines[idx++] || '';
-  document.getElementById('oriVersion').value = lines[idx++] || '';
+      // ORI links
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
 
-  // ORI links
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
+      // Skip blank lines
+      while (idx < lines.length && !lines[idx]) idx++;
 
-  // Skip blank lines
-  while (idx < lines.length && !lines[idx]) idx++;
+      // MOD: name, size, category, version
+      const modNameEl = document.getElementById('modGameName');
+      if (!modNameEl) return;
 
-  // MOD: name, size, category, version
-  const modNameEl = document.getElementById('modGameName');
-  if (!modNameEl) return;
+      modNameEl.value = lines[idx++] || '';
+      document.getElementById('modSize').value = lines[idx++] || '';
+      document.getElementById('modCategory').value = lines[idx++] || '';
+      document.getElementById('modVersion').value = lines[idx++] || '';
 
-  modNameEl.value = lines[idx++] || '';
-  document.getElementById('modSize').value = lines[idx++] || '';
-  document.getElementById('modCategory').value = lines[idx++] || '';
-  document.getElementById('modVersion').value = lines[idx++] || '';
+      // MOD features: ambil tepat gameData.modCount baris
+      for (let k = 1; k <= gameData.modCount; k++) {
+        const inp = document.getElementById(`modFeature${k}`);
+        const val = (idx < lines.length && !lines[idx].startsWith('http')) ? lines[idx++] : '';
+        if (inp) inp.value = val;
+      }
 
-  // MOD features: ambil tepat gameData.modCount baris
-  for (let k = 1; k <= gameData.modCount; k++) {
-    const inp = document.getElementById(`modFeature${k}`);
-    const val = (idx < lines.length && !lines[idx].startsWith('http')) ? lines[idx++] : '';
-    if (inp) inp.value = val;
-  }
+      // MOD links
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="modOriginalLinks"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="modAdLinks1"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="modAdLinks2"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+    }
 
-  // MOD links
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="modOriginalLinks"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="modAdLinks1"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const input = document.querySelector(`input[data-type="modAdLinks2"][data-index="${i}"]`);
-    if (input && idx < lines.length) input.value = lines[idx++] || '';
-  }
-}
+    function parseOnlyModData(lines) {
+      let idx = 0;
 
+      // MOD: name, size, category, version
+      document.getElementById('modGameName').value = lines[idx++] || '';
+      document.getElementById('modSize').value = lines[idx++] || '';
+      document.getElementById('modCategory').value = lines[idx++] || '';
+      document.getElementById('modVersion').value = lines[idx++] || '';
+
+      // MOD features: ambil tepat gameData.modCount baris
+      for (let k = 1; k <= gameData.modCount; k++) {
+        const inp = document.getElementById(`modFeature${k}`);
+        const val = (idx < lines.length && !lines[idx].startsWith('http')) ? lines[idx++] : '';
+        if (inp) inp.value = val;
+      }
+
+      // MOD links
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="modOriginalLinks"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="modAdLinks1"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+      for (let i = 0; i < gameData.linkCount; i++) {
+        const input = document.querySelector(`input[data-type="modAdLinks2"][data-index="${i}"]`);
+        if (input && idx < lines.length) input.value = lines[idx++] || '';
+      }
+    }
 
     
     function clearPasteArea() {
@@ -1938,11 +2040,11 @@ function parseOriModData(lines) {
       showToast('info', 'Text area telah dibersihkan');
     }
     
-function showExampleData() {
-  let exampleText = '';
+    function showExampleData() {
+      let exampleText = '';
 
-  if (gameData.type === 'ori-only') {
-    exampleText = `Bully: Anniversary Edition ORI
+      if (gameData.type === 'ori-only') {
+        exampleText = `Bully: Anniversary Edition ORI
 2.79 GB
 Action
 v1.4.299
@@ -1964,8 +2066,8 @@ https://sfl.gl/VHjubrs0
 https://sfl.gl/cfdDMhh
 https://sfl.gl/jNErgws
 https://sfl.gl/48X8J7L`;
-  } else {
-    exampleText = `Bully: Anniversary Edition ORI
+      } else if (gameData.type === 'ori-mod') {
+        exampleText = `Bully: Anniversary Edition ORI
 2.79 GB
 Action
 v1.4.299
@@ -2012,174 +2114,220 @@ https://sfl.gl/toA5r
 https://sfl.gl/y85R0Da
 https://sfl.gl/7TNw8z
 https://sfl.gl/iSJU7SP`;
-  }
+      } else if (gameData.type === 'only-mod') {
+        exampleText = `Bully: Anniversary Edition MOD
+2.79 GB
+Action
+v1.4.299
+MOD 60 FPS: Full
+Unlimited Money
+https://drive.google.com/file/d/1yKQOkw4LSI5DSjPh-yWNf41o3EApWTp-/view?usp=sharing
+https://www.mediafire.com/file/met0xm5bsdcma6w/[INDapk.com]+Bully-v1.4.299-60FPS-mod+unlimited+money.apk/file
+https://vikingfile.com/f/Z1ADwpg5zg
+https://pixeldrain.com/u/2L4LJwTG
+https://1fichier.com/?6wacb1ypknj360uq2qfp
+https://multiup.io/download/37874309d2dc5f7073e4db016fc8b9c8/%5BINDapk.com%5D%20Bully-v1.4.299-60FPS-mod%20unlimited%20money.apk
+http://link.indapk.com/mhJyoMmQ
+http://link.indapk.com/MriE
+http://link.indapk.com/QXDa
+http://link.indapk.com/H9jt
+http://link.indapk.com/kUHjX3
+http://link.indapk.com/zpOfV5
+https://sfl.gl/VZqJ2
+https://sfl.gl/TlLd
+https://sfl.gl/toA5r
+https://sfl.gl/y85R0Da
+https://sfl.gl/7TNw8z
+https://sfl.gl/iSJU7SP`;
+      }
 
-  document.getElementById('pasteArea').value = exampleText;
-  showToast('info', 'Contoh data telah dimuat.');
-}
+      document.getElementById('pasteArea').value = exampleText;
+      showToast('info', 'Contoh data telah dimuat.');
+    }
 
 
     // ===================== SAVE GAME DATA =====================
-async function saveGameData() {
-  // ORI
-  const oriGame = {
-    name: document.getElementById('oriGameName').value.trim(),
-    sizeOri: document.getElementById('oriSize').value.trim(),
-    sizeMod: document.getElementById('oriModSize').value.trim(),
-    category: document.getElementById('oriCategory').value.trim(),
-    version: document.getElementById('oriVersion').value.trim(),
-    originalLinks: [],
-    adLinks1: [],
-    adLinks2: []
-  };
+    async function saveGameData() {
+      // ORI (hanya untuk ori-only dan ori-mod)
+      let oriGame = null;
+      if (gameData.type === 'ori-only' || gameData.type === 'ori-mod') {
+        oriGame = {
+          name: document.getElementById('oriGameName').value.trim(),
+          sizeOri: document.getElementById('oriSize').value.trim(),
+          sizeMod: document.getElementById('oriModSize').value.trim(),
+          category: document.getElementById('oriCategory').value.trim(),
+          version: document.getElementById('oriVersion').value.trim(),
+          originalLinks: [],
+          adLinks1: [],
+          adLinks2: []
+        };
 
-  if (!oriGame.name || !oriGame.sizeOri || !oriGame.category || !oriGame.version) {
-    alert('Harap isi semua field yang wajib untuk Game ORI!');
-    return;
-  }
+        if (!oriGame.name || !oriGame.sizeOri || !oriGame.category || !oriGame.version) {
+          alert('Harap isi semua field yang wajib untuk Game ORI!');
+          return;
+        }
 
-  for (let i = 0; i < gameData.linkCount; i++) {
-    const originalInput = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
-    const ad1Input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
-    const ad2Input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
+        for (let i = 0; i < gameData.linkCount; i++) {
+          const originalInput = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
+          const ad1Input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
+          const ad2Input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
 
-    if (originalInput) oriGame.originalLinks.push(originalInput.value.trim());
-    if (ad1Input) oriGame.adLinks1.push(ad1Input.value.trim());
-    if (ad2Input) oriGame.adLinks2.push(ad2Input.value.trim());
-  }
+          if (originalInput) oriGame.originalLinks.push(originalInput.value.trim());
+          if (ad1Input) oriGame.adLinks1.push(ad1Input.value.trim());
+          if (ad2Input) oriGame.adLinks2.push(ad2Input.value.trim());
+        }
 
-  if (
-    oriGame.originalLinks.some(link => !link) ||
-    oriGame.adLinks1.some(link => !link) ||
-    oriGame.adLinks2.some(link => !link)
-  ) {
-    alert('Harap isi semua link untuk Game ORI!');
-    return;
-  }
+        if (
+          oriGame.originalLinks.some(link => !link) ||
+          oriGame.adLinks1.some(link => !link) ||
+          oriGame.adLinks2.some(link => !link)
+        ) {
+          alert('Harap isi semua link untuk Game ORI!');
+          return;
+        }
+      }
+      
+      gameData.oriGame = oriGame;
 
-  gameData.oriGame = oriGame;
+      // MOD (untuk ori-mod dan only-mod)
+      let modGame = null;
+      if (gameData.type === 'ori-mod' || gameData.type === 'only-mod') {
+        const modName = document.getElementById('modGameName').value.trim();
+        const modSize = document.getElementById('modSize').value.trim();
+        const modCategory = document.getElementById('modCategory').value.trim();
+        const modVersion = document.getElementById('modVersion').value.trim();
 
-  // MOD (1 DATA)
-  if (gameData.type === 'ori-mod') {
-    const modName = document.getElementById('modGameName').value.trim();
-    const modSize = document.getElementById('modSize').value.trim();
-    const modCategory = document.getElementById('modCategory').value.trim();
-    const modVersion = document.getElementById('modVersion').value.trim();
+        const modFeatures = [];
+        for (let k = 1; k <= gameData.modCount; k++) {
+          const v = document.getElementById(`modFeature${k}`)?.value.trim() || '';
+          modFeatures.push(v);
+        }
 
-    const modFeatures = [];
-    for (let k = 1; k <= gameData.modCount; k++) {
-      const v = document.getElementById(`modFeature${k}`)?.value.trim() || '';
-      modFeatures.push(v);
+        if (!modName || !modSize || !modCategory || !modVersion) {
+          alert('Harap isi semua field yang wajib untuk Game MOD!');
+          return;
+        }
+        if (modFeatures.some(x => !x)) {
+          alert(`Harap isi semua Mod 1 sampai Mod ${gameData.modCount}!`);
+          return;
+        }
+
+        modGame = {
+          name: modName,
+          size: modSize,
+          category: modCategory,
+          version: modVersion,
+          modDescription: modFeatures.join('\n'),
+          originalLinks: [],
+          adLinks1: [],
+          adLinks2: []
+        };
+
+        for (let i = 0; i < gameData.linkCount; i++) {
+          const originalInput = document.querySelector(`input[data-type="modOriginalLinks"][data-index="${i}"]`);
+          const ad1Input = document.querySelector(`input[data-type="modAdLinks1"][data-index="${i}"]`);
+          const ad2Input = document.querySelector(`input[data-type="modAdLinks2"][data-index="${i}"]`);
+
+          if (originalInput) modGame.originalLinks.push(originalInput.value.trim());
+          if (ad1Input) modGame.adLinks1.push(ad1Input.value.trim());
+          if (ad2Input) modGame.adLinks2.push(ad2Input.value.trim());
+        }
+
+        if (
+          modGame.originalLinks.some(link => !link) ||
+          modGame.adLinks1.some(link => !link) ||
+          modGame.adLinks2.some(link => !link)
+        ) {
+          alert('Harap isi semua link untuk Game MOD!');
+          return;
+        }
+      }
+      
+      gameData.modGame = modGame;
+
+      // Save to server
+      try {
+        const btn = document.getElementById('btnSaveGame');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+        btn.disabled = true;
+
+        const params = new URLSearchParams();
+        params.append('action', 'saveGame');
+        params.append('type', gameData.type);
+        params.append('link_count', gameData.linkCount);
+
+        // mod_count buat server = jumlah game MOD, bukan jumlah fitur MOD
+        params.append('mod_count', (gameData.type === 'ori-mod' || gameData.type === 'only-mod') ? 1 : 0);
+
+        params.append('cloud_original', JSON.stringify(gameData.cloudSelection.original));
+        params.append('cloud_ad1', JSON.stringify(gameData.cloudSelection.ad1));
+        params.append('cloud_ad2', JSON.stringify(gameData.cloudSelection.ad2));
+
+        // ORI (hanya jika ada)
+        if (gameData.oriGame) {
+          params.append('ori_name', gameData.oriGame.name);
+          params.append('ori_size_ori', gameData.oriGame.sizeOri);
+          params.append('ori_size_mod', gameData.oriGame.sizeMod);
+          params.append('ori_category', gameData.oriGame.category);
+          params.append('ori_version', gameData.oriGame.version);
+          params.append('ori_original_links', JSON.stringify(gameData.oriGame.originalLinks));
+          params.append('ori_ad_links1', JSON.stringify(gameData.oriGame.adLinks1));
+          params.append('ori_ad_links2', JSON.stringify(gameData.oriGame.adLinks2));
+        } else {
+          params.append('ori_name', '');
+          params.append('ori_size_ori', '');
+          params.append('ori_size_mod', '');
+          params.append('ori_category', '');
+          params.append('ori_version', '');
+          params.append('ori_original_links', '[]');
+          params.append('ori_ad_links1', '[]');
+          params.append('ori_ad_links2', '[]');
+        }
+
+        // MOD arrays (1 item jika ada)
+        if (gameData.modGame) {
+          params.append('mod_names', JSON.stringify([gameData.modGame.name]));
+          params.append('mod_sizes', JSON.stringify([gameData.modGame.size]));
+          params.append('mod_versions', JSON.stringify([gameData.modGame.version]));
+          params.append('mod_descriptions', JSON.stringify([gameData.modGame.modDescription]));
+          params.append('mod_original_links', JSON.stringify([gameData.modGame.originalLinks]));
+          params.append('mod_ad_links1', JSON.stringify([gameData.modGame.adLinks1]));
+          params.append('mod_ad_links2', JSON.stringify([gameData.modGame.adLinks2]));
+        } else {
+          params.append('mod_names', '[]');
+          params.append('mod_sizes', '[]');
+          params.append('mod_versions', '[]');
+          params.append('mod_descriptions', '[]');
+          params.append('mod_original_links', '[]');
+          params.append('mod_ad_links1', '[]');
+          params.append('mod_ad_links2', '[]');
+        }
+
+        const response = await fetch(GAME_ANDROID_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString()
+        });
+
+        if (!response.ok) throw new Error('Network error: ' + response.status);
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          gameData.downloadId = result.data.download_id;
+          showToast('success', `Game berhasil disimpan! Download ID: ${result.data.download_id}`);
+        } else {
+          throw new Error(result.message || 'Gagal menyimpan');
+        }
+      } catch (error) {
+        console.error('Save error:', error);
+        showToast('error', 'Gagal menyimpan game: ' + error.message);
+      } finally {
+        const btn = document.getElementById('btnSaveGame');
+        btn.innerHTML = 'Simpan Data Game';
+        btn.disabled = false;
+      }
     }
-
-    if (!modName || !modSize || !modCategory || !modVersion) {
-      alert('Harap isi semua field yang wajib untuk Game MOD!');
-      return;
-    }
-    if (modFeatures.some(x => !x)) {
-      alert(`Harap isi semua Mod 1 sampai Mod ${gameData.modCount}!`);
-      return;
-    }
-
-    const modGame = {
-      name: modName,
-      size: modSize,
-      category: modCategory,
-      version: modVersion,
-      modDescription: modFeatures.join('\n'),
-      originalLinks: [],
-      adLinks1: [],
-      adLinks2: []
-    };
-
-    for (let i = 0; i < gameData.linkCount; i++) {
-      const originalInput = document.querySelector(`input[data-type="modOriginalLinks"][data-index="${i}"]`);
-      const ad1Input = document.querySelector(`input[data-type="modAdLinks1"][data-index="${i}"]`);
-      const ad2Input = document.querySelector(`input[data-type="modAdLinks2"][data-index="${i}"]`);
-
-      if (originalInput) modGame.originalLinks.push(originalInput.value.trim());
-      if (ad1Input) modGame.adLinks1.push(ad1Input.value.trim());
-      if (ad2Input) modGame.adLinks2.push(ad2Input.value.trim());
-    }
-
-    if (
-      modGame.originalLinks.some(link => !link) ||
-      modGame.adLinks1.some(link => !link) ||
-      modGame.adLinks2.some(link => !link)
-    ) {
-      alert('Harap isi semua link untuk Game MOD!');
-      return;
-    }
-
-    gameData.modGame = modGame;
-  } else {
-    gameData.modGame = null;
-  }
-
-  // Save to server
-  try {
-    const btn = document.getElementById('btnSaveGame');
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
-    btn.disabled = true;
-
-    const params = new URLSearchParams();
-    params.append('action', 'saveGame');
-    params.append('type', gameData.type);
-    params.append('link_count', gameData.linkCount);
-
-    // mod_count buat server = jumlah game MOD, bukan jumlah fitur MOD
-    params.append('mod_count', gameData.type === 'ori-mod' ? 1 : 0);
-
-    params.append('cloud_original', JSON.stringify(gameData.cloudSelection.original));
-    params.append('cloud_ad1', JSON.stringify(gameData.cloudSelection.ad1));
-    params.append('cloud_ad2', JSON.stringify(gameData.cloudSelection.ad2));
-
-    // ORI
-    params.append('ori_name', gameData.oriGame.name);
-    params.append('ori_size_ori', gameData.oriGame.sizeOri);
-    params.append('ori_size_mod', gameData.oriGame.sizeMod);
-    params.append('ori_category', gameData.oriGame.category);
-    params.append('ori_version', gameData.oriGame.version);
-    params.append('ori_original_links', JSON.stringify(gameData.oriGame.originalLinks));
-    params.append('ori_ad_links1', JSON.stringify(gameData.oriGame.adLinks1));
-    params.append('ori_ad_links2', JSON.stringify(gameData.oriGame.adLinks2));
-
-    // MOD arrays (1 item)
-    if (gameData.type === 'ori-mod') {
-      params.append('mod_names', JSON.stringify([gameData.modGame.name]));
-      params.append('mod_sizes', JSON.stringify([gameData.modGame.size]));
-      params.append('mod_versions', JSON.stringify([gameData.modGame.version]));
-      params.append('mod_descriptions', JSON.stringify([gameData.modGame.modDescription]));
-      params.append('mod_original_links', JSON.stringify([gameData.modGame.originalLinks]));
-      params.append('mod_ad_links1', JSON.stringify([gameData.modGame.adLinks1]));
-      params.append('mod_ad_links2', JSON.stringify([gameData.modGame.adLinks2]));
-    }
-
-    const response = await fetch(GAME_ANDROID_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
-    });
-
-    if (!response.ok) throw new Error('Network error: ' + response.status);
-
-    const result = await response.json();
-
-    if (result.status === 'success') {
-      gameData.downloadId = result.data.download_id;
-      showToast('success', `Game berhasil disimpan! Download ID: ${result.data.download_id}`);
-    } else {
-      throw new Error(result.message || 'Gagal menyimpan');
-    }
-  } catch (error) {
-    console.error('Save error:', error);
-    showToast('error', 'Gagal menyimpan game: ' + error.message);
-  } finally {
-    const btn = document.getElementById('btnSaveGame');
-    btn.innerHTML = 'Simpan Data Game';
-    btn.disabled = false;
-  }
-}
 
 
     // ===================== GENERATE HTML =====================
@@ -2198,148 +2346,372 @@ async function saveGameData() {
       document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
     }
     
-function createHTMLTemplate() {
-  // Escape HTML untuk data yang masuk ke template output
-  const escapeHTML = (str) => {
-    if (str === undefined || str === null) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  };
+    function createHTMLTemplate() {
+      // Escape HTML untuk data yang masuk ke template output
+      const escapeHTML = (str) => {
+        if (str === undefined || str === null) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      };
 
-  // WAJIB untuk mencegah HTML parser memotong <script> di file generator
-  const SCRIPT_END = "</scr" + "ipt>";
+      // WAJIB untuk mencegah HTML parser memotong <script> di file generator
+      const SCRIPT_END = "</scr" + "ipt>";
 
-  const safeUrl = (url) => {
-    const u = String(url || "").trim();
-    return u ? u : "#";
-  };
+      const safeUrl = (url) => {
+        const u = String(url || "").trim();
+        return u ? u : "#";
+      };
 
-  const gameApiUrl = GAME_ANDROID_API_URL;
-  const userApiUrl = USER_API_URL;
+      const gameApiUrl = GAME_ANDROID_API_URL;
+      const userApiUrl = USER_API_URL;
 
-  // Data utama
-  const ori = gameData.oriGame || {};
-  const mods =
-    gameData.type === "ori-mod" && gameData.modGame ? [gameData.modGame] : [];
+      // Data utama berdasarkan tipe game
+      const ori = gameData.oriGame || {};
+      const mods = gameData.modGame ? [gameData.modGame] : [];
 
-  // Helpers HTML section
-  const buildAdButtons = (links, clouds) => {
-    const arr = Array.isArray(links) ? links : [];
-    const cld = Array.isArray(clouds) ? clouds : [];
-    if (!arr.length) return "";
+      // Helpers HTML section
+      const buildAdButtons = (links, clouds) => {
+        const arr = Array.isArray(links) ? links : [];
+        const cld = Array.isArray(clouds) ? clouds : [];
+        if (!arr.length) return "";
 
-    return arr
-      .map((link, i) => {
-        const cloudName = escapeHTML(cld[i] || `Link ${i + 1}`);
-        const raw = String(link || "").trim();
-        const href = escapeHTML(safeUrl(raw));
-        const disabled = raw ? "" : 'disabled aria-disabled="true"';
-        const safeHref = raw ? href : "#";
+        return arr
+          .map((link, i) => {
+            const cloudName = escapeHTML(cld[i] || `Link ${i + 1}`);
+            const raw = String(link || "").trim();
+            const href = escapeHTML(safeUrl(raw));
+            const disabled = raw ? "" : 'disabled aria-disabled="true"';
+            const safeHref = raw ? href : "#";
 
+            return (
+              `<a class="btn btn-cloud ${raw ? "" : "loading"}" ` +
+              `href="${safeHref}" target="_blank" rel="noopener noreferrer" ${disabled}>` +
+              `${cloudName} - Link ${i + 1}</a>`
+            );
+          })
+          .join("\n");
+      };
+
+      const buildOriginalButtons = (links, clouds, gameType, gameIndex = 0) => {
+        const arr = Array.isArray(links) ? links : [];
+        const cld = Array.isArray(clouds) ? clouds : [];
+        if (!arr.length) return "";
+
+        return arr
+          .map((_, i) => {
+            const cloudName = escapeHTML(cld[i] || `Link ${i + 1}`);
+            return (
+              `<button class="btn btn-cloud" onclick="accessOriginalLink('${gameType}', ${gameIndex}, ${i})">` +
+              `${cloudName} - Link ${i + 1}</button>`
+            );
+          })
+          .join("\n");
+      };
+
+      const buildSection = (title, innerHtml) => {
+        const html = String(innerHtml || "").trim();
+        if (!html) return "";
         return (
-          `<a class="btn btn-cloud ${raw ? "" : "loading"}" ` +
-          `href="${safeHref}" target="_blank" rel="noopener noreferrer" ${disabled}>` +
-          `${cloudName} - Link ${i + 1}</a>`
+          `<div class="mb-3">` +
+          `<h4>${escapeHTML(title)}</h4>` +
+          `<div class="d-flex flex-wrap">${html}</div>` +
+          `</div>`
         );
-      })
-      .join("\n");
-  };
+      };
 
-  const buildOriginalButtons = (links, clouds, gameType, gameIndex = 0) => {
-    const arr = Array.isArray(links) ? links : [];
-    const cld = Array.isArray(clouds) ? clouds : [];
-    if (!arr.length) return "";
-
-    return arr
-      .map((_, i) => {
-        const cloudName = escapeHTML(cld[i] || `Link ${i + 1}`);
-        return (
-          `<button class="btn btn-cloud" onclick="accessOriginalLink('${gameType}', ${gameIndex}, ${i})">` +
-          `${cloudName} - Link ${i + 1}</button>`
+      // ORI sections (hanya jika ada)
+      let oriAdLinks1HTML = "";
+      let oriAdLinks2HTML = "";
+      let oriOriginalLinksHTML = "";
+      
+      if (ori && ori.name) {
+        oriAdLinks1HTML = buildSection(
+          (ori.name || "ORI") + " (Link Iklan 1)",
+          buildAdButtons(ori.adLinks1, gameData.cloudSelection?.ad1 || [])
         );
-      })
-      .join("\n");
-  };
 
-  const buildSection = (title, innerHtml) => {
-    const html = String(innerHtml || "").trim();
-    if (!html) return "";
-    return (
-      `<div class="mb-3">` +
-      `<h4>${escapeHTML(title)}</h4>` +
-      `<div class="d-flex flex-wrap">${html}</div>` +
-      `</div>`
-    );
-  };
+        oriAdLinks2HTML = buildSection(
+          (ori.name || "ORI") + " (Link Iklan 2)",
+          buildAdButtons(ori.adLinks2, gameData.cloudSelection?.ad2 || [])
+        );
 
-  // ORI sections (IKLAN LANGSUNG DIMASUKKAN KE HTML, TANPA FETCH)
-  const oriAdLinks1HTML = buildSection(
-    (ori.name || "ORI") + " (Link Iklan 1)",
-    buildAdButtons(ori.adLinks1, gameData.cloudSelection?.ad1 || [])
-  );
+        oriOriginalLinksHTML = buildSection(
+          (ori.name || "ORI") + " (Link Asli)",
+          buildOriginalButtons(
+            ori.originalLinks,
+            gameData.cloudSelection?.original || [],
+            "ori",
+            0
+          )
+        );
+      }
 
-  const oriAdLinks2HTML = buildSection(
-    (ori.name || "ORI") + " (Link Iklan 2)",
-    buildAdButtons(ori.adLinks2, gameData.cloudSelection?.ad2 || [])
-  );
+      // MOD sections
+      let modAdLinks1HTML = "";
+      let modAdLinks2HTML = "";
+      let modOriginalLinksHTML = "";
 
-  const oriOriginalLinksHTML = buildSection(
-    (ori.name || "ORI") + " (Link Asli)",
-    buildOriginalButtons(
-      ori.originalLinks,
-      gameData.cloudSelection?.original || [],
-      "ori",
-      0
-    )
-  );
+      if (mods.length > 0) {
+        mods.forEach((mod, idx) => {
+          modAdLinks1HTML += buildSection(
+            (mod.name || `MOD ${idx + 1}`) + " (Link Iklan 1)",
+            buildAdButtons(mod.adLinks1, gameData.cloudSelection?.ad1 || [])
+          );
 
-  // MOD sections
-  let modAdLinks1HTML = "";
-  let modAdLinks2HTML = "";
-  let modOriginalLinksHTML = "";
+          modAdLinks2HTML += buildSection(
+            (mod.name || `MOD ${idx + 1}`) + " (Link Iklan 2)",
+            buildAdButtons(mod.adLinks2, gameData.cloudSelection?.ad2 || [])
+          );
 
-  if (mods.length > 0) {
-    mods.forEach((mod, idx) => {
-      modAdLinks1HTML += buildSection(
-        (mod.name || `MOD ${idx + 1}`) + " (Link Iklan 1)",
-        buildAdButtons(mod.adLinks1, gameData.cloudSelection?.ad1 || [])
+          modOriginalLinksHTML += buildSection(
+            (mod.name || `MOD ${idx + 1}`) + " (Link Asli)",
+            buildOriginalButtons(
+              mod.originalLinks,
+              gameData.cloudSelection?.original || [],
+              "mod",
+              idx
+            )
+          );
+        });
+      }
+
+      // Detect Ad2 content (supaya card Ad2 cuma muncul jika memang ada link)
+      const hasAnyAd2 = [
+        ...((ori?.adLinks2 || []) ?? []),
+        ...(mods.flatMap((m) => m.adLinks2 || []) ?? []),
+      ].some((x) => String(x || "").trim().length > 0);
+
+      const includeAd2 = !!(
+        hasAnyAd2 &&
+        (oriAdLinks2HTML.trim() || modAdLinks2HTML.trim())
       );
 
-      modAdLinks2HTML += buildSection(
-        (mod.name || `MOD ${idx + 1}`) + " (Link Iklan 2)",
-        buildAdButtons(mod.adLinks2, gameData.cloudSelection?.ad2 || [])
-      );
+      // Tentukan title berdasarkan tipe game
+      let titleName;
+      if (gameData.type === 'only-mod' && mods.length > 0) {
+        titleName = escapeHTML(mods[0].name || "Android Game MOD");
+      } else if (ori && ori.name) {
+        titleName = escapeHTML(ori.name || "Android Game");
+      } else {
+        titleName = "Android Game Download";
+      }
 
-      modOriginalLinksHTML += buildSection(
-        (mod.name || `MOD ${idx + 1}`) + " (Link Asli)",
-        buildOriginalButtons(
-          mod.originalLinks,
-          gameData.cloudSelection?.original || [],
-          "mod",
-          idx
-        )
-      );
-    });
-  }
+      // Generate detail section berdasarkan tipe game
+      let detailSection = '';
+      if (gameData.type === 'only-mod' && mods.length > 0) {
+        // ONLY MOD: tampilkan hanya detail MOD
+        const mod = mods[0];
+        detailSection = `
+          <div class="row">
+            <div class="col-md-6">
+              <table class="table">
+                <tr><th>Nama Game:</th><td>${escapeHTML(mod.name || "")}</td></tr>
+                <tr><th>Category:</th><td>${escapeHTML(mod.category || "")}</td></tr>
+                <tr><th>Versi Game:</th><td>${escapeHTML(mod.version || "")}</td></tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <table class="table">
+                <tr><th>Ukuran MOD:</th><td>${escapeHTML(mod.size || "")}</td></tr>
+                <tr><th>MOD Features:</th><td>${escapeHTML(mod.modDescription || "")}</td></tr>
+              </table>
+            </div>
+          </div>
+        `;
+      } else if (ori && ori.name) {
+        // ORI atau ORI+MOD: tampilkan detail ORI
+        detailSection = `
+          <div class="row">
+            <div class="col-md-6">
+              <table class="table">
+                <tr><th>Nama Game:</th><td>${escapeHTML(ori.name || "")}</td></tr>
+                <tr><th>Category:</th><td>${escapeHTML(ori.category || "")}</td></tr>
+                <tr><th>Versi Game:</th><td>${escapeHTML(ori.version || "")}</td></tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <table class="table">
+                <tr><th>Ukuran ORI:</th><td>${escapeHTML(ori.sizeOri || "")}</td></tr>
+                ${ori.sizeMod ? `<tr><th>Ukuran MOD:</th><td>${escapeHTML(ori.sizeMod)}</td></tr>` : ""}
+              </table>
+            </div>
+          </div>
+        `;
+      }
 
-  // Detect Ad2 content (supaya card Ad2 cuma muncul jika memang ada link)
-  const hasAnyAd2 = [
-    ...((ori.adLinks2 || []) ?? []),
-    ...(mods.flatMap((m) => m.adLinks2 || []) ?? []),
-  ].some((x) => String(x || "").trim().length > 0);
+      // MOD features section jika ada
+      let modFeaturesSection = '';
+      if (mods.length > 0 && gameData.type !== 'only-mod') {
+        modFeaturesSection = `
+          <div class="mt-4">
+            <h4>Versi MOD Tersedia</h4>
+            ${mods.map((mod) => `
+            <div class="card mb-3">
+              <div class="card-header bg-warning">
+                <h5 class="mb-0">${escapeHTML(mod.name || "")}</h5>
+              </div>
+              <div class="card-body">
+                <p><strong>Ukuran:</strong> ${escapeHTML(mod.size || "")}</p>
+                <p><strong>Versi:</strong> ${escapeHTML(mod.version || "")}</p>
+                <p><strong>MOD Features:</strong></p>
+                <pre style="white-space: pre-wrap; background: #f8f9fa; padding: 10px; border-radius: 5px;">${escapeHTML(mod.modDescription || "")}</pre>
+              </div>
+            </div>
+            `).join("")}
+          </div>
+        `;
+      }
 
-  const includeAd2 = !!(
-    hasAnyAd2 &&
-    (oriAdLinks2HTML.trim() || modAdLinks2HTML.trim())
-  );
+      // Tab navigation berdasarkan tipe game
+      let tabNavigation = '';
+      if (gameData.type === 'only-mod') {
+        // ONLY MOD: hanya 2 tab (details dan links)
+        tabNavigation = `
+          <ul class="nav nav-tabs" id="gameTabs">
+            <li class="nav-item">
+              <button class="nav-link active" data-tab="details">Detail Game</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-tab="adLinks">Link with ads (Link Iklan)</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-tab="originalLinks">Ad-free link (Tanpa Iklan)</button>
+            </li>
+          </ul>
+        `;
+      } else {
+        // ORI atau ORI+MOD: 3 tab normal
+        tabNavigation = `
+          <ul class="nav nav-tabs" id="gameTabs">
+            <li class="nav-item">
+              <button class="nav-link active" data-tab="details">Detail Game</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-tab="adLinks">Link with ads (Link Iklan)</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-tab="originalLinks">Ad-free link (Tanpa Iklan)</button>
+            </li>
+          </ul>
+        `;
+      }
 
-  const titleName = escapeHTML(ori.name || "Android Game");
+      // Link sections based on game type
+      let adLinksSection = '';
+      let originalLinksSection = '';
+      
+      if (gameData.type === 'only-mod') {
+        // ONLY MOD: hanya link MOD
+        adLinksSection = `
+          <div class="card border-primary mb-4" style="border-width: 2px;">
+            <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+              <span><i class="bi bi-star-fill"></i> INDapk Short</span>
+              <span class="badge bg-light text-dark">Utama</span>
+            </div>
+            <div class="card-body">
+              <div class="text-muted mb-2">Gunakan ini. Jika sulit lewat iklannya, pakai Link Semawur.</div>
+              ${modAdLinks1HTML}
+            </div>
+          </div>
 
-  return `
+          <div class="card border-secondary mb-3" id="ad2Card" style="display:${includeAd2 ? "block" : "none"};">
+            <div class="card-header bg-secondary text-white d-flex align-items-center justify-content-between">
+              <span><i class="bi bi-link-45deg"></i> Semawurt Short</span>
+              <span class="badge bg-light text-dark">Alternatif</span>
+            </div>
+            <div class="card-body">
+              <div class="text-muted mb-2">Jika Link INDapk Short sulit dilewati, gunakan Link Semawur di bawah.</div>
+              ${modAdLinks2HTML}
+            </div>
+          </div>
+        `;
+        
+        originalLinksSection = `
+          <h3>Link Download Tanpa Iklan (Download Link Without Ads)</h3>
+
+          <div class="login-prompt mb-3" id="loginPrompt">
+            <p class="mb-2">
+              <strong>⚠️ Perhatian:</strong>
+              Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
+              Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
+              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
+            </p>
+
+            <p class="mb-3 text-muted">
+              <strong>⚠️ Notice:</strong>
+              To access the ad-free download links, you must log in with Telegram.
+              Register via the Telegram bot <strong>@INDapkBot</strong>.
+              Then type <strong>/profile</strong> in the bot to get your Telegram ID.
+            </p>
+
+            <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
+          </div>
+
+          <div id="originalLinksContent" style="display: none;">
+            ${modOriginalLinksHTML}
+          </div>
+        `;
+      } else {
+        // ORI atau ORI+MOD: gabungan link ORI dan MOD
+        adLinksSection = `
+          <div class="card border-primary mb-4" style="border-width: 2px;">
+            <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+              <span><i class="bi bi-star-fill"></i> INDapk Short</span>
+              <span class="badge bg-light text-dark">Utama</span>
+            </div>
+            <div class="card-body">
+              <div class="text-muted mb-2">Gunakan ini. Jika sulit lewat iklannya, pakai Link Semawur.</div>
+              ${oriAdLinks1HTML}
+              ${modAdLinks1HTML}
+            </div>
+          </div>
+
+          <div class="card border-secondary mb-3" id="ad2Card" style="display:${includeAd2 ? "block" : "none"};">
+            <div class="card-header bg-secondary text-white d-flex align-items-center justify-content-between">
+              <span><i class="bi bi-link-45deg"></i> Semawurt Short</span>
+              <span class="badge bg-light text-dark">Alternatif</span>
+            </div>
+            <div class="card-body">
+              <div class="text-muted mb-2">Jika Link INDapk Short sulit dilewati, gunakan Link Semawur di bawah.</div>
+              ${oriAdLinks2HTML}
+              ${modAdLinks2HTML}
+            </div>
+          </div>
+        `;
+        
+        originalLinksSection = `
+          <h3>Link Download Tanpa Iklan (Download Link Without Ads)</h3>
+
+          <div class="login-prompt mb-3" id="loginPrompt">
+            <p class="mb-2">
+              <strong>⚠️ Perhatian:</strong>
+              Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
+              Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
+              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
+            </p>
+
+            <p class="mb-3 text-muted">
+              <strong>⚠️ Notice:</strong>
+              To access the ad-free download links, you must log in with Telegram.
+              Register via the Telegram bot <strong>@INDapkBot</strong>.
+              Then type <strong>/profile</strong> in the bot to get your Telegram ID.
+            </p>
+
+            <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
+          </div>
+
+          <div id="originalLinksContent" style="display: none;">
+            ${oriOriginalLinksHTML}
+            ${modOriginalLinksHTML}
+          </div>
+        `;
+      }
+
+      return `
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -2645,55 +3017,12 @@ function createHTMLTemplate() {
         <p class="mb-0">Android Game Download</p>
       </div>
 
-      <ul class="nav nav-tabs" id="gameTabs">
-        <li class="nav-item">
-          <button class="nav-link active" data-tab="details">Detail Game</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-tab="adLinks">Link with ads (Link Iklan)</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-tab="originalLinks">Ad-free link (Tanpa Iklan)</button>
-        </li>
-      </ul>
+      ${tabNavigation}
 
       <div class="tab-content active" id="tabDetails">
         <h3>Detail Game</h3>
-        <div class="row">
-          <div class="col-md-6">
-            <table class="table">
-              <tr><th>Nama Game:</th><td>${escapeHTML(ori.name || "")}</td></tr>
-              <tr><th>Category:</th><td>${escapeHTML(ori.category || "")}</td></tr>
-              <tr><th>Versi Game:</th><td>${escapeHTML(ori.version || "")}</td></tr>
-            </table>
-          </div>
-          <div class="col-md-6">
-            <table class="table">
-              <tr><th>Ukuran ORI:</th><td>${escapeHTML(ori.sizeOri || "")}</td></tr>
-              ${ori.sizeMod ? `<tr><th>Ukuran MOD:</th><td>${escapeHTML(ori.sizeMod)}</td></tr>` : ""}
-              ${mods.length > 0 ? `<tr><th>MOD Features:</th><td>${escapeHTML(mods[0].modDescription || "")}</td></tr>` : ""}
-            </table>
-          </div>
-        </div>
-
-        ${mods.length > 0 ? `
-        <div class="mt-4">
-          <h4>Versi MOD Tersedia</h4>
-          ${mods.map((mod) => `
-          <div class="card mb-3">
-            <div class="card-header bg-warning">
-              <h5 class="mb-0">${escapeHTML(mod.name || "")}</h5>
-            </div>
-            <div class="card-body">
-              <p><strong>Ukuran:</strong> ${escapeHTML(mod.size || "")}</p>
-              <p><strong>Versi:</strong> ${escapeHTML(mod.version || "")}</p>
-              <p><strong>MOD Features:</strong></p>
-              <pre style="white-space: pre-wrap; background: #f8f9fa; padding: 10px; border-radius: 5px;">${escapeHTML(mod.modDescription || "")}</pre>
-            </div>
-          </div>
-          `).join("")}
-        </div>
-        ` : ""}
+        ${detailSection}
+        ${modFeaturesSection}
 
         <div class="mt-3 text-center">
           <a href="https://indapk.com/requestgame.html" target="_blank" rel="noopener" class="btn btn-success">
@@ -2724,56 +3053,11 @@ function createHTMLTemplate() {
           </div>
         </div>
 
-        <div class="card border-primary mb-4" style="border-width: 2px;">
-          <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
-            <span><i class="bi bi-star-fill"></i> INDapk Short</span>
-            <span class="badge bg-light text-dark">Utama</span>
-          </div>
-          <div class="card-body">
-            <div class="text-muted mb-2">Gunakan ini. Jika sulit lewat iklannya, pakai Link Semawur.</div>
-            ${oriAdLinks1HTML}
-            ${modAdLinks1HTML}
-          </div>
-        </div>
-
-        <div class="card border-secondary mb-3" id="ad2Card" style="display:${includeAd2 ? "block" : "none"};">
-          <div class="card-header bg-secondary text-white d-flex align-items-center justify-content-between">
-            <span><i class="bi bi-link-45deg"></i> Semawurt Short</span>
-            <span class="badge bg-light text-dark">Alternatif</span>
-          </div>
-          <div class="card-body">
-            <div class="text-muted mb-2">Jika Link INDapk Short sulit dilewati, gunakan Link Semawur di bawah.</div>
-            ${oriAdLinks2HTML}
-            ${modAdLinks2HTML}
-          </div>
-        </div>
+        ${adLinksSection}
       </div>
 
       <div class="tab-content" id="tabOriginalLinks">
-        <h3>Link Download Tanpa Iklan (Download Link Without Ads)</h3>
-
-        <div class="login-prompt mb-3" id="loginPrompt">
-          <p class="mb-2">
-            <strong>⚠️ Perhatian:</strong>
-            Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
-            Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
-            Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
-          </p>
-
-          <p class="mb-3 text-muted">
-            <strong>⚠️ Notice:</strong>
-            To access the ad-free download links, you must log in with Telegram.
-            Register via the Telegram bot <strong>@INDapkBot</strong>.
-            Then type <strong>/profile</strong> in the bot to get your Telegram ID.
-          </p>
-
-          <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
-        </div>
-
-        <div id="originalLinksContent" style="display: none;">
-          ${oriOriginalLinksHTML}
-          ${modOriginalLinksHTML}
-        </div>
+        ${originalLinksSection}
       </div>
     </div>
 
@@ -2845,9 +3129,10 @@ function createHTMLTemplate() {
       const cloudAd2 = ${JSON.stringify(gameData.cloudSelection?.ad2 || [])};
 
       const LINK_COUNT = ${Number(gameData.linkCount || 0)};
-      const HAS_MOD = ${gameData.type === "ori-mod" ? "true" : "false"};
-      const MOD_META = ${gameData.type === "ori-mod" ? JSON.stringify([{ name: gameData.modGame?.name || "MOD", index: 0 }]) : "[]"};
+      const HAS_MOD = ${(gameData.type === 'ori-mod' || gameData.type === 'only-mod') ? "true" : "false"};
+      const MOD_META = ${(gameData.type === 'ori-mod' || gameData.type === 'only-mod') ? JSON.stringify([{ name: gameData.modGame?.name || "MOD", index: 0 }]) : "[]"};
       const HAS_AD2 = ${includeAd2 ? "true" : "false"};
+      const GAME_TYPE = "${escapeHTML(gameData.type || 'ori-only')}";
 
       let currentUser = null;
       let balanceRefreshInterval = null;
@@ -3146,7 +3431,7 @@ function createHTMLTemplate() {
             updateUserBalanceUI();
 
             showLinkModal(result.data.link, {
-              game_name: result.data.game_name || "${escapeHTML(ori.name || "")}",
+              game_name: result.data.game_name || "${escapeHTML((gameData.oriGame?.name || gameData.modGame?.name) || "")}",
               game_type: gameType,
               cloud: result.data.cloud || getCloudName(linkIndex),
               amount_deducted: result.data.amount_deducted || 2000,
@@ -3345,8 +3630,7 @@ function createHTMLTemplate() {
 </body>
 </html>
 `;
-}
-
+    }
     
     function copyHTML() {
       const html = document.getElementById('htmlPreview').textContent;
@@ -3363,7 +3647,7 @@ function createHTMLTemplate() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${gameData.oriGame.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${gameData.downloadId}.html`;
+      a.download = `${gameData.oriGame?.name || gameData.modGame?.name || 'game'}_${gameData.downloadId}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -3470,14 +3754,6 @@ function createHTMLTemplate() {
       } catch (error) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Error: ${error.message}</td></tr>`;
       }
-    }
-    
-    // Utility function untuk escape HTML
-    function escapeHTML(text) {
-      if (!text) return '';
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
     }
   </script>
 </body>
