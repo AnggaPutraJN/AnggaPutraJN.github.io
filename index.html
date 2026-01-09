@@ -1206,6 +1206,16 @@ code {
               <div id="adLinks2Input"></div>
             </div>
 
+            <div class="mt-4">
+            <h5><i class="bi bi-image"></i> Thumbnail (Optional)</h5>
+            <div class="mb-3">
+              <input type="text" id="thumbnailUrl" class="form-control"
+                     placeholder="Masukkan URL gambar thumbnail (opsional), boleh dikosongkan" />
+              <div class="form-text">Boleh kosong. Jika diisi, akan disimpan ke spreadsheet dan bisa dipakai saat generate HTML.</div>
+            </div>
+          </div>
+
+
             <div class="mt-4 d-flex gap-2 flex-wrap">
               <button id="btnPrev3" class="btn btn-secondary">
                 <i class="bi bi-arrow-left-circle-fill"></i> Kembali
@@ -1392,6 +1402,7 @@ code {
             originalLinksXCI: [],
             originalLinksNSPPart: [],
             originalLinksXCIPart: [],
+            thumbnailUrl: "", // ✅ NEW (optional)
             gameInfo: {},
             downloadId: null
         };
@@ -1843,15 +1854,28 @@ let remainingLines = lines.slice(idx);
   }
 // Warning kalau lebih (overflow)
 if (remainingLines.length > totalExpectedAllLinks) {
-  const extra = remainingLines.length - totalExpectedAllLinks;
-  const warning =
-    `Peringatan: Data memiliki ${remainingLines.length} link, melebihi kebutuhan ${totalExpectedAllLinks} link. ` +
-    `${extra} link terakhir akan diabaikan.`;
-  showWarningModal(warning);
+  const thumbCandidate = remainingLines[totalExpectedAllLinks] || "";
+  const thumb = String(thumbCandidate).trim();
 
-  // Potong supaya tidak geser mapping NSP/XCI/Part
+  if (thumb) {
+    gameData.thumbnailUrl = thumb;
+
+    const thumbInput = document.getElementById('thumbnailUrl');
+    if (thumbInput) thumbInput.value = thumb;
+  }
+
+  const extraBeyondThumb = remainingLines.length - (totalExpectedAllLinks + 1);
+  if (extraBeyondThumb > 0) {
+    const warning =
+      `Peringatan: Ada ${extraBeyondThumb} baris setelah Thumbnail. Baris tambahan akan diabaikan.`;
+    showWarningModal(warning);
+  }
+
+  // Potong supaya mapping link tidak geser
   remainingLines.splice(totalExpectedAllLinks);
 }
+
+
 
 
 
@@ -2597,7 +2621,8 @@ async function saveGameData() {
         category: category,
         game_id: gameId,
         region: region,
-        language: language
+        language: language,
+        thumbnail_url: (document.getElementById('thumbnailUrl')?.value || '').trim() // ✅ NEW
     };
 
     try {
@@ -2633,6 +2658,8 @@ async function saveGameData() {
         params.append('cloud_xci', JSON.stringify(gameData.cloudXCI));
         params.append('cloud_nsp_part', JSON.stringify(gameData.cloudNSPPart));
         params.append('cloud_xci_part', JSON.stringify(gameData.cloudXCIPart));
+        params.append('thumbnail_url', gameData.gameInfo.thumbnail_url || '');
+
 
         console.log('Sending data to server...');
 
