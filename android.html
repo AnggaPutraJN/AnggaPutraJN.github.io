@@ -756,6 +756,28 @@
       border-radius: 10px;
       margin-bottom: 20px;
     }
+
+  /* Biar dropdown selalu di atas card/section lain */
+.top-menu{
+  position: relative;
+  z-index: 1100;
+}
+
+/* Bootstrap nambahin class .show ke .dropdown saat kebuka */
+.menu-dd{
+  position: relative;
+}
+
+.menu-dd.show{
+  z-index: 2000; /* naik saat open */
+}
+
+/* dropdown menunya */
+.menu-dd .dropdown-menu{
+  z-index: 2000;
+  margin-top: 10px; /* optional biar agak turun */
+}
+
   </style>
 </head>
 
@@ -774,7 +796,7 @@
           ANDROID
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="index"><i class="bi bi-caret-right-fill"></i> Generator Android</a></li>
+          <li><a class="dropdown-item" href="android"><i class="bi bi-caret-right-fill"></i> Generator Android</a></li>
           <li><a class="dropdown-item" href="sharegameandroid"><i class="bi bi-caret-right-fill"></i> Share Game Android</a></li>
           <li><a class="dropdown-item" href="shortingandroid"><i class="bi bi-caret-right-fill"></i> Shorting Game Android</a></li>
         </ul>
@@ -800,7 +822,7 @@
           NINTENDO
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="switch"><i class="bi bi-caret-right-fill"></i> Generator Switch</a></li>
+          <li><a class="dropdown-item" href="index"><i class="bi bi-caret-right-fill"></i> Generator Switch</a></li>
           <li><a class="dropdown-item" href="sharegameswitch"><i class="bi bi-caret-right-fill"></i> Share Game Switch</a></li>
           <li><a class="dropdown-item" href="shortingswitch"><i class="bi bi-caret-right-fill"></i> Shorting Game Switch</a></li>
         </ul>
@@ -1107,7 +1129,7 @@
   </div> <!-- /container -->
 
   <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   
   <script>
