@@ -628,6 +628,29 @@ http://link.indapk.com/U8LVL"></textarea>
                                 <!-- Akan diisi oleh JavaScript -->
                             </div>
                         </div>
+
+
+                      <!-- THUMBNAIL INPUT (OPTIONAL) -->
+                      <div class="col-md-12 mb-3">
+                        <label for="thumbnailUrl" class="form-label">
+                          <i class="bi bi-image"></i> Thumbnail URL (Optional)
+                        </label>
+                        <div class="input-group">
+                          <input type="url" id="thumbnailUrl" class="form-control" 
+                                 placeholder="Contoh: https://example.com/image.jpg">
+                          <button type="button" class="btn btn-outline-secondary" id="btnPreviewThumbnail">
+                            <i class="bi bi-eye"></i> Preview
+                          </button>
+                        </div>
+                        <div class="form-text">
+                          Link gambar thumbnail game (bisa kosong). Ukuran disarankan: 400x300px atau rasio 4:3.
+                        </div>
+                        <!-- Thumbnail Preview -->
+                        <div id="thumbnailPreview" class="mt-2" style="display: none;">
+                          <img src="" alt="Thumbnail Preview" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                        </div>
+                      </div>
+                      
                         
                         <div class="mt-3">
                             <button id="btnPrev3" class="btn btn-secondary">
@@ -1242,6 +1265,56 @@ http://link.indapk.com/U8LVL"></textarea>
             }
         }
         
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Thumbnail preview functionality
+  const btnPreviewThumbnail = document.getElementById('btnPreviewThumbnail');
+  const thumbnailUrlInput = document.getElementById('thumbnailUrl');
+  const thumbnailPreview = document.getElementById('thumbnailPreview');
+  const thumbnailImage = thumbnailPreview?.querySelector('img');
+  
+  if (btnPreviewThumbnail && thumbnailUrlInput && thumbnailPreview) {
+    btnPreviewThumbnail.addEventListener('click', function() {
+      const url = thumbnailUrlInput.value.trim();
+      if (!url) {
+        alert('Masukkan URL thumbnail terlebih dahulu');
+        return;
+      }
+      
+      // Validasi URL
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('URL harus dimulai dengan http:// atau https://');
+        return;
+      }
+      
+      // Tampilkan preview
+      thumbnailImage.src = url;
+      thumbnailPreview.style.display = 'block';
+      
+      // Cek apakah gambar bisa di-load
+      thumbnailImage.onload = function() {
+        console.log('Thumbnail loaded successfully');
+      };
+      
+      thumbnailImage.onerror = function() {
+        alert('Gagal memuat thumbnail. Pastikan URL gambar valid dan dapat diakses.');
+        thumbnailPreview.style.display = 'none';
+      };
+    });
+    
+    // Juga preview saat input berubah (opsional)
+    thumbnailUrlInput.addEventListener('change', function() {
+      const url = this.value.trim();
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        thumbnailImage.src = url;
+        thumbnailPreview.style.display = 'block';
+      } else {
+        thumbnailPreview.style.display = 'none';
+      }
+    });
+  }
+});
+
         function parsePasteData(text) {
             const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
             
@@ -1480,6 +1553,7 @@ http://link.indapk.com/U8LVL`;
             const gameName = document.getElementById('gameName').value.trim();
             const category = document.getElementById('category').value.trim();
             const language = document.getElementById('language').value.trim();
+            const thumbnailUrl = document.getElementById('thumbnailUrl').value.trim();
             
             if (!gameName || !category || !language) {
                 alert('Harap isi semua field yang wajib!');
@@ -1505,7 +1579,8 @@ http://link.indapk.com/U8LVL`;
                 ukuran_chd: document.getElementById('chdSize').value.trim(),
                 ukuran_iso: document.getElementById('isoSize').value.trim(),
                 category: category,
-                language: language
+                language: language,
+                thumbnail_url: thumbnailUrl
             };
             
             try {
@@ -1529,6 +1604,7 @@ http://link.indapk.com/U8LVL`;
                 params.append('link_iklan2_chd', JSON.stringify(gameData.adLinks2CHD || []));
                 params.append('cloud_iso', JSON.stringify(gameData.cloudISO));
                 params.append('cloud_chd', JSON.stringify(gameData.cloudCHD));
+                params.append('thumbnail_url', gameData.gameInfo.thumbnail_url || ''); 
                 
                 const response = await fetch(GAMEPS2_API_URL, {
                     method: 'POST',
@@ -2647,7 +2723,8 @@ http://link.indapk.com/U8LVL`;
                 ukuran_chd: toStr(serverGame.ukuran_chd),
                 ukuran_iso: toStr(serverGame.ukuran_iso),
                 category: toStr(serverGame.category),
-                language: toStr(serverGame.language)
+                language: toStr(serverGame.language),
+                thumbnail_url: toStr(serverGame.thumbnail_url)
             };
 
             // downloadId juga dipaksa string
