@@ -7,583 +7,518 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 <style>
-        :root {
-            --primary-color: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary-color: #8b5cf6;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --info-color: #06b6d4;
-            --light-color: #f8fafc;
-            --dark-color: #1e293b;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --card-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--dark-color);
-            padding: 0;
-            overflow-x: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,112C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-            background-size: cover;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            padding: 1.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-        }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: var(--card-shadow-lg);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-        }
-        
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border-radius: 20px 20px 0 0 !important;
-            padding: 1.25rem 1.5rem;
-            border: none;
-        }
-        
-        .btn {
-            border-radius: 12px;
-            padding: 0.625rem 1.25rem;
-            font-weight: 500;
-            transition: all 0.3s;
-            border: none;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .btn:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, var(--success-color), #059669);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
-        }
-        
-        .btn-outline-primary {
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .btn-outline-primary:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .table {
-            font-size: 0.9rem;
-        }
-        
-        .table th {
-            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-            border: none;
-            font-weight: 600;
-            color: var(--dark-color);
-            padding: 1rem;
-            white-space: nowrap;
-        }
-        
-        .table td {
-            padding: 1rem;
-            vertical-align: middle;
-        }
-        
-        .table-hover tbody tr {
-            transition: all 0.2s;
-        }
-        
-        .table-hover tbody tr:hover {
-            background-color: rgba(99, 102, 241, 0.05);
-            transform: scale(1.01);
-        }
-        
-        .dashboard-card {
-            border-radius: 20px;
-            color: white;
-            padding: 1.75rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--card-shadow-lg);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .dashboard-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            transition: all 0.5s;
-        }
-        
-        .dashboard-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-        }
-        
-        .dashboard-card:hover::before {
-            top: -60%;
-            right: -60%;
-        }
-        
-        .dashboard-card h6 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        
-        .dashboard-card h3 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 0.5rem 0;
-        }
-        
-        .dashboard-card small {
-            opacity: 0.8;
-            font-size: 0.85rem;
-        }
-        
-        .income-card {
-            background: linear-gradient(135deg, #06b6d4, #0891b2);
-        }
-        
-        .expense-card {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-        
-        .balance-card {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-        
-        .wallet-cash-card {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-        }
+:root {
+  --primary-color: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary-color: #8b5cf6;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --info-color: #06b6d4;
+  --light-color: #f8fafc;
+  --dark-color: #1e293b;
 
-        .wallet-dana-card {
-            background: linear-gradient(135deg, #06b6d4, #0891b2);
-        }
+  --card-shadow: 0 4px 6px -1px rgba(0,0,0,.10), 0 2px 4px -1px rgba(0,0,0,.06);
+  --card-shadow-lg: 0 10px 15px -3px rgba(0,0,0,.10), 0 4px 6px -2px rgba(0,0,0,.05);
+}
 
-        .wallet-mandiri-card {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
+*{ margin:0; padding:0; box-sizing:border-box; }
 
-        .wallet-bri-card {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-        
-        .wallet-selector {
-            cursor: pointer;
-            border: 3px solid rgba(99, 102, 241, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 16px;
-            padding: 1rem;
-            background: white;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .wallet-selector:hover {
-            border-color: var(--primary-color);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
-        }
-        
-        .wallet-selector.active {
-            border-color: var(--primary-color);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
-        }
-        
-        .wallet-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        .upload-area {
-            border: 3px dashed rgba(99, 102, 241, 0.3);
-            border-radius: 16px;
-            padding: 2.5rem;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.8));
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .upload-area:hover {
-            border-color: var(--primary-color);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
-            transform: scale(1.02);
-        }
-        
-        .upload-area i {
-            font-size: 3.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            transition: all 0.3s;
-        }
-        
-        .upload-area:hover i {
-            transform: scale(1.1);
-        }
-        
-        .required:after {
-            content: " *";
-            color: var(--danger-color);
-        }
-        
-        .spinner {
-            display: inline-block;
-            width: 1.2rem;
-            height: 1.2rem;
-            border: 3px solid rgba(99, 102, 241, 0.2);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 0.8s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .income-source-selector {
-            cursor: pointer;
-            border: 3px solid rgba(6, 182, 212, 0.2);
-            border-radius: 16px;
-            padding: 1rem 0.5rem;
-            text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 0.75rem;
-            background: white;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .income-source-selector:hover {
-            border-color: var(--info-color);
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(8, 145, 178, 0.05));
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.2);
-        }
-        
-        .income-source-selector.active {
-            border-color: var(--info-color);
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.1));
-            box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.3);
-        }
-        
-        .income-source-selector i {
-            font-size: 1.5rem;
-            color: var(--info-color);
-            margin-bottom: 0.25rem;
-        }
-        
-        .progress {
-            height: 24px;
-            border-radius: 12px;
-            overflow: hidden;
-            background: rgba(226, 232, 240, 0.5);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
-        }
-        
-        .progress-bar {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
-            transition: width 0.6s ease;
-        }
-        
-        .nav-tabs {
-            border: none;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .nav-tabs .nav-link {
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        
-        .nav-tabs .nav-link:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .nav-tabs .nav-link.active {
-            color: var(--dark-color);
-            background: white;
-            box-shadow: var(--card-shadow);
-        }
-        
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow-lg);
-        }
-        
-        header h1 {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 800;
-        }
-        
-        .form-control, .form-select {
-            border-radius: 12px;
-            border: 2px solid rgba(226, 232, 240, 0.8);
-            padding: 0.75rem 1rem;
-            transition: all 0.3s;
-            background: white;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-            outline: none;
-        }
-        
-        .input-group-text {
-            border-radius: 12px 0 0 12px;
-            border: 2px solid rgba(226, 232, 240, 0.8);
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-        
-        .target-card {
-            border-left: 6px solid var(--primary-color);
-            border-radius: 16px;
-            transition: all 0.3s;
-        }
-        
-        .target-completed {
-            border-left: 6px solid var(--success-color);
-        }
-        
-        .target-warning {
-            border-left: 6px solid var(--warning-color);
-        }
-        
-        .target-danger {
-            border-left: 6px solid var(--danger-color);
-        }
-        
-        footer {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-top: 3rem;
-            box-shadow: var(--card-shadow);
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard-card h3 {
-                font-size: 1.5rem;
-            }
-            
-            .dashboard-card {
-                padding: 1.25rem;
-            }
-            
-            .btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-            
-            header {
-                padding: 1rem;
-            }
-            
-            header h1 {
-                font-size: 1.5rem !important;
-            }
-            
-            .wallet-selector {
-                padding: 0.75rem;
-                margin-bottom: 0.5rem;
-            }
-            
-            .wallet-icon {
-                font-size: 1.5rem;
-            }
-            
-            .table {
-                font-size: 0.8rem;
-            }
-            
-            .table th, .table td {
-                padding: 0.5rem;
-            }
-            
-            .nav-tabs .nav-link {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .container {
-                padding: 0.75rem;
-            }
-            
-            .dashboard-card h3 {
-                font-size: 1.25rem;
-            }
-            
-            .upload-area {
-                padding: 1.5rem;
-            }
-            
-            .upload-area i {
-                font-size: 2.5rem;
-            }
-        }
-        .mini-card {
-        border-radius: 16px;
-        background: white;
-        border: 2px solid rgba(226, 232, 240, 0.9);
-        box-shadow: var(--card-shadow);
-        padding: 0.9rem 1rem;
-        height: 100%;
-        transition: all 0.2s;
-      }
+body{
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: var(--dark-color);
+  padding: 0;
+  overflow-x: hidden;
+}
 
-      .mini-card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--card-shadow-lg);
-      }
+body::before{
+  content:'';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,112C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+  background-size: cover;
+  pointer-events: none;
+  z-index: 0;
+}
 
-      .mini-card-title {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        color: rgba(30, 41, 59, 0.7);
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-      }
+.container{
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  padding: 1.5rem;
+}
+@media (max-width:768px){
+  .container{ padding: 1rem; }
+}
 
-      .mini-card-value {
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: var(--dark-color);
-        line-height: 1.2;
-      }
+/* ===== Global Card ===== */
+.card{
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.30);
+  box-shadow: var(--card-shadow-lg);
+  transition: transform .2s ease, box-shadow .2s ease;
+  overflow: hidden;
+}
+.card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.12), 0 10px 10px -5px rgba(0,0,0,0.04);
+}
 
-      .mini-card-sub {
-        font-size: 0.85rem;
-        color: rgba(30, 41, 59, 0.75);
-        margin-top: 0.35rem;
-      }
+.card-header{
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: #fff;
+  border-radius: 20px 20px 0 0 !important;
+  padding: 1.15rem 1.5rem;
+  border: none;
+}
 
-      .mini-card-muted {
-        background: rgba(248, 250, 252, 0.8);
-      }
+/* ===== Header Top ===== */
+header{
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--card-shadow-lg);
+}
+header h1{
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+}
 
-      .mini-card-primary {
-        border-color: rgba(99, 102, 241, 0.35);
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.06));
-      }
+/* ===== Tabs ===== */
+.nav-tabs{
+  border: none;
+  gap: .5rem;
+  margin-bottom: 2rem;
+}
+.nav-tabs .nav-link{
+  border: none;
+  color: rgba(255,255,255,0.75);
+  font-weight: 800;
+  padding: .75rem 1.4rem;
+  border-radius: 12px;
+  transition: all .2s ease;
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(10px);
+}
+.nav-tabs .nav-link:hover{
+  color: #fff;
+  background: rgba(255,255,255,0.20);
+  transform: translateY(-2px);
+}
+.nav-tabs .nav-link.active{
+  color: var(--dark-color);
+  background: #fff;
+  box-shadow: var(--card-shadow);
+}
 
-      .mini-card-success {
-        border-color: rgba(16, 185, 129, 0.35);
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.06));
-      }
+/* ===== Buttons ===== */
+.btn{
+  border-radius: 12px;
+  padding: .62rem 1.2rem;
+  font-weight: 700;
+  border: none;
+  box-shadow: var(--card-shadow);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.btn:active{ transform: scale(.98); }
 
-      .mini-card-danger {
-        border-color: rgba(239, 68, 68, 0.35);
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.10), rgba(245, 158, 11, 0.05));
-      }
+.btn-primary{
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: #fff;
+}
+.btn-primary:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(99,102,241,0.40);
+  background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
+}
 
-      .mini-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        padding: 0.25rem 0.6rem;
-        border-radius: 999px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        background: rgba(15, 23, 42, 0.06);
-      }
+.btn-success{
+  background: linear-gradient(135deg, var(--success-color), #059669);
+  color: #fff;
+}
+.btn-success:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(16,185,129,0.40);
+}
+
+.btn-outline-primary{
+  background: rgba(255,255,255,0.90);
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+.btn-outline-primary:hover{
+  background: var(--primary-color);
+  color: #fff;
+}
+
+/* ===== Forms ===== */
+.form-control, .form-select{
+  border-radius: 12px;
+  border: 2px solid rgba(226,232,240,0.85);
+  padding: .75rem 1rem;
+  transition: border-color .2s ease, box-shadow .2s ease;
+  background: #fff;
+}
+.form-control:focus, .form-select:focus{
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+  outline: none;
+}
+.input-group-text{
+  border-radius: 12px 0 0 12px;
+  border: 2px solid rgba(226,232,240,0.85);
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  font-weight: 800;
+  color: var(--dark-color);
+}
+.required:after{ content:" *"; color: var(--danger-color); }
+
+/* ===== Table ===== */
+.table{ font-size: .92rem; }
+.table th{
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  border: none;
+  font-weight: 800;
+  color: var(--dark-color);
+  padding: 1rem;
+  white-space: nowrap;
+}
+.table td{
+  padding: 1rem;
+  vertical-align: middle;
+}
+.table-hover tbody tr{ transition: all .15s ease; }
+.table-hover tbody tr:hover{
+  background-color: rgba(99,102,241,0.06);
+  transform: scale(1.01);
+}
+
+/* ===== Hidden ===== */
+.hidden{ display:none !important; }
+
+/* ===== Upload Area ===== */
+.upload-area{
+  border: 3px dashed rgba(99,102,241,0.30);
+  border-radius: 16px;
+  padding: 2.2rem;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(248,250,252,0.82), rgba(241,245,249,0.82));
+  cursor: pointer;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.upload-area:hover{
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
+  transform: scale(1.01);
+}
+.upload-area i{
+  font-size: 3.2rem;
+  color: var(--primary-color);
+  margin-bottom: .8rem;
+  transition: transform .18s ease;
+}
+.upload-area:hover i{ transform: scale(1.05); }
+
+/* ===== Spinner ===== */
+.spinner{
+  display:inline-block;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 3px solid rgba(99,102,241,0.22);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin .8s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ===== Wallet Selector ===== */
+.wallet-selector{
+  cursor: pointer;
+  border: 3px solid rgba(99,102,241,0.20);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+  border-radius: 16px;
+  padding: 1rem;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+}
+.wallet-selector:hover{
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(99,102,241,0.20);
+}
+.wallet-selector.active{
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, rgba(99,102,241,0.10), rgba(139,92,246,0.10));
+  box-shadow: 0 10px 15px -3px rgba(99,102,241,0.30);
+}
+.wallet-icon{
+  font-size: 2rem;
+  margin-bottom: .5rem;
+  color: var(--primary-color);
+}
+
+/* ===== Income Source Selector ===== */
+.income-source-selector{
+  cursor: pointer;
+  border: 3px solid rgba(6,182,212,0.20);
+  border-radius: 16px;
+  padding: 1rem .5rem;
+  text-align: center;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+  margin-bottom: .75rem;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+}
+.income-source-selector:hover{
+  border-color: var(--info-color);
+  background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(8,145,178,0.06));
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(6,182,212,0.20);
+}
+.income-source-selector.active{
+  border-color: var(--info-color);
+  background: linear-gradient(135deg, rgba(6,182,212,0.10), rgba(8,145,178,0.10));
+  box-shadow: 0 10px 15px -3px rgba(6,182,212,0.30);
+}
+.income-source-selector i{
+  font-size: 1.5rem;
+  color: var(--info-color);
+  margin-bottom: .25rem;
+}
+
+/* ===== Progress ===== */
+.progress{
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(226,232,240,0.55);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+.progress-bar{
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  box-shadow: 0 2px 4px rgba(99,102,241,0.30);
+  transition: width .6s ease;
+}
+
+/* ===== Target Card Accent ===== */
+.target-card{
+  border-left: 6px solid var(--primary-color);
+  border-radius: 16px;
+  transition: transform .18s ease;
+}
+.target-completed{ border-left: 6px solid var(--success-color); }
+.target-warning{ border-left: 6px solid var(--warning-color); }
+.target-danger{ border-left: 6px solid var(--danger-color); }
+
+/* ===== Footer ===== */
+footer{
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 3rem;
+  box-shadow: var(--card-shadow);
+}
+
+/* ===== Mini Cards (Saldo & Preview) ===== */
+.mini-card{
+  border-radius: 16px;
+  background: #fff;
+  border: 2px solid rgba(226,232,240,0.90);
+  box-shadow: var(--card-shadow);
+  padding: .9rem 1rem;
+  height: 100%;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.mini-card:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-lg);
+}
+.mini-card-title{
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: rgba(30,41,59,0.70);
+  font-weight: 900;
+  margin-bottom: .25rem;
+}
+.mini-card-value{
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--dark-color);
+  line-height: 1.2;
+}
+.mini-card-sub{
+  font-size: .85rem;
+  color: rgba(30,41,59,0.75);
+  margin-top: .35rem;
+}
+.mini-card-muted{ background: rgba(248,250,252,0.85); }
+
+.mini-card-primary{
+  border-color: rgba(99,102,241,0.35);
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.06));
+}
+.mini-card-success{
+  border-color: rgba(16,185,129,0.35);
+  background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.06));
+}
+.mini-card-danger{
+  border-color: rgba(239,68,68,0.35);
+  background: linear-gradient(135deg, rgba(239,68,68,0.10), rgba(245,158,11,0.05));
+}
+.mini-badge{
+  display:inline-flex;
+  align-items:center;
+  gap: .35rem;
+  padding: .25rem .6rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 900;
+  background: rgba(15,23,42,0.06);
+}
+
+/* ===== Dashboard Stat Cards (baru) ===== */
+.stat-card{
+  position: relative;
+  height: 100%;
+  padding: 1.25rem 1.25rem;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.15);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.stat-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(2, 6, 23, 0.22);
+}
+.stat-card::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  background: radial-gradient(900px 220px at 15% 0%, rgba(255,255,255,0.55), transparent 55%);
+  pointer-events:none;
+}
+.stat-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.stat-label{
+  font-size: .75rem;
+  font-weight: 900;
+  letter-spacing: .9px;
+  text-transform: uppercase;
+  color: rgba(30,41,59,.75);
+  margin: 0;
+}
+.stat-value{
+  font-size: 1.85rem;
+  font-weight: 950;
+  color: var(--dark-color);
+  line-height: 1.15;
+  margin: .35rem 0 .2rem 0;
+}
+.stat-meta{
+  font-size: .9rem;
+  color: rgba(30,41,59,.70);
+  margin: 0;
+}
+.stat-icon{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 1.35rem;
+  flex: 0 0 auto;
+  box-shadow: 0 8px 16px rgba(2, 6, 23, 0.12);
+}
+.stat-foot{
+  margin-top: .9rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: .75rem;
+  position: relative;
+  z-index: 1;
+}
+.stat-pill{
+  display:inline-flex;
+  align-items:center;
+  gap: .45rem;
+  padding: .35rem .75rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: .85rem;
+  background: rgba(15,23,42,0.06);
+  color: rgba(15,23,42,0.80);
+}
+
+/* Variasi warna per kartu */
+.stat-income{ border-color: rgba(6,182,212,.35); }
+.stat-income .stat-icon{ background: rgba(6,182,212,.14); color: #0891b2; }
+
+.stat-expense{ border-color: rgba(245,158,11,.35); }
+.stat-expense .stat-icon{ background: rgba(245,158,11,.16); color: #d97706; }
+
+.stat-balance{ border-color: rgba(16,185,129,.35); }
+.stat-balance .stat-icon{ background: rgba(16,185,129,.14); color: #059669; }
+
+.stat-cash{ border-color: rgba(99,102,241,.35); }
+.stat-cash .stat-icon{ background: rgba(99,102,241,.14); color: #4f46e5; }
+
+.stat-dana{ border-color: rgba(6,182,212,.30); }
+.stat-dana .stat-icon{ background: rgba(6,182,212,.12); color: #0891b2; }
+
+.stat-mandiri{ border-color: rgba(245,158,11,.30); }
+.stat-mandiri .stat-icon{ background: rgba(245,158,11,.12); color: #d97706; }
+
+.stat-qris{ border-color: rgba(16,185,129,.30); }
+.stat-qris .stat-icon{ background: rgba(16,185,129,.12); color: #059669; }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px){
+  .btn{ padding: .55rem 1rem; font-size: .92rem; }
+  header{ padding: 1rem; }
+  header h1{ font-size: 1.5rem !important; }
+  .wallet-selector{ padding: .75rem; margin-bottom: .5rem; }
+  .wallet-icon{ font-size: 1.5rem; }
+  .table{ font-size: .82rem; }
+  .table th, .table td{ padding: .55rem; }
+  .nav-tabs .nav-link{ padding: .5rem 1rem; font-size: .92rem; }
+  .stat-value{ font-size: 1.55rem; }
+}
+
+@media (max-width: 576px){
+  .container{ padding: .75rem; }
+  .upload-area{ padding: 1.5rem; }
+  .upload-area i{ font-size: 2.5rem; }
+  .stat-icon{ width: 42px; height: 42px; border-radius: 12px; }
+}
+
+/* Optional: row class transaksi (kalau kamu pakai) */
+.income-bg{ background: rgba(16,185,129,0.06); }
+.expense-bg{ background: rgba(245,158,11,0.06); }
 
     </style>
 </head>
@@ -594,7 +529,7 @@
                 <h1 class="h3 fw-bold" style="color: var(--primary-color);">
                     <i class="bi bi-wallet2"></i> Manajemen Keuangan Personal
                 </h1>
-                <p class="text-muted">Kelola keuangan Anda dengan mudah dan terintegrasi dengan Google Sheets</p>
+                <p class="text-muted">Kelola Keungan AnggaPutraJN</p>
             </div>
             <div class="text-end">
                 <button class="btn btn-outline-primary me-2" id="refreshData">
@@ -625,69 +560,139 @@
         <!-- Tab Content -->
         <div class="tab-content">
             <!-- Dashboard Panel -->
-            <div class="tab-pane fade show active" id="dashboard-panel">
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="dashboard-card income-card">
-                            <h6 class="text-uppercase">Total Pemasukan</h6>
-                            <h3 class="fw-bold" id="incomeAmount">Rp 0</h3>
-                            <small>Bulan ini</small>
-                        </div>
-                    </div>
+<div class="tab-pane fade show active" id="dashboard-panel">
+  <div class="row g-3 mb-4">
 
-                    <div class="col-md-4">
-                        <div class="dashboard-card expense-card">
-                            <h6 class="text-uppercase">Total Pengeluaran</h6>
-                            <h3 class="fw-bold" id="expenseAmount">Rp 0</h3>
-                            <small>Bulan ini</small>
-                        </div>
-                    </div>
+    <!-- 3 kartu utama -->
+    <div class="col-12 col-lg-4">
+      <div class="stat-card stat-income">
+        <div class="stat-head">
+          <div>
+            <p class="stat-label">Total Pemasukan</p>
+            <div class="stat-value" id="incomeAmount">Rp 0</div>
+            <p class="stat-meta">Bulan ini</p>
+          </div>
+          <div class="stat-icon">
+            <i class="bi bi-arrow-down-left-circle"></i>
+          </div>
+        </div>
 
-                    <div class="col-md-4">
-                        <div class="dashboard-card balance-card">
-                            <h6 class="text-uppercase">Saldo Total</h6>
-                            <h3 class="fw-bold" id="totalBalance">Rp 0</h3>
-                            <small>Semua dompet</small>
-                        </div>
-                    </div>
+        <div class="stat-foot">
+          <span class="stat-pill"><i class="bi bi-calendar3"></i> Bulan berjalan</span>
+          <span class="stat-pill"><i class="bi bi-cash-stack"></i> Masuk</span>
+        </div>
+      </div>
+    </div>
 
-                    <div class="col-12 mt-3">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <div class="dashboard-card wallet-cash-card">
-                                    <h6 class="text-uppercase">Saldo Cash</h6>
-                                    <h3 class="fw-bold" id="cashAmount">Rp 0</h3>
-                                    <small>Dompet Cash</small>
-                                </div>
-                            </div>
+    <div class="col-12 col-lg-4">
+      <div class="stat-card stat-expense">
+        <div class="stat-head">
+          <div>
+            <p class="stat-label">Total Pengeluaran</p>
+            <div class="stat-value" id="expenseAmount">Rp 0</div>
+            <p class="stat-meta">Bulan ini</p>
+          </div>
+          <div class="stat-icon">
+            <i class="bi bi-arrow-up-right-circle"></i>
+          </div>
+        </div>
 
-                            <div class="col-md-3">
-                                <div class="dashboard-card wallet-dana-card">
-                                    <h6 class="text-uppercase">Saldo Dana</h6>
-                                    <h3 class="fw-bold" id="danaAmount">Rp 0</h3>
-                                    <small>E-Wallet Dana</small>
-                                </div>
-                            </div>
+        <div class="stat-foot">
+          <span class="stat-pill"><i class="bi bi-calendar3"></i> Bulan berjalan</span>
+          <span class="stat-pill"><i class="bi bi-bag"></i> Keluar</span>
+        </div>
+      </div>
+    </div>
 
-                            <div class="col-md-3">
-                                <div class="dashboard-card wallet-mandiri-card">
-                                    <h6 class="text-uppercase">Saldo Mandiri</h6>
-                                    <h3 class="fw-bold" id="mandiriAmount">Rp 0</h3>
-                                    <small>Bank Mandiri</small>
-                                </div>
-                            </div>
+    <div class="col-12 col-lg-4">
+      <div class="stat-card stat-balance">
+        <div class="stat-head">
+          <div>
+            <p class="stat-label">Saldo Total</p>
+            <div class="stat-value" id="totalBalance">Rp 0</div>
+            <p class="stat-meta">Semua dompet</p>
+          </div>
+          <div class="stat-icon">
+            <i class="bi bi-wallet2"></i>
+          </div>
+        </div>
 
-                            <div class="col-md-3">
-                                <div class="dashboard-card wallet-bri-card">
-                                    <h6 class="text-uppercase">Saldo Qris</h6>
-                                    <h3 class="fw-bold" id="briAmount">Rp 0</h3>
-                                    <small>Qris</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="stat-foot">
+          <span class="stat-pill"><i class="bi bi-layers"></i> Gabungan</span>
+          <span class="stat-pill"><i class="bi bi-shield-check"></i> Ringkas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 kartu dompet -->
+    <div class="col-12">
+      <div class="row g-3">
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="stat-card stat-cash">
+            <div class="stat-head">
+              <div>
+                <p class="stat-label">Saldo Cash</p>
+                <div class="stat-value" id="cashAmount">Rp 0</div>
+                <p class="stat-meta">Dompet Cash</p>
+              </div>
+              <div class="stat-icon">
+                <i class="bi bi-cash-coin"></i>
+              </div>
             </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="stat-card stat-dana">
+            <div class="stat-head">
+              <div>
+                <p class="stat-label">Saldo Dana</p>
+                <div class="stat-value" id="danaAmount">Rp 0</div>
+                <p class="stat-meta">E-Wallet Dana</p>
+              </div>
+              <div class="stat-icon">
+                <i class="bi bi-phone"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="stat-card stat-mandiri">
+            <div class="stat-head">
+              <div>
+                <p class="stat-label">Saldo Mandiri</p>
+                <div class="stat-value" id="mandiriAmount">Rp 0</div>
+                <p class="stat-meta">Bank Mandiri</p>
+              </div>
+              <div class="stat-icon">
+                <i class="bi bi-bank"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="stat-card stat-qris">
+            <div class="stat-head">
+              <div>
+                <p class="stat-label">Saldo Qris</p>
+                <div class="stat-value" id="briAmount">Rp 0</div>
+                <p class="stat-meta">Qris</p>
+              </div>
+              <div class="stat-icon">
+                <i class="bi bi-qr-code-scan"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
             <!-- Targets Panel -->
             <div class="tab-pane fade" id="targets-panel">
@@ -1162,8 +1167,8 @@ function renderBalanceInfoAndPreview() {
         <div class="col-12 col-md-4">
           <div class="mini-card mini-card-danger">
             <div class="mini-card-title">Status</div>
-            <div class="mini-card-value">Gagal</div>
-            <div class="mini-card-sub">Saldo tidak cukup</div>
+            <div class="mini-card-value">Saldo Lu Gak Cukup Cok</div>
+            <div class="mini-card-sub">Nabung Makanya !</div>
           </div>
         </div>
 
@@ -1177,7 +1182,7 @@ function renderBalanceInfoAndPreview() {
 
         <div class="col-12 col-md-4">
           <div class="mini-card mini-card-danger">
-            <div class="mini-card-title">Kekurangan</div>
+            <div class="mini-card-title">Saldo Lu kurang</div>
             <div class="mini-card-value">${formatRupiah(kurang)}</div>
             <div class="mini-card-sub">Jumlah: ${formatRupiah(amount)}</div>
           </div>
@@ -1185,8 +1190,8 @@ function renderBalanceInfoAndPreview() {
 
         <div class="col-12">
           <div class="mini-card mini-card-muted">
-            <div class="mini-card-title">Catatan</div>
-            <div class="mini-card-sub">Ubah jumlah atau pilih dompet lain.</div>
+            <div class="mini-card-title">Catatan Atau Tips</div>
+            <div class="mini-card-sub">Ubah jumlah atau pilih dompet lain, atau mending gausah jajan lu.</div>
           </div>
         </div>
       `;
