@@ -6,193 +6,584 @@
     <title>Manajemen Keuangan Personal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <style>
+<style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3a0ca3;
-            --success-color: #4cc9f0;
-            --danger-color: #f72585;
-            --warning-color: #f8961e;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #06b6d4;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fb;
-            color: #333;
-            padding-top: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark-color);
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,112C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            padding: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
         }
         
         .card {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--card-shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
         }
         
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         
         .card-header {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            border-radius: 12px 12px 0 0 !important;
-            padding: 1rem 1.5rem;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.25rem 1.5rem;
+            border: none;
+        }
+        
+        .btn {
+            border-radius: 12px;
+            padding: 0.625rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
         }
         
         .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
         }
         
         .btn-primary:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
         }
         
         .btn-success {
-            background-color: var(--success-color);
-            border-color: var(--success-color);
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-outline-primary {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .table {
+            font-size: 0.9rem;
         }
         
         .table th {
-            background-color: #f1f5fd;
-            border-top: none;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border: none;
+            font-weight: 600;
+            color: var(--dark-color);
+            padding: 1rem;
+            white-space: nowrap;
         }
         
-        .income-bg {
-            background-color: rgba(76, 201, 240, 0.1);
-            border-left: 4px solid var(--success-color);
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
         }
         
-        .expense-bg {
-            background-color: rgba(248, 150, 30, 0.1);
-            border-left: 4px solid var(--warning-color);
+        .table-hover tbody tr {
+            transition: all 0.2s;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+            transform: scale(1.01);
         }
         
         .dashboard-card {
-            border-radius: 12px;
+            border-radius: 20px;
             color: white;
-            padding: 1.5rem;
+            padding: 1.75rem;
             margin-bottom: 1.5rem;
+            box-shadow: var(--card-shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
         
-        .cash-card {
-            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transition: all 0.5s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dashboard-card:hover::before {
+            top: -60%;
+            right: -60%;
+        }
+        
+        .dashboard-card h6 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .dashboard-card h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .dashboard-card small {
+            opacity: 0.8;
+            font-size: 0.85rem;
         }
         
         .income-card {
-            background: linear-gradient(135deg, #4cc9f0, #4895ef);
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
         }
         
         .expense-card {
-            background: linear-gradient(135deg, #f8961e, #f3722c);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
         }
         
         .balance-card {
-            background: linear-gradient(135deg, #38b000, #2d7d46);
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .wallet-cash-card {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
+
+        .wallet-dana-card {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+
+        .wallet-mandiri-card {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .wallet-bri-card {
+            background: linear-gradient(135deg, #10b981, #059669);
         }
         
         .wallet-selector {
             cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-            border-radius: 8px;
-            padding: 10px;
+            border: 3px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            padding: 1rem;
+            background: white;
+            box-shadow: var(--card-shadow);
         }
         
-        .wallet-selector:hover, .wallet-selector.active {
+        .wallet-selector:hover {
             border-color: var(--primary-color);
-            background-color: rgba(67, 97, 238, 0.05);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .wallet-selector.active {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
         }
         
         .wallet-icon {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
         }
         
         .hidden {
-            display: none;
+            display: none !important;
         }
         
         .upload-area {
-            border: 2px dashed #ddd;
-            border-radius: 10px;
-            padding: 30px;
+            border: 3px dashed rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 2.5rem;
             text-align: center;
-            background-color: #fafafa;
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.8));
             cursor: pointer;
             transition: all 0.3s;
         }
         
         .upload-area:hover {
             border-color: var(--primary-color);
-            background-color: rgba(67, 97, 238, 0.05);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            transform: scale(1.02);
         }
         
         .upload-area i {
-            font-size: 3rem;
-            color: #aaa;
-            margin-bottom: 15px;
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            transition: all 0.3s;
         }
         
-        .file-name {
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #666;
+        .upload-area:hover i {
+            transform: scale(1.1);
         }
         
         .required:after {
             content: " *";
-            color: red;
+            color: var(--danger-color);
         }
         
         .spinner {
             display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid rgba(0, 0, 0, 0.1);
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 3px solid rgba(99, 102, 241, 0.2);
             border-radius: 50%;
             border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 0.8s linear infinite;
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
-        /* Custom untuk form pemasukan */
         .income-source-selector {
             cursor: pointer;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            padding: 8px;
+            border: 3px solid rgba(6, 182, 212, 0.2);
+            border-radius: 16px;
+            padding: 1rem 0.5rem;
             text-align: center;
-            transition: all 0.3s;
-            margin-bottom: 5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 0.75rem;
+            background: white;
+            box-shadow: var(--card-shadow);
         }
         
-        .income-source-selector:hover, .income-source-selector.active {
-            border-color: var(--success-color);
-            background-color: rgba(76, 201, 240, 0.1);
+        .income-source-selector:hover {
+            border-color: var(--info-color);
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(8, 145, 178, 0.05));
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.2);
         }
-        .wallet-cash-card {
-            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        
+        .income-source-selector.active {
+            border-color: var(--info-color);
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.1));
+            box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.3);
         }
+        
+        .income-source-selector i {
+            font-size: 1.5rem;
+            color: var(--info-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .progress {
+            height: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(226, 232, 240, 0.5);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+            transition: width 0.6s ease;
+        }
+        
+        .nav-tabs {
+            border: none;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--dark-color);
+            background: white;
+            box-shadow: var(--card-shadow);
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow-lg);
+        }
+        
+        header h1 {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid rgba(226, 232, 240, 0.8);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+        
+        .input-group-text {
+            border-radius: 12px 0 0 12px;
+            border: 2px solid rgba(226, 232, 240, 0.8);
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .target-card {
+            border-left: 6px solid var(--primary-color);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+        
+        .target-completed {
+            border-left: 6px solid var(--success-color);
+        }
+        
+        .target-warning {
+            border-left: 6px solid var(--warning-color);
+        }
+        
+        .target-danger {
+            border-left: 6px solid var(--danger-color);
+        }
+        
+        footer {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            box-shadow: var(--card-shadow);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-card h3 {
+                font-size: 1.5rem;
+            }
+            
+            .dashboard-card {
+                padding: 1.25rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            header {
+                padding: 1rem;
+            }
+            
+            header h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            .wallet-selector {
+                padding: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .wallet-icon {
+                font-size: 1.5rem;
+            }
+            
+            .table {
+                font-size: 0.8rem;
+            }
+            
+            .table th, .table td {
+                padding: 0.5rem;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 0.75rem;
+            }
+            
+            .dashboard-card h3 {
+                font-size: 1.25rem;
+            }
+            
+            .upload-area {
+                padding: 1.5rem;
+            }
+            
+            .upload-area i {
+                font-size: 2.5rem;
+            }
+        }
+        .mini-card {
+        border-radius: 16px;
+        background: white;
+        border: 2px solid rgba(226, 232, 240, 0.9);
+        box-shadow: var(--card-shadow);
+        padding: 0.9rem 1rem;
+        height: 100%;
+        transition: all 0.2s;
+      }
 
-        .wallet-dana-card {
-            background: linear-gradient(135deg, #4cc9f0, #4895ef);
-        }
+      .mini-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--card-shadow-lg);
+      }
 
-        .wallet-mandiri-card {
-            background: linear-gradient(135deg, #f8961e, #f3722c);
-        }
+      .mini-card-title {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: rgba(30, 41, 59, 0.7);
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
 
-        .wallet-bri-card {
-            background: linear-gradient(135deg, #38b000, #2d7d46);
-        }
+      .mini-card-value {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--dark-color);
+        line-height: 1.2;
+      }
+
+      .mini-card-sub {
+        font-size: 0.85rem;
+        color: rgba(30, 41, 59, 0.75);
+        margin-top: 0.35rem;
+      }
+
+      .mini-card-muted {
+        background: rgba(248, 250, 252, 0.8);
+      }
+
+      .mini-card-primary {
+        border-color: rgba(99, 102, 241, 0.35);
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.06));
+      }
+
+      .mini-card-success {
+        border-color: rgba(16, 185, 129, 0.35);
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.06));
+      }
+
+      .mini-card-danger {
+        border-color: rgba(239, 68, 68, 0.35);
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.10), rgba(245, 158, 11, 0.05));
+      }
+
+      .mini-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        background: rgba(15, 23, 42, 0.06);
+      }
 
     </style>
 </head>
@@ -209,77 +600,158 @@
                 <button class="btn btn-outline-primary me-2" id="refreshData">
                     <i class="bi bi-arrow-clockwise"></i> Refresh Data
                 </button>
-                <button class="btn btn-primary" id="showForm">
+                <button class="btn btn-primary me-2" id="showForm">
                     <i class="bi bi-plus-circle"></i> Transaksi Baru
+                </button>
+                <button class="btn btn-success" id="showTargetForm">
+                    <i class="bi bi-bullseye"></i> Target Baru
                 </button>
             </div>
         </header>
 
-<!-- Dashboard Ringkasan -->
-<div class="row mb-4" id="dashboard">
-    <!-- Ringkasan utama -->
-    <div class="col-md-4">
-        <div class="dashboard-card income-card">
-            <h6 class="text-uppercase">Total Pemasukan</h6>
-            <h3 class="fw-bold" id="incomeAmount">Rp 0</h3>
-            <small>Bulan ini</small>
-        </div>
-    </div>
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs mb-4" id="mainTabs">
+            <li class="nav-item">
+                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-panel">Dashboard</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="targets-tab" data-bs-toggle="tab" data-bs-target="#targets-panel">Target</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions-panel">Transaksi</button>
+            </li>
+        </ul>
 
-    <div class="col-md-4">
-        <div class="dashboard-card expense-card">
-            <h6 class="text-uppercase">Total Pengeluaran</h6>
-            <h3 class="fw-bold" id="expenseAmount">Rp 0</h3>
-            <small>Bulan ini</small>
-        </div>
-    </div>
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Dashboard Panel -->
+            <div class="tab-pane fade show active" id="dashboard-panel">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="dashboard-card income-card">
+                            <h6 class="text-uppercase">Total Pemasukan</h6>
+                            <h3 class="fw-bold" id="incomeAmount">Rp 0</h3>
+                            <small>Bulan ini</small>
+                        </div>
+                    </div>
 
-    <div class="col-md-4">
-        <div class="dashboard-card balance-card">
-            <h6 class="text-uppercase">Saldo Total</h6>
-            <h3 class="fw-bold" id="totalBalance">Rp 0</h3>
-            <small>Semua dompet</small>
-        </div>
-    </div>
+                    <div class="col-md-4">
+                        <div class="dashboard-card expense-card">
+                            <h6 class="text-uppercase">Total Pengeluaran</h6>
+                            <h3 class="fw-bold" id="expenseAmount">Rp 0</h3>
+                            <small>Bulan ini</small>
+                        </div>
+                    </div>
 
-    <!-- Saldo per dompet -->
-    <div class="col-12 mt-3">
-        <div class="row g-3">
-            <div class="col-md-3">
-                <div class="dashboard-card wallet-cash-card">
-                    <h6 class="text-uppercase">Saldo Cash</h6>
-                    <h3 class="fw-bold" id="cashAmount">Rp 0</h3>
-                    <small>Dompet Cash</small>
+                    <div class="col-md-4">
+                        <div class="dashboard-card balance-card">
+                            <h6 class="text-uppercase">Saldo Total</h6>
+                            <h3 class="fw-bold" id="totalBalance">Rp 0</h3>
+                            <small>Semua dompet</small>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="dashboard-card wallet-cash-card">
+                                    <h6 class="text-uppercase">Saldo Cash</h6>
+                                    <h3 class="fw-bold" id="cashAmount">Rp 0</h3>
+                                    <small>Dompet Cash</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="dashboard-card wallet-dana-card">
+                                    <h6 class="text-uppercase">Saldo Dana</h6>
+                                    <h3 class="fw-bold" id="danaAmount">Rp 0</h3>
+                                    <small>E-Wallet Dana</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="dashboard-card wallet-mandiri-card">
+                                    <h6 class="text-uppercase">Saldo Mandiri</h6>
+                                    <h3 class="fw-bold" id="mandiriAmount">Rp 0</h3>
+                                    <small>Bank Mandiri</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="dashboard-card wallet-bri-card">
+                                    <h6 class="text-uppercase">Saldo Qris</h6>
+                                    <h3 class="fw-bold" id="briAmount">Rp 0</h3>
+                                    <small>Qris</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-3">
-                <div class="dashboard-card wallet-dana-card">
-                    <h6 class="text-uppercase">Saldo Dana</h6>
-                    <h3 class="fw-bold" id="danaAmount">Rp 0</h3>
-                    <small>E-Wallet Dana</small>
+            <!-- Targets Panel -->
+            <div class="tab-pane fade" id="targets-panel">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="bi bi-bullseye"></i> Daftar Target Keuangan</h5>
+                                <div>
+                                    <button class="btn btn-outline-primary btn-sm me-2" id="refreshTargets">
+                                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" id="addTargetFromList">
+                                        <i class="bi bi-plus-circle"></i> Target Baru
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="targetsList">
+                                    <div class="text-center py-4">
+                                        <div class="spinner"></div> Memuat data target...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-3">
-                <div class="dashboard-card wallet-mandiri-card">
-                    <h6 class="text-uppercase">Saldo Mandiri</h6>
-                    <h3 class="fw-bold" id="mandiriAmount">Rp 0</h3>
-                    <small>Bank Mandiri</small>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="dashboard-card wallet-bri-card">
-                    <h6 class="text-uppercase">Saldo Qris</h6>
-                    <h3 class="fw-bold" id="briAmount">Rp 0</h3>
-                    <small>Qris</small>
+            <!-- Transactions Panel -->
+            <div class="tab-pane fade" id="transactions-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-list-check"></i> Riwayat Transaksi</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="transactionTable">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Jenis</th>
+                                        <th>Sumber/Kategori</th>
+                                        <th>Dompet</th>
+                                        <th>Keterangan</th>
+                                        <th>Jumlah</th>
+                                        <th>Target</th>
+                                        <th>Catatan</th>
+                                        <th>Bukti</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionTableBody">
+                                    <tr>
+                                        <td colspan="9" class="text-center">
+                                            <div class="spinner"></div> Memuat data...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
 
         <!-- Form Input Transaksi -->
         <div class="card mb-5 hidden" id="transactionForm">
@@ -304,7 +776,6 @@
                         </div>
                     </div>
                     
-                    <!-- Bagian Pemasukan -->
                     <div class="row mb-3 hidden" id="incomeSection">
                         <div class="col-md-6">
                             <label class="form-label required">Sumber Pemasukan</label>
@@ -375,7 +846,6 @@
                         </div>
                     </div>
                     
-                    <!-- Bagian Pengeluaran -->
                     <div class="row mb-3 hidden" id="expenseSection">
                         <div class="col-md-6">
                             <label class="form-label required">Kategori Pengeluaran</label>
@@ -414,6 +884,44 @@
                             <input type="hidden" id="expenseWallet" required>
                         </div>
                     </div>
+
+                            <!-- Info Saldo dan Preview (muncul saat input transaksi) -->
+                            <div class="row mb-3 hidden" id="balancePreviewWrapper">
+                              <div class="col-12">
+
+                                <!-- Saldo Saat Ini -->
+                                <div class="mb-3">
+                                  <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-wallet2"></i>
+                                    <div class="fw-bold">Saldo Saat Ini</div>
+                                  </div>
+
+                                  <div class="row g-2" id="balanceCardsRow">
+                                    <!-- diisi oleh JS -->
+                                  </div>
+                                </div>
+
+                                <!-- Preview Setelah Transaksi -->
+                                <div>
+                                  <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-eye"></i>
+                                    <div class="fw-bold">Preview Setelah Transaksi</div>
+                                  </div>
+
+                                  <div class="row g-2" id="previewCardsRow">
+                                    <div class="col-12">
+                                      <div class="mini-card mini-card-muted">
+                                        <div class="mini-card-title">Info</div>
+                                        <div class="mini-card-sub">Pilih jenis transaksi, pilih dompet, lalu isi jumlah.</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+
+
                     
                     <div class="row mb-3">
                         <div class="col-md-6">
@@ -430,68 +938,19 @@
                         </div>
                     </div>
 
-
-
-                                              <!-- Preview Saldo untuk Pengeluaran -->
-                      <div class="row mb-3 hidden" id="balancePreviewSection">
-                        <div class="col-12">
-                          <div class="alert alert-info mb-0">
-                            <div class="row g-3">
-                              <div class="col-md-6">
-                                <div class="fw-bold mb-1">Saldo anda</div>
-                                <div>Cash: <span id="pvCash">Rp 0</span></div>
-                                <div>Dana: <span id="pvDana">Rp 0</span></div>
-                                <div>Mandiri: <span id="pvMandiri">Rp 0</span></div>
-                                <div>Qris: <span id="pvQris">Rp 0</span></div>
-                                <div class="mt-2 fw-bold">Total saldo: <span id="pvTotalBefore">Rp 0</span></div>
-                              </div>
-
-                              <div class="col-md-6">
-                                <div class="fw-bold mb-1">Preview setelah transaksi</div>
-                                <div>Total saldo: <span id="pvTotalAfter">Rp 0</span></div>
-                                <div>Saldo terpotong: <span id="pvDeduct">Rp 0</span></div>
-                                <div>Saldo <span id="pvWalletName">-</span>: <span id="pvWalletAfter">Rp 0</span></div>
-                                <div class="text-danger mt-2 hidden" id="pvWarning"></div>
-                              </div>
-                            </div>
-                          </div>
+                      <div class="row mb-3" id="targetNotesRow">
+                        <div class="col-md-6" id="targetCol">
+                          <label class="form-label">Target Keuangan (opsional)</label>
+                          <select class="form-select" id="targetSelect">
+                            <option value="">Pilih target atau kosongkan</option>
+                          </select>
+                        </div>
+                        <div class="col-md-6" id="notesCol">
+                          <label class="form-label">Catatan Tambahan (opsional)</label>
+                          <textarea class="form-control" id="notes" rows="2" placeholder="Tambahkan catatan jika perlu"></textarea>
                         </div>
                       </div>
 
-                    
-                    <div class="row mb-3 hidden" id="purchaseDetails">
-                        <div class="col-md-6">
-                            <label class="form-label">Jumlah Barang (optional)</label>
-                            <input type="number" class="form-control" id="purchaseQuantity" placeholder="Contoh: 2" min="1">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Metode Pembayaran (optional)</label>
-                            <input type="text" class="form-control" id="paymentMethod" placeholder="Contoh: Transfer, Tunai, Kartu Kredit">
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3 hidden" id="targetSection">
-                        <div class="col-md-6">
-                            <label class="form-label">Target (optional)</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="target" placeholder="Contoh: Tabungan Liburan">
-                                <button class="btn btn-outline-secondary" type="button" id="addTarget">+</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Pilih Target (optional)</label>
-                            <select class="form-select" id="targetSelect">
-                                <option value="">Pilih target yang sudah ada</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label class="form-label">Catatan Tambahan (optional)</label>
-                            <textarea class="form-control" id="notes" rows="2" placeholder="Tambahkan catatan jika perlu"></textarea>
-                        </div>
-                    </div>
                     
                     <div class="row mb-4">
                         <div class="col-md-12">
@@ -517,36 +976,60 @@
             </div>
         </div>
 
-        <!-- Daftar Transaksi -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-list-check"></i> Riwayat Transaksi</h5>
+        <!-- Form Input Target -->
+        <div class="card mb-5 hidden" id="targetForm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-bullseye"></i> Buat Target Keuangan Baru</h5>
+                <button type="button" class="btn-close btn-close-white" id="closeTargetForm"></button>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="transactionTable">
-                        <thead>
-                            <tr>
-                                <th>Tanggal</th>
-                                <th>Jenis</th>
-                                <th>Sumber/Kategori</th>
-                                <th>Dompet</th>
-                                <th>Keterangan</th>
-                                <th>Jumlah</th>
-                                <th>Catatan</th>
-                                <th>Bukti</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionTableBody">
-                            <!-- Data akan diisi oleh JavaScript -->
-                            <tr>
-                                <td colspan="8" class="text-center">
-                                    <div class="spinner"></div> Memuat data...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <form id="targetFormElement">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label required">Nama Target</label>
+                            <input type="text" class="form-control" id="targetName" placeholder="Contoh: Dana Darurat, Tabungan Rumah, dll." required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required">Nominal Target</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" class="form-control" id="targetAmount" placeholder="Contoh: 5000000" required min="1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Tanggal Deadline (opsional)</label>
+                            <input type="date" class="form-control" id="targetDeadline">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Dompet Tujuan (opsional)</label>
+                            <select class="form-select" id="targetWallet">
+                                <option value="">Pilih Dompet (kosongkan jika tidak spesifik)</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Dana">Dana</option>
+                                <option value="Mandiri">Mandiri</option>
+                                <option value="Qris">Qris</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Deskripsi Target (opsional)</label>
+                            <textarea class="form-control" id="targetDescription" rows="3" placeholder="Jelaskan tujuan target ini..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" id="cancelTargetForm">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="submitTargetForm">
+                            <span id="submitTargetText">Simpan Target</span>
+                            <span class="spinner hidden" id="submitTargetSpinner"></span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -557,794 +1040,978 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Konfigurasi
-    const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbx5hWHJfX8f8KGT3di3-0I42EPhXJU4vddlq0ZZbQ7-xmYY5_lvjwhz18V-bvqfi7Gd/exec";
-    
-    // Variabel global
-    let currentFile = null;
-    let targets = ["Tabungan Pendidikan", "Dana Darurat", "Belanja Bulanan", "Liburan Akhir Tahun"];
-    let lastDashboard = {
-        total: 0,
-        wallets: { Cash: 0, Dana: 0, Mandiri: 0, Qris: 0 }
-      };
+  // Konfigurasi
+  const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbx5hWHJfX8f8KGT3di3-0I42EPhXJU4vddlq0ZZbQ7-xmYY5_lvjwhz18V-bvqfi7Gd/exec";
 
-    
-    // Fungsi untuk memformat angka ke format Rupiah
-    function formatRupiah(amount) {
-        if (!amount) return 'Rp 0';
-        return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-    
-    // Fungsi untuk memuat data dari Google Sheets
-    async function loadData() {
-        try {
-            console.log('Loading data from:', SPREADSHEET_URL);
-            
-            // Tampilkan loading di tabel
-            document.getElementById('transactionTableBody').innerHTML = `
-                <tr>
-                    <td colspan="8" class="text-center">
-                        <div class="spinner"></div> Memuat data...
-                    </td>
-                </tr>
-            `;
-            
-            // Fetch data dari Google Apps Script dengan timestamp untuk avoid cache
-            const timestamp = new Date().getTime();
-            const url = `${SPREADSHEET_URL}?action=getData&_=${timestamp}`;
-            
-            console.log('Fetching from URL:', url);
-            
-            const response = await fetch(url);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            console.log('Data received:', data);
-            
-            // Update dashboard
-            updateDashboard(data.dashboard || data);
-            
-            // Update tabel transaksi
-            updateTransactionTable(data.transactions || []);
-            
-            // Update dropdown target
-            updateTargetDropdown();
-            
-        } catch (error) {
-            console.error('Error loading data:', error);
-            document.getElementById('transactionTableBody').innerHTML = `
-                <tr>
-                    <td colspan="8" class="text-center text-danger">
-                        <i class="bi bi-exclamation-triangle"></i> Gagal memuat data. Error: ${error.message}
-                        <br><small>Pastikan aplikasi sudah dideploy dan URL benar</small>
-                    </td>
-                </tr>
-            `;
-            
-        }
-    }
-    
-// Fungsi untuk menyembunyikan semua inputan transaksi
-function hideAllTransactionInputs() {
-    // Sembunyikan bagian khusus transaksi
-    document.getElementById('incomeSection').classList.add('hidden');
-    document.getElementById('expenseSection').classList.add('hidden');
-    document.getElementById('purchaseDetails').classList.add('hidden');
-    document.getElementById('targetSection').classList.add('hidden');
-    
-    // Reset semua selector
-    document.querySelectorAll('.income-source-selector').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.wallet-selector').forEach(el => el.classList.remove('active'));
-    
-    // Reset nilai hidden inputs
-    document.getElementById('incomeSource').value = '';
-    document.getElementById('incomeWallet').value = '';
-    document.getElementById('expenseWallet').value = '';
-    
-    // Sembunyikan custom income source
-    document.getElementById('customIncomeSourceDiv').classList.add('hidden');
-    document.getElementById('customIncomeSource').value = '';
-}
-// Fungsi untuk menyembunyikan inputan umum
-function hideGeneralInputs() {
-    // Sembunyikan inputan umum
-    document.getElementById('amount').closest('.row').classList.add('hidden');
-    document.getElementById('description').closest('.row').classList.add('hidden');
-    document.getElementById('notes').closest('.row').classList.add('hidden');
-    document.getElementById('uploadArea').closest('.row').classList.add('hidden');
-}
-    
-    // Fungsi untuk memperbarui dashboard
-function updateDashboard(dashboardData) {
-  if (!dashboardData) return;
-
-  const wallets = dashboardData.wallets || {};
-
-  // Ringkasan utama
-  const income = dashboardData.income || 0;
-  const expense = dashboardData.expense || 0;
-
-  const cash = dashboardData.cash ?? wallets.Cash ?? 0;
-  const dana = dashboardData.dana ?? wallets.Dana ?? 0;
-  const mandiri = dashboardData.mandiri ?? wallets.Mandiri ?? 0;
-  const bri = dashboardData.bri ?? wallets.Qris ?? 0;
-
-  const total = dashboardData.total ?? (cash + dana + mandiri + bri);
-
-  document.getElementById('incomeAmount').textContent = formatRupiah(income);
-  document.getElementById('expenseAmount').textContent = formatRupiah(expense);
-  document.getElementById('totalBalance').textContent = formatRupiah(total);
-
-  document.getElementById('cashAmount').textContent = formatRupiah(cash);
-  document.getElementById('danaAmount').textContent = formatRupiah(dana);
-  document.getElementById('mandiriAmount').textContent = formatRupiah(mandiri);
-  document.getElementById('briAmount').textContent = formatRupiah(bri);
-
-  // Simpan saldo terakhir untuk preview di form
-  lastDashboard = {
-    total,
-    wallets: { Cash: cash, Dana: dana, Mandiri: mandiri, Qris: bri }
+  // Variabel global
+  let currentFile = null;
+  let lastDashboard = {
+    total: 0,
+    wallets: { Cash: 0, Dana: 0, Mandiri: 0, Qris: 0 }
   };
 
-  // Kalau form pengeluaran sedang terbuka, update preview
-  renderBalancePreviewStatic();
-  updateExpensePreview();
-}
-
-function renderBalancePreviewStatic() {
-  const el = document.getElementById('balancePreviewSection');
-  if (!el) return;
-
-  document.getElementById('pvCash').textContent = formatRupiah(lastDashboard.wallets.Cash || 0);
-  document.getElementById('pvDana').textContent = formatRupiah(lastDashboard.wallets.Dana || 0);
-  document.getElementById('pvMandiri').textContent = formatRupiah(lastDashboard.wallets.Mandiri || 0);
-  document.getElementById('pvQris').textContent = formatRupiah(lastDashboard.wallets.Qris || 0);
-  document.getElementById('pvTotalBefore').textContent = formatRupiah(lastDashboard.total || 0);
-}
-
-function updateExpensePreview() {
-  const type = document.getElementById('transactionType')?.value || '';
-  const previewBox = document.getElementById('balancePreviewSection');
-  if (!previewBox) return;
-
-  if (type !== 'Pengeluaran') return;
-
-  const amountRaw = document.getElementById('amount')?.value || '';
-  const amount = Number(amountRaw) || 0;
-
-  const wallet = document.getElementById('expenseWallet')?.value || '';
-  const warningEl = document.getElementById('pvWarning');
-
-  // Default
-  document.getElementById('pvDeduct').textContent = formatRupiah(amount);
-  document.getElementById('pvTotalAfter').textContent = formatRupiah((lastDashboard.total || 0) - amount);
-
-  if (wallet) {
-    const before = Number(lastDashboard.wallets[wallet] || 0);
-    const after = before - amount;
-
-    document.getElementById('pvWalletName').textContent = wallet;
-    document.getElementById('pvWalletAfter').textContent = formatRupiah(after);
-
-    // Warning
-    let warn = '';
-    if (amount > 0 && after < 0) warn = `Saldo ${wallet} tidak cukup. Saldo sekarang ${formatRupiah(before)}.`;
-    if (amount > 0 && (lastDashboard.total - amount) < 0) warn = warn ? warn + ' Total saldo juga tidak cukup.' : 'Total saldo tidak cukup.';
-
-    if (warn) {
-      warningEl.textContent = warn;
-      warningEl.classList.remove('hidden');
-    } else {
-      warningEl.textContent = '';
-      warningEl.classList.add('hidden');
-    }
-  } else {
-    document.getElementById('pvWalletName').textContent = '-';
-    document.getElementById('pvWalletAfter').textContent = 'Rp 0';
-
-    warningEl.textContent = '';
-    warningEl.classList.add('hidden');
+  // Utils angka
+  function toInt(val) {
+    const n = parseInt(val, 10);
+    return Number.isFinite(n) ? n : 0;
   }
-}
 
+  // Fungsi untuk memformat angka ke format Rupiah
+  function formatRupiah(amount) {
+    const n = toInt(amount);
+    return 'Rp ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
 
-    
-    // Fungsi untuk memperbarui tabel transaksi
-    function updateTransactionTable(transactions) {
-        const tableBody = document.getElementById('transactionTableBody');
-        
-        if (!transactions || transactions.length === 0) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="8" class="text-center">
-                        <i class="bi bi-inbox"></i> Belum ada transaksi. Mulai dengan menambahkan transaksi baru.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-        
-        let html = '';
-        transactions.forEach(transaction => {
-            const rowClass = transaction.jenis === 'Pemasukan' ? 'income-bg' : 'expense-bg';
-            const amountClass = transaction.jenis === 'Pemasukan' ? 'text-success' : 'text-danger';
-            const amountSign = transaction.jenis === 'Pemasukan' ? '+' : '-';
-            
-            // Tentukan kolom sumber/kategori
-            const sourceCategory = transaction.jenis === 'Pemasukan' ? 
-                (transaction.sumber || '-') : 
-                (transaction.kategori || '-');
-            
-            html += `
-                <tr class="${rowClass}">
-                    <td>${transaction.tanggal || '-'}</td>
-                    <td><span class="badge ${transaction.jenis === 'Pemasukan' ? 'bg-success' : 'bg-warning'}">${transaction.jenis}</span></td>
-                    <td>${sourceCategory}</td>
-                    <td>${transaction.dompet || '-'}</td>
-                    <td>${transaction.keterangan || '-'}</td>
-                    <td class="fw-bold ${amountClass}">${amountSign} ${formatRupiah(transaction.jumlah || 0)}</td>
-                    <td>${transaction.catatan || '-'}</td>
-                    <td>
-                        ${transaction.linkBukti ? 
-                            `<a href="${transaction.linkBukti}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> Lihat
-                            </a>` : 
-                            '<span class="text-muted">-</span>'
-                        }
-                    </td>
-                </tr>
-            `;
-        });
-        
-        tableBody.innerHTML = html;
-    }
-    
-    // Fungsi untuk memperbarui dropdown target
-    function updateTargetDropdown() {
-        const targetSelect = document.getElementById('targetSelect');
-        let html = '<option value="">Pilih target yang sudah ada</option>';
-        
-        targets.forEach(target => {
-            html += `<option value="${target}">${target}</option>`;
-        });
-        
-        targetSelect.innerHTML = html;
-    }
-    
-    // Fungsi untuk menangani submit form
-    async function submitTransactionForm(event) {
-        event.preventDefault();
-        console.log('Submitting form...');
-        
-        // Validasi form
-        const transactionType = document.getElementById('transactionType').value;
-        const amount = document.getElementById('amount').value;
-        const transactionDate = document.getElementById('transactionDate').value;
-        const description = document.getElementById('description').value;
-        
-        if (!transactionType || !amount || !transactionDate || !description) {
-            alert('Harap isi semua field yang wajib diisi!');
-            return;
-        }
-        
-        // Validasi berdasarkan jenis transaksi
-        if (transactionType === 'Pemasukan') {
-            const incomeSource = document.getElementById('incomeSource').value;
-            const incomeWallet = document.getElementById('incomeWallet').value;
-            
-            if (!incomeSource || !incomeWallet) {
-                alert('Harap pilih sumber pemasukan dan dompet penerima!');
-                return;
-            }
-        } else if (transactionType === 'Pengeluaran') {
-            const category = document.getElementById('category').value;
-            const expenseWallet = document.getElementById('expenseWallet').value;
-            // Tampilkan preview saldo
-            document.getElementById('balancePreviewSection').classList.add('hidden');
-            const warningEl = document.getElementById('pvWarning');
-            if (warningEl) {
-              warningEl.textContent = '';
-              warningEl.classList.add('hidden');
-            }
-        }
-        
-        // Tampilkan loading
-        document.getElementById('submitText').classList.add('hidden');
-        document.getElementById('submitSpinner').classList.remove('hidden');
-        document.getElementById('submitForm').disabled = true;
-        
-        // Siapkan data
-        const formData = new FormData();
-        const data = {
-            action: 'saveTransaction',
-            transactionType: transactionType,
-            amount: amount,
-            transactionDate: transactionDate,
-            description: description
-        };
-        
-        // Tambahkan data berdasarkan jenis transaksi
-        if (transactionType === 'Pemasukan') {
-            let incomeSource = document.getElementById('incomeSource').value;
-            // Jika memilih "Lainnya", gunakan custom input
-            if (incomeSource === 'Lainnya') {
-                const customSource = document.getElementById('customIncomeSource').value.trim();
-                if (customSource) {
-                    incomeSource = customSource;
-                }
-            }
-            data.incomeSource = incomeSource;
-            data.wallet = document.getElementById('incomeWallet').value;
-        } else {
-            data.category = document.getElementById('category').value;
-            data.wallet = document.getElementById('expenseWallet').value;
-            data.purchaseQuantity = document.getElementById('purchaseQuantity').value;
-            data.paymentMethod = document.getElementById('paymentMethod').value;
-        }
-        
-        // Data opsional
-        data.target = document.getElementById('target').value || document.getElementById('targetSelect').value;
-        data.notes = document.getElementById('notes').value;
-        
-        // Tambahkan file jika ada
-        if (currentFile) {
-            console.log('Adding file to form data:', currentFile.name);
-            
-            // Convert file to base64
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const base64Data = e.target.result.split(',')[1];
-                    data.file = {
-                        name: currentFile.name,
-                        type: currentFile.type,
-                        data: base64Data
-                    };
-                    
-                    // Kirim data ke server
-                    await sendDataToServer(data);
-                } catch (error) {
-                    console.error('Error processing file:', error);
-                    alert('Gagal memproses file. Silakan coba lagi.');
-                    resetSubmitButton();
-                }
-            };
-            
-            reader.readAsDataURL(currentFile);
-        } else {
-            // Kirim data tanpa file
-            await sendDataToServer(data);
-        }
-    }
-    
-    // Fungsi untuk mengirim data ke server
-async function sendDataToServer(data) {
-    try {
-        console.log('Sending data to server:', data);
-        
-        // Tambahkan timestamp dan origin untuk debugging
-        data.timestamp = new Date().getTime();
-        data.origin = window.location.origin || 'webapp';
-        
-        // Gunakan Content-Type: application/x-www-form-urlencoded untuk menghindari CORS preflight
-        const formData = new URLSearchParams();
-        for (const key in data) {
-            if (data[key] !== null && data[key] !== undefined) {
-                if (typeof data[key] === 'object') {
-                    formData.append(key, JSON.stringify(data[key]));
-                } else {
-                    formData.append(key, data[key]);
-                }
-            }
-        }
-        
-        console.log('FormData:', formData.toString());
-        
-        const response = await fetch(SPREADSHEET_URL, {
-            method: 'POST',
-            mode: 'no-cors', // Ubah mode ke no-cors
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: formData.toString()
-        });
-        
-        // Dengan mode 'no-cors', kita tidak bisa membaca response
-        console.log('Request sent (no-cors mode)');
-        
-        // Berikan feedback ke user
-        alert('Transaksi berhasil dikirim! Sistem akan memperbarui data.');
-        
-        // Reset form
-        resetForm();
-        
-        // Sembunyikan form
-        document.getElementById('transactionForm').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        
-        // Muat ulang data setelah beberapa detik
-        setTimeout(loadData, 2000);
-        
-    } catch (error) {
-        console.error('Error sending data:', error);
-        
-        // Fallback: Simpan di localStorage sementara
-        saveToLocalStorage(data);
-        
-        alert('Transaksi disimpan secara lokal. Silakan refresh halaman dan coba lagi nanti.');
-        
-        // Reset form tetap
-        resetForm();
-        document.getElementById('transactionForm').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        
-    } finally {
-        resetSubmitButton();
-    }
-}
-    
-// Fallback function untuk menyimpan di localStorage
-function saveToLocalStorage(data) {
-    try {
-        const pendingTransactions = JSON.parse(localStorage.getItem('pendingTransactions') || '[]');
-        data.localSaveTime = new Date().toISOString();
-        pendingTransactions.push(data);
-        localStorage.setItem('pendingTransactions', JSON.stringify(pendingTransactions));
-        console.log('Saved to localStorage:', data);
-    } catch (error) {
-        console.error('Error saving to localStorage:', error);
-    }
-}
-    // Fungsi untuk mereset tombol submit
-    function resetSubmitButton() {
-        document.getElementById('submitText').classList.remove('hidden');
-        document.getElementById('submitSpinner').classList.add('hidden');
-        document.getElementById('submitForm').disabled = false;
-    }
-    
-// Fungsi untuk mereset form
-function resetForm() {
-    document.getElementById('transactionFormElement').reset();
-    
-    // Reset jenis transaksi ke pilihan default
-    document.getElementById('transactionType').value = '';
-    
-    // Sembunyikan semua inputan transaksi
-    hideAllTransactionInputs();
-    hideGeneralInputs();
-    
-    // Set tanggal ke hari ini (tetapi sembunyikan dulu)
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('transactionDate').value = today;
-    // Jika ingin menyembunyikan tanggal juga:
-    // document.getElementById('transactionDate').closest('.row').classList.add('hidden');
-    
-    // Reset file upload
-    document.getElementById('fileName').textContent = 'Belum ada file dipilih';
-    currentFile = null;
-    if (document.getElementById('fileInput')) {
-        document.getElementById('fileInput').value = '';
-    }
-    
-    // Reset validasi
-    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-    
-    // Reset required attributes
-    document.getElementById('category').required = false;
-    document.getElementById('category').removeAttribute('required');
-    document.getElementById('incomeSource').required = false;
-    document.getElementById('incomeWallet').required = false;
-    document.getElementById('expenseWallet').required = false;
-}
+  // Ambil dompet terpilih sesuai jenis transaksi
+  function getSelectedWalletByType() {
+    const type = document.getElementById('transactionType').value;
+    if (type === 'Pemasukan') return document.getElementById('incomeWallet').value;
+    if (type === 'Pengeluaran') return document.getElementById('expenseWallet').value;
+    return '';
+  }
 
-// Saat form pertama kali ditampilkan, sembunyikan semua inputan
-document.getElementById('showForm').addEventListener('click', function() {
-    document.getElementById('transactionForm').classList.remove('hidden');
-    document.getElementById('dashboard').classList.add('hidden');
-    
-    // Set ulang form ke kondisi awal
-    resetForm();
-    
-    // Tampilkan hanya Jenis Transaksi dan Tanggal
-    document.getElementById('transactionDate').closest('.row').classList.remove('hidden');
-});
+  // Render saldo saat ini + preview
+function renderBalanceInfoAndPreview() {
+  const wrapper = document.getElementById('balancePreviewWrapper');
+  const balanceCardsRow = document.getElementById('balanceCardsRow');
+  const previewCardsRow = document.getElementById('previewCardsRow');
 
-// Pada saat DOM loaded, pastikan form dalam keadaan reset
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded');
-    
-    // Set tanggal hari ini sebagai default
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('transactionDate').value = today;
-    
-    // Pastikan form disembunyikan saat pertama kali
-    resetForm();
-    
-    // Load data awal
-    loadData();
-});
-    
-    // Event Listeners
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded');
-        
-        // Set tanggal hari ini sebagai default
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('transactionDate').value = today;
-        
-        // Load data awal
-        loadData();
-        
+  const type = document.getElementById('transactionType').value;
+  const amount = toInt(document.getElementById('amount').value);
+  const wallet = getSelectedWalletByType();
 
+  if (!type) {
+    wrapper.classList.add('hidden');
+    return;
+  }
+  wrapper.classList.remove('hidden');
 
-        // Event listener untuk tombol show form
-        document.getElementById('showForm').addEventListener('click', function() {
-            document.getElementById('transactionForm').classList.remove('hidden');
-            document.getElementById('dashboard').classList.add('hidden');
-            
-            // Set ulang tanggal ke hari ini
-            document.getElementById('transactionDate').value = today;
-        });
-        
-        // Event listener untuk tombol close form
-        document.getElementById('closeForm').addEventListener('click', function() {
-            document.getElementById('transactionForm').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            resetForm();
-        });
-        
-        // Event listener untuk tombol cancel form
-        document.getElementById('cancelForm').addEventListener('click', function() {
-            document.getElementById('transactionForm').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            resetForm();
-        });
-        
-        // Event listener untuk tombol refresh data
-        document.getElementById('refreshData').addEventListener('click', loadData);
-        
-// Event listener untuk jenis transaksi
-// Event listener untuk jenis transaksi (FULL)
-document.getElementById('transactionType').addEventListener('change', function () {
-  const transactionType = this.value;
+  const cash = toInt(lastDashboard.wallets.Cash);
+  const dana = toInt(lastDashboard.wallets.Dana);
+  const mandiri = toInt(lastDashboard.wallets.Mandiri);
+  const qris = toInt(lastDashboard.wallets.Qris);
+  const total = toInt(lastDashboard.total);
 
-  const incomeSection = document.getElementById('incomeSection');
-  const expenseSection = document.getElementById('expenseSection');
-  const purchaseDetails = document.getElementById('purchaseDetails');
-  const targetSection = document.getElementById('targetSection');
-  const categorySelect = document.getElementById('category');
-  const balancePreviewSection = document.getElementById('balancePreviewSection');
+  // Kartu saldo saat ini
+  balanceCardsRow.innerHTML = `
+    <div class="col-6 col-md-3">
+      <div class="mini-card mini-card-primary">
+        <div class="mini-card-title">Cash</div>
+        <div class="mini-card-value">${formatRupiah(cash)}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="mini-card mini-card-primary">
+        <div class="mini-card-title">Dana</div>
+        <div class="mini-card-value">${formatRupiah(dana)}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="mini-card mini-card-primary">
+        <div class="mini-card-title">Mandiri</div>
+        <div class="mini-card-value">${formatRupiah(mandiri)}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="mini-card mini-card-primary">
+        <div class="mini-card-title">Qris</div>
+        <div class="mini-card-value">${formatRupiah(qris)}</div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="mini-card">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <div class="mini-card-title">Total Saldo</div>
+            <div class="mini-card-value">${formatRupiah(total)}</div>
+          </div>
+          <div class="mini-badge">
+            <i class="bi bi-info-circle"></i>
+            <span>Semua dompet</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 
-  // Sembunyikan semua input khusus transaksi dulu
-  hideAllTransactionInputs();
-
-  // Default: sembunyikan preview saldo
-  if (balancePreviewSection) balancePreviewSection.classList.add('hidden');
-
-  // Reset required biar tidak nyangkut
-  categorySelect.required = false;
-  categorySelect.removeAttribute('required');
-  document.getElementById('incomeSource').required = false;
-  document.getElementById('incomeWallet').required = false;
-  document.getElementById('expenseWallet').required = false;
-
-  // Kalau belum pilih jenis transaksi, sembunyikan input umum
-  if (!transactionType) {
-    hideGeneralInputs();
+  // Default preview
+  if (!wallet || amount <= 0) {
+    previewCardsRow.innerHTML = `
+      <div class="col-12">
+        <div class="mini-card mini-card-muted">
+          <div class="mini-card-title">Info</div>
+          <div class="mini-card-sub">Pilih dompet, lalu isi jumlah untuk melihat preview.</div>
+        </div>
+      </div>
+    `;
     return;
   }
 
-  // Tampilkan input umum (jumlah, keterangan, catatan, upload)
-  document.getElementById('amount').closest('.row').classList.remove('hidden');
-  document.getElementById('description').closest('.row').classList.remove('hidden');
-  document.getElementById('notes').closest('.row').classList.remove('hidden');
-  document.getElementById('uploadArea').closest('.row').classList.remove('hidden');
+  const currentWallet = toInt(lastDashboard.wallets[wallet] ?? 0);
 
-  if (transactionType === 'Pemasukan') {
-    // Tampilkan pemasukan
-    incomeSection.classList.remove('hidden');
-    targetSection.classList.remove('hidden');
+  // Pengeluaran
+  if (type === 'Pengeluaran') {
+    const newTotal = total - amount;
+    const newWallet = currentWallet - amount;
 
-    // Required pemasukan
-    document.getElementById('incomeSource').required = true;
-    document.getElementById('incomeWallet').required = true;
+    // Jika saldo kurang
+    if (newWallet < 0) {
+      const kurang = Math.abs(newWallet);
 
-    // Preview saldo khusus pengeluaran tetap disembunyikan
-    if (balancePreviewSection) balancePreviewSection.classList.add('hidden');
+      previewCardsRow.innerHTML = `
+        <div class="col-12 col-md-4">
+          <div class="mini-card mini-card-danger">
+            <div class="mini-card-title">Status</div>
+            <div class="mini-card-value">Gagal</div>
+            <div class="mini-card-sub">Saldo tidak cukup</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="mini-card">
+            <div class="mini-card-title">Dompet dipilih</div>
+            <div class="mini-card-value">${wallet}</div>
+            <div class="mini-card-sub">Saldo: ${formatRupiah(currentWallet)}</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="mini-card mini-card-danger">
+            <div class="mini-card-title">Kekurangan</div>
+            <div class="mini-card-value">${formatRupiah(kurang)}</div>
+            <div class="mini-card-sub">Jumlah: ${formatRupiah(amount)}</div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="mini-card mini-card-muted">
+            <div class="mini-card-title">Catatan</div>
+            <div class="mini-card-sub">Ubah jumlah atau pilih dompet lain.</div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // Preview normal
+    previewCardsRow.innerHTML = `
+      <div class="col-12 col-md-4">
+        <div class="mini-card">
+          <div class="mini-card-title">Total saldo anda</div>
+          <div class="mini-card-value">${formatRupiah(total)}</div>
+          <div class="mini-card-sub">Sebelum transaksi</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="mini-card mini-card-danger">
+          <div class="mini-card-title">Saldo terpotong</div>
+          <div class="mini-card-value">${formatRupiah(amount)}</div>
+          <div class="mini-card-sub">Jenis: Pengeluaran</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="mini-card">
+          <div class="mini-card-title">Total setelah</div>
+          <div class="mini-card-value">${formatRupiah(newTotal)}</div>
+          <div class="mini-card-sub">Setelah transaksi</div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="mini-card mini-card-primary">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <div class="mini-card-title">Saldo ${wallet}</div>
+              <div class="mini-card-value">${formatRupiah(newWallet)}</div>
+              <div class="mini-card-sub">Sebelum: ${formatRupiah(currentWallet)}</div>
+            </div>
+            <div class="mini-badge">
+              <i class="bi bi-wallet"></i>
+              <span>Dompet terpilih</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
   }
 
-  if (transactionType === 'Pengeluaran') {
-    // Tampilkan pengeluaran
-    expenseSection.classList.remove('hidden');
-    purchaseDetails.classList.remove('hidden');
+  // Pemasukan
+  if (type === 'Pemasukan') {
+    const newTotal = total + amount;
+    const newWallet = currentWallet + amount;
 
-    // Required pengeluaran
-    categorySelect.required = true;
-    categorySelect.setAttribute('required', 'required');
-    document.getElementById('expenseWallet').required = true;
+    previewCardsRow.innerHTML = `
+      <div class="col-12 col-md-4">
+        <div class="mini-card">
+          <div class="mini-card-title">Total saldo anda</div>
+          <div class="mini-card-value">${formatRupiah(total)}</div>
+          <div class="mini-card-sub">Sebelum transaksi</div>
+        </div>
+      </div>
 
-    // Tampilkan preview saldo
-    if (balancePreviewSection) balancePreviewSection.classList.remove('hidden');
+      <div class="col-12 col-md-4">
+        <div class="mini-card mini-card-success">
+          <div class="mini-card-title">Saldo bertambah</div>
+          <div class="mini-card-value">${formatRupiah(amount)}</div>
+          <div class="mini-card-sub">Jenis: Pemasukan</div>
+        </div>
+      </div>
 
-    // Isi saldo statis dan hitung preview
-    renderBalancePreviewStatic();
-    updateExpensePreview();
+      <div class="col-12 col-md-4">
+        <div class="mini-card">
+          <div class="mini-card-title">Total setelah</div>
+          <div class="mini-card-value">${formatRupiah(newTotal)}</div>
+          <div class="mini-card-sub">Setelah transaksi</div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="mini-card mini-card-primary">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <div class="mini-card-title">Saldo ${wallet}</div>
+              <div class="mini-card-value">${formatRupiah(newWallet)}</div>
+              <div class="mini-card-sub">Sebelum: ${formatRupiah(currentWallet)}</div>
+            </div>
+            <div class="mini-badge">
+              <i class="bi bi-wallet"></i>
+              <span>Dompet terpilih</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
   }
-});
-// Update preview saat input jumlah transaksi berubah
-const amountInput = document.getElementById('amount');
-if (amountInput) {
-  const updateIfExpense = () => {
-    const type = document.getElementById('transactionType')?.value || '';
-    if (type === 'Pengeluaran') updateExpensePreview();
-  };
-
-  amountInput.addEventListener('input', updateIfExpense);
-  amountInput.addEventListener('keyup', updateIfExpense);
-  amountInput.addEventListener('change', updateIfExpense);
 }
 
-        
-        // Event listener untuk pemilihan sumber pemasukan
-        document.querySelectorAll('.income-source-selector').forEach(selector => {
-            selector.addEventListener('click', function() {
-                // Hapus class active dari semua selector
-                document.querySelectorAll('.income-source-selector').forEach(el => el.classList.remove('active'));
-                
-                // Tambahkan class active ke selector yang dipilih
-                this.classList.add('active');
-                
-                // Set nilai income source
-                const source = this.getAttribute('data-source');
-                document.getElementById('incomeSource').value = source;
-                
-                // Tampilkan input custom jika memilih "Lainnya"
-                const customInputDiv = document.getElementById('customIncomeSourceDiv');
-                if (source === 'Lainnya') {
-                    customInputDiv.classList.remove('hidden');
-                    document.getElementById('customIncomeSource').focus();
-                } else {
-                    customInputDiv.classList.add('hidden');
-                    document.getElementById('customIncomeSource').value = '';
-                }
-            });
-        });
-        
-        // Event listener untuk pemilihan dompet pemasukan
-        document.querySelectorAll('#incomeWalletSelector .wallet-selector').forEach(selector => {
-            selector.addEventListener('click', function() {
-                // Hapus class active dari semua selector
-                document.querySelectorAll('#incomeWalletSelector .wallet-selector').forEach(el => el.classList.remove('active'));
-                
-                // Tambahkan class active ke selector yang dipilih
-                this.classList.add('active');
-                
-                // Set nilai wallet
-                const wallet = this.getAttribute('data-wallet');
-                document.getElementById('incomeWallet').value = wallet;
-            });
-        });
-        
-        // Event listener untuk pemilihan dompet pengeluaran
-document.querySelectorAll('#expenseWalletSelector .wallet-selector').forEach(selector => {
-  selector.addEventListener('click', function() {
-    // Hapus class active dari semua selector
-    document.querySelectorAll('#expenseWalletSelector .wallet-selector').forEach(el => el.classList.remove('active'));
+  // Sembunyikan Target Keuangan saat Pengeluaran
+  function toggleTargetForExpense() {
+    const type = document.getElementById('transactionType').value;
+    const targetCol = document.getElementById('targetCol');
+    const notesCol = document.getElementById('notesCol');
+    const targetSelect = document.getElementById('targetSelect');
 
-    // Tambahkan class active ke selector yang dipilih
-    this.classList.add('active');
+    if (!targetCol || !notesCol || !targetSelect) return;
 
-    // Set nilai wallet
-    const wallet = this.getAttribute('data-wallet');
-    document.getElementById('expenseWallet').value = wallet;
+    if (type === 'Pengeluaran') {
+      targetCol.classList.add('hidden');
+      notesCol.classList.remove('col-md-6');
+      notesCol.classList.add('col-md-12');
+      targetSelect.value = '';
+    } else {
+      targetCol.classList.remove('hidden');
+      notesCol.classList.remove('col-md-12');
+      notesCol.classList.add('col-md-6');
+    }
+  }
 
-    updateExpensePreview();
-  });
-});
+  // Fungsi untuk memuat data dari Google Sheets
+  async function loadData() {
+    try {
+      console.log('Loading data from:', SPREADSHEET_URL);
 
+      // Tampilkan loading
+      document.getElementById('transactionTableBody').innerHTML = `
+        <tr>
+          <td colspan="9" class="text-center">
+            <div class="spinner"></div> Memuat data...
+          </td>
+        </tr>
+      `;
 
-        
-        // Event listener untuk upload file
-        document.getElementById('uploadArea').addEventListener('click', function() {
-            document.getElementById('fileInput').click();
-        });
-        
-        document.getElementById('fileInput').addEventListener('change', function() {
-            if (this.files.length > 0) {
-                currentFile = this.files[0];
-                document.getElementById('fileName').textContent = currentFile.name;
-                
-                // Validasi ukuran file (max 5MB)
-                if (currentFile.size > 5 * 1024 * 1024) {
-                    alert('Ukuran file terlalu besar. Maksimum 5MB.');
-                    currentFile = null;
-                    document.getElementById('fileName').textContent = 'Belum ada file dipilih';
-                    this.value = '';
-                }
+      const timestamp = new Date().getTime();
+      const url = `${SPREADSHEET_URL}?action=getData&_=${timestamp}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Data received:', data);
+
+      // Update dashboard
+      updateDashboard(data.dashboard || data);
+
+      // Update tabel transaksi
+      updateTransactionTable(data.transactions || []);
+
+      // Update dropdown target
+      updateTargetDropdown();
+
+      // Load targets
+      loadTargets();
+
+      // Refresh preview jika form terbuka
+      renderBalanceInfoAndPreview();
+
+    } catch (error) {
+      console.error('Error loading data:', error);
+      document.getElementById('transactionTableBody').innerHTML = `
+        <tr>
+          <td colspan="9" class="text-center text-danger">
+            <i class="bi bi-exclamation-triangle"></i> Gagal memuat data.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // Fungsi untuk memuat data target
+  async function loadTargets() {
+    try {
+      const timestamp = new Date().getTime();
+      const url = `${SPREADSHEET_URL}?action=getTargets&_=${timestamp}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        updateTargetsList(data.targets || []);
+      }
+    } catch (error) {
+      console.error('Error loading targets:', error);
+      document.getElementById('targetsList').innerHTML = `
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle"></i> Gagal memuat data target.
+        </div>
+      `;
+    }
+  }
+
+  // Fungsi untuk memperbarui dashboard
+  function updateDashboard(dashboardData) {
+    if (!dashboardData) return;
+
+    const wallets = dashboardData.wallets || {};
+    const income = dashboardData.income || 0;
+    const expense = dashboardData.expense || 0;
+    const cash = dashboardData.cash ?? wallets.Cash ?? 0;
+    const dana = dashboardData.dana ?? wallets.Dana ?? 0;
+    const mandiri = dashboardData.mandiri ?? wallets.Mandiri ?? 0;
+    const bri = dashboardData.bri ?? wallets.Qris ?? 0;
+    const total = dashboardData.total ?? (toInt(cash) + toInt(dana) + toInt(mandiri) + toInt(bri));
+
+    document.getElementById('incomeAmount').textContent = formatRupiah(income);
+    document.getElementById('expenseAmount').textContent = formatRupiah(expense);
+    document.getElementById('totalBalance').textContent = formatRupiah(total);
+    document.getElementById('cashAmount').textContent = formatRupiah(cash);
+    document.getElementById('danaAmount').textContent = formatRupiah(dana);
+    document.getElementById('mandiriAmount').textContent = formatRupiah(mandiri);
+    document.getElementById('briAmount').textContent = formatRupiah(bri);
+
+    lastDashboard = {
+      total: toInt(total),
+      wallets: { Cash: toInt(cash), Dana: toInt(dana), Mandiri: toInt(mandiri), Qris: toInt(bri) }
+    };
+  }
+
+  // Fungsi untuk memperbarui tabel transaksi
+  function updateTransactionTable(transactions) {
+    const tableBody = document.getElementById('transactionTableBody');
+
+    if (!transactions || transactions.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="9" class="text-center">
+            <i class="bi bi-inbox"></i> Belum ada transaksi.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    let html = '';
+    transactions.forEach(transaction => {
+      const rowClass = transaction.jenis === 'Pemasukan' ? 'income-bg' : 'expense-bg';
+      const amountClass = transaction.jenis === 'Pemasukan' ? 'text-success' : 'text-danger';
+      const amountSign = transaction.jenis === 'Pemasukan' ? '+' : '-';
+      const sourceCategory = transaction.jenis === 'Pemasukan' ?
+        (transaction.sumber || '-') :
+        (transaction.kategori || '-');
+
+      html += `
+        <tr class="${rowClass}">
+          <td>${transaction.tanggal || '-'}</td>
+          <td><span class="badge ${transaction.jenis === 'Pemasukan' ? 'bg-success' : 'bg-warning'}">${transaction.jenis}</span></td>
+          <td>${sourceCategory}</td>
+          <td>${transaction.dompet || '-'}</td>
+          <td>${transaction.keterangan || '-'}</td>
+          <td class="fw-bold ${amountClass}">${amountSign} ${formatRupiah(transaction.jumlah || 0)}</td>
+          <td>${transaction.target || '-'}</td>
+          <td>${transaction.catatan || '-'}</td>
+          <td>
+            ${transaction.linkBukti ?
+              `<a href="${transaction.linkBukti}" target="_blank" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-eye"></i> Lihat
+              </a>` :
+              '<span class="text-muted">-</span>'
             }
-        });
-        
-        // Event listener untuk drag & drop file
-        document.getElementById('uploadArea').addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--primary-color)';
-            this.style.backgroundColor = 'rgba(67, 97, 238, 0.1)';
-        });
-        
-        document.getElementById('uploadArea').addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.style.borderColor = '#ddd';
-            this.style.backgroundColor = '#fafafa';
-        });
-        
-        document.getElementById('uploadArea').addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.borderColor = '#ddd';
-            this.style.backgroundColor = '#fafafa';
-            
-            if (e.dataTransfer.files.length > 0) {
-                const file = e.dataTransfer.files[0];
-                
-                // Validasi tipe file
-                const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-                if (!validTypes.includes(file.type)) {
-                    alert('Format file tidak didukung. Gunakan JPG, PNG, atau PDF.');
-                    return;
-                }
-                
-                // Validasi ukuran file
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Ukuran file terlalu besar. Maksimum 5MB.');
-                    return;
-                }
-                
-                currentFile = file;
-                document.getElementById('fileName').textContent = file.name;
-                
-                // Reset input file
-                document.getElementById('fileInput').files = e.dataTransfer.files;
-            }
-        });
-        
-        // Event listener untuk tombol tambah target
-        document.getElementById('addTarget').addEventListener('click', function() {
-            const targetInput = document.getElementById('target');
-            const targetValue = targetInput.value.trim();
-            
-            if (targetValue) {
-                // Tambahkan ke array targets jika belum ada
-                if (!targets.includes(targetValue)) {
-                    targets.push(targetValue);
-                    updateTargetDropdown();
-                }
-                
-                // Set nilai di dropdown
-                document.getElementById('targetSelect').value = targetValue;
-                
-                // Kosongkan input
-                targetInput.value = '';
-                
-                alert('Target berhasil ditambahkan!');
-            }
-        });
-        
-        // Event listener untuk submit form
-        document.getElementById('transactionFormElement').addEventListener('submit', submitTransactionForm);
-        
-        // Validasi form real-time
-        document.querySelectorAll('input, select, textarea').forEach(element => {
-            element.addEventListener('blur', function() {
-                if (!this.checkValidity()) {
-                    this.classList.add('is-invalid');
-                } else {
-                    this.classList.remove('is-invalid');
-                }
-            });
-        });
+          </td>
+        </tr>
+      `;
     });
+
+    tableBody.innerHTML = html;
+  }
+
+  // Fungsi untuk memperbarui dropdown target di form transaksi
+  function updateTargetDropdown() {
+    try {
+      const timestamp = new Date().getTime();
+      const url = `${SPREADSHEET_URL}?action=getTargets&_=${timestamp}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            const targetSelect = document.getElementById('targetSelect');
+            let html = '<option value="">Pilih target atau kosongkan</option>';
+
+            data.targets.forEach(target => {
+              html += `<option value="${target.name}">${target.name}</option>`;
+            });
+
+            targetSelect.innerHTML = html;
+          }
+        });
+    } catch (error) {
+      console.error('Error updating target dropdown:', error);
+    }
+  }
+
+  // Fungsi untuk memperbarui daftar target
+  function updateTargetsList(targets) {
+    const targetsList = document.getElementById('targetsList');
+
+    if (!targets || targets.length === 0) {
+      targetsList.innerHTML = `
+        <div class="text-center py-5">
+          <i class="bi bi-bullseye display-1 text-muted mb-3"></i>
+          <h5>Belum ada target keuangan</h5>
+          <p class="text-muted">Mulai dengan membuat target keuangan baru</p>
+          <button class="btn btn-primary" id="addTargetEmpty">
+            <i class="bi bi-plus-circle"></i> Buat Target Baru
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '<div class="row">';
+
+    targets.forEach(target => {
+      const progress = target.current_amount || 0;
+      const targetAmount = target.target_amount || 1;
+      const percentage = Math.min(Math.round((progress / targetAmount) * 100), 100);
+
+      let progressClass = '';
+      let cardClass = 'target-card';
+
+      if (percentage >= 100) {
+        progressClass = 'bg-success';
+        cardClass = 'target-completed';
+      } else if (percentage >= 75) {
+        progressClass = 'bg-primary';
+      } else if (percentage >= 50) {
+        progressClass = 'bg-info';
+      } else if (percentage >= 25) {
+        progressClass = 'bg-warning';
+        cardClass = 'target-warning';
+      } else {
+        progressClass = 'bg-danger';
+        cardClass = 'target-danger';
+      }
+
+      let deadlineText = '';
+      if (target.deadline) {
+        const deadline = new Date(target.deadline);
+        const today = new Date();
+        const diffTime = deadline - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) {
+          deadlineText = `<span class="text-danger"><i class="bi bi-exclamation-circle"></i> Terlambat ${Math.abs(diffDays)} hari</span>`;
+        } else if (diffDays === 0) {
+          deadlineText = '<span class="text-warning"><i class="bi bi-clock"></i> Deadline hari ini!</span>';
+        } else {
+          deadlineText = `<span class="text-muted"><i class="bi bi-calendar"></i> ${diffDays} hari lagi</span>`;
+        }
+      }
+
+      html += `
+        <div class="col-md-6 mb-3">
+          <div class="card ${cardClass} h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h5 class="card-title mb-1">${target.name}</h5>
+                  ${target.wallet ? `<p class="mb-1"><small><i class="bi bi-wallet"></i> ${target.wallet}</small></p>` : ''}
+                </div>
+                <span class="badge bg-light text-dark">${percentage}%</span>
+              </div>
+
+              <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <small class="target-progress-text">${formatRupiah(progress)}</small>
+                  <small class="target-progress-text">${formatRupiah(targetAmount)}</small>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar ${progressClass}" role="progressbar"
+                       style="width: ${percentage}%"
+                       aria-valuenow="${percentage}"
+                       aria-valuemin="0"
+                       aria-valuemax="100"></div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  ${target.deadline ? `
+                    <div class="target-date">
+                      <i class="bi bi-calendar-check"></i> ${new Date(target.deadline).toLocaleDateString('id-ID')}
+                    </div>
+                    <div>${deadlineText}</div>
+                  ` : ''}
+                </div>
+                <div>
+                  <span class="badge ${percentage >= 100 ? 'bg-success' : 'bg-secondary'}">
+                    ${percentage >= 100 ? 'Selesai' : 'Dalam Progress'}
+                  </span>
+                </div>
+              </div>
+
+              ${target.description ? `
+                <div class="mt-3">
+                  <p class="mb-0"><small>${target.description}</small></p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    html += '</div>';
+    targetsList.innerHTML = html;
+  }
+
+  // Fungsi untuk submit form transaksi
+  async function submitTransactionForm(event) {
+    event.preventDefault();
+
+    const transactionType = document.getElementById('transactionType').value;
+    const amount = document.getElementById('amount').value;
+    const transactionDate = document.getElementById('transactionDate').value;
+    const description = document.getElementById('description').value;
+
+    if (!transactionType || !amount || !transactionDate || !description) {
+      alert('Harap isi semua field yang wajib diisi!');
+      return;
+    }
+
+    if (transactionType === 'Pemasukan') {
+      const incomeSource = document.getElementById('incomeSource').value;
+      const incomeWallet = document.getElementById('incomeWallet').value;
+
+      if (!incomeSource || !incomeWallet) {
+        alert('Harap pilih sumber pemasukan dan dompet penerima!');
+        return;
+      }
+    } else if (transactionType === 'Pengeluaran') {
+      const category = document.getElementById('category').value;
+      const expenseWallet = document.getElementById('expenseWallet').value;
+
+      if (!category || !expenseWallet) {
+        alert('Harap pilih kategori dan dompet pengeluaran!');
+        return;
+      }
+
+      // Cegah submit kalau saldo tidak cukup
+      const amt = toInt(amount);
+      const w = expenseWallet;
+      const curW = toInt(lastDashboard.wallets[w] ?? 0);
+      if (curW - amt < 0) {
+        alert('Saldo tidak cukup. Ubah jumlah atau pilih dompet lain.');
+        return;
+      }
+    }
+
+    document.getElementById('submitText').classList.add('hidden');
+    document.getElementById('submitSpinner').classList.remove('hidden');
+    document.getElementById('submitForm').disabled = true;
+
+    const data = {
+      action: 'saveTransaction',
+      transactionType: transactionType,
+      amount: amount,
+      transactionDate: transactionDate,
+      description: description
+    };
+
+    if (transactionType === 'Pemasukan') {
+      let incomeSource = document.getElementById('incomeSource').value;
+      if (incomeSource === 'Lainnya') {
+        const customSource = document.getElementById('customIncomeSource').value.trim();
+        if (customSource) incomeSource = customSource;
+      }
+      data.incomeSource = incomeSource;
+      data.wallet = document.getElementById('incomeWallet').value;
+
+      // Target hanya untuk Pemasukan
+      data.target = document.getElementById('targetSelect').value;
+
+    } else {
+      data.category = document.getElementById('category').value;
+      data.wallet = document.getElementById('expenseWallet').value;
+
+      // Target di Pengeluaran dikosongkan
+      data.target = '';
+    }
+
+    data.notes = document.getElementById('notes').value;
+
+    try {
+      await sendDataToServer(data);
+      alert('Transaksi berhasil disimpan!');
+      resetForm();
+      document.getElementById('transactionForm').classList.add('hidden');
+      loadData();
+    } catch (error) {
+      alert('Gagal menyimpan transaksi: ' + error.message);
+    } finally {
+      resetSubmitButton();
+    }
+  }
+
+  // Fungsi untuk submit form target
+  async function submitTargetForm(event) {
+    event.preventDefault();
+
+    const targetName = document.getElementById('targetName').value;
+    const targetAmount = document.getElementById('targetAmount').value;
+
+    if (!targetName || !targetAmount) {
+      alert('Harap isi nama dan nominal target!');
+      return;
+    }
+
+    document.getElementById('submitTargetText').classList.add('hidden');
+    document.getElementById('submitTargetSpinner').classList.remove('hidden');
+    document.getElementById('submitTargetForm').disabled = true;
+
+    const data = {
+      action: 'saveTarget',
+      name: targetName,
+      target_amount: targetAmount,
+      deadline: document.getElementById('targetDeadline').value || '',
+      wallet: document.getElementById('targetWallet').value || '',
+      description: document.getElementById('targetDescription').value || ''
+    };
+
+    try {
+      await sendDataToServer(data);
+      alert('Target berhasil disimpan!');
+      resetTargetForm();
+      document.getElementById('targetForm').classList.add('hidden');
+      loadTargets();
+      updateTargetDropdown();
+    } catch (error) {
+      alert('Gagal menyimpan target: ' + error.message);
+    } finally {
+      resetTargetSubmitButton();
+    }
+  }
+
+  // Fungsi untuk mengirim data ke server
+  async function sendDataToServer(data) {
+    try {
+      const formData = new URLSearchParams();
+      for (const key in data) {
+        if (data[key] !== null && data[key] !== undefined) {
+          formData.append(key, data[key]);
+        }
+      }
+
+      await fetch(SPREADSHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+      });
+
+      console.log('Data sent successfully');
+    } catch (error) {
+      console.error('Error sending data:', error);
+      throw error;
+    }
+  }
+
+  // Fungsi untuk mereset form transaksi
+  function resetForm() {
+    document.getElementById('transactionFormElement').reset();
+    document.getElementById('transactionType').value = '';
+    document.getElementById('incomeSection').classList.add('hidden');
+    document.getElementById('expenseSection').classList.add('hidden');
+
+    document.querySelectorAll('.income-source-selector').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.wallet-selector').forEach(el => el.classList.remove('active'));
+
+    document.getElementById('incomeSource').value = '';
+    document.getElementById('incomeWallet').value = '';
+    document.getElementById('expenseWallet').value = '';
+    document.getElementById('customIncomeSourceDiv').classList.add('hidden');
+    document.getElementById('customIncomeSource').value = '';
+    document.getElementById('fileName').textContent = 'Belum ada file dipilih';
+    currentFile = null;
+    document.getElementById('fileInput').value = '';
+
+    // Target dan notes
+    document.getElementById('targetSelect').value = '';
+    document.getElementById('notes').value = '';
+
+    // Sembunyikan preview wrapper
+    const wrapper = document.getElementById('balancePreviewWrapper');
+    if (wrapper) wrapper.classList.add('hidden');
+
+    // Balikin state target
+    toggleTargetForExpense();
+
+    // Set tanggal ke hari ini
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('transactionDate').value = today;
+  }
+
+  // Fungsi untuk mereset form target
+  function resetTargetForm() {
+    document.getElementById('targetFormElement').reset();
+    const futureDate = new Date();
+    futureDate.setMonth(futureDate.getMonth() + 3);
+    document.getElementById('targetDeadline').value = futureDate.toISOString().split('T')[0];
+  }
+
+  // Fungsi untuk mereset tombol submit transaksi
+  function resetSubmitButton() {
+    document.getElementById('submitText').classList.remove('hidden');
+    document.getElementById('submitSpinner').classList.add('hidden');
+    document.getElementById('submitForm').disabled = false;
+  }
+
+  // Fungsi untuk mereset tombol submit target
+  function resetTargetSubmitButton() {
+    document.getElementById('submitTargetText').classList.remove('hidden');
+    document.getElementById('submitTargetSpinner').classList.add('hidden');
+    document.getElementById('submitTargetForm').disabled = false;
+  }
+
+  // Event Listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded');
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('transactionDate').value = today;
+
+    const futureDate = new Date();
+    futureDate.setMonth(futureDate.getMonth() + 3);
+    document.getElementById('targetDeadline').value = futureDate.toISOString().split('T')[0];
+
+    loadData();
+
+    document.getElementById('showForm').addEventListener('click', function() {
+      document.getElementById('transactionForm').classList.remove('hidden');
+      document.getElementById('targetForm').classList.add('hidden');
+      resetForm();
+
+      // Biar saldo muncul setelah user pilih jenis transaksi
+      renderBalanceInfoAndPreview();
+    });
+
+    document.getElementById('showTargetForm').addEventListener('click', function() {
+      document.getElementById('targetForm').classList.remove('hidden');
+      document.getElementById('transactionForm').classList.add('hidden');
+      resetTargetForm();
+    });
+
+    document.addEventListener('click', function(e) {
+      if (e.target.id === 'addTargetFromList' || e.target.id === 'addTargetEmpty') {
+        document.getElementById('targetForm').classList.remove('hidden');
+        document.getElementById('transactionForm').classList.add('hidden');
+        resetTargetForm();
+        document.getElementById('targets-tab').click();
+      }
+    });
+
+    document.getElementById('closeForm').addEventListener('click', function() {
+      document.getElementById('transactionForm').classList.add('hidden');
+      resetForm();
+    });
+
+    document.getElementById('closeTargetForm').addEventListener('click', function() {
+      document.getElementById('targetForm').classList.add('hidden');
+      resetTargetForm();
+    });
+
+    document.getElementById('cancelForm').addEventListener('click', function() {
+      document.getElementById('transactionForm').classList.add('hidden');
+      resetForm();
+    });
+
+    document.getElementById('cancelTargetForm').addEventListener('click', function() {
+      document.getElementById('targetForm').classList.add('hidden');
+      resetTargetForm();
+    });
+
+    document.getElementById('refreshData').addEventListener('click', loadData);
+    document.getElementById('refreshTargets').addEventListener('click', loadTargets);
+
+    // Jenis transaksi
+    document.getElementById('transactionType').addEventListener('change', function() {
+      const transactionType = this.value;
+      const incomeSection = document.getElementById('incomeSection');
+      const expenseSection = document.getElementById('expenseSection');
+
+      incomeSection.classList.add('hidden');
+      expenseSection.classList.add('hidden');
+
+      document.getElementById('incomeSource').required = false;
+      document.getElementById('incomeWallet').required = false;
+      document.getElementById('category').required = false;
+      document.getElementById('expenseWallet').required = false;
+
+      if (transactionType === 'Pemasukan') {
+        incomeSection.classList.remove('hidden');
+        document.getElementById('incomeSource').required = true;
+        document.getElementById('incomeWallet').required = true;
+      } else if (transactionType === 'Pengeluaran') {
+        expenseSection.classList.remove('hidden');
+        document.getElementById('category').required = true;
+        document.getElementById('expenseWallet').required = true;
+      }
+
+      toggleTargetForExpense();
+      renderBalanceInfoAndPreview();
+    });
+
+    // Saat input jumlah berubah, update preview
+    document.getElementById('amount').addEventListener('input', function() {
+      renderBalanceInfoAndPreview();
+    });
+
+    // Sumber pemasukan
+    document.querySelectorAll('.income-source-selector').forEach(selector => {
+      selector.addEventListener('click', function() {
+        document.querySelectorAll('.income-source-selector').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+        const source = this.getAttribute('data-source');
+        document.getElementById('incomeSource').value = source;
+
+        const customInputDiv = document.getElementById('customIncomeSourceDiv');
+        if (source === 'Lainnya') {
+          customInputDiv.classList.remove('hidden');
+          document.getElementById('customIncomeSource').focus();
+        } else {
+          customInputDiv.classList.add('hidden');
+          document.getElementById('customIncomeSource').value = '';
+        }
+      });
+    });
+
+    // Dompet pemasukan
+    document.querySelectorAll('#incomeWalletSelector .wallet-selector').forEach(selector => {
+      selector.addEventListener('click', function() {
+        document.querySelectorAll('#incomeWalletSelector .wallet-selector').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+        const wallet = this.getAttribute('data-wallet');
+        document.getElementById('incomeWallet').value = wallet;
+        renderBalanceInfoAndPreview();
+      });
+    });
+
+    // Dompet pengeluaran
+    document.querySelectorAll('#expenseWalletSelector .wallet-selector').forEach(selector => {
+      selector.addEventListener('click', function() {
+        document.querySelectorAll('#expenseWalletSelector .wallet-selector').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+        const wallet = this.getAttribute('data-wallet');
+        document.getElementById('expenseWallet').value = wallet;
+        renderBalanceInfoAndPreview();
+      });
+    });
+
+    // Upload file
+    document.getElementById('uploadArea').addEventListener('click', function() {
+      document.getElementById('fileInput').click();
+    });
+
+    document.getElementById('fileInput').addEventListener('change', function() {
+      if (this.files.length > 0) {
+        currentFile = this.files[0];
+        document.getElementById('fileName').textContent = currentFile.name;
+
+        if (currentFile.size > 5 * 1024 * 1024) {
+          alert('Ukuran file terlalu besar. Maksimum 5MB.');
+          currentFile = null;
+          document.getElementById('fileName').textContent = 'Belum ada file dipilih';
+          this.value = '';
+        }
+      }
+    });
+
+    document.getElementById('uploadArea').addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.style.borderColor = 'var(--primary-color)';
+      this.style.backgroundColor = 'rgba(67, 97, 238, 0.1)';
+    });
+
+    document.getElementById('uploadArea').addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      this.style.borderColor = '#ddd';
+      this.style.backgroundColor = '#fafafa';
+    });
+
+    document.getElementById('uploadArea').addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.style.borderColor = '#ddd';
+      this.style.backgroundColor = '#fafafa';
+
+      if (e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+        if (!validTypes.includes(file.type)) {
+          alert('Format file tidak didukung. Gunakan JPG, PNG, atau PDF.');
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Ukuran file terlalu besar. Maksimum 5MB.');
+          return;
+        }
+
+        currentFile = file;
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('fileInput').files = e.dataTransfer.files;
+      }
+    });
+
+    document.getElementById('transactionFormElement').addEventListener('submit', submitTransactionForm);
+    document.getElementById('targetFormElement').addEventListener('submit', submitTargetForm);
+
+    const triggerTabList = [].slice.call(document.querySelectorAll('#mainTabs button'));
+    triggerTabList.forEach(function (triggerEl) {
+      const tabTrigger = new bootstrap.Tab(triggerEl);
+      triggerEl.addEventListener('click', function (event) {
+        event.preventDefault();
+        tabTrigger.show();
+      });
+    });
+  });
 </script>
+
 </body>
 </html>
