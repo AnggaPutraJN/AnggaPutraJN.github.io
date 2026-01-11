@@ -1356,54 +1356,96 @@ function parseArray(v) {
        
 
 // ===================== THUMBNAIL HANDLING =====================
-document.addEventListener('DOMContentLoaded', function() {
-  // Thumbnail preview functionality
-  const btnPreviewThumbnail = document.getElementById('btnPreviewThumbnail');
-  const thumbnailUrlInput = document.getElementById('thumbnailUrl');
-  const thumbnailPreview = document.getElementById('thumbnailPreview');
-  const thumbnailImage = thumbnailPreview?.querySelector('img');
-  
-  if (btnPreviewThumbnail && thumbnailUrlInput && thumbnailPreview) {
-    btnPreviewThumbnail.addEventListener('click', function() {
-      const url = thumbnailUrlInput.value.trim();
-      if (!url) {
-        alert('Masukkan URL thumbnail terlebih dahulu');
+// ===================== THUMBNAIL AUTO-FILL + AUTO-PREVIEW =====================
+function isProbablyImageUrl(url) {
+    const u = String(url || '').trim();
+    if (!/^https?:\/\//i.test(u)) return false;
+
+    // cocok untuk file gambar umum + querystring
+    if (/\.(png|jpe?g|webp|gif)(\?.*)?$/i.test(u)) return true;
+
+    // fallback untuk link gambar wordpress upload (kalau kadang tanpa ekstensi, jarang)
+    if (/\/wp-content\/uploads\//i.test(u)) return true;
+
+    return false;
+}
+
+function renderThumbnailPreview(url, opts = {}) {
+    const { silent = true } = opts;
+
+    const input = document.getElementById('thumbnailUrl');
+    const previewBox = document.getElementById('thumbnailPreview');
+    const img = previewBox ? previewBox.querySelector('img') : null;
+
+    if (!input || !previewBox || !img) return;
+
+    const u = String(url || '').trim();
+    if (!u || !/^https?:\/\//i.test(u)) {
+        img.src = '';
+        previewBox.style.display = 'none';
         return;
-      }
-      
-      // Validasi URL
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        alert('URL harus dimulai dengan http:// atau https://');
-        return;
-      }
-      
-      // Tampilkan preview
-      thumbnailImage.src = url;
-      thumbnailPreview.style.display = 'block';
-      
-      // Cek apakah gambar bisa di-load
-      thumbnailImage.onload = function() {
-        console.log('Thumbnail loaded successfully');
-      };
-      
-      thumbnailImage.onerror = function() {
-        alert('Gagal memuat thumbnail. Pastikan URL gambar valid dan dapat diakses.');
-        thumbnailPreview.style.display = 'none';
-      };
-    });
-    
-    // Juga preview saat input berubah (opsional)
-    thumbnailUrlInput.addEventListener('change', function() {
-      const url = this.value.trim();
-      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-        thumbnailImage.src = url;
-        thumbnailPreview.style.display = 'block';
-      } else {
-        thumbnailPreview.style.display = 'none';
-      }
-    });
-  }
-}); 
+    }
+
+    // tampilkan dulu biar terasa responsif
+    previewBox.style.display = 'block';
+    img.src = u;
+
+    img.onload = function () {
+        // ok
+    };
+
+    img.onerror = function () {
+        img.src = '';
+        previewBox.style.display = 'none';
+        if (!silent) alert('Gagal memuat thumbnail. Pastikan URL gambar valid dan bisa diakses.');
+    };
+}
+
+function setThumbnailUrl(url, opts = {}) {
+    const { autoPreview = true, silent = true } = opts;
+    const input = document.getElementById('thumbnailUrl');
+    if (!input) return;
+
+    input.value = String(url || '').trim();
+
+    if (autoPreview) {
+        renderThumbnailPreview(input.value, { silent });
+    }
+}
+
+function detectThumbnailFromPasteLines(linesAfterBasic) {
+    // cari dari bawah, ambil yang paling akhir yang terlihat seperti gambar
+    for (let i = linesAfterBasic.length - 1; i >= 0; i--) {
+        const line = String(linesAfterBasic[i] || '').trim();
+        if (isProbablyImageUrl(line)) return line;
+    }
+    return '';
+}
+
+function initThumbnailUiHandlers() {
+    const btn = document.getElementById('btnPreviewThumbnail');
+    const input = document.getElementById('thumbnailUrl');
+
+    if (btn && input) {
+        btn.addEventListener('click', function () {
+            const url = input.value.trim();
+            if (!url) return alert('Masukkan URL thumbnail terlebih dahulu');
+            if (!/^https?:\/\//i.test(url)) return alert('URL harus dimulai dengan http:// atau https://');
+            renderThumbnailPreview(url, { silent: false });
+        });
+
+        // preview otomatis saat user mengetik / paste manual
+        input.addEventListener('input', function () {
+            const url = this.value.trim();
+            if (!url) return renderThumbnailPreview('', { silent: true });
+            if (!/^https?:\/\//i.test(url)) return renderThumbnailPreview('', { silent: true });
+            renderThumbnailPreview(url, { silent: true });
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initThumbnailUiHandlers);
+
         function parsePasteData(text) {
             const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
             
@@ -1506,6 +1548,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             updateLinkInputsUI();
+            // ===== AUTO FILL THUMBNAIL dari sisa paste =====
+                try {
+                    // semua baris setelah 5 baris dasar
+                    const linesAfterBasic = lines.slice(5);
+
+                    const thumb = detectThumbnailFromPasteLines(linesAfterBasic);
+                    if (thumb) {
+                        setThumbnailUrl(thumb, { autoPreview: true, silent: true });
+                    } else {
+                        // kalau tidak ada, jangan ganggu input user
+                        // (opsional) kalau mau auto kosongkan:
+                        // setThumbnailUrl('', { autoPreview: true, silent: true });
+                    }
+                } catch (e) {
+                    // silent
+                }
+
         }
         
         function updateLinkInputsUI() {
@@ -2317,7 +2376,59 @@ function escapeHTML(text) {
         const LS_LOGOUT_AT_KEY = 'pspGameLogoutAt';
         let pendingAccess = null;
         const COST_PER_LINK = 2000;
-        
+                // ====== AUTO REFRESH SALDO TIAP 1 MENIT ======
+        let _saldoIntervalId = null;
+
+        async function refreshSaldoUser() {
+            try {
+                if (!currentUser || !currentUser.wa_number) return;
+
+                // ambil data user terbaru dari server
+                const res = await fetch(USER_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json'
+                    },
+                    body: 'action=getUser&wa_number=' + encodeURIComponent(currentUser.wa_number)
+                });
+
+                if (!res.ok) return;
+
+                const result = await res.json();
+                if (result.status !== 'success' || !result.data) return;
+
+                // update saldo terbaru
+                const newSaldo = Number(result.data.saldo || 0);
+                currentUser.saldo = newSaldo;
+
+                // simpan balik ke localStorage biar konsisten
+                localStorage.setItem(LS_USER_KEY, JSON.stringify(currentUser));
+
+                // update UI saldo
+                updateUserBalanceUI();
+            } catch (e) {
+                // silent
+            }
+        }
+
+        function startSaldoAutoRefresh() {
+            // stop dulu kalau sudah jalan
+            if (_saldoIntervalId) clearInterval(_saldoIntervalId);
+
+            // refresh langsung sekali
+            refreshSaldoUser();
+
+            // lalu tiap 60 detik
+            _saldoIntervalId = setInterval(refreshSaldoUser, 60 * 1000);
+        }
+
+        function stopSaldoAutoRefresh() {
+            if (_saldoIntervalId) {
+                clearInterval(_saldoIntervalId);
+                _saldoIntervalId = null;
+            }
+        }
         function rupiah(n) {
             return Number(n || 0).toLocaleString('id-ID');
         }
@@ -2344,6 +2455,7 @@ function escapeHTML(text) {
             localStorage.removeItem(LS_USER_KEY);
             localStorage.setItem(LS_LOGOUT_AT_KEY, String(Date.now()));
             currentUser = null;
+            stopSaldoAutoRefresh();
             
             document.getElementById('userHeader').style.display = 'none';
             document.getElementById('loginPrompt').style.display = 'block';
@@ -2403,6 +2515,8 @@ function escapeHTML(text) {
                 if (modal) modal.hide();
                 
                 alert('Login berhasil!');
+                startSaldoAutoRefresh();
+
             } catch (err) {
                 alert('Login gagal: ' + err.message);
             } finally {
@@ -2515,6 +2629,7 @@ function escapeHTML(text) {
                     currentUser.saldo = newBalance;
                     localStorage.setItem(LS_USER_KEY, JSON.stringify(currentUser));
                     updateUserBalanceUI();
+                    startSaldoAutoRefresh();
                     
                     // Tutup modal konfirmasi
                     const confirmEl = document.getElementById('payConfirmModal');
@@ -2549,6 +2664,7 @@ function escapeHTML(text) {
                     document.getElementById('loginPrompt').style.display = 'none';
                     document.getElementById('originalLinksContent').style.display = 'block';
                     updateUserBalanceUI();
+                    startSaldoAutoRefresh();
                 } catch (e) {
                     localStorage.removeItem(LS_USER_KEY);
                 }
