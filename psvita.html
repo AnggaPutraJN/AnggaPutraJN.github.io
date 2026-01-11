@@ -1968,97 +1968,85 @@ function generateLinkInputFields() {
     }
     
 function parsePasteData(text) {
-    const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
-    
-    if (lines.length < 5) {
-        throw new Error('Data terlalu pendek. Minimal 5 baris untuk data dasar.');
-    }
-    
-    // Parse data dasar (5 baris pertama)
-    const basicData = {
-  gameName: lines[0] || '',
-  gameSize: lines[1] || '',
-  gameId: lines[2] || '',      // ✅ ID Game di baris ke-3
-  category: lines[3] || '',    // ✅ Category di baris ke-4
-  language: lines[4] || ''
-    };
-    
-    // Isi form dengan data dasar
-    document.getElementById('gameName').value = basicData.gameName;
-    document.getElementById('gameSize').value = basicData.gameSize;
-    document.getElementById('category').value = basicData.category;
-    document.getElementById('gameId').value = basicData.gameId;
-    document.getElementById('language').value = basicData.language;
-    
-    // Parse link - URUTAN BARU: ASLI → IKLAN 1 → IKLAN 2
-    const remainingLines = lines.slice(5);
-    const totalExpectedLinks = gameData.linkCount;
-    
-    // PS Vita memiliki 3 set link: Asli, Iklan 1, Iklan 2
-    const totalExpectedAllLinks = totalExpectedLinks * 3;
-    
-    // Warning kalau kurang
-    if (remainingLines.length < totalExpectedAllLinks) {
-        const warning = `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedLinks} asli + ${totalExpectedLinks} iklan 1 + ${totalExpectedLinks} iklan 2).`;
-        showWarningModal(warning);
-    }
-    
-    // 1. Ambil LINK ASLI (pertama)
-    const originalLinks = remainingLines.slice(0, totalExpectedLinks);
-    
-    // 2. Ambil LINK IKLAN 1 (kedua)
-    const adLinksStart = totalExpectedLinks;
-    const adLinksEnd = adLinksStart + totalExpectedLinks;
-    const adLinks = remainingLines.slice(adLinksStart, adLinksEnd);
-    
-    // 3. Ambil LINK IKLAN 2 (ketiga)
-    const adLinks2Start = adLinksEnd;
-    const adLinks2End = adLinks2Start + totalExpectedLinks;
-    const adLinks2 = remainingLines.slice(adLinks2Start, adLinks2End);
-    
-    console.log('Parsed Links (New Order):', {
-        originalLinks: originalLinks,
-        adLinks: adLinks,
-        adLinks2: adLinks2,
-        totalExpectedLinks: totalExpectedLinks
-    });
-    
-    // Isi link asli
-    for (let i = 0; i < totalExpectedLinks; i++) {
-        if (originalLinks[i]) {
-            gameData.originalLinks[i] = originalLinks[i];
-        }
-    }
-    
-    // Isi link iklan 1
-    for (let i = 0; i < totalExpectedLinks; i++) {
-        if (adLinks[i]) {
-            gameData.adLinks[i] = adLinks[i];
-        }
-    }
-    
-    // Isi link iklan 2
-    for (let i = 0; i < totalExpectedLinks; i++) {
-        if (adLinks2[i]) {
-            gameData.adLinks2[i] = adLinks2[i];
-        }
-    }
-    
-    // Update UI untuk semua link
-    updateLinkInputsUI();
-    
-    // Cek apakah ada thumbnail di akhir
-    const totalParsedLines = adLinks2End;
-    if (remainingLines.length > totalParsedLines) {
-        const thumbnailCandidate = remainingLines[totalParsedLines];
-        if (thumbnailCandidate && thumbnailCandidate.startsWith('http')) {
-            document.getElementById('thumbnailUrl').value = thumbnailCandidate;
-            gameData.thumbnailUrl = thumbnailCandidate;
-            updateThumbnailPreview(thumbnailCandidate);
+  const lines = text
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line !== '');
 
-        }
+  if (lines.length < 5) {
+    throw new Error('Data terlalu pendek. Minimal 5 baris untuk data dasar.');
+  }
+
+  // ===== FIX: category & gameId jangan ketuker =====
+  const l2 = lines[2] || ''; // harusnya Category
+  const l3 = lines[3] || ''; // harusnya ID Game (PCSG/PCSE/PCSA...)
+
+  // Pola umum ID game PS Vita: PCSGxxxxx / PCSExxxxx / PCSAxxxxx / dst
+  const isVitaId = (s) => /^[A-Z]{4}\d{5}$/i.test(String(s).trim());
+
+  let category = l2;
+  let gameId = l3;
+
+  // Jika user paste kebalik (baris 3 ternyata ID), kita swap otomatis
+  if (isVitaId(l2) && !isVitaId(l3)) {
+    gameId = l2;
+    category = l3;
+  }
+
+  const basicData = {
+    gameName: lines[0] || '',
+    gameSize: lines[1] || '',
+    category: category || '',
+    gameId: gameId || '',
+    language: lines[4] || ''
+  };
+
+  // Isi form dengan data dasar
+  document.getElementById('gameName').value = basicData.gameName;
+  document.getElementById('gameSize').value = basicData.gameSize;
+  document.getElementById('category').value = basicData.category;
+  document.getElementById('gameId').value = basicData.gameId;
+  document.getElementById('language').value = basicData.language;
+
+  // ===== SISANYA BIARKAN SAMA PERSIS DENGAN KODE KAMU =====
+  const remainingLines = lines.slice(5);
+  const totalExpectedLinks = gameData.linkCount;
+  const totalExpectedAllLinks = totalExpectedLinks * 3;
+
+  if (remainingLines.length < totalExpectedAllLinks) {
+    const warning = `Peringatan: Data memiliki ${remainingLines.length} link, tapi dibutuhkan ${totalExpectedAllLinks} link (${totalExpectedLinks} asli + ${totalExpectedLinks} iklan 1 + ${totalExpectedLinks} iklan 2).`;
+    showWarningModal(warning);
+  }
+
+  const originalLinks = remainingLines.slice(0, totalExpectedLinks);
+
+  const adLinksStart = totalExpectedLinks;
+  const adLinksEnd = adLinksStart + totalExpectedLinks;
+  const adLinks = remainingLines.slice(adLinksStart, adLinksEnd);
+
+  const adLinks2Start = adLinksEnd;
+  const adLinks2End = adLinks2Start + totalExpectedLinks;
+  const adLinks2 = remainingLines.slice(adLinks2Start, adLinks2End);
+
+  for (let i = 0; i < totalExpectedLinks; i++) {
+    if (originalLinks[i]) gameData.originalLinks[i] = originalLinks[i];
+    if (adLinks[i]) gameData.adLinks[i] = adLinks[i];
+    if (adLinks2[i]) gameData.adLinks2[i] = adLinks2[i];
+  }
+
+  updateLinkInputsUI();
+
+  const totalParsedLines = adLinks2End;
+  if (remainingLines.length > totalParsedLines) {
+    const thumbnailCandidate = remainingLines[totalParsedLines];
+    if (thumbnailCandidate && thumbnailCandidate.startsWith('http')) {
+      document.getElementById('thumbnailUrl').value = thumbnailCandidate;
+      gameData.thumbnailUrl = thumbnailCandidate;
+      updateThumbnailPreview(thumbnailCandidate);
     }
+  }
 }
+
 
 // UPDATE FUNGSI updateLinkInputsUI():
 function updateLinkInputsUI() {
