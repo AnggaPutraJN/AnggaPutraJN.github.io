@@ -545,6 +545,25 @@
                         <div id="cloudSelection">
                             <!-- Akan diisi oleh JavaScript -->
                         </div>
+
+                        <!-- PREVIEW URUTAN CLOUD (CHD & ISO) -->
+                        <div class="mt-3">
+                          <div class="card border-primary">
+                            <div class="card-header" style="background: linear-gradient(135deg, #8B00FF 0%, #FF69B4 100%); color: white;">
+                              <h6 class="mb-0"><i class="bi bi-list-ol"></i> Preview Urutan Cloud PSP</h6>
+                            </div>
+                            <div class="card-body">
+                              <div class="mb-3">
+                                <div class="fw-bold mb-1">CHD</div>
+                                <div id="cloudOrderPreview_cloudCHD" class="small text-muted">Belum ada cloud CHD dipilih.</div>
+                              </div>
+                              <div>
+                                <div class="fw-bold mb-1">ISO</div>
+                                <div id="cloudOrderPreview_cloudISO" class="small text-muted">Belum ada cloud ISO dipilih.</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                         
                         <!-- Cloud Cache Controls -->
                         <div class="row g-2 mb-3 align-items-center">
@@ -854,7 +873,10 @@ http://link.indapk.com/og99VR (ISO Ad 2)
             { id: 'VikingFile', name: 'Vikingfile', color: 'btn-danger' },
             { id: 'PixelDrain', name: 'Pixeldrain', color: 'btn-info' },
             { id: '1Fichier', name: '1Fichier', color: 'btn-dark' },
-            { id: 'MultiUp', name: 'Multiup', color: 'btn-success' }
+            { id: 'MultiUp', name: 'Multiup', color: 'btn-success' },
+            { id: 'Qiwi', name: 'Qiwi', color: 'btn-success' },
+            { id: 'Mega', name: 'Mega', color: 'btn-success' },
+            { id: 'Clicknupload', name: 'Clicknupload', color: 'btn-success' },
         ];
         
         // Initialize
@@ -906,26 +928,31 @@ http://link.indapk.com/og99VR (ISO Ad 2)
             });
         }
         
-        function collectCloudSelectionsOrThrow() {
-            const sections = document.querySelectorAll('.cloud-section');
-            const selections = {};
-            
-            sections.forEach(section => {
-                const arrayName = section.dataset.array;
-                const limit = parseInt(section.dataset.limit, 10) || 0;
-                
-                const selected = Array.from(section.querySelectorAll('input.cloud-check:checked'))
-                    .map(cb => cb.value);
-                
-                if (selected.length !== limit) {
-                    throw new Error(`Pilih tepat ${limit} cloud untuk ${arrayName}.`);
-                }
-                
-                selections[arrayName] = selected;
-            });
-            
-            return selections;
+function collectCloudSelectionsOrThrow() {
+    const sections = document.querySelectorAll('.cloud-section');
+    const selections = {};
+
+    sections.forEach(section => {
+        const arrayName = section.dataset.array;
+        const limit = parseInt(section.dataset.limit, 10) || 0;
+
+        const selected = Array.isArray(gameData[arrayName]) ? gameData[arrayName] : [];
+
+        // safety: dedupe
+        const uniq = [];
+        selected.forEach(x => {
+            if (x && !uniq.includes(x)) uniq.push(x);
+        });
+
+        if (uniq.length !== limit) {
+            throw new Error(`Pilih tepat ${limit} cloud untuk ${arrayName}.`);
         }
+
+        selections[arrayName] = uniq;
+    });
+
+    return selections;
+}
         
         function saveCloudCache() {
             try {
@@ -1123,110 +1150,141 @@ function applyCloudCache(cache) {
             if (gameData.isoCount > 0) {
                 container.appendChild(createCloudSection('ISO PSP', gameData.isoCount, 'cloudISO'));
             }
+            renderAllCloudPreviews();
         }
         
-        function createCloudSection(title, count, arrayName) {
-            const section = document.createElement('div');
-            section.className = 'mb-4 cloud-section';
-            section.dataset.array = arrayName;
-            section.dataset.limit = String(count);
-            
-            const preselected = new Set(gameData[arrayName] || []);
-            
-            section.innerHTML = `
-                <div class="cloud-section-title mb-2">
-                    <h5 class="mb-0">${title} (${count} Link) <span class="psp-theme-badge">PSP</span></h5>
-                    <small class="text-muted">
-                        Dipilih: <span id="${arrayName}_selected">0</span> / ${count}
-                    </small>
-                </div>
-                <div class="cloud-grid">
-                    ${CLOUD_OPTIONS.map(cloud => {
-                        const checked = preselected.has(cloud.id) ? 'checked' : '';
-                        return `
-                            <label class="cloud-tile ${checked ? 'selected' : ''}">
-                                <input
-                                    type="checkbox"
-                                    class="cloud-check"
-                                    value="${cloud.id}"
-                                    data-array="${arrayName}"
-                                    ${checked}
-                                />
-                                <span class="cloud-name">${cloud.name}</span>
-                            </label>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-            
-            const checkboxes = section.querySelectorAll('input.cloud-check');
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', function() {
-                    const tile = this.closest('.cloud-tile');
-                    if (tile) tile.classList.toggle('selected', this.checked);
-                    updateCloudSectionState(section);
-                });
-            });
-            
-            updateCloudSectionState(section);
-            return section;
-        }
-        
-        function updateCloudSectionState(section) {
-            const arrayName = section.dataset.array;
+function createCloudSection(title, count, arrayName) {
+    const section = document.createElement('div');
+    section.className = 'mb-4 cloud-section';
+    section.dataset.array = arrayName;
+    section.dataset.limit = String(count);
+
+    // IMPORTANT: preselected harus mempertahankan URUTAN array, bukan Set
+    if (!Array.isArray(gameData[arrayName])) gameData[arrayName] = [];
+    const preselected = gameData[arrayName].slice(0); // urutan cache/klik sebelumnya
+    const preSet = new Set(preselected);
+
+    section.innerHTML = `
+        <div class="cloud-section-title mb-2">
+            <h5 class="mb-0">${title} (${count} Link) <span class="psp-theme-badge">PSP</span></h5>
+            <small class="text-muted">
+                Dipilih: <span id="${arrayName}_selected">0</span> / ${count}
+            </small>
+        </div>
+        <div class="cloud-grid">
+            ${CLOUD_OPTIONS.map(cloud => {
+                const checked = preSet.has(cloud.id) ? 'checked' : '';
+                return `
+                    <label class="cloud-tile ${checked ? 'selected' : ''}">
+                        <input
+                            type="checkbox"
+                            class="cloud-check"
+                            value="${cloud.id}"
+                            data-array="${arrayName}"
+                            ${checked}
+                        />
+                        <span class="cloud-name">${cloud.name}</span>
+                    </label>
+                `;
+            }).join('')}
+        </div>
+    `;
+
+    // Sinkron UI dari state
+    updateCloudSectionState(section);
+    renderAllCloudPreviews();
+
+    const checkboxes = Array.from(section.querySelectorAll('input.cloud-check'));
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', function () {
             const limit = parseInt(section.dataset.limit, 10) || 0;
-            
-            const checkboxes = Array.from(section.querySelectorAll('input.cloud-check'));
-            const checked = checkboxes.filter(cb => cb.checked);
-            
-            const counter = section.querySelector(`#${arrayName}_selected`);
-            if (counter) counter.textContent = String(checked.length);
-            
-            if (checked.length > limit) {
-                const last = checked[checked.length - 1];
-                last.checked = false;
-                const tile = last.closest('.cloud-tile');
-                if (tile) tile.classList.remove('selected');
-                alert(`Maksimal pilih ${limit} cloud untuk ${arrayName}.`);
-                return updateCloudSectionState(section);
-            }
-            
-            const lock = checked.length >= limit;
-            checkboxes.forEach(cb => {
-                const shouldDisable = lock && !cb.checked;
-                cb.disabled = shouldDisable;
-                
-                const tile = cb.closest('.cloud-tile');
-                if (tile) tile.classList.toggle('disabled', shouldDisable);
-            });
-        }
-        
-        function nextStep2() {
-            const sections = document.querySelectorAll('.cloud-section');
-            let allSelected = true;
-            
-            sections.forEach(section => {
-                const arrayName = section.dataset.array;
-                const limit = parseInt(section.dataset.limit, 10) || 0;
-                
-                const selected = Array
-                    .from(section.querySelectorAll('input.cloud-check:checked'))
-                    .map(cb => cb.value);
-                
-                if (selected.length !== limit) {
-                    allSelected = false;
-                    alert(`Harap pilih tepat ${limit} cloud untuk ${arrayName}!`);
-                    return;
+            const value = this.value;
+
+            if (!Array.isArray(gameData[arrayName])) gameData[arrayName] = [];
+
+            if (this.checked) {
+                // tambah sesuai urutan klik
+                if (!gameData[arrayName].includes(value)) {
+                    gameData[arrayName].push(value);
                 }
-                
-                gameData[arrayName] = selected;
-            });
-            
-            if (!allSelected) return;
-            
-            generateLinkInputFields();
-            showStep(3);
+
+                // kalau kebanyakan, batalkan yang terakhir
+                if (gameData[arrayName].length > limit) {
+                    this.checked = false;
+                    gameData[arrayName] = gameData[arrayName].filter(v => v !== value);
+
+                    const tile = this.closest('.cloud-tile');
+                    if (tile) tile.classList.remove('selected');
+
+                    alert(`Maksimal pilih ${limit} cloud untuk ${arrayName}.`);
+                }
+            } else {
+                // hapus dari urutan
+                gameData[arrayName] = gameData[arrayName].filter(v => v !== value);
+
+                const tile = this.closest('.cloud-tile');
+                if (tile) tile.classList.remove('selected');
+            }
+
+            updateCloudSectionState(section);
+            renderAllCloudPreviews();
+        });
+    });
+
+    return section;
+}
+
+        
+function updateCloudSectionState(section) {
+    const arrayName = section.dataset.array;
+    const limit = parseInt(section.dataset.limit, 10) || 0;
+
+    if (!Array.isArray(gameData[arrayName])) gameData[arrayName] = [];
+    const selected = gameData[arrayName];
+
+    // counter
+    const counter = section.querySelector(`#${arrayName}_selected`);
+    if (counter) counter.textContent = String(selected.length);
+
+    const checkboxes = Array.from(section.querySelectorAll('input.cloud-check'));
+    const selectedSet = new Set(selected);
+
+    // sync checked + tile selected
+    checkboxes.forEach(cb => {
+        cb.checked = selectedSet.has(cb.value);
+        const tile = cb.closest('.cloud-tile');
+        if (tile) tile.classList.toggle('selected', cb.checked);
+    });
+
+    // lock jika sudah sampai limit
+    const lock = selected.length >= limit;
+    checkboxes.forEach(cb => {
+        const shouldDisable = lock && !cb.checked;
+        cb.disabled = shouldDisable;
+
+        const tile = cb.closest('.cloud-tile');
+        if (tile) tile.classList.toggle('disabled', shouldDisable);
+    });
+}
+
+        
+function nextStep2() {
+    const sections = document.querySelectorAll('.cloud-section');
+    for (const section of sections) {
+        const arrayName = section.dataset.array;
+        const limit = parseInt(section.dataset.limit, 10) || 0;
+
+        const selected = Array.isArray(gameData[arrayName]) ? gameData[arrayName] : [];
+        if (selected.length !== limit) {
+            alert(`Harap pilih tepat ${limit} cloud untuk ${arrayName}!`);
+            return;
         }
+    }
+
+    generateLinkInputFields();
+    showStep(3);
+}
+
         
         function generateLinkInputFields() {
             const adLinksContainer = document.getElementById('adLinksInput');
@@ -1369,6 +1427,66 @@ function isProbablyImageUrl(url) {
 
     return false;
 }
+
+function renderCloudOrderPreviewFor(arrayName, limit) {
+    const el = document.getElementById(`cloudOrderPreview_${arrayName}`);
+    if (!el) return;
+
+    const selected = Array.isArray(gameData[arrayName]) ? gameData[arrayName] : [];
+    const max = Number(limit || 0);
+
+    if (!selected.length) {
+        el.innerHTML = `<span class="text-muted">Belum ada cloud dipilih.</span>`;
+        return;
+    }
+
+    const status = selected.length === max
+        ? `<span class="badge bg-success ms-2">Lengkap</span>`
+        : `<span class="badge bg-warning text-dark ms-2">Kurang ${Math.max(0, max - selected.length)}</span>`;
+
+    const items = selected.map((name, idx) => {
+        return `
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-primary">${idx + 1}</span>
+            <span><strong>${name}</strong></span>
+          </div>
+        `;
+    }).join('');
+
+    el.innerHTML = `
+      <div class="mb-2">
+        Urutan saat ini: <strong>${selected.length}</strong> / <strong>${max}</strong>
+        ${status}
+      </div>
+      ${items}
+    `;
+}
+
+function renderAllCloudPreviews() {
+    // cloudCHD dan cloudISO selalu ada di PSP
+    const chdSection = document.querySelector('.cloud-section[data-array="cloudCHD"]');
+    const isoSection = document.querySelector('.cloud-section[data-array="cloudISO"]');
+
+    if (chdSection) {
+        const limit = parseInt(chdSection.dataset.limit, 10) || 0;
+        renderCloudOrderPreviewFor('cloudCHD', limit);
+    } else {
+        // kalau tidak ada CHD count
+        const el = document.getElementById('cloudOrderPreview_cloudCHD');
+        if (el) el.innerHTML = `<span class="text-muted">Tidak ada link CHD.</span>`;
+    }
+
+    if (isoSection) {
+        const limit = parseInt(isoSection.dataset.limit, 10) || 0;
+        renderCloudOrderPreviewFor('cloudISO', limit);
+    } else {
+        // kalau tidak ada ISO count
+        const el = document.getElementById('cloudOrderPreview_cloudISO');
+        if (el) el.innerHTML = `<span class="text-muted">Tidak ada link ISO.</span>`;
+    }
+}
+
+
 
 function renderThumbnailPreview(url, opts = {}) {
     const { silent = true } = opts;
@@ -1805,6 +1923,9 @@ function escapeHTML(text) {
                     'VikingFile': 'btn-danger',
                     'PixelDrain': 'btn-info',
                     '1Fichier': 'btn-dark',
+                    'Qiwi': 'btn-danger',
+                    'MEGA': 'btn-danger',
+                    'Clicknupload': 'btn-danger',
                     'MultiUp': 'btn-success'
                 };
                 return colors[cloud] || 'btn-secondary';
