@@ -715,6 +715,14 @@
             padding: 15px;
             margin-top: 10px;
         }
+
+        #amount[readonly],
+        #description[readonly] {
+          background-color: #0f172a !important;
+          color: #e2e8f0 !important;
+          opacity: 1 !important;
+        }
+
     </style>
 </head>
 <body>
@@ -1273,10 +1281,19 @@
                                             <label class="form-label required">Tanggal Mulai</label>
                                             <input type="date" class="form-control" id="debtStartDate" required>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Jatuh Tempo (opsional)</label>
-                                            <input type="date" class="form-control" id="debtDueDate">
-                                        </div>
+                                    <div class="col-md-6">
+                                      <label class="form-label">Jatuh Tempo</label>
+
+                                      <select class="form-select" id="debtDueOption">
+                                        <option value="none" selected>Tidak ada</option>
+                                        <option value="set">Ada</option>
+                                      </select>
+
+                                      <div class="mt-2 hidden" id="debtDueDateWrapper">
+                                        <input type="date" class="form-control" id="debtDueDate">
+                                      </div>
+                                    </div>
+
                                     </div>
                                     
                                     <div class="row mb-3">
@@ -1502,6 +1519,51 @@
                         </div>
                     </div>
 
+                    <!-- Rincian Barang (khusus Pengeluaran) -->
+                    <div class="row mb-3 hidden" id="expenseItemsSection">
+                      <div class="col-md-4">
+                        <label class="form-label required">Jumlah Barang</label>
+                        <input type="number" class="form-control" id="expenseItemCount" min="1" value="1">
+                      </div>
+
+                      <div class="col-md-8 d-flex align-items-end">
+                        <div class="form-text">
+                          Isi jumlah barang. Sistem hitung otomatis dan isi ke "Jumlah Transaksi".
+                        </div>
+                      </div>
+
+                      <div class="col-12 mt-3" id="expenseItemsContainer"></div>
+                    </div>
+
+                    
+                        <div class="row mb-3">
+                          <div class="col-md-6">
+                            <label class="form-label required">Jumlah Transaksi</label>
+                            <div class="input-group">
+                              <span class="input-group-text">Rp</span>
+                              <input type="number" class="form-control" id="amount" placeholder="Contoh: 50000" required min="1">
+                            </div>
+
+                            <!-- ini yang ditambah id="amountShortcutRow" -->
+                            <div class="mt-2 d-flex flex-wrap gap-2" id="amountShortcutRow">
+                              <button type="button" class="btn btn-outline-primary btn-sm amount-shortcut" data-target="#amount" data-mode="mul" data-value="100">00</button>
+                              <button type="button" class="btn btn-outline-primary btn-sm amount-shortcut" data-target="#amount" data-mode="mul" data-value="1000">000</button>
+                              <button type="button" class="btn btn-outline-primary btn-sm amount-shortcut" data-target="#amount" data-mode="add" data-value="1000">1000</button>
+                              <button type="button" class="btn btn-outline-primary btn-sm amount-shortcut" data-target="#amount" data-mode="add" data-value="5000">5000</button>
+                              <button type="button" class="btn btn-outline-primary btn-sm amount-shortcut" data-target="#amount" data-mode="add" data-value="10000">10000</button>
+                              <button type="button" class="btn btn-outline-primary btn-sm amount-shortcut" data-target="#amount" data-mode="add" data-value="50000">50000</button>
+                              <button type="button" class="btn btn-outline-primary btn-sm amount-shortcut" data-target="#amount" data-mode="add" data-value="100000">100000</button>
+                            </div>
+
+                            <div class="form-text">Masukkan angka tanpa titik atau koma. Contoh: 50000 untuk Rp 50.000</div>
+                          </div>
+
+                          <div class="col-md-6">
+                            <!-- ini yang ditambah id="descriptionLabel" -->
+                            <label class="form-label required" id="descriptionLabel">Keterangan</label>
+                            <input type="text" class="form-control" id="description" placeholder="Contoh: Gaji Januari, Beli Bensin, dll." required>
+                          </div>
+
                             <!-- Info Saldo dan Preview -->
                             <div class="row mb-3 hidden" id="balancePreviewWrapper">
                               <div class="col-12">
@@ -1539,21 +1601,8 @@
                             </div>
 
 
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label required">Jumlah Transaksi</label>
-                            <div class="input-group">
-                                <span class="input-group-text">Rp</span>
-                                <input type="number" class="form-control" id="amount" placeholder="Contoh: 50000" required min="1">
-                            </div>
-                            <div class="form-text">Masukkan angka tanpa titik atau koma. Contoh: 50000 untuk Rp 50.000</div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label required">Keterangan</label>
-                            <input type="text" class="form-control" id="description" placeholder="Contoh: Gaji Januari, Beli Bensin, dll." required>
-                        </div>
-                    </div>
+
 
                       <div class="row mb-3" id="targetNotesRow">
                         <div class="col-md-6" id="targetCol">
@@ -1617,9 +1666,18 @@
                     
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Tanggal Deadline (opsional)</label>
+                          <label class="form-label">Tanggal Deadline (opsional)</label>
+
+                          <select class="form-select" id="targetDeadlineOption">
+                            <option value="none" selected>Tidak ada</option>
+                            <option value="set">Ada</option>
+                          </select>
+
+                          <div class="mt-2 hidden" id="targetDeadlineWrapper">
                             <input type="date" class="form-control" id="targetDeadline">
+                          </div>
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Dompet Tujuan (opsional)</label>
                             <select class="form-select" id="targetWallet">
@@ -1683,6 +1741,242 @@
     // FUNGSI UTILITAS
     // ============================================
 
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, (m) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[m]));
+}
+
+function setAmountShortcutsEnabled(enabled) {
+  const row = document.getElementById('amountShortcutRow');
+  document.querySelectorAll('.amount-shortcut').forEach(btn => btn.disabled = !enabled);
+  if (row) row.classList.toggle('hidden', !enabled);
+}
+
+function buildExpenseItemsUI(count) {
+  const container = document.getElementById('expenseItemsContainer');
+  if (!container) return;
+
+  const n = Math.max(1, toInt(count) || 1);
+
+  let html = '';
+  for (let i = 1; i <= n; i++) {
+    html += `
+      <div class="card mb-2 expense-item-card">
+        <div class="card-body p-3">
+          <div class="fw-bold mb-2">Barang ${i}</div>
+          <div class="row g-2">
+            <div class="col-12 col-md-7">
+              <label class="form-label required">Keterangan Barang ${i}</label>
+              <input type="text"
+                     class="form-control expense-item-desc"
+                     data-index="${i}"
+                     placeholder="Contoh: Headset Gaming"
+                     required>
+            </div>
+
+            <div class="col-12 col-md-5">
+              <label class="form-label required">Harga Barang ${i}</label>
+
+              <div class="input-group">
+                <span class="input-group-text">Rp</span>
+                <input type="number"
+                       class="form-control expense-item-amount"
+                       data-index="${i}"
+                       min="1"
+                       placeholder="Contoh: 7000"
+                       required>
+              </div>
+
+              <!-- Shortcut per barang -->
+              <div class="mt-2 d-flex flex-wrap gap-2 item-shortcut-row">
+                <button type="button" class="btn btn-outline-primary btn-sm item-amount-shortcut" data-mode="mul" data-value="100">00</button>
+                <button type="button" class="btn btn-outline-primary btn-sm item-amount-shortcut" data-mode="mul" data-value="1000">000</button>
+                <button type="button" class="btn btn-outline-primary btn-sm item-amount-shortcut" data-mode="add" data-value="1000">1000</button>
+                <button type="button" class="btn btn-outline-primary btn-sm item-amount-shortcut" data-mode="add" data-value="5000">5000</button>
+                <button type="button" class="btn btn-outline-primary btn-sm item-amount-shortcut" data-mode="add" data-value="10000">10000</button>
+                <button type="button" class="btn btn-outline-primary btn-sm item-amount-shortcut" data-mode="add" data-value="50000">50000</button>
+                <button type="button" class="btn btn-outline-primary btn-sm item-amount-shortcut" data-mode="add" data-value="100000">100000</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+function applyAmountShortcutToInput(inputEl, mode, value) {
+  if (!inputEl) return;
+
+  const current = toInt(inputEl.value);
+  const n = toInt(value);
+
+  let result = current;
+
+  if (mode === 'add') result = current + n;
+  if (mode === 'mul') result = current * n;
+
+  inputEl.value = result > 0 ? result : '';
+  inputEl.focus();
+
+  // trigger supaya total + preview ikut update
+  inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('.item-amount-shortcut');
+  if (!btn) return;
+
+  const card = btn.closest('.expense-item-card');
+  const input = card ? card.querySelector('.expense-item-amount') : null;
+
+  const mode = btn.getAttribute('data-mode');
+  const value = btn.getAttribute('data-value');
+
+  applyAmountShortcutToInput(input, mode, value);
+});
+
+function getExpenseItemsFromUI() {
+  const descEls = Array.from(document.querySelectorAll('.expense-item-desc'));
+  const amtEls = Array.from(document.querySelectorAll('.expense-item-amount'));
+
+  const items = [];
+  for (let i = 0; i < Math.max(descEls.length, amtEls.length); i++) {
+    const desc = (descEls[i]?.value || '').trim();
+    const amount = toInt(amtEls[i]?.value || 0);
+    items.push({ desc, amount });
+  }
+
+  // buang yang kosong total
+  return items.filter(x => x.desc || x.amount > 0);
+}
+
+
+
+function recalcExpenseTotalAndSummary() {
+  const type = document.getElementById('transactionType')?.value;
+  if (type !== 'Pengeluaran') return;
+
+  const amountInput = document.getElementById('amount');
+  const descInput = document.getElementById('description');
+  if (!amountInput || !descInput) return;
+
+  const items = getExpenseItemsFromUI();
+  const total = items.reduce((acc, x) => acc + toInt(x.amount), 0);
+
+  // isi total ke jumlah transaksi
+  amountInput.value = total > 0 ? total : '';
+  amountInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+  // ringkasan keterangan otomatis
+  const summary = items
+    .filter(x => x.desc && x.amount > 0)
+    .map(x => `${x.desc} (${formatRupiah(x.amount)})`)
+    .join(' | ');
+
+  descInput.value = summary || '';
+}
+
+function renderExpenseItemsPreviewCard(items) {
+  if (!items || items.length === 0) return '';
+
+  const rows = items
+    .filter(x => x.desc || x.amount > 0)
+    .map((it, idx) => `
+      <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+        <div>${idx + 1}. ${escapeHtml(it.desc || `Barang ${idx + 1}`)}</div>
+        <div class="fw-bold">${formatRupiah(it.amount || 0)}</div>
+      </div>
+    `).join('');
+
+  const total = items.reduce((acc, x) => acc + toInt(x.amount), 0);
+
+  return `
+    <div class="col-12">
+      <div class="mini-card">
+        <div class="mini-card-title">Rincian Barang (${items.length})</div>
+        <div class="mini-card-sub">
+          ${rows}
+          <div style="border-top:1px solid rgba(148,163,184,0.25); margin:10px 0;"></div>
+          <div class="d-flex justify-content-between">
+            <div class="fw-bold">Total</div>
+            <div class="fw-bold">${formatRupiah(total)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleExpenseItemsUI() {
+  const type = document.getElementById('transactionType')?.value;
+  const sec = document.getElementById('expenseItemsSection');
+  const countEl = document.getElementById('expenseItemCount');
+  const container = document.getElementById('expenseItemsContainer');
+  const amountInput = document.getElementById('amount');
+  const descInput = document.getElementById('description');
+  const descLabel = document.getElementById('descriptionLabel');
+
+  if (!sec || !countEl || !container || !amountInput || !descInput) return;
+
+  if (type === 'Pengeluaran') {
+    sec.classList.remove('hidden');
+
+    // kunci jumlah transaksi karena dihitung dari rincian
+    amountInput.readOnly = true;
+    descInput.readOnly = true;
+    if (descLabel) descLabel.textContent = 'Ringkasan (otomatis)';
+
+    setAmountShortcutsEnabled(false);
+
+    const n = Math.max(1, toInt(countEl.value) || 1);
+    countEl.value = n;
+    buildExpenseItemsUI(n);
+    recalcExpenseTotalAndSummary();
+  } else {
+    sec.classList.add('hidden');
+    container.innerHTML = '';
+
+    amountInput.readOnly = false;
+    descInput.readOnly = false;
+    if (descLabel) descLabel.textContent = 'Keterangan';
+
+    setAmountShortcutsEnabled(true);
+  }
+}
+
+function applyAmountShortcut(targetSelector, mode, value) {
+  const input = document.querySelector(targetSelector);
+  if (!input) return;
+
+  const current = toInt(input.value);
+  const n = toInt(value);
+
+  let result = current;
+
+  if (mode === 'add') {
+    result = current + n;
+  } else if (mode === 'mul') {
+    // 00 = x100, 000 = x1000
+    result = current * n;
+  }
+
+  input.value = result > 0 ? result : ''; // biar min="1" tidak keisi 0
+  input.focus();
+
+  // trigger event input supaya preview saldo ikut update
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
     // Fungsi untuk mengkonversi ke integer
     function toInt(val) {
         const n = parseInt(val, 10);
@@ -1704,223 +1998,310 @@
         return '';
     }
 
+function toggleDebtFields(isDebt) {
+  const reqIds = [
+    'debtPerson',
+    'debtTarget',
+    'debtPrincipal',
+    'debtStatus',
+    'debtStartDate',
+    'debtWallet',
+    'paymentScheme'
+  ];
+
+  reqIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.disabled = !isDebt;
+    el.required = isDebt;
+    if (!isDebt) el.value = ''; // opsional, biar bersih
+  });
+
+  // Jatuh tempo opsional
+  const dueOpt = document.getElementById('debtDueOption');
+  const dueWrap = document.getElementById('debtDueDateWrapper');
+  const dueDate = document.getElementById('debtDueDate');
+
+  if (dueOpt) dueOpt.disabled = !isDebt;
+
+  if (dueDate) {
+    const active = isDebt && dueOpt && dueOpt.value === 'set';
+    dueDate.disabled = !active;
+    dueDate.required = active;
+    if (!active) dueDate.value = '';
+  }
+
+  if (dueWrap) {
+    if (isDebt && dueOpt && dueOpt.value === 'set') dueWrap.classList.remove('hidden');
+    else dueWrap.classList.add('hidden');
+  }
+}
+
+
+function toggleDebtDueDateUI() {
+  const opt = document.getElementById('debtDueOption');
+  const wrap = document.getElementById('debtDueDateWrapper');
+  const input = document.getElementById('debtDueDate');
+  if (!opt || !wrap || !input) return;
+
+  const isDebt = document.getElementById('transactionType')?.value === 'Utang';
+  const active = isDebt && opt.value === 'set';
+
+  if (active) {
+    wrap.classList.remove('hidden');
+    input.required = true;
+    input.disabled = false;
+  } else {
+    wrap.classList.add('hidden');
+    input.required = false;
+    input.disabled = true;
+    input.value = '';
+  }
+}
+
+function toggleTargetDeadlineUI() {
+  const opt = document.getElementById('targetDeadlineOption');
+  const wrap = document.getElementById('targetDeadlineWrapper');
+  const input = document.getElementById('targetDeadline');
+  if (!opt || !wrap || !input) return;
+
+  if (opt.value === 'set') {
+    wrap.classList.remove('hidden');
+    input.required = true;
+  } else {
+    wrap.classList.add('hidden');
+    input.required = false;
+    input.value = ''; // ini bikin saat disimpan jadi kosong
+  }
+}
+
     // Render saldo saat ini + preview
-    function renderBalanceInfoAndPreview() {
-        const wrapper = document.getElementById('balancePreviewWrapper');
-        const balanceCardsRow = document.getElementById('balanceCardsRow');
-        const previewCardsRow = document.getElementById('previewCardsRow');
+function renderBalanceInfoAndPreview() {
+  const wrapper = document.getElementById('balancePreviewWrapper');
+  const balanceCardsRow = document.getElementById('balanceCardsRow');
+  const previewCardsRow = document.getElementById('previewCardsRow');
 
-        const type = document.getElementById('transactionType').value;
-        const amount = toInt(document.getElementById('amount').value);
-        const wallet = getSelectedWalletByType();
+  const type = document.getElementById('transactionType').value;
+  const amount = toInt(document.getElementById('amount').value);
+  const wallet = getSelectedWalletByType();
 
-        if (!type) {
-            wrapper.classList.add('hidden');
-            return;
-        }
-        wrapper.classList.remove('hidden');
+  if (!type) {
+    if (wrapper) wrapper.classList.add('hidden');
+    return;
+  }
+  if (wrapper) wrapper.classList.remove('hidden');
 
-        const cash = toInt(lastDashboard.wallets.Cash);
-        const dana = toInt(lastDashboard.wallets.Dana);
-        const mandiri = toInt(lastDashboard.wallets.Mandiri);
-        const qris = toInt(lastDashboard.wallets.Qris);
-        const total = toInt(lastDashboard.total);
+  const cash = toInt(lastDashboard.wallets.Cash);
+  const dana = toInt(lastDashboard.wallets.Dana);
+  const mandiri = toInt(lastDashboard.wallets.Mandiri);
+  const qris = toInt(lastDashboard.wallets.Qris);
+  const total = toInt(lastDashboard.total);
 
-        // Kartu saldo saat ini
-        balanceCardsRow.innerHTML = `
-            <div class="col-6 col-md-3">
-                <div class="mini-card mini-card-primary">
-                    <div class="mini-card-title">Cash</div>
-                    <div class="mini-card-value">${formatRupiah(cash)}</div>
-                </div>
+  if (balanceCardsRow) {
+    balanceCardsRow.innerHTML = `
+      <div class="col-6 col-md-3">
+        <div class="mini-card mini-card-primary">
+          <div class="mini-card-title">Cash</div>
+          <div class="mini-card-value">${formatRupiah(cash)}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="mini-card mini-card-primary">
+          <div class="mini-card-title">Dana</div>
+          <div class="mini-card-value">${formatRupiah(dana)}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="mini-card mini-card-primary">
+          <div class="mini-card-title">Mandiri</div>
+          <div class="mini-card-value">${formatRupiah(mandiri)}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="mini-card mini-card-primary">
+          <div class="mini-card-title">Qris</div>
+          <div class="mini-card-value">${formatRupiah(qris)}</div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="mini-card">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <div class="mini-card-title">Total Saldo</div>
+              <div class="mini-card-value">${formatRupiah(total)}</div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="mini-card mini-card-primary">
-                    <div class="mini-card-title">Dana</div>
-                    <div class="mini-card-value">${formatRupiah(dana)}</div>
-                </div>
+            <div class="mini-badge">
+              <i class="bi bi-info-circle"></i>
+              <span>Semua dompet</span>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="mini-card mini-card-primary">
-                    <div class="mini-card-title">Mandiri</div>
-                    <div class="mini-card-value">${formatRupiah(mandiri)}</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="mini-card mini-card-primary">
-                    <div class="mini-card-title">Qris</div>
-                    <div class="mini-card-value">${formatRupiah(qris)}</div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="mini-card">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <div>
-                            <div class="mini-card-title">Total Saldo</div>
-                            <div class="mini-card-value">${formatRupiah(total)}</div>
-                        </div>
-                        <div class="mini-badge">
-                            <i class="bi bi-info-circle"></i>
-                            <span>Semua dompet</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+          </div>
+        </div>
+      </div>
+    `;
+  }
 
-        // Default preview
-        if (!wallet || amount <= 0) {
-            previewCardsRow.innerHTML = `
-                <div class="col-12">
-                    <div class="mini-card mini-card-muted">
-                        <div class="mini-card-title">Info</div>
-                        <div class="mini-card-sub">Pilih dompet, lalu isi jumlah untuk melihat preview.</div>
-                    </div>
-                </div>
-            `;
-            return;
-        }
+  const items = (type === 'Pengeluaran') ? getExpenseItemsFromUI() : [];
 
-        const currentWallet = toInt(lastDashboard.wallets[wallet] ?? 0);
-
-        // Pengeluaran
-        if (type === 'Pengeluaran') {
-            const newTotal = total - amount;
-            const newWallet = currentWallet - amount;
-
-            // Jika saldo kurang
-            if (newWallet < 0) {
-                const kurang = Math.abs(newWallet);
-
-                previewCardsRow.innerHTML = `
-                    <div class="col-12 col-md-4">
-                        <div class="mini-card mini-card-danger">
-                            <div class="mini-card-title">Status</div>
-                            <div class="mini-card-value">Saldo Tidak Cukup</div>
-                            <div class="mini-card-sub">Silahkan nabung terlebih dahulu!</div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4">
-                        <div class="mini-card">
-                            <div class="mini-card-title">Dompet dipilih</div>
-                            <div class="mini-card-value">${wallet}</div>
-                            <div class="mini-card-sub">Saldo: ${formatRupiah(currentWallet)}</div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4">
-                        <div class="mini-card mini-card-danger">
-                            <div class="mini-card-title">Kekurangan</div>
-                            <div class="mini-card-value">${formatRupiah(kurang)}</div>
-                            <div class="mini-card-sub">Jumlah: ${formatRupiah(amount)}</div>
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="mini-card mini-card-muted">
-                            <div class="mini-card-title">Tips</div>
-                            <div class="mini-card-sub">Ubah jumlah atau pilih dompet lain</div>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
-            // Preview normal
-            previewCardsRow.innerHTML = `
-                <div class="col-12 col-md-4">
-                    <div class="mini-card">
-                        <div class="mini-card-title">Total saldo</div>
-                        <div class="mini-card-value">${formatRupiah(total)}</div>
-                        <div class="mini-card-sub">Sebelum transaksi</div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <div class="mini-card mini-card-danger">
-                        <div class="mini-card-title">Saldo terpotong</div>
-                        <div class="mini-card-value">${formatRupiah(amount)}</div>
-                        <div class="mini-card-sub">Jenis: Pengeluaran</div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <div class="mini-card">
-                        <div class="mini-card-title">Total setelah</div>
-                        <div class="mini-card-value">${formatRupiah(newTotal)}</div>
-                        <div class="mini-card-sub">Setelah transaksi</div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="mini-card mini-card-primary">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <div class="mini-card-title">Saldo ${wallet}</div>
-                                <div class="mini-card-value">${formatRupiah(newWallet)}</div>
-                                <div class="mini-card-sub">Sebelum: ${formatRupiah(currentWallet)}</div>
-                            </div>
-                            <div class="mini-badge">
-                                <i class="bi bi-wallet"></i>
-                                <span>Dompet terpilih</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return;
-        }
-
-        // Pemasukan
-        if (type === 'Pemasukan') {
-            const newTotal = total + amount;
-            const newWallet = currentWallet + amount;
-
-            previewCardsRow.innerHTML = `
-                <div class="col-12 col-md-4">
-                    <div class="mini-card">
-                        <div class="mini-card-title">Total saldo</div>
-                        <div class="mini-card-value">${formatRupiah(total)}</div>
-                        <div class="mini-card-sub">Sebelum transaksi</div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <div class="mini-card mini-card-success">
-                        <div class="mini-card-title">Saldo bertambah</div>
-                        <div class="mini-card-value">${formatRupiah(amount)}</div>
-                        <div class="mini-card-sub">Jenis: Pemasukan</div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <div class="mini-card">
-                        <div class="mini-card-title">Total setelah</div>
-                        <div class="mini-card-value">${formatRupiah(newTotal)}</div>
-                        <div class="mini-card-sub">Setelah transaksi</div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="mini-card mini-card-primary">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <div class="mini-card-title">Saldo ${wallet}</div>
-                                <div class="mini-card-value">${formatRupiah(newWallet)}</div>
-                                <div class="mini-card-sub">Sebelum: ${formatRupiah(currentWallet)}</div>
-                            </div>
-                            <div class="mini-badge">
-                                <i class="bi bi-wallet"></i>
-                                <span>Dompet terpilih</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return;
-        }
+  // Jika wallet belum dipilih atau amount belum ada
+  if (!wallet || amount <= 0) {
+    if (previewCardsRow) {
+      previewCardsRow.innerHTML = `
+        <div class="col-12">
+          <div class="mini-card mini-card-muted">
+            <div class="mini-card-title">Info</div>
+            <div class="mini-card-sub">Pilih dompet, lalu isi jumlah untuk melihat preview.</div>
+          </div>
+        </div>
+        ${type === 'Pengeluaran' ? renderExpenseItemsPreviewCard(items) : ''}
+      `;
     }
+    return;
+  }
+
+  const currentWallet = toInt(lastDashboard.wallets[wallet] ?? 0);
+
+  // Pengeluaran
+  if (type === 'Pengeluaran') {
+    const newTotal = total - amount;
+    const newWallet = currentWallet - amount;
+
+    // saldo kurang
+    if (newWallet < 0) {
+      const kurang = Math.abs(newWallet);
+
+      if (previewCardsRow) {
+        previewCardsRow.innerHTML = `
+          <div class="col-12 col-md-4">
+            <div class="mini-card mini-card-danger">
+              <div class="mini-card-title">Status</div>
+              <div class="mini-card-value">Saldo Tidak Cukup</div>
+              <div class="mini-card-sub">Silahkan nabung terlebih dahulu!</div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="mini-card">
+              <div class="mini-card-title">Dompet dipilih</div>
+              <div class="mini-card-value">${wallet}</div>
+              <div class="mini-card-sub">Saldo: ${formatRupiah(currentWallet)}</div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="mini-card mini-card-danger">
+              <div class="mini-card-title">Kekurangan</div>
+              <div class="mini-card-value">${formatRupiah(kurang)}</div>
+              <div class="mini-card-sub">Jumlah: ${formatRupiah(amount)}</div>
+            </div>
+          </div>
+
+          ${renderExpenseItemsPreviewCard(items)}
+        `;
+      }
+      return;
+    }
+
+    // preview normal
+    if (previewCardsRow) {
+      previewCardsRow.innerHTML = `
+        <div class="col-12 col-md-4">
+          <div class="mini-card">
+            <div class="mini-card-title">Total saldo</div>
+            <div class="mini-card-value">${formatRupiah(total)}</div>
+            <div class="mini-card-sub">Sebelum transaksi</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="mini-card mini-card-danger">
+            <div class="mini-card-title">Saldo terpotong</div>
+            <div class="mini-card-value">${formatRupiah(amount)}</div>
+            <div class="mini-card-sub">Jenis: Pengeluaran</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="mini-card">
+            <div class="mini-card-title">Total setelah</div>
+            <div class="mini-card-value">${formatRupiah(newTotal)}</div>
+            <div class="mini-card-sub">Setelah transaksi</div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="mini-card mini-card-primary">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div>
+                <div class="mini-card-title">Saldo ${wallet}</div>
+                <div class="mini-card-value">${formatRupiah(newWallet)}</div>
+                <div class="mini-card-sub">Sebelum: ${formatRupiah(currentWallet)}</div>
+              </div>
+              <div class="mini-badge">
+                <i class="bi bi-wallet"></i>
+                <span>Dompet terpilih</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        ${renderExpenseItemsPreviewCard(items)}
+      `;
+    }
+    return;
+  }
+
+  // Pemasukan
+  if (type === 'Pemasukan') {
+    const newTotal = total + amount;
+    const newWallet = currentWallet + amount;
+
+    if (previewCardsRow) {
+      previewCardsRow.innerHTML = `
+        <div class="col-12 col-md-4">
+          <div class="mini-card">
+            <div class="mini-card-title">Total saldo</div>
+            <div class="mini-card-value">${formatRupiah(total)}</div>
+            <div class="mini-card-sub">Sebelum transaksi</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="mini-card mini-card-success">
+            <div class="mini-card-title">Saldo bertambah</div>
+            <div class="mini-card-value">${formatRupiah(amount)}</div>
+            <div class="mini-card-sub">Jenis: Pemasukan</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="mini-card">
+            <div class="mini-card-title">Total setelah</div>
+            <div class="mini-card-value">${formatRupiah(newTotal)}</div>
+            <div class="mini-card-sub">Setelah transaksi</div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="mini-card mini-card-primary">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div>
+                <div class="mini-card-title">Saldo ${wallet}</div>
+                <div class="mini-card-value">${formatRupiah(newWallet)}</div>
+                <div class="mini-card-sub">Sebelum: ${formatRupiah(currentWallet)}</div>
+              </div>
+              <div class="mini-badge">
+                <i class="bi bi-wallet"></i>
+                <span>Dompet terpilih</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    return;
+  }
+}
+
 
     // Sembunyikan Target Keuangan saat Pengeluaran
     function toggleTargetForExpense() {
@@ -3029,7 +3410,9 @@
         const debtTarget = document.getElementById('debtTarget').value;
         const debtPrincipal = document.getElementById('debtPrincipal').value;
         const debtStartDate = document.getElementById('debtStartDate').value;
-        const debtDueDate = document.getElementById('debtDueDate').value;
+        const debtDueDate = (document.getElementById('debtDueOption').value === 'set')
+        ? document.getElementById('debtDueDate').value
+        : '';
         const debtStatus = document.getElementById('debtStatus').value;
         const debtWallet = document.getElementById('debtWallet').value;
         const paymentScheme = document.getElementById('paymentScheme').value;
@@ -3088,127 +3471,156 @@
     }
 
     // Fungsi submit form transaksi
-    async function submitTransactionForm(event) {
-        event.preventDefault();
+async function submitTransactionForm(event) {
+  event.preventDefault();
 
-        const transactionType = document.getElementById('transactionType').value;
-        const amount = document.getElementById('amount').value;
-        const transactionDate = document.getElementById('transactionDate').value;
-        const description = document.getElementById('description').value;
+  const transactionType = document.getElementById('transactionType').value;
+  const transactionDate = document.getElementById('transactionDate').value;
 
-        if (!transactionType || !amount || !transactionDate || !description) {
-            alert('Harap isi semua field yang wajib diisi!');
-            return;
-        }
+  if (!transactionType || !transactionDate) {
+    alert('Harap isi semua field yang wajib diisi!');
+    return;
+  }
 
-        if (transactionType === 'Pemasukan') {
-            const incomeSource = document.getElementById('incomeSource').value;
-            const incomeWallet = document.getElementById('incomeWallet').value;
+  // Validasi per jenis
+  if (transactionType === 'Pemasukan') {
+    const incomeSource = document.getElementById('incomeSource').value;
+    const incomeWallet = document.getElementById('incomeWallet').value;
 
-            if (!incomeSource || !incomeWallet) {
-                alert('Harap pilih sumber pemasukan dan dompet penerima!');
-                return;
-            }
-        } else if (transactionType === 'Pengeluaran') {
-            const category = document.getElementById('category').value;
-            const expenseWallet = document.getElementById('expenseWallet').value;
-
-            if (!category || !expenseWallet) {
-                alert('Harap pilih kategori dan dompet pengeluaran!');
-                return;
-            }
-
-            // Cegah submit kalau saldo tidak cukup
-            const amt = toInt(amount);
-            const w = expenseWallet;
-            const curW = toInt(lastDashboard.wallets[w] ?? 0);
-            if (curW - amt < 0) {
-                alert('Saldo tidak cukup. Ubah jumlah atau pilih dompet lain.');
-                return;
-            }
-        } else if (transactionType === 'Utang') {
-            const debtPerson = document.getElementById('debtPerson').value;
-            const debtTarget = document.getElementById('debtTarget').value;
-            const debtPrincipal = document.getElementById('debtPrincipal').value;
-            const debtStartDate = document.getElementById('debtStartDate').value;
-            const debtStatus = document.getElementById('debtStatus').value;
-            const debtWallet = document.getElementById('debtWallet').value;
-            const paymentScheme = document.getElementById('paymentScheme').value;
-
-            if (!debtPerson || !debtTarget || !debtPrincipal || !debtStartDate || !debtStatus || !debtWallet || !paymentScheme) {
-                alert('Harap isi semua field yang wajib untuk utang!');
-                return;
-            }
-        }
-
-        document.getElementById('submitText').classList.add('hidden');
-        document.getElementById('submitSpinner').classList.remove('hidden');
-        document.getElementById('submitForm').disabled = true;
-
-        const data = {
-            action: 'saveTransaction',
-            transactionType: transactionType,
-            amount: amount,
-            transactionDate: transactionDate,
-            description: description
-        };
-
-        if (transactionType === 'Pemasukan') {
-            let incomeSource = document.getElementById('incomeSource').value;
-            if (incomeSource === 'Lainnya') {
-                const customSource = document.getElementById('customIncomeSource').value.trim();
-                if (customSource) incomeSource = customSource;
-            }
-            data.incomeSource = incomeSource;
-            data.wallet = document.getElementById('incomeWallet').value;
-
-            // Target hanya untuk Pemasukan
-            data.target = document.getElementById('targetSelect').value;
-
-        } else if (transactionType === 'Pengeluaran') {
-            data.category = document.getElementById('category').value;
-            data.wallet = document.getElementById('expenseWallet').value;
-
-            // Target di Pengeluaran dikosongkan
-            data.target = '';
-        } else if (transactionType === 'Utang') {
-            data.action = 'saveDebt';
-            data.debtPerson = document.getElementById('debtPerson').value;
-            data.debtTarget = document.getElementById('debtTarget').value;
-            data.debtPrincipal = document.getElementById('debtPrincipal').value;
-            data.debtStartDate = document.getElementById('debtStartDate').value;
-            data.debtDueDate = document.getElementById('debtDueDate').value;
-            data.debtStatus = document.getElementById('debtStatus').value;
-            data.debtNotes = document.getElementById('debtNotes').value;
-            data.debtWallet = document.getElementById('debtWallet').value;
-            data.paymentScheme = document.getElementById('paymentScheme').value;
-            
-            // Jika cicilan, tambahkan info cicilan
-            if (data.paymentScheme === 'Cicilan') {
-                data.installmentMonths = document.getElementById('installmentMonths').value;
-                data.installmentPerMonth = document.getElementById('installmentPerMonth').value;
-            }
-        }
-
-        data.notes = document.getElementById('notes').value;
-
-        try {
-            await sendDataToServer(data);
-            alert('Data berhasil disimpan!');
-            resetForm();
-            document.getElementById('transactionForm').classList.add('hidden');
-            loadData();
-            
-            // Jika menyimpan utang, refresh data utang
-            if (transactionType === 'Utang') {
-                loadDebts();
-            }
-        } catch (error) {
-            alert('Gagal menyimpan data: ' + error.message);
-        } finally {
-            resetSubmitButton();
-        }
+    if (!incomeSource || !incomeWallet) {
+      alert('Harap pilih sumber pemasukan dan dompet penerima!');
+      return;
     }
+  }
+
+  if (transactionType === 'Pengeluaran') {
+    const category = document.getElementById('category').value;
+    const expenseWallet = document.getElementById('expenseWallet').value;
+
+    if (!category || !expenseWallet) {
+      alert('Harap pilih kategori dan dompet pengeluaran!');
+      return;
+    }
+
+    // validasi rincian barang
+    recalcExpenseTotalAndSummary();
+    const items = getExpenseItemsFromUI();
+
+    if (items.length === 0) {
+      alert('Isi rincian barang terlebih dahulu.');
+      return;
+    }
+
+    const invalid = items.some(x => !x.desc || toInt(x.amount) <= 0);
+    if (invalid) {
+      alert('Lengkapi semua keterangan dan jumlah per barang.');
+      return;
+    }
+
+    // saldo cukup
+    const amt = toInt(document.getElementById('amount').value);
+    const curW = toInt(lastDashboard.wallets[expenseWallet] ?? 0);
+    if (curW - amt < 0) {
+      alert('Saldo tidak cukup. Ubah jumlah atau pilih dompet lain.');
+      return;
+    }
+  }
+
+  if (transactionType === 'Utang') {
+    const debtPerson = document.getElementById('debtPerson').value;
+    const debtTarget = document.getElementById('debtTarget').value;
+    const debtPrincipal = document.getElementById('debtPrincipal').value;
+    const debtStartDate = document.getElementById('debtStartDate').value;
+    const debtStatus = document.getElementById('debtStatus').value;
+    const debtWallet = document.getElementById('debtWallet').value;
+    const paymentScheme = document.getElementById('paymentScheme').value;
+
+    if (!debtPerson || !debtTarget || !debtPrincipal || !debtStartDate || !debtStatus || !debtWallet || !paymentScheme) {
+      alert('Harap isi semua field yang wajib untuk utang!');
+      return;
+    }
+  }
+
+  // Setelah validasi, ambil amount dan description final
+  const amount = document.getElementById('amount').value;
+  const description = document.getElementById('description').value;
+
+  if (!amount || !description) {
+    alert('Harap isi semua field yang wajib diisi!');
+    return;
+  }
+
+  document.getElementById('submitText').classList.add('hidden');
+  document.getElementById('submitSpinner').classList.remove('hidden');
+  document.getElementById('submitForm').disabled = true;
+
+  const data = {
+    action: 'saveTransaction',
+    transactionType: transactionType,
+    amount: amount,
+    transactionDate: transactionDate,
+    description: description
+  };
+
+  if (transactionType === 'Pemasukan') {
+    let incomeSource = document.getElementById('incomeSource').value;
+    if (incomeSource === 'Lainnya') {
+      const customSource = document.getElementById('customIncomeSource').value.trim();
+      if (customSource) incomeSource = customSource;
+    }
+    data.incomeSource = incomeSource;
+    data.wallet = document.getElementById('incomeWallet').value;
+    data.target = document.getElementById('targetSelect').value;
+
+  } else if (transactionType === 'Pengeluaran') {
+    data.category = document.getElementById('category').value;
+    data.wallet = document.getElementById('expenseWallet').value;
+    data.target = '';
+
+    const items = getExpenseItemsFromUI();
+    data.itemCount = items.length;
+    data.expenseItems = JSON.stringify(items);
+
+  } else if (transactionType === 'Utang') {
+    data.action = 'saveDebt';
+    data.debtPerson = document.getElementById('debtPerson').value;
+    data.debtTarget = document.getElementById('debtTarget').value;
+    data.debtPrincipal = document.getElementById('debtPrincipal').value;
+    data.debtStartDate = document.getElementById('debtStartDate').value;
+    data.debtDueDate = (document.getElementById('debtDueOption').value === 'set')
+      ? document.getElementById('debtDueDate').value
+      : '';
+
+    data.debtStatus = document.getElementById('debtStatus').value;
+    data.debtNotes = document.getElementById('debtNotes').value;
+    data.debtWallet = document.getElementById('debtWallet').value;
+    data.paymentScheme = document.getElementById('paymentScheme').value;
+
+    if (data.paymentScheme === 'Cicilan') {
+      data.installmentMonths = document.getElementById('installmentMonths').value;
+      data.installmentPerMonth = document.getElementById('installmentPerMonth').value;
+    }
+  }
+
+  data.notes = document.getElementById('notes').value;
+
+  try {
+    await sendDataToServer(data);
+    alert('Data berhasil disimpan!');
+    resetForm();
+    document.getElementById('transactionForm').classList.add('hidden');
+    loadData();
+
+    if (transactionType === 'Utang') {
+      loadDebts();
+    }
+  } catch (error) {
+    alert('Gagal menyimpan data: ' + error.message);
+  } finally {
+    resetSubmitButton();
+  }
+}
+
 
     // Fungsi untuk mencatat pembayaran utang
     async function recordPayment() {
@@ -3277,14 +3689,18 @@
         document.getElementById('submitTargetSpinner').classList.remove('hidden');
         document.getElementById('submitTargetForm').disabled = true;
 
+        const deadlineOpt = document.getElementById('targetDeadlineOption');
+        const deadlineVal = document.getElementById('targetDeadline');
+
         const data = {
-            action: 'saveTarget',
-            name: targetName,
-            target_amount: targetAmount,
-            deadline: document.getElementById('targetDeadline').value || '',
-            wallet: document.getElementById('targetWallet').value || '',
-            description: document.getElementById('targetDescription').value || ''
+          action: 'saveTarget',
+          name: targetName,
+          target_amount: targetAmount,
+          deadline: (deadlineOpt && deadlineOpt.value === 'set') ? (deadlineVal.value || '') : '',
+          wallet: document.getElementById('targetWallet').value || '',
+          description: document.getElementById('targetDescription').value || ''
         };
+
 
         try {
             await sendDataToServer(data);
@@ -3325,57 +3741,75 @@
     }
 
     // Fungsi untuk mereset form transaksi
-    function resetForm() {
-        document.getElementById('transactionFormElement').reset();
-        document.getElementById('transactionType').value = '';
-        document.getElementById('incomeSection').classList.add('hidden');
-        document.getElementById('expenseSection').classList.add('hidden');
-        document.getElementById('debtSection').classList.add('hidden');
-        document.getElementById('paymentSection').classList.add('hidden');
-        document.getElementById('installmentPlanSection').classList.add('hidden');
+function resetForm() {
+  const formEl = document.getElementById('transactionFormElement');
+  if (formEl) formEl.reset();
 
-        document.querySelectorAll('.income-source-selector').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.wallet-selector').forEach(el => el.classList.remove('active'));
+  document.getElementById('transactionType').value = '';
+  document.getElementById('incomeSection').classList.add('hidden');
+  document.getElementById('expenseSection').classList.add('hidden');
+  document.getElementById('debtSection').classList.add('hidden');
+  document.getElementById('paymentSection').classList.add('hidden');
+  document.getElementById('installmentPlanSection').classList.add('hidden');
 
-        document.getElementById('incomeSource').value = '';
-        document.getElementById('incomeWallet').value = '';
-        document.getElementById('expenseWallet').value = '';
-        document.getElementById('customIncomeSourceDiv').classList.add('hidden');
-        document.getElementById('customIncomeSource').value = '';
-        document.getElementById('fileName').textContent = 'Belum ada file dipilih';
-        currentFile = null;
-        document.getElementById('fileInput').value = '';
+  document.querySelectorAll('.income-source-selector').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.wallet-selector').forEach(el => el.classList.remove('active'));
 
-        // Target dan notes
-        document.getElementById('targetSelect').value = '';
-        document.getElementById('notes').value = '';
+  document.getElementById('incomeSource').value = '';
+  document.getElementById('incomeWallet').value = '';
+  document.getElementById('expenseWallet').value = '';
+  document.getElementById('customIncomeSourceDiv').classList.add('hidden');
+  document.getElementById('customIncomeSource').value = '';
 
-        // Sembunyikan preview wrapper
-        const wrapper = document.getElementById('balancePreviewWrapper');
-        if (wrapper) wrapper.classList.add('hidden');
+  document.getElementById('fileName').textContent = 'Belum ada file dipilih';
+  currentFile = null;
+  document.getElementById('fileInput').value = '';
 
-        // Balikin state target
-        toggleTargetForExpense();
+  document.getElementById('targetSelect').value = '';
+  document.getElementById('notes').value = '';
 
-        // Set tanggal ke hari ini
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('transactionDate').value = today;
-        document.getElementById('paymentDate').value = today;
-        document.getElementById('debtStartDate').value = today;
-        
-        // Set jatuh tempo 30 hari dari sekarang
-        const futureDate = new Date();
-        futureDate.setDate(futureDate.getDate() + 30);
-        document.getElementById('debtDueDate').value = futureDate.toISOString().split('T')[0];
-    }
+  const wrapper = document.getElementById('balancePreviewWrapper');
+  if (wrapper) wrapper.classList.add('hidden');
+
+  toggleTargetForExpense();
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('transactionDate').value = today;
+  document.getElementById('paymentDate').value = today;
+  document.getElementById('debtStartDate').value = today;
+
+  const opt = document.getElementById('debtDueOption');
+  const due = document.getElementById('debtDueDate');
+  if (opt) opt.value = 'none';
+  if (due) due.value = '';
+  toggleDebtDueDateUI();
+
+  // reset fitur barang
+  const countEl = document.getElementById('expenseItemCount');
+  const container = document.getElementById('expenseItemsContainer');
+  if (countEl) countEl.value = '1';
+  if (container) container.innerHTML = '';
+
+  // PENTING: jangan panggil resetForm() lagi di sini
+  toggleExpenseItemsUI();
+  renderBalanceInfoAndPreview();
+}
+
+
 
     // Fungsi untuk mereset form target
-    function resetTargetForm() {
-        document.getElementById('targetFormElement').reset();
-        const futureDate = new Date();
-        futureDate.setMonth(futureDate.getMonth() + 3);
-        document.getElementById('targetDeadline').value = futureDate.toISOString().split('T')[0];
-    }
+function resetTargetForm() {
+  document.getElementById('targetFormElement').reset();
+
+  const opt = document.getElementById('targetDeadlineOption');
+  const input = document.getElementById('targetDeadline');
+
+  if (opt) opt.value = 'none';
+  if (input) input.value = '';
+
+  toggleTargetDeadlineUI();
+}
+
 
     // Fungsi untuk mereset tombol submit transaksi
     function resetSubmitButton() {
@@ -3406,303 +3840,406 @@
     // EVENT LISTENERS
     // ============================================
 
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('FinTrack Pro - Tema Gelap Loaded');
+document.addEventListener('DOMContentLoaded', function () {
+  console.log('FinTrack Pro - Tema Gelap Loaded');
 
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('transactionDate').value = today;
-        document.getElementById('paymentDate').value = today;
-        document.getElementById('debtStartDate').value = today;
-        document.getElementById('saveDebtBtn').addEventListener('click', saveDebtOnly);
+  const today = new Date().toISOString().split('T')[0];
 
-        // Set jatuh tempo 30 hari dari sekarang
-        const futureDate = new Date();
-        futureDate.setDate(futureDate.getDate() + 30);
-        document.getElementById('debtDueDate').value = futureDate.toISOString().split('T')[0];
-
-        const targetFutureDate = new Date();
-        targetFutureDate.setMonth(targetFutureDate.getMonth() + 3);
-        document.getElementById('targetDeadline').value = targetFutureDate.toISOString().split('T')[0];
-
-        loadData();
-
-        // Show transaction form
-        document.getElementById('showForm').addEventListener('click', function() {
-            document.getElementById('transactionForm').classList.remove('hidden');
-            document.getElementById('targetForm').classList.add('hidden');
-            resetForm();
-            renderBalanceInfoAndPreview();
-            document.getElementById('transactionForm').classList.add('fade-in');
-        });
-
-        // Show target form
-        document.getElementById('showTargetForm').addEventListener('click', function() {
-            document.getElementById('targetForm').classList.remove('hidden');
-            document.getElementById('transactionForm').classList.add('hidden');
-            resetTargetForm();
-            document.getElementById('targetForm').classList.add('fade-in');
-        });
-
-        // Show debt form
-        document.getElementById('showDebtForm').addEventListener('click', function() {
-            document.getElementById('transactionForm').classList.remove('hidden');
-            document.getElementById('targetForm').classList.add('hidden');
-            resetForm();
-            document.getElementById('transactionType').value = 'Utang';
-            document.getElementById('transactionType').dispatchEvent(new Event('change'));
-            document.getElementById('transactionForm').classList.add('fade-in');
-        });
-
-        // Add target from list
-        document.addEventListener('click', function(e) {
-            if (e.target.id === 'addTargetFromList' || e.target.id === 'addTargetEmpty') {
-                document.getElementById('targetForm').classList.remove('hidden');
-                document.getElementById('transactionForm').classList.add('hidden');
-                resetTargetForm();
-                document.getElementById('targets-tab').click();
-                document.getElementById('targetForm').classList.add('fade-in');
-            }
-            
-            if (e.target.id === 'addDebtEmpty') {
-                document.getElementById('transactionForm').classList.remove('hidden');
-                document.getElementById('targetForm').classList.add('hidden');
-                resetForm();
-                document.getElementById('transactionType').value = 'Utang';
-                document.getElementById('transactionType').dispatchEvent(new Event('change'));
-                document.getElementById('debts-tab').click();
-                document.getElementById('transactionForm').classList.add('fade-in');
-            }
-        });
-
-        // Close forms
-        document.getElementById('closeForm').addEventListener('click', function() {
-            document.getElementById('transactionForm').classList.add('hidden');
-            resetForm();
-        });
-
-        document.getElementById('closeTargetForm').addEventListener('click', function() {
-            document.getElementById('targetForm').classList.add('hidden');
-            resetTargetForm();
-        });
-
-        // Cancel forms
-        document.getElementById('cancelForm').addEventListener('click', function() {
-            document.getElementById('transactionForm').classList.add('hidden');
-            resetForm();
-        });
-
-        document.getElementById('cancelTargetForm').addEventListener('click', function() {
-            document.getElementById('targetForm').classList.add('hidden');
-            resetTargetForm();
-        });
-
-        // Refresh buttons
-        document.getElementById('refreshData').addEventListener('click', loadData);
-        document.getElementById('refreshTargets').addEventListener('click', loadTargets);
-        document.getElementById('refreshDebts').addEventListener('click', loadDebts);
-        document.getElementById('refreshTransactions').addEventListener('click', loadData);
-
-        // Record payment
-        document.getElementById('recordPayment').addEventListener('click', recordPayment);
-
-        // Transaction type change
-        document.getElementById('transactionType').addEventListener('change', function() {
-            const transactionType = this.value;
-            const incomeSection = document.getElementById('incomeSection');
-            const expenseSection = document.getElementById('expenseSection');
-            const debtSection = document.getElementById('debtSection');
-            const paymentSection = document.getElementById('paymentSection');
-            const balancePreviewWrapper = document.getElementById('balancePreviewWrapper');
-            const targetNotesRow = document.getElementById('targetNotesRow');
-
-            incomeSection.classList.add('hidden');
-            expenseSection.classList.add('hidden');
-            debtSection.classList.add('hidden');
-            paymentSection.classList.add('hidden');
-            balancePreviewWrapper.classList.add('hidden');
-            
-            if (targetNotesRow) targetNotesRow.classList.remove('hidden');
-
-            document.getElementById('incomeSource').required = false;
-            document.getElementById('incomeWallet').required = false;
-            document.getElementById('category').required = false;
-            document.getElementById('expenseWallet').required = false;
-
-            if (transactionType === 'Pemasukan') {
-                incomeSection.classList.remove('hidden');
-                document.getElementById('incomeSource').required = true;
-                document.getElementById('incomeWallet').required = true;
-                balancePreviewWrapper.classList.remove('hidden');
-            } else if (transactionType === 'Pengeluaran') {
-                expenseSection.classList.remove('hidden');
-                document.getElementById('category').required = true;
-                document.getElementById('expenseWallet').required = true;
-                balancePreviewWrapper.classList.remove('hidden');
-            } else if (transactionType === 'Utang') {
-                debtSection.classList.remove('hidden');
-                paymentSection.classList.add('hidden');
-                if (targetNotesRow) targetNotesRow.classList.add('hidden');
-            }
-
-            toggleTargetForExpense();
-            renderBalanceInfoAndPreview();
-        });
-
-        // Payment scheme change
-        document.getElementById('paymentScheme').addEventListener('change', function() {
-            const scheme = this.value;
-            const installmentSection = document.getElementById('installmentPlanSection');
-            const principalInput = document.getElementById('debtPrincipal');
-            
-            if (scheme === 'Cicilan') {
-                installmentSection.classList.remove('hidden');
-                // Hitung cicilan per bulan
-                if (principalInput.value) {
-                    calculateInstallment();
-                }
-            } else {
-                installmentSection.classList.add('hidden');
-            }
-        });
-
-        // Calculate installment
-        document.getElementById('debtPrincipal').addEventListener('input', calculateInstallment);
-        document.getElementById('installmentMonths').addEventListener('input', calculateInstallment);
-
-        // Amount input change
-        document.getElementById('amount').addEventListener('input', function() {
-            renderBalanceInfoAndPreview();
-        });
-
-        // Income source selector
-        document.querySelectorAll('.income-source-selector').forEach(selector => {
-            selector.addEventListener('click', function() {
-                document.querySelectorAll('.income-source-selector').forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-                const source = this.getAttribute('data-source');
-                document.getElementById('incomeSource').value = source;
-
-                const customInputDiv = document.getElementById('customIncomeSourceDiv');
-                if (source === 'Lainnya') {
-                    customInputDiv.classList.remove('hidden');
-                    document.getElementById('customIncomeSource').focus();
-                } else {
-                    customInputDiv.classList.add('hidden');
-                    document.getElementById('customIncomeSource').value = '';
-                }
-            });
-        });
-
-        // Wallet selectors
-        document.querySelectorAll('#incomeWalletSelector .wallet-selector').forEach(selector => {
-            selector.addEventListener('click', function() {
-                document.querySelectorAll('#incomeWalletSelector .wallet-selector').forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-                const wallet = this.getAttribute('data-wallet');
-                document.getElementById('incomeWallet').value = wallet;
-                renderBalanceInfoAndPreview();
-            });
-        });
-
-        document.querySelectorAll('#expenseWalletSelector .wallet-selector').forEach(selector => {
-            selector.addEventListener('click', function() {
-                document.querySelectorAll('#expenseWalletSelector .wallet-selector').forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-                const wallet = this.getAttribute('data-wallet');
-                document.getElementById('expenseWallet').value = wallet;
-                renderBalanceInfoAndPreview();
-            });
-        });
-
-        // File upload
-        document.getElementById('uploadArea').addEventListener('click', function() {
-            document.getElementById('fileInput').click();
-        });
-
-        document.getElementById('fileInput').addEventListener('change', function() {
-            if (this.files.length > 0) {
-                currentFile = this.files[0];
-                document.getElementById('fileName').textContent = currentFile.name;
-
-                if (currentFile.size > 5 * 1024 * 1024) {
-                    alert('Ukuran file terlalu besar. Maksimum 5MB.');
-                    currentFile = null;
-                    document.getElementById('fileName').textContent = 'Belum ada file dipilih';
-                    this.value = '';
-                }
-            }
-        });
-
-        // Drag and drop
-        document.getElementById('uploadArea').addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--accent-primary)';
-            this.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
-        });
-
-        document.getElementById('uploadArea').addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--border-color)';
-            this.style.backgroundColor = 'var(--bg-secondary)';
-        });
-
-        document.getElementById('uploadArea').addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--border-color)';
-            this.style.backgroundColor = 'var(--bg-secondary)';
-
-            if (e.dataTransfer.files.length > 0) {
-                const file = e.dataTransfer.files[0];
-                const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-
-                if (!validTypes.includes(file.type)) {
-                    alert('Format file tidak didukung. Gunakan JPG, PNG, atau PDF.');
-                    return;
-                }
-
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Ukuran file terlalu besar. Maksimum 5MB.');
-                    return;
-                }
-
-                currentFile = file;
-                document.getElementById('fileName').textContent = file.name;
-                document.getElementById('fileInput').files = e.dataTransfer.files;
-            }
-        });
-
-        // Form submissions
-        document.getElementById('transactionFormElement').addEventListener('submit', submitTransactionForm);
-        document.getElementById('targetFormElement').addEventListener('submit', submitTargetForm);
-
-        // Tab functionality
-        const triggerTabList = [].slice.call(document.querySelectorAll('#mainTabs button'));
-        triggerTabList.forEach(function (triggerEl) {
-            const tabTrigger = new bootstrap.Tab(triggerEl);
-            triggerEl.addEventListener('click', function (event) {
-                event.preventDefault();
-                tabTrigger.show();
-                
-                // Jika tab grafik diklik, render chart
-                if (triggerEl.id === 'grafik-tab') {
-                    setTimeout(() => {
-                        renderExpenseCharts();
-                    }, 300);
-                }
-                
-                // Jika tab utang diklik, load data utang
-                if (triggerEl.id === 'debts-tab') {
-                    loadDebts();
-                }
-            });
-        });
-
-        // Add fade-in animation to panels
-        const tabPanes = document.querySelectorAll('.tab-pane');
-        tabPanes.forEach(pane => {
-            pane.classList.add('fade-in');
-        });
+  // jumlah barang berubah
+  const expenseItemCountEl = document.getElementById('expenseItemCount');
+  if (expenseItemCountEl) {
+    expenseItemCountEl.addEventListener('input', function () {
+      const n = Math.max(1, toInt(this.value) || 1);
+      this.value = n;
+      buildExpenseItemsUI(n);
+      recalcExpenseTotalAndSummary();
+      renderBalanceInfoAndPreview();
     });
+  }
+
+  // input rincian barang berubah
+  const expenseItemsContainer = document.getElementById('expenseItemsContainer');
+  if (expenseItemsContainer) {
+    expenseItemsContainer.addEventListener('input', function (e) {
+      if (e.target.classList.contains('expense-item-amount') || e.target.classList.contains('expense-item-desc')) {
+        recalcExpenseTotalAndSummary();
+        renderBalanceInfoAndPreview();
+      }
+    });
+  }
+
+  // Set default tanggal transaksi
+  const transactionDate = document.getElementById('transactionDate');
+  const paymentDate = document.getElementById('paymentDate');
+  const debtStartDate = document.getElementById('debtStartDate');
+
+  if (transactionDate) transactionDate.value = today;
+  if (paymentDate) paymentDate.value = today;
+  if (debtStartDate) debtStartDate.value = today;
+
+  // Save debt button
+  const saveDebtBtn = document.getElementById('saveDebtBtn');
+  if (saveDebtBtn) saveDebtBtn.addEventListener('click', saveDebtOnly);
+
+  // Jatuh Tempo (Utang) toggle
+  const debtDueOption = document.getElementById('debtDueOption');
+  const debtDueDate = document.getElementById('debtDueDate');
+  if (debtDueOption) {
+    debtDueOption.addEventListener('change', toggleDebtDueDateUI);
+    debtDueOption.value = 'none';
+  }
+  if (debtDueDate) debtDueDate.value = '';
+  toggleDebtDueDateUI();
+
+  // Deadline Target (opsional) toggle
+  // Pastikan kamu sudah punya:
+  // - select id="targetDeadlineOption" (none/set)
+  // - wrapper id="targetDeadlineWrapper"
+  // - input date id="targetDeadline"
+  const targetDeadlineOption = document.getElementById('targetDeadlineOption');
+  const targetDeadline = document.getElementById('targetDeadline');
+  if (targetDeadlineOption) {
+    targetDeadlineOption.addEventListener('change', toggleTargetDeadlineUI);
+    targetDeadlineOption.value = 'none';
+  }
+  if (targetDeadline) targetDeadline.value = '';
+  if (typeof toggleTargetDeadlineUI === 'function') toggleTargetDeadlineUI();
+
+  // Load data awal
+  loadData();
+
+  // Show transaction form
+  const showFormBtn = document.getElementById('showForm');
+  if (showFormBtn) {
+    showFormBtn.addEventListener('click', function () {
+      document.getElementById('transactionForm').classList.remove('hidden');
+      document.getElementById('targetForm').classList.add('hidden');
+      resetForm();
+      renderBalanceInfoAndPreview();
+      document.getElementById('transactionForm').classList.add('fade-in');
+    });
+  }
+
+  // Show target form
+  const showTargetFormBtn = document.getElementById('showTargetForm');
+  if (showTargetFormBtn) {
+    showTargetFormBtn.addEventListener('click', function () {
+      document.getElementById('targetForm').classList.remove('hidden');
+      document.getElementById('transactionForm').classList.add('hidden');
+      resetTargetForm();
+      document.getElementById('targetForm').classList.add('fade-in');
+    });
+  }
+
+  // Show debt form
+  const showDebtFormBtn = document.getElementById('showDebtForm');
+  if (showDebtFormBtn) {
+    showDebtFormBtn.addEventListener('click', function () {
+      document.getElementById('transactionForm').classList.remove('hidden');
+      document.getElementById('targetForm').classList.add('hidden');
+      resetForm();
+      document.getElementById('transactionType').value = 'Utang';
+      document.getElementById('transactionType').dispatchEvent(new Event('change'));
+      document.getElementById('transactionForm').classList.add('fade-in');
+    });
+  }
+
+  // Shortcut nominal
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.amount-shortcut');
+    if (!btn) return;
+
+    const target = btn.getAttribute('data-target');
+    const mode = btn.getAttribute('data-mode'); // add | mul
+    const value = btn.getAttribute('data-value');
+
+    applyAmountShortcut(target, mode, value);
+  });
+
+  // Add target / debt from empty state
+  document.addEventListener('click', function (e) {
+    if (e.target.id === 'addTargetFromList' || e.target.id === 'addTargetEmpty') {
+      document.getElementById('targetForm').classList.remove('hidden');
+      document.getElementById('transactionForm').classList.add('hidden');
+      resetTargetForm();
+      document.getElementById('targets-tab').click();
+      document.getElementById('targetForm').classList.add('fade-in');
+    }
+
+    if (e.target.id === 'addDebtEmpty') {
+      document.getElementById('transactionForm').classList.remove('hidden');
+      document.getElementById('targetForm').classList.add('hidden');
+      resetForm();
+      document.getElementById('transactionType').value = 'Utang';
+      document.getElementById('transactionType').dispatchEvent(new Event('change'));
+      document.getElementById('debts-tab').click();
+      document.getElementById('transactionForm').classList.add('fade-in');
+    }
+  });
+
+  // Close forms
+  const closeFormBtn = document.getElementById('closeForm');
+  if (closeFormBtn) {
+    closeFormBtn.addEventListener('click', function () {
+      document.getElementById('transactionForm').classList.add('hidden');
+      resetForm();
+    });
+  }
+
+  const closeTargetFormBtn = document.getElementById('closeTargetForm');
+  if (closeTargetFormBtn) {
+    closeTargetFormBtn.addEventListener('click', function () {
+      document.getElementById('targetForm').classList.add('hidden');
+      resetTargetForm();
+    });
+  }
+
+  // Cancel forms
+  const cancelFormBtn = document.getElementById('cancelForm');
+  if (cancelFormBtn) {
+    cancelFormBtn.addEventListener('click', function () {
+      document.getElementById('transactionForm').classList.add('hidden');
+      resetForm();
+    });
+  }
+
+  const cancelTargetFormBtn = document.getElementById('cancelTargetForm');
+  if (cancelTargetFormBtn) {
+    cancelTargetFormBtn.addEventListener('click', function () {
+      document.getElementById('targetForm').classList.add('hidden');
+      resetTargetForm();
+    });
+  }
+
+  // Refresh buttons
+  const refreshDataBtn = document.getElementById('refreshData');
+  if (refreshDataBtn) refreshDataBtn.addEventListener('click', loadData);
+
+  const refreshTargetsBtn = document.getElementById('refreshTargets');
+  if (refreshTargetsBtn) refreshTargetsBtn.addEventListener('click', loadTargets);
+
+  const refreshDebtsBtn = document.getElementById('refreshDebts');
+  if (refreshDebtsBtn) refreshDebtsBtn.addEventListener('click', loadDebts);
+
+  const refreshTransactionsBtn = document.getElementById('refreshTransactions');
+  if (refreshTransactionsBtn) refreshTransactionsBtn.addEventListener('click', loadData);
+
+  // Record payment
+  const recordPaymentBtn = document.getElementById('recordPayment');
+  if (recordPaymentBtn) recordPaymentBtn.addEventListener('click', recordPayment);
+
+  // Transaction type change
+  const transactionTypeEl = document.getElementById('transactionType');
+  if (transactionTypeEl) {
+    transactionTypeEl.addEventListener('change', function () {
+      const transactionType = this.value;
+
+      const incomeSection = document.getElementById('incomeSection');
+      const expenseSection = document.getElementById('expenseSection');
+      const debtSection = document.getElementById('debtSection');
+      const paymentSection = document.getElementById('paymentSection');
+      const balancePreviewWrapper = document.getElementById('balancePreviewWrapper');
+      const targetNotesRow = document.getElementById('targetNotesRow');
+
+      incomeSection.classList.add('hidden');
+      expenseSection.classList.add('hidden');
+      debtSection.classList.add('hidden');
+      paymentSection.classList.add('hidden');
+      balancePreviewWrapper.classList.add('hidden');
+
+      if (targetNotesRow) targetNotesRow.classList.remove('hidden');
+
+      document.getElementById('incomeSource').required = false;
+      document.getElementById('incomeWallet').required = false;
+      document.getElementById('category').required = false;
+      document.getElementById('expenseWallet').required = false;
+
+      if (transactionType === 'Pemasukan') {
+        incomeSection.classList.remove('hidden');
+        document.getElementById('incomeSource').required = true;
+        document.getElementById('incomeWallet').required = true;
+        balancePreviewWrapper.classList.remove('hidden');
+      } else if (transactionType === 'Pengeluaran') {
+        expenseSection.classList.remove('hidden');
+        document.getElementById('category').required = true;
+        document.getElementById('expenseWallet').required = true;
+        balancePreviewWrapper.classList.remove('hidden');
+      } else if (transactionType === 'Utang') {
+        debtSection.classList.remove('hidden');
+        paymentSection.classList.add('hidden');
+        if (targetNotesRow) targetNotesRow.classList.add('hidden');
+      }
+
+      toggleTargetForExpense();
+      toggleExpenseItemsUI(); 
+      renderBalanceInfoAndPreview();
+      toggleDebtFields(transactionType === 'Utang');
+
+
+    });
+  }
+
+  // Payment scheme change
+  const paymentSchemeEl = document.getElementById('paymentScheme');
+  if (paymentSchemeEl) {
+    paymentSchemeEl.addEventListener('change', function () {
+      const scheme = this.value;
+      const installmentSection = document.getElementById('installmentPlanSection');
+      const principalInput = document.getElementById('debtPrincipal');
+
+      if (scheme === 'Cicilan') {
+        installmentSection.classList.remove('hidden');
+        if (principalInput.value) calculateInstallment();
+      } else {
+        installmentSection.classList.add('hidden');
+      }
+    });
+  }
+
+  // Calculate installment
+  const debtPrincipalEl = document.getElementById('debtPrincipal');
+  const installmentMonthsEl = document.getElementById('installmentMonths');
+  if (debtPrincipalEl) debtPrincipalEl.addEventListener('input', calculateInstallment);
+  if (installmentMonthsEl) installmentMonthsEl.addEventListener('input', calculateInstallment);
+
+  // Amount input change
+  const amountEl = document.getElementById('amount');
+  if (amountEl) amountEl.addEventListener('input', renderBalanceInfoAndPreview);
+
+  // Income source selector
+  document.querySelectorAll('.income-source-selector').forEach(selector => {
+    selector.addEventListener('click', function () {
+      document.querySelectorAll('.income-source-selector').forEach(el => el.classList.remove('active'));
+      this.classList.add('active');
+      const source = this.getAttribute('data-source');
+      document.getElementById('incomeSource').value = source;
+
+      const customInputDiv = document.getElementById('customIncomeSourceDiv');
+      if (source === 'Lainnya') {
+        customInputDiv.classList.remove('hidden');
+        document.getElementById('customIncomeSource').focus();
+      } else {
+        customInputDiv.classList.add('hidden');
+        document.getElementById('customIncomeSource').value = '';
+      }
+    });
+  });
+
+  // Wallet selectors
+  document.querySelectorAll('#incomeWalletSelector .wallet-selector').forEach(selector => {
+    selector.addEventListener('click', function () {
+      document.querySelectorAll('#incomeWalletSelector .wallet-selector').forEach(el => el.classList.remove('active'));
+      this.classList.add('active');
+      const wallet = this.getAttribute('data-wallet');
+      document.getElementById('incomeWallet').value = wallet;
+      renderBalanceInfoAndPreview();
+    });
+  });
+
+  document.querySelectorAll('#expenseWalletSelector .wallet-selector').forEach(selector => {
+    selector.addEventListener('click', function () {
+      document.querySelectorAll('#expenseWalletSelector .wallet-selector').forEach(el => el.classList.remove('active'));
+      this.classList.add('active');
+      const wallet = this.getAttribute('data-wallet');
+      document.getElementById('expenseWallet').value = wallet;
+      renderBalanceInfoAndPreview();
+    });
+  });
+
+  // File upload
+  const uploadArea = document.getElementById('uploadArea');
+  const fileInput = document.getElementById('fileInput');
+
+  if (uploadArea && fileInput) {
+    uploadArea.addEventListener('click', function () {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function () {
+      if (this.files.length > 0) {
+        currentFile = this.files[0];
+        document.getElementById('fileName').textContent = currentFile.name;
+
+        if (currentFile.size > 5 * 1024 * 1024) {
+          alert('Ukuran file terlalu besar. Maksimum 5MB.');
+          currentFile = null;
+          document.getElementById('fileName').textContent = 'Belum ada file dipilih';
+          this.value = '';
+        }
+      }
+    });
+
+    uploadArea.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      this.style.borderColor = 'var(--accent-primary)';
+      this.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+    });
+
+    uploadArea.addEventListener('dragleave', function (e) {
+      e.preventDefault();
+      this.style.borderColor = 'var(--border-color)';
+      this.style.backgroundColor = 'var(--bg-secondary)';
+    });
+
+    uploadArea.addEventListener('drop', function (e) {
+      e.preventDefault();
+      this.style.borderColor = 'var(--border-color)';
+      this.style.backgroundColor = 'var(--bg-secondary)';
+
+      if (e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+        if (!validTypes.includes(file.type)) {
+          alert('Format file tidak didukung. Gunakan JPG, PNG, atau PDF.');
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Ukuran file terlalu besar. Maksimum 5MB.');
+          return;
+        }
+
+        currentFile = file;
+        document.getElementById('fileName').textContent = file.name;
+        fileInput.files = e.dataTransfer.files;
+      }
+    });
+  }
+
+  // Form submissions
+  const transactionFormEl = document.getElementById('transactionFormElement');
+  const targetFormEl = document.getElementById('targetFormElement');
+  if (transactionFormEl) transactionFormEl.addEventListener('submit', submitTransactionForm);
+  if (targetFormEl) targetFormEl.addEventListener('submit', submitTargetForm);
+
+  // Tab functionality
+  const triggerTabList = [].slice.call(document.querySelectorAll('#mainTabs button'));
+  triggerTabList.forEach(function (triggerEl) {
+    const tabTrigger = new bootstrap.Tab(triggerEl);
+    triggerEl.addEventListener('click', function (event) {
+      event.preventDefault();
+      tabTrigger.show();
+
+      if (triggerEl.id === 'grafik-tab') {
+        setTimeout(() => {
+          renderExpenseCharts();
+        }, 300);
+      }
+
+      if (triggerEl.id === 'debts-tab') {
+        loadDebts();
+      }
+    });
+  });
+
+  // Add fade-in animation to panels
+  const tabPanes = document.querySelectorAll('.tab-pane');
+  tabPanes.forEach(pane => {
+    pane.classList.add('fade-in');
+  });
+});
+
     </script>
 </body>
 </html>
