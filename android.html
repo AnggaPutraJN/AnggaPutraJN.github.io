@@ -1739,211 +1739,224 @@
       showStep(4);
     }
     
-    function generateGameDataInput() {
-      const container = document.getElementById('gameDataInput');
-      container.innerHTML = '';
 
-      // Update paste instructions berdasarkan tipe game
-      const instructions = document.getElementById('pasteInstructions');
-      if (instructions) {
-        if (gameData.type === 'ori-only') {
-          instructions.innerHTML = `
-            <li>Baris 1: Nama Game</li>
-            <li>Baris 2: Ukuran Game ORI</li>
-            <li>Baris 3: Ukuran Game MOD (jika ada)</li>
-            <li>Baris 4: Category</li>
-            <li>Baris 5: Versi Game</li>
-            <li>Baris berikutnya: Link Asli (sesuai jumlah yang diinput)</li>
-            <li>Baris berikutnya: Link Iklan 1 (sesuai jumlah yang diinput)</li>
-            <li>Baris terakhir: Link Iklan 2 (sesuai jumlah yang diinput)</li>
-          `;
-        } else if (gameData.type === 'ori-mod') {
-          instructions.innerHTML = `
-            <li>Baris 1: Nama Game ORI</li>
-            <li>Baris 2: Ukuran Game ORI</li>
-            <li>Baris 3: Ukuran Game MOD (jika ada)</li>
-            <li>Baris 4: Category</li>
-            <li>Baris 5: Versi Game ORI</li>
-            <li>Baris berikutnya: Link Asli ORI (sesuai jumlah yang diinput)</li>
-            <li>Baris berikutnya: Link Iklan 1 ORI (sesuai jumlah yang diinput)</li>
-            <li>Baris berikutnya: Link Iklan 2 ORI (sesuai jumlah yang diinput)</li>
-            <li>Baris kosong (opsional)</li>
-            <li>Baris berikutnya: Nama Game MOD</li>
-            <li>Baris berikutnya: Ukuran Game MOD</li>
-            <li>Baris berikutnya: Category MOD</li>
-            <li>Baris berikutnya: Versi Game MOD</li>
-            <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
-            <li>Baris berikutnya: Link Asli MOD (sesuai jumlah yang diinput)</li>
-            <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah yang diinput)</li>
-            <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah yang diinput)</li>
-          `;
-        } else if (gameData.type === 'only-mod') {
-          instructions.innerHTML = `
-            <li>Baris 1: Nama Game MOD</li>
-            <li>Baris 2: Ukuran Game MOD</li>
-            <li>Baris 3: Category</li>
-            <li>Baris 4: Versi Game MOD</li>
-            <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
-            <li>Baris berikutnya: Link Asli MOD (sesuai jumlah yang diinput)</li>
-            <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah yang diinput)</li>
-            <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah yang diinput)</li>
-          `;
-        }
-      }
 
-      // ORI hanya untuk tipe ori-only dan ori-mod
-      if (gameData.type === 'ori-only' || gameData.type === 'ori-mod') {
-        container.innerHTML += `
-          <div class="ori-game-data mb-4">
-            <h5><i class="bi bi-phone"></i> Data Game ORI</h5>
-            <div class="row">
-              <div class="col-md-12 mb-3">
-                <label class="form-label required">Nama Game ORI</label>
-                <input type="text" id="oriGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition ORI">
-              </div>
+function generateGameDataInput() {
+  const container = document.getElementById('gameDataInput');
+  container.innerHTML = '';
 
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Ukuran Game ORI</label>
-                <input type="text" id="oriSize" class="form-control" placeholder="Contoh: 2.79 GB">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Category</label>
-                <input type="text" id="oriCategory" class="form-control" placeholder="Contoh: Action">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Versi Game</label>
-                <input type="text" id="oriVersion" class="form-control" placeholder="Contoh: v1.4.299">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Ukuran Game MOD (opsional)</label>
-                <input type="text" id="oriModSize" class="form-control" placeholder="Contoh: 2.79 GB (jika ada)">
-              </div>
-            </div>
-
-            <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('oriOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
-
-            <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('oriAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
-
-            <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('oriAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
-          </div>
-        `;
-      }
-
-      // MOD untuk tipe ori-mod dan only-mod
-      if (gameData.type === 'ori-mod' || gameData.type === 'only-mod') {
-        const modFeatureInputs = Array.from({ length: gameData.modCount }).map((_, idx) => {
-          const n = idx + 1;
-          return `
-            <div class="col-md-12 mb-3">
-              <label class="form-label required">Mod ${n}</label>
-              <input type="text" id="modFeature${n}" class="form-control" placeholder="Contoh: Unlimited Money">
-            </div>
-          `;
-        }).join('');
-
-        container.innerHTML += `
-          <div class="mod-game-data mb-4">
-            <div class="mod-header">
-              <h5><i class="bi bi-magic"></i> Data Game MOD (${gameData.modCount} MOD)</h5>
-              <span class="mod-number">MOD</span>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12 mb-3">
-                <label class="form-label required">Nama Game MOD</label>
-                <input type="text" id="modGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition MOD">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Ukuran Game MOD</label>
-                <input type="text" id="modSize" class="form-control" placeholder="Contoh: 2.79 GB">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Category</label>
-                <input type="text" id="modCategory" class="form-control" placeholder="Contoh: Action">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Versi Game</label>
-                <input type="text" id="modVersion" class="form-control" placeholder="Contoh: v1.4.299">
-              </div>
-
-              ${modFeatureInputs}
-            </div>
-
-            <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('modOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
-
-            <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('modAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
-
-            <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('modAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
-          </div>
-
-<!-- Thumbnail Input -->
-<div class="thumbnail-input mt-4">
-  <div class="card">
-    <div class="card-header bg-info text-white">
-      <h5 class="mb-0"><i class="bi bi-image"></i> Thumbnail Game (Optional)</h5>
-    </div>
-    <div class="card-body">
-      <div class="alert alert-info">
-        <i class="bi bi-info-circle-fill"></i>
-        <div>
-          <strong>Informasi:</strong> Upload thumbnail game Anda ke hosting gambar terlebih dahulu (seperti Imgur, Postimg, dll), lalu masukkan URL-nya di sini.
-          <br><small class="text-muted">Ukuran rekomendasi: 1280x720 px atau rasio 16:9</small>
-        </div>
-      </div>
-      
-      <div class="row">
-        <div class="col-md-8">
-          <label class="form-label">
-            <i class="bi bi-link-45deg"></i> URL Thumbnail
-          </label>
-          <input type="url" id="thumbnailUrl" class="form-control" 
-                 placeholder="https://example.com/thumbnail.jpg"
-                 pattern="https?://.+" />
-          <div class="form-text">Masukkan URL lengkap gambar thumbnail</div>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label d-block">&nbsp;</label>
-          <button type="button" class="btn btn-outline-info w-100" onclick="testThumbnail()">
-            <i class="bi bi-eye"></i> Test Preview
-          </button>
-        </div>
-      </div>
-      
-      <div id="thumbnailPreview" class="mt-3" style="display:none;">
-        <div class="card">
-          <div class="card-header">Preview Thumbnail</div>
-          <div class="card-body text-center">
-            <img id="thumbnailImage" src="" class="img-fluid rounded" 
-                 style="max-height: 200px;" 
-                 onerror="this.style.display='none'; document.getElementById('thumbnailError').style.display='block';"
-                 alt="Thumbnail Preview">
-            <div id="thumbnailError" class="alert alert-danger mt-2" style="display:none;">
-              <i class="bi bi-exclamation-triangle"></i> Gagal memuat gambar. Pastikan URL benar dan bisa diakses.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-        `;
-      }
+  // Update paste instructions berdasarkan tipe game
+  const instructions = document.getElementById('pasteInstructions');
+  if (instructions) {
+    if (gameData.type === 'ori-only') {
+      instructions.innerHTML = `
+        <li>Baris 1: Nama Game</li>
+        <li>Baris 2: Ukuran Game ORI</li>
+        <li>Baris 3: Ukuran Game MOD (opsional)</li>
+        <li>Baris 4: Category</li>
+        <li>Baris 5: Versi Game</li>
+        <li>Baris berikutnya: Link Asli (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 1 (sesuai jumlah link)</li>
+        <li>Baris terakhir: Link Iklan 2 (sesuai jumlah link)</li>
+        <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
+      `;
+    } else if (gameData.type === 'ori-mod') {
+      instructions.innerHTML = `
+        <li>Baris 1: Nama Game ORI</li>
+        <li>Baris 2: Ukuran Game ORI</li>
+        <li>Baris 3: Ukuran Game MOD (opsional)</li>
+        <li>Baris 4: Category</li>
+        <li>Baris 5: Versi Game ORI</li>
+        <li>Baris berikutnya: Link Asli ORI (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 1 ORI (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 2 ORI (sesuai jumlah link)</li>
+        <li>Baris kosong (opsional)</li>
+        <li>Baris berikutnya: Nama Game MOD</li>
+        <li>Baris berikutnya: Ukuran Game MOD</li>
+        <li>Baris berikutnya: Category MOD</li>
+        <li>Baris berikutnya: Versi Game MOD</li>
+        <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
+        <li>Baris berikutnya: Link Asli MOD (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah link)</li>
+        <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah link)</li>
+        <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
+      `;
+    } else if (gameData.type === 'only-mod') {
+      instructions.innerHTML = `
+        <li>Baris 1: Nama Game MOD</li>
+        <li>Baris 2: Ukuran Game MOD</li>
+        <li>Baris 3: Category</li>
+        <li>Baris 4: Versi Game MOD</li>
+        <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
+        <li>Baris berikutnya: Link Asli MOD (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah link)</li>
+        <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah link)</li>
+        <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
+      `;
     }
+  }
 
-    
+  // ORI hanya untuk tipe ori-only dan ori-mod
+  if (gameData.type === 'ori-only' || gameData.type === 'ori-mod') {
+    container.innerHTML += `
+      <div class="ori-game-data mb-4">
+        <h5><i class="bi bi-phone"></i> Data Game ORI</h5>
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label required">Nama Game ORI</label>
+            <input type="text" id="oriGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition ORI">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Ukuran Game ORI</label>
+            <input type="text" id="oriSize" class="form-control" placeholder="Contoh: 2.79 GB">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Category</label>
+            <input type="text" id="oriCategory" class="form-control" placeholder="Contoh: Action">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Versi Game</label>
+            <input type="text" id="oriVersion" class="form-control" placeholder="Contoh: v1.4.299">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Ukuran Game MOD (opsional)</label>
+            <input type="text" id="oriModSize" class="form-control" placeholder="Contoh: 2.79 GB (jika ada)">
+          </div>
+        </div>
+
+        <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('oriOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
+
+        <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('oriAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
+
+        <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('oriAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
+      </div>
+    `;
+  }
+
+  // MOD untuk tipe ori-mod dan only-mod
+  if (gameData.type === 'ori-mod' || gameData.type === 'only-mod') {
+    const modFeatureInputs = Array.from({ length: gameData.modCount }).map((_, idx) => {
+      const n = idx + 1;
+      return `
+        <div class="col-md-12 mb-3">
+          <label class="form-label required">Mod ${n}</label>
+          <input type="text" id="modFeature${n}" class="form-control" placeholder="Contoh: Unlimited Money">
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML += `
+      <div class="mod-game-data mb-4">
+        <div class="mod-header">
+          <h5><i class="bi bi-magic"></i> Data Game MOD (${gameData.modCount} MOD)</h5>
+          <span class="mod-number">MOD</span>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label required">Nama Game MOD</label>
+            <input type="text" id="modGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition MOD">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Ukuran Game MOD</label>
+            <input type="text" id="modSize" class="form-control" placeholder="Contoh: 2.79 GB">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Category</label>
+            <input type="text" id="modCategory" class="form-control" placeholder="Contoh: Action">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Versi Game</label>
+            <input type="text" id="modVersion" class="form-control" placeholder="Contoh: v1.4.299">
+          </div>
+
+          ${modFeatureInputs}
+        </div>
+
+        <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('modOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
+
+        <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('modAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
+
+        <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('modAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
+      </div>
+    `;
+  }
+
+  // Thumbnail selalu muncul untuk semua tipe game
+  container.innerHTML += renderThumbnailSection();
+}
+
+  
+
+
+function renderThumbnailSection() {
+  return `
+    <!-- Thumbnail Input -->
+    <div class="thumbnail-input mt-4">
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0"><i class="bi bi-image"></i> Thumbnail Game (Optional)</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle-fill"></i>
+            <div>
+              <strong>Informasi:</strong> Upload thumbnail game Anda ke hosting gambar terlebih dahulu (seperti Imgur, Postimg, dll), lalu masukkan URL-nya di sini.
+              <br><small class="text-muted">Ukuran rekomendasi: 1280x720 px atau rasio 16:9</small>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8">
+              <label class="form-label">
+                <i class="bi bi-link-45deg"></i> URL Thumbnail
+              </label>
+              <input type="url" id="thumbnailUrl" class="form-control"
+                     placeholder="https://example.com/thumbnail.jpg"
+                     pattern="https?://.+" />
+              <div class="form-text">Masukkan URL lengkap gambar thumbnail</div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label d-block">&nbsp;</label>
+              <button type="button" class="btn btn-outline-info w-100" onclick="testThumbnail()">
+                <i class="bi bi-eye"></i> Test Preview
+              </button>
+            </div>
+          </div>
+
+          <div id="thumbnailPreview" class="mt-3" style="display:none;">
+            <div class="card">
+              <div class="card-header">Preview Thumbnail</div>
+              <div class="card-body text-center">
+                <img id="thumbnailImage" src="" class="img-fluid rounded"
+                     style="max-height: 200px;"
+                     onerror="this.style.display='none'; document.getElementById('thumbnailError').style.display='block';"
+                     alt="Thumbnail Preview">
+                <div id="thumbnailError" class="alert alert-danger mt-2" style="display:none;">
+                  <i class="bi bi-exclamation-triangle"></i> Gagal memuat gambar. Pastikan URL benar dan bisa diakses.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
     function generateLinkInputs(prefix, count, clouds, modIndex = null) {
       let html = '';
       for (let i = 0; i < count; i++) {
@@ -1964,15 +1977,37 @@
     
     // ===================== PASTE FUNCTIONALITY =====================
 function parsePasteData() {
-  const pasteText = document.getElementById('pasteArea').value.trim();
+  const pasteText = (document.getElementById('pasteArea')?.value || '').trim();
   if (!pasteText) {
     alert('Tidak ada data untuk diparse!');
     return;
   }
-  
+
   try {
-    const lines = pasteText.split('\n').map(l => l.trim()).filter(l => l !== '');
-    
+    // Ambil semua baris, rapikan
+    let lines = pasteText.split('\n').map(l => l.trim());
+
+    // Buang baris kosong DI DEPAN & DI BELAKANG saja
+    while (lines.length && !lines[0]) lines.shift();
+    while (lines.length && !lines[lines.length - 1]) lines.pop();
+
+    // Deteksi thumbnail dari baris terakhir (opsional)
+    const lastLine = (lines[lines.length - 1] || '').trim();
+    const isImageUrl =
+      /^https?:\/\/.+/i.test(lastLine) &&
+      /\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i.test(lastLine);
+
+    // Kalau lastLine adalah image url, keluarkan dari lines dulu
+    let thumbUrlFromPaste = '';
+    if (isImageUrl) {
+      thumbUrlFromPaste = lastLine;
+      lines.pop();
+    }
+
+    // Buang baris kosong lagi di belakang setelah pop thumbnail
+    while (lines.length && !lines[lines.length - 1]) lines.pop();
+
+    // Parse sesuai tipe
     if (gameData.type === 'ori-only') {
       parseOriOnlyData(lines);
     } else if (gameData.type === 'ori-mod') {
@@ -1980,26 +2015,27 @@ function parsePasteData() {
     } else if (gameData.type === 'only-mod') {
       parseOnlyModData(lines);
     }
-    
-    // Cek apakah baris terakhir adalah URL gambar (thumbnail)
-    const lastLine = lines[lines.length - 1] || '';
-    const isImageUrl = lastLine.match(/\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i);
-    
-    if (isImageUrl && lastLine.startsWith('http')) {
-      document.getElementById('thumbnailUrl').value = lastLine;
-      testThumbnail();
+
+    // Isi thumbnail kalau ada elemen + ada url
+    const thumbEl = document.getElementById('thumbnailUrl');
+    if (thumbEl && thumbUrlFromPaste) {
+      thumbEl.value = thumbUrlFromPaste;
+      if (typeof testThumbnail === 'function') testThumbnail();
     }
-    
-    document.getElementById('pasteStatus').style.display = 'inline-block';
-    setTimeout(() => {
-      document.getElementById('pasteStatus').style.display = 'none';
-    }, 3000);
-    
+
+    // Status UI
+    const status = document.getElementById('pasteStatus');
+    if (status) {
+      status.style.display = 'inline-block';
+      setTimeout(() => { status.style.display = 'none'; }, 3000);
+    }
+
     showToast('success', 'Data berhasil diparse dan diisi otomatis!');
   } catch (error) {
     showToast('error', 'Gagal memparse data: ' + error.message);
   }
 }
+
   
 
 
