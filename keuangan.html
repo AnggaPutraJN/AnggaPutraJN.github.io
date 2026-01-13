@@ -906,6 +906,19 @@
                 <!-- Ringkasan Pengeluaran Bulan Ini -->
                 <div class="separator"></div>
                 
+        <div class="col-12">
+  <div class="mini-card mini-card-warning" id="jajanLimitCard">
+    <div class="mini-card-title">Batasan Jajan Harian</div>
+    <div class="mini-card-value" id="todayJajanAmount">Rp 0</div>
+    <div class="mini-card-sub" id="jajanLimitMeta">Batas: Rp 50.000</div>
+
+    <div class="mini-card-sub text-danger hidden" id="jajanLimitWarning">
+      <i class="bi bi-exclamation-triangle"></i>
+      Hari ini anda telah melebihi batasan jajan untuk hari ini, mohon lebih hemat lagi
+    </div>
+  </div>
+</div>
+
                 <div class="row g-3 mb-4 fade-in" style="animation-delay: 0.2s">
                     <div class="col-12">
                         <div class="card">
@@ -1101,6 +1114,9 @@
 
             <!-- Utang Saya Panel -->
             <div class="tab-pane fade" id="debts-panel">
+
+
+
                 <div class="row g-3 fade-in">
                     <!-- Ringkasan Utang -->
                     <div class="col-12">
@@ -1708,6 +1724,10 @@
             </div>
         </div>
 
+
+
+
+
         <footer class="text-center mt-5 mb-3">
             <p><i class="bi bi-c-circle"></i> 2024 • Sistem Manajemen Keuangan Personal</p>
             <p class="text-muted">Terintegrasi dengan Google Sheets • Powered by AnggaPutraJN</p>
@@ -1731,6 +1751,8 @@
     let debtChart = null;
     let debtsData = [];
     let paymentsData = [];
+    const DAILY_JAJAN_LIMIT = 50000;
+    const JAJAN_CATEGORIES = ['Makan'];
 
     let lastDashboard = {
         total: 0,
@@ -2770,83 +2792,113 @@ function renderBalanceInfoAndPreview() {
     }
 
     // Build daily expense summary
-    function buildDailyExpenseSummary(transactions) {
-        const now = new Date();
-        const todayMid = toLocalMidnight(now);
-        const yesterdayMid = toLocalMidnight(addDays(now, -1));
+function buildDailyExpenseSummary(transactions) {
+  const now = new Date();
+  const todayMid = toLocalMidnight(now);
+  const yesterdayMid = toLocalMidnight(addDays(now, -1));
 
-        const todayKey = dateKeyLocal(todayMid);
-        const yesterdayKey = dateKeyLocal(yesterdayMid);
+  const todayKey = dateKeyLocal(todayMid);
+  const yesterdayKey = dateKeyLocal(yesterdayMid);
 
-        let todayTotal = 0;
-        let yesterdayTotal = 0;
+  let todayTotal = 0;
+  let yesterdayTotal = 0;
 
-        (transactions || []).forEach(t => {
-            if ((t.jenis || '').trim() !== 'Pengeluaran') return;
+  // tambahan
+  let todayJajanTotal = 0;
 
-            const k = getTxnDateKey(t.tanggal);
-            if (!k) return;
+  (transactions || []).forEach(t => {
+    if ((t.jenis || '').trim() !== 'Pengeluaran') return;
 
-            const amt = toInt(t.jumlah);
-            if (amt <= 0) return;
+    const k = getTxnDateKey(t.tanggal);
+    if (!k) return;
 
-            if (k === todayKey) todayTotal += amt;
-            if (k === yesterdayKey) yesterdayTotal += amt;
-        });
+    const amt = toInt(t.jumlah);
+    if (amt <= 0) return;
 
-        return { todayTotal, yesterdayTotal, todayKey, yesterdayKey };
+    if (k === todayKey) {
+      todayTotal += amt;
+
+      const cat = (t.kategori || '').trim();
+      if (JAJAN_CATEGORIES.includes(cat)) {
+        todayJajanTotal += amt;
+      }
     }
+
+    if (k === yesterdayKey) {
+      yesterdayTotal += amt;
+    }
+  });
+
+  return { todayTotal, yesterdayTotal, todayKey, yesterdayKey, todayJajanTotal };
+}
+
 
     // Render daily expense cards
-    function renderDailyExpenseCards(daily) {
-        const todayEl = document.getElementById('todayExpenseAmount');
-        const yestEl = document.getElementById('yesterdayExpenseAmount');
-        const todayMeta = document.getElementById('todayExpenseMeta');
-        const yestMeta = document.getElementById('yesterdayExpenseMeta');
+function renderDailyExpenseCards(daily) {
+  const todayEl = document.getElementById('todayExpenseAmount');
+  const yestEl = document.getElementById('yesterdayExpenseAmount');
+  const todayMeta = document.getElementById('todayExpenseMeta');
+  const yestMeta = document.getElementById('yesterdayExpenseMeta');
 
-        const compareCard = document.getElementById('dayCompareCard');
-        const compareText = document.getElementById('dayCompareText');
+  const compareCard = document.getElementById('dayCompareCard');
+  const compareText = document.getElementById('dayCompareText');
 
-        if (!todayEl || !yestEl || !compareCard || !compareText) return;
+  if (!todayEl || !yestEl || !compareCard || !compareText) return;
 
-        todayEl.textContent = formatRupiah(daily.todayTotal);
-        yestEl.textContent = formatRupiah(daily.yesterdayTotal);
+  todayEl.textContent = formatRupiah(daily.todayTotal);
+  yestEl.textContent = formatRupiah(daily.yesterdayTotal);
 
-        if (todayMeta) todayMeta.textContent = `Tanggal: ${daily.todayKey}`;
-        if (yestMeta) yestMeta.textContent = `Tanggal: ${daily.yesterdayKey}`;
+  if (todayMeta) todayMeta.textContent = `Tanggal: ${daily.todayKey}`;
+  if (yestMeta) yestMeta.textContent = `Tanggal: ${daily.yesterdayKey}`;
 
-        const diff = daily.todayTotal - daily.yesterdayTotal;
+  const diff = daily.todayTotal - daily.yesterdayTotal;
 
-        // Reset class dulu
-        compareCard.className = 'mini-card mini-card-muted';
+  compareCard.className = 'mini-card mini-card-muted';
 
-        if (daily.todayTotal === 0 && daily.yesterdayTotal === 0) {
-            compareText.textContent = 'Belum ada pengeluaran hari ini dan kemarin.';
-            return;
-        }
-
-        if (diff === 0) {
-            compareText.textContent = 'Hari ini sama dengan kemarin.';
-            return;
-        }
-
-        // Jika kemarin 0
-        if (daily.yesterdayTotal === 0) {
-            compareCard.className = 'mini-card mini-card-danger';
-            compareText.textContent = `Hari ini lebih besar ${formatRupiah(diff)} dibanding kemarin.`;
-            return;
-        }
-
-        const pct = Math.round((Math.abs(diff) / daily.yesterdayTotal) * 100);
-
-        if (diff > 0) {
-            compareCard.className = 'mini-card mini-card-danger';
-            compareText.textContent = `Hari ini lebih boros ${formatRupiah(diff)} atau naik ${pct}% dibanding kemarin.`;
-        } else {
-            compareCard.className = 'mini-card mini-card-success';
-            compareText.textContent = `Hari ini lebih hemat ${formatRupiah(Math.abs(diff))} atau turun ${pct}% dibanding kemarin.`;
-        }
+  if (daily.todayTotal === 0 && daily.yesterdayTotal === 0) {
+    compareText.textContent = 'Belum ada pengeluaran hari ini dan kemarin.';
+  } else if (diff === 0) {
+    compareText.textContent = 'Hari ini sama dengan kemarin.';
+  } else if (daily.yesterdayTotal === 0) {
+    compareCard.className = 'mini-card mini-card-danger';
+    compareText.textContent = `Hari ini lebih besar ${formatRupiah(diff)} dibanding kemarin.`;
+  } else {
+    const pct = Math.round((Math.abs(diff) / daily.yesterdayTotal) * 100);
+    if (diff > 0) {
+      compareCard.className = 'mini-card mini-card-danger';
+      compareText.textContent = `Hari ini lebih boros ${formatRupiah(diff)} atau naik ${pct}% dibanding kemarin.`;
+    } else {
+      compareCard.className = 'mini-card mini-card-success';
+      compareText.textContent = `Hari ini lebih hemat ${formatRupiah(Math.abs(diff))} atau turun ${pct}% dibanding kemarin.`;
     }
+  }
+
+  // ============================================
+  // BATASAN JAJAN (TAMBAHAN)
+  // ============================================
+  const jajanCard = document.getElementById('jajanLimitCard');
+  const jajanAmountEl = document.getElementById('todayJajanAmount');
+  const jajanMetaEl = document.getElementById('jajanLimitMeta');
+  const jajanWarnEl = document.getElementById('jajanLimitWarning');
+
+  if (!jajanCard || !jajanAmountEl || !jajanMetaEl || !jajanWarnEl) return;
+
+  const jajanTotal = toInt(daily.todayJajanTotal);
+  const sisa = DAILY_JAJAN_LIMIT - jajanTotal;
+
+  jajanAmountEl.textContent = formatRupiah(jajanTotal);
+
+  if (sisa >= 0) {
+    jajanCard.className = 'mini-card mini-card-success';
+    jajanMetaEl.textContent = `Batas: ${formatRupiah(DAILY_JAJAN_LIMIT)} • Sisa: ${formatRupiah(sisa)}`;
+    jajanWarnEl.classList.add('hidden');
+  } else {
+    jajanCard.className = 'mini-card mini-card-danger pulse';
+    jajanMetaEl.textContent = `Batas: ${formatRupiah(DAILY_JAJAN_LIMIT)} • Lebih: ${formatRupiah(Math.abs(sisa))}`;
+    jajanWarnEl.classList.remove('hidden');
+  }
+}
+
 
     // ============================================
     // FUNGSI TRANSAKSI
