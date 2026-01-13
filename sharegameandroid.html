@@ -1091,7 +1091,6 @@
             const originalText = generateBtn.innerHTML;
             generateBtn.innerHTML = '<span class="loading"></span> Generating...';
             generateBtn.disabled = true;
-            const altLink = buildAlternativeLink(inputName);
 
             
             setTimeout(() => {
@@ -1103,6 +1102,7 @@
                 const inputLink = document.getElementById("inputLink").value;
                 const inputModNote = document.getElementById("inputModNote") ? document.getElementById("inputModNote").value : '';
                 const inputModType = document.getElementById("inputModType") ? document.getElementById("inputModType").value : '';
+            const altLink = buildAlternativeLink(inputName);
                 
                 // Get MOD values
                 let modText = '';
@@ -1231,14 +1231,23 @@ https://indapk.com/requestgame.html
             }, 1000);
         }
 
-  function buildAlternativeLink(gameName) {
-      const name = (gameName || '').trim();
-      if (!name) return 'https://indapk.github.io';
+function buildAlternativeLink(gameName) {
+    let name = '';
 
-      // Ubah spasi jadi + sesuai contoh kamu
-      const q = encodeURIComponent(name).replace(/%20/g, '+');
-      return `https://indapk.github.io/?q=${q}`;
-  }
+    // Kalau yang masuk elemen input, ambil value-nya
+    if (gameName && typeof gameName === 'object' && 'value' in gameName) {
+        name = gameName.value;
+    } else {
+        name = gameName ?? '';
+    }
+
+    name = String(name).trim();
+    if (!name) return 'https://indapk.github.io';
+
+    const q = encodeURIComponent(name).replace(/%20/g, '+');
+    return `https://indapk.github.io/?q=${q}`;
+}
+
         // Notification function
         function showNotification(message, type) {
             const notification = document.createElement('div');
