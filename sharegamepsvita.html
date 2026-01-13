@@ -657,6 +657,16 @@ textarea.addEventListener('keydown', (event) => {
   }
 });
 
+function buildIndapkSearchUrl(gameName) {
+  const base = "https://indapk.github.io/";
+  const name = (gameName || "").trim();
+  if (!name) return base;
+
+  const q = encodeURIComponent(name).replace(/%20/g, "+");
+  return `${base}?q=${q}`;
+}
+
+
 function generateCode() {
     // Show loading state
     const generateBtn = document.querySelector('.btn-primary-custom');
@@ -667,6 +677,7 @@ function generateCode() {
     setTimeout(() => {
         // Get values from game form
         const inputName = document.getElementById("inputName").value;
+        const altLink = buildIndapkSearchUrl(inputName);
         const inputSingleSize = document.getElementById("inputSingleSize").value;
         const inputCategory = document.getElementById("inputCategory").value;
         const inputGameID = document.getElementById("inputGameID").value;
@@ -694,7 +705,7 @@ Format: NoNpDrm (PS Vita)
 ${inputLink}
 
 🌐Link Alternative Download:
-https://indapk.github.io
+${altLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -721,7 +732,7 @@ Format: NoNpDrm (PS Vita)
 ${inputLink}
 
 🌐Link Alternative Download:
-https://indapk.github.io
+${altLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -748,7 +759,7 @@ Format: NoNpDrm (PS Vita)
 ${inputLink}
 
 🌐Link Alternative Download:
-https://indapk.github.io
+${altLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
