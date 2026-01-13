@@ -1,778 +1,1361 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>Generator Kode Share Game Android APK</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<style>
-:root {
-  --primary-bg: #0a0a0a;
-  --secondary-bg: #1a1a1a;
-  --card-bg: #2a2a2a;
-  --text-primary: #7CC6ED;
-  --text-secondary: #7CC6ED;
-  --accent-color: #00d4ff;
-  --accent-secondary: #ff006e;
-  --accent-green: #00ff88;
-  --border-color: #333;
-  --neon-glow: 0 0 20px;
-  --placeholder-color: #888;
-}
-
-[data-theme="light"] {
-  --primary-bg: #f8f9fa;
-  --secondary-bg: #ffffff;
-  --card-bg: #ffffff;
-  --text-primary: #212529;
-  --text-secondary: #6c757d;
-  --accent-color: #0066cc;
-  --accent-secondary: #dc3545;
-  --accent-green: #28a745;
-  --border-color: #dee2e6;
-  --neon-glow: 0 0 10px;
-  --placeholder-color: #6c757d;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
-  color: var(--text-primary);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 100vh;
-  transition: all 0.3s ease;
-}
-
-/* Navigation Styles */
-.nav-section {
-  background: rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(10px);
-  border-bottom: 2px solid var(--accent-color);
-  padding: 1rem 0;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.nav-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.nav-btn {
-  padding: 12px 24px;
-  border-radius: 25px;
-  text-decoration: none;
-  color: white;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-gradient-bg3 {
-  background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
-  box-shadow: var(--neon-glow) var(--accent-color);
-}
-
-.btn-gradient-bg5 {
-  background: linear-gradient(45deg, var(--accent-secondary), var(--accent-color));
-  box-shadow: var(--neon-glow) var(--accent-secondary);
-}
-
-.nav-btn:hover {
-  transform: translateY(-3px);
-  color: white;
-  box-shadow: var(--neon-glow) var(--accent-color), 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-/* Theme Switch */
-.theme-switch-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1001;
-}
-
-.theme-switch {
-  position: relative;
-  width: 60px;
-  height: 30px;
-  background: var(--card-bg);
-  border-radius: 15px;
-  border: 2px solid var(--accent-color);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.theme-switch::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 22px;
-  height: 22px;
-  background: var(--accent-color);
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px var(--accent-color);
-}
-
-.theme-switch.active::before {
-  transform: translateX(28px);
-}
-
-/* Container Styles */
-.container-fluid {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-/* Card Styles */
-.custom-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.custom-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-  animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-
-.custom-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-}
-
-.card-header {
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
-  color: white;
-  padding: 1.5rem;
-  border-radius: 20px 20px 0 0;
-  text-align: center;
-}
-
-.card-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.card-body {
-  padding: 2rem;
-}
-
-/* Form Styles */
-.form-control, input[type="text"] {
-  background: var(--secondary-bg);
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  color: var(--text-primary);
-  padding: 12px 16px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  margin-bottom: 1rem;
-  width: 100%;
-}
-
-.form-control:focus, input[type="text"]:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
-  background: var(--card-bg);
-}
-
-/* Placeholder Styles - Fixed */
-.form-control::placeholder, 
-input[type="text"]::placeholder,
-textarea::placeholder {
-  color: var(--placeholder-color) !important;
-  opacity: 1;
-}
-
-.form-control::-webkit-input-placeholder,
-input[type="text"]::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
-  color: var(--placeholder-color) !important;
-}
-
-.form-control::-moz-placeholder,
-input[type="text"]::-moz-placeholder,
-textarea::-moz-placeholder {
-  color: var(--placeholder-color) !important;
-  opacity: 1;
-}
-
-.form-control:-ms-input-placeholder,
-input[type="text"]:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
-  color: var(--placeholder-color) !important;
-}
-
-.form-control:-moz-placeholder,
-input[type="text"]:-moz-placeholder,
-textarea:-moz-placeholder {
-  color: var(--placeholder-color) !important;
-  opacity: 1;
-}
-
-textarea.form-control {
-  min-height: 200px;
-  resize: vertical;
-  font-family: 'Courier New', monospace;
-}
-
-label {
-  color: var(--text-primary);
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-/* Button Styles */
-.btn-custom {
-  padding: 12px 30px;
-  border-radius: 25px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-custom::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.btn-custom:hover::before {
-  left: 100%;
-}
-
-.btn-primary-custom {
-  background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
-  color: white;
-  box-shadow: var(--neon-glow) var(--accent-color);
-}
-
-.btn-secondary-custom {
-  background: linear-gradient(45deg, #6c757d, #495057);
-  color: white;
-}
-
-.btn-danger-custom {
-  background: linear-gradient(45deg, var(--accent-secondary), #ff4757);
-  color: white;
-  box-shadow: var(--neon-glow) var(--accent-secondary);
-}
-
-.btn-custom:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-/* Result Section */
-#result {
-  background: var(--card-bg);
-  border: 2px solid var(--accent-color);
-  border-radius: 15px;
-  padding: 20px;
-  margin-top: 20px;
-  font-family: 'Courier New', monospace;
-  white-space: pre-wrap;
-  color: var(--text-primary);
-  box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1);
-  min-height: 100px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .nav-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .container-fluid {
-    padding: 1rem;
-  }
-  
-  .theme-switch-container {
-    top: 10px;
-    right: 10px;
-  }
-  
-  .card-body {
-    padding: 1rem;
-  }
-}
-
-/* Loading Animation */
-.loading {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: var(--accent-color);
-  animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Success Animation */
-.success-animation {
-  animation: pulse 0.5s ease-in-out;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--secondary-bg);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--accent-color);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-secondary);
-}
-
-.form-check {
-    margin-bottom: 0.5rem;
-}
-
-.form-check-input {
-    width: 1.2em;
-    height: 1.2em;
-    margin-top: 0.2em;
-    background-color: var(--secondary-bg);
-    border: 2px solid var(--border-color);
-}
-
-.form-check-input:checked {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-}
-
-.form-check-input:focus {
-    box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
-}
-
-.form-check-label {
-    margin-left: 0.5rem;
-    color: var(--text-primary);
-    cursor: pointer;
-}
-</style>
-</head>
-<body>
-<!-- Theme Switch -->
-<div class="theme-switch-container">
-  <div class="theme-switch" onclick="toggleTheme()" title="Toggle Theme">
-  </div>
-</div>
-
-<!-- Navigation Section -->
-<div class="nav-section">
-  <div class="nav-buttons">
-    <a href="index" class="nav-btn btn-gradient-bg3">
-      <i class="fas fa-code"></i> Generator HTML Switch
-    </a>
-    <a href="ps2" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-gamepad"></i> Generator HTML PS2
-    </a>
-  </div>
-</div>
-
-<div class="container-fluid">
-<div class="row">
-<div class="col-md-6 mb-4">
-<div class="custom-card">
-<div class="card-header">
-<h2><i class="fas fa-terminal"></i> Input Area</h2>
-</div>
-<div class="card-body">
-<div class="mb-3">
-    <div class="form-check">
-        <input class="form-check-input" type="radio" name="postType" id="updateRequest" value="update" checked>
-        <label class="form-check-label" for="updateRequest">
-            UPDATE REQUEST GAME Android
-        </label>
-    </div>
-    <div class="form-check">
-        <input class="form-check-input" type="radio" name="postType" id="shareGame" value="share">
-        <label class="form-check-label" for="shareGame">
-            SHARE GAME Android
-        </label>
-    </div>
-    <div class="form-check">
-        <input class="form-check-input" type="radio" name="postType" id="uploadulang" value="upload">
-        <label class="form-check-label" for="uploadulang">
-            Upload Ulang GAME Android
-        </label>
-    </div>
-<label for="myTextarea">Masukkan Detail Game (satu per baris):</label>
-<textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game...&#10;Contoh:&#10;Persona 4 Golden&#10;3.2 GB&#10;RPG&#10;USA&#10;https://example.com/download"></textarea>
-</div>
-<div class="d-flex justify-content-center flex-wrap gap-2">
-<button type="button" onclick="generateCode()" class="btn btn-custom btn-primary-custom">
-<i class="fas fa-cogs"></i> Generate Code
-</button>
-<button type="button" onclick="copyCode()" class="btn btn-custom btn-secondary-custom">
-<i class="fas fa-copy"></i> Copy Code
-</button>
-<button type="button" onclick="clearCode()" class="btn btn-custom btn-danger-custom">
-<i class="fas fa-trash"></i> Clear All
-</button>
-</div>
-<div id="result"></div>
-</div>
-</div>
-</div>
-
-<div class="col-md-6 mb-4">
-<div class="custom-card">
-<div class="card-header">
-<h2><i class="fas fa-gamepad"></i> Detail Game Android</h2>
-</div>
-<div class="card-body">
-<form id="myForm">
-<label for="inputName"><i class="fas fa-tag"></i> Nama Game:</label>
-<input type="text" id="inputName" name="inputName" placeholder="Masukkan nama game...">
-
-<label for="inputSingleSize"><i class="fas fa-hdd"></i> Ukuran Game:</label>
-<input type="text" id="inputSingleSize" name="inputSingleSize" placeholder="Contoh: 3.2 GB">
-
-<label for="inputCategory"><i class="fas fa-list"></i> Category:</label>
-<input type="text" id="inputCategory" name="inputCategory" placeholder="Contoh: RPG, Adventure, Puzzle">
-
-<label for="inputVersion"><i class="fas fa-id-card"></i> Versi:</label>
-<input type="text" id="inputVersion" name="inputVersion" placeholder="Masukkan ID game...">
-
-<label for="inputMod"><i class="fas fa-code-branch"></i> MOD Game:</label>
-<input type="text" id="inputMod" name="inputMod" placeholder="Masukkan MOD game...">
-
-<label for="inputLink"><i class="fas fa-link"></i> Link Game:</label>
-<input type="text" id="inputLink" name="inputLink" placeholder="https://example.com/download">
-
-</form>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<!--Scripts-->
-<script>
-// Theme Toggle Function
-function toggleTheme() {
-  const body = document.body;
-  const themeSwitch = document.querySelector('.theme-switch');
-  
-  if (body.getAttribute('data-theme') === 'light') {
-    body.removeAttribute('data-theme');
-    themeSwitch.classList.remove('active');
-    localStorage.setItem('theme', 'dark');
-  } else {
-    body.setAttribute('data-theme', 'light');
-    themeSwitch.classList.add('active');
-    localStorage.setItem('theme', 'light');
-  }
-}
-
-// Load saved theme
-document.addEventListener('DOMContentLoaded', function() {
-  const savedTheme = localStorage.getItem('theme');
-  const themeSwitch = document.querySelector('.theme-switch');
-  
-  if (savedTheme === 'light') {
-    document.body.setAttribute('data-theme', 'light');
-    themeSwitch.classList.add('active');
-  }
-});
-
-function clearCode() {
-  const resultDiv = document.getElementById("result");
-  resultDiv.innerText = "";
-  
-  // Add animation
-  resultDiv.style.animation = 'pulse 0.3s ease-out';
-  setTimeout(() => {
-    resultDiv.style.animation = '';
-  }, 300);
-
-  // Clear all inputs and textarea
-  const allInputs = document.querySelectorAll('input, textarea');
-  allInputs.forEach(input => {
-    input.value = '';
-  });
-}
-
-function copyCode() {
-  const resultDiv = document.getElementById("result");
-  const generatedHtml = resultDiv.innerText;
-
-  if (generatedHtml.trim() === "") {
-    showNotification("Maaf, codingan belum dibuat!", "error");
-    return;
-  }
-
-  const tempTextarea = document.createElement("textarea");
-  tempTextarea.value = generatedHtml;
-  document.body.appendChild(tempTextarea);
-  tempTextarea.select();
-  document.execCommand("copy");
-  document.body.removeChild(tempTextarea);
-  
-  showNotification("Codingan berhasil disalin!", "success");
-  
-  // Add success animation
-  resultDiv.classList.add('success-animation');
-  setTimeout(() => {
-    resultDiv.classList.remove('success-animation');
-  }, 500);
-}
-
-// Notification function
-function showNotification(message, type) {
-  const notification = document.createElement('div');
-  notification.style.cssText = `
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 15px 25px;
-    border-radius: 25px;
-    color: white;
-    font-weight: 600;
-    z-index: 10000;
-    animation: slideDown 0.3s ease-out;
-    ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
-  `;
-  notification.textContent = message;
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.style.animation = 'slideUp 0.3s ease-out forwards';
-    setTimeout(() => notification.remove(), 300);
-  }, 3000);
-}
-
-// Add CSS for notification animations
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes slideDown {
-    from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
-    to { transform: translateX(-50%) translateY(0); opacity: 1; }
-  }
-  @keyframes slideUp {
-    from { transform: translateX(-50%) translateY(0); opacity: 1; }
-    to { transform: translateX(-50%) translateY(-100px); opacity: 0; }
-  }
-`;
-document.head.appendChild(style);
-
-const textarea = document.getElementById('myTextarea');
-const form = document.getElementById('myForm');
-const inputs = form.querySelectorAll('input');
-
-textarea.addEventListener('input', () => {
-  const text = textarea.value.trim();
-  const values = text.split('\n');
-
-  inputs.forEach((input, index) => {
-    if (values[index]) {
-      input.value = values[index];
-    } else {
-      input.value = '';
-    }
-  });
-});
-
-textarea.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-
-    const currentIndex = Array.from(inputs).findIndex((input) => input === document.activeElement);
-
-    if (currentIndex === -1) {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-
-      textarea.value = textarea.value.substring(0, start) + '\n' + textarea.value.substring(end);
-      textarea.selectionStart = textarea.selectionEnd = start + 1;
-    } else {
-      const nextIndex = currentIndex + 1;
-
-      if (nextIndex < inputs.length) {
-        inputs[nextIndex].focus();
-      }
-    }
-  }
-});
-
-function generateCode() {
-    // Show loading state
-    const generateBtn = document.querySelector('.btn-primary-custom');
-    const originalText = generateBtn.innerHTML;
-    generateBtn.innerHTML = '<span class="loading"></span> Generating...';
-    generateBtn.disabled = true;
-    
-    setTimeout(() => {
-        // Get values from game form
-        const inputName = document.getElementById("inputName").value;
-        const inputSingleSize = document.getElementById("inputSingleSize").value;
-        const inputCategory = document.getElementById("inputCategory").value;
-        const inputVersion = document.getElementById("inputVersion").value;
-        const inputMod = document.getElementById("inputMod").value;
-        const inputLink = document.getElementById("inputLink").value;
-        
-        // Get selected post type
-        const postType = document.querySelector('input[name="postType"]:checked').value;
-
-        let generatedHtml;
-        
-        if (postType === 'share') {
-            generatedHtml = `🎮SHARE GAME Android Premium
-🎮Update Game:
-Nama Game: ${inputName}
-Ukuran Game: ${inputSingleSize} (APK)
-Category: ${inputCategory}
-Versi: ${inputVersion}
-MOD: ${inputMod}
-Platform: Android
-Connection: Offline
-Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: APK (Android)
-
-🌐Link Game:
-${inputLink}
-
-🌐Link Alternative Download:
-https://indapk.github.io
-
-🌐Join Komunitas INDapk:
-https://www.kuysocial.com/pages/INDapk
-
-🌐Request Game:
-https://indapk.com/requestgame.html
-
-
-#INDapk`;
-        } else if (postType === 'upload') {
-            generatedHtml = `🎮Upload Ulang GAME Android Premium
-🎮Update Game:
-Nama Game: ${inputName}
-Ukuran Game: ${inputSingleSize} (APK)
-Category: ${inputCategory}
-Versi: ${inputVersion}
-MOD: ${inputMod}
-Platform: Android 
-Connection: Offline
-Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: APK (Android) 
-
-🌐Link Game:
-${inputLink}
-
-🌐Link Alternative Download:
-https://indapk.github.io
-
-🌐Join Komunitas INDapk:
-https://www.kuysocial.com/pages/INDapk
-
-🌐Request Game:
-https://indapk.com/requestgame.html
-
-
-#INDapk`;
-        } else {
-            generatedHtml = `🎮UPDATE REQUEST GAME Android Premium
-🎮Update Game:
-Nama Game: ${inputName}
-Ukuran Game: ${inputSingleSize} (APK)
-Category: ${inputCategory}
-Versi: ${inputVersion}
-MOD: ${inputMod}
-Platform: Android
-Connection: Offline
-Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: APK (Android)
-
-🌐Link Game:
-${inputLink}
-
-🌐Link Alternative Download:
-https://indapk.github.io
-
-🌐Join Komunitas INDapk:
-https://www.kuysocial.com/pages/INDapk
-
-🌐Request Game:
-https://indapk.com/requestgame.html
-
-
-#INDapk`;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Kode Share Game Android APK - MOD/ORI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --card-bg: #2a2a2a;
+            --text-primary: #7CC6ED;
+            --text-secondary: #7CC6ED;
+            --accent-color: #00d4ff;
+            --accent-secondary: #ff006e;
+            --accent-green: #00ff88;
+            --accent-orange: #FF6B35;
+            --accent-purple: #9D4EDD;
+            --border-color: #333;
+            --neon-glow: 0 0 20px;
+            --placeholder-color: #888;
         }
 
-        // Display the generated HTML
-        document.getElementById("result").innerText = generatedHtml;
-        
-        // Reset button
-        generateBtn.innerHTML = originalText;
-        generateBtn.disabled = false;
-        
-        // Show success notification
-        showNotification("Code berhasil di-generate!", "success");
-    }, 1000);
-}
-</script>
+        [data-theme="light"] {
+            --primary-bg: #f8f9fa;
+            --secondary-bg: #ffffff;
+            --card-bg: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --accent-color: #0066cc;
+            --accent-secondary: #dc3545;
+            --accent-green: #28a745;
+            --accent-orange: #fd7e14;
+            --accent-purple: #6f42c1;
+            --border-color: #dee2e6;
+            --neon-glow: 0 0 10px;
+            --placeholder-color: #6c757d;
+        }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            padding-bottom: 2rem;
+        }
+
+        /* Navigation Styles */
+        .nav-section {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--accent-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-gradient-bg3 {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            box-shadow: var(--neon-glow) var(--accent-color);
+        }
+
+        .btn-gradient-bg5 {
+            background: linear-gradient(45deg, var(--accent-secondary), var(--accent-color));
+            box-shadow: var(--neon-glow) var(--accent-secondary);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            color: white;
+            box-shadow: var(--neon-glow) var(--accent-color), 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Theme Switch */
+        .theme-switch-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        .theme-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .theme-switch.active::before {
+            transform: translateX(28px);
+        }
+
+        /* Container Styles */
+        .container-fluid {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .custom-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        .custom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Game Type Selection */
+        .game-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .game-type-btn {
+            flex: 1;
+            padding: 15px 10px;
+            border: 2px solid var(--border-color);
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-type-btn i {
+            font-size: 1.5rem;
+        }
+
+        .game-type-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .game-type-btn.active {
+            border-color: var(--accent-color);
+            box-shadow: var(--neon-glow) var(--accent-color);
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+        }
+
+        .game-type-btn.ori.active {
+            background: linear-gradient(45deg, var(--accent-green), #00b3ff);
+        }
+
+        .game-type-btn.mod.active {
+            background: linear-gradient(45deg, var(--accent-secondary), var(--accent-purple));
+        }
+
+        /* MOD Count Selector */
+        .mod-count-selector {
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .mod-count-selector.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mod-count-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+
+        .mod-count-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .mod-count-btn.active {
+            background: linear-gradient(45deg, var(--accent-secondary), var(--accent-purple));
+            border-color: var(--accent-secondary);
+            color: white;
+            box-shadow: var(--neon-glow) var(--accent-secondary);
+        }
+
+        /* Form Styles */
+        .form-control, input[type="text"], textarea {
+            background: var(--secondary-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            padding: 12px 16px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .form-control:focus, input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            background: var(--card-bg);
+        }
+
+        /* Placeholder Styles */
+        .form-control::placeholder, input[type="text"]::placeholder, textarea::placeholder {
+            color: var(--placeholder-color) !important;
+            opacity: 1;
+        }
+
+        textarea.form-control {
+            min-height: 200px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+
+        label {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group label i {
+            color: var(--accent-color);
+            width: 20px;
+        }
+
+        /* Mod Inputs Container */
+        .mod-inputs-container {
+            margin-top: 1rem;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .mod-inputs-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .mod-input-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-purple);
+        }
+
+        .mod-input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .mod-number {
+            background: var(--accent-purple);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .btn-remove-mod {
+            background: var(--accent-secondary);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-remove-mod:hover {
+            transform: scale(1.1);
+        }
+
+        /* Button Styles */
+        .btn-custom {
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-custom:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+            box-shadow: var(--neon-glow) var(--accent-color);
+        }
+
+        .btn-secondary-custom {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .btn-danger-custom {
+            background: linear-gradient(45deg, var(--accent-secondary), #ff4757);
+            color: white;
+            box-shadow: var(--neon-glow) var(--accent-secondary);
+        }
+
+        .btn-warning-custom {
+            background: linear-gradient(45deg, var(--accent-orange), #ff9e00);
+            color: white;
+            box-shadow: var(--neon-glow) var(--accent-orange);
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-group-custom {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Result Section */
+        #result {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            color: var(--text-primary);
+            box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1);
+            min-height: 100px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .result-badge {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .container-fluid {
+                padding: 1rem;
+            }
+
+            .theme-switch-container {
+                top: 10px;
+                right: 10px;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .game-type-selector {
+                flex-direction: column;
+            }
+
+            .btn-group-custom {
+                flex-direction: column;
+            }
+
+            .btn-custom {
+                width: 100%;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Success Animation */
+        .success-animation {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+
+        .form-check {
+            margin-bottom: 0.5rem;
+        }
+
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0.2em;
+            background-color: var(--secondary-bg);
+            border: 2px solid var(--border-color);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+        }
+
+        .form-check-label {
+            margin-left: 0.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* Game Info Badge */
+        .game-info-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--secondary-bg);
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .game-info-badge i {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Switch -->
+    <div class="theme-switch-container">
+        <div class="theme-switch" onclick="toggleTheme()" title="Toggle Theme"></div>
+    </div>
+
+    <!-- Navigation Section -->
+    <div class="nav-section">
+        <div class="nav-buttons">
+            <a href="index" class="nav-btn btn-gradient-bg3">
+                <i class="fas fa-code"></i> Generator HTML Switch
+            </a>
+            <a href="ps2" class="nav-btn btn-gradient-bg5">
+                <i class="fas fa-gamepad"></i> Generator HTML PS2
+            </a>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="custom-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-terminal"></i> Input Area</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Game Type Selection -->
+                        <div class="game-type-selector">
+                            <div class="game-type-btn ori active" onclick="selectGameType('ori')">
+                                <i class="fas fa-gem"></i>
+                                <span>ORI Game</span>
+                                <small>Original Game</small>
+                            </div>
+                            <div class="game-type-btn mod" onclick="selectGameType('mod')">
+                                <i class="fas fa-code-branch"></i>
+                                <span>MOD Game</span>
+                                <small>Modified Version</small>
+                            </div>
+                        </div>
+
+                        <!-- MOD Count Selector (Hidden by default) -->
+                        <div class="mod-count-selector" id="modCountSelector">
+                            <label><i class="fas fa-list-ol"></i> Pilih Jumlah MOD:</label>
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                <button class="mod-count-btn active" onclick="selectModCount(1)">1</button>
+                                <button class="mod-count-btn" onclick="selectModCount(2)">2</button>
+                                <button class="mod-count-btn" onclick="selectModCount(3)">3</button>
+                                <button class="mod-count-btn" onclick="selectModCount(4)">4</button>
+                                <button class="mod-count-btn" onclick="selectModCount(5)">5</button>
+                                <button class="mod-count-btn" onclick="selectModCount(10)">10</button>
+                            </div>
+                        </div>
+
+                        <!-- Post Type Selection -->
+                        <div class="mb-4">
+                            <label><i class="fas fa-file-alt"></i> Pilih Tipe Postingan:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="postType" id="updateRequest" value="update" checked>
+                                <label class="form-check-label" for="updateRequest">
+                                    UPDATE REQUEST GAME Android
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="postType" id="shareGame" value="share">
+                                <label class="form-check-label" for="shareGame">
+                                    SHARE GAME Android
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="postType" id="uploadulang" value="upload">
+                                <label class="form-check-label" for="uploadulang">
+                                    Upload Ulang GAME Android
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Text Area Input -->
+                        <div class="mb-3">
+                            <label for="myTextarea"><i class="fas fa-edit"></i> Masukkan Detail Game (satu per baris):</label>
+                            <textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game...&#10;Contoh:&#10;Persona 4 Golden&#10;3.2 GB&#10;RPG&#10;USA&#10;https://example.com/download"></textarea>
+                            <small class="text-muted">Tekan Enter untuk pindah ke field berikutnya</small>
+                        </div>
+
+                        <div class="btn-group-custom">
+                            <button type="button" onclick="generateCode()" class="btn btn-custom btn-primary-custom">
+                                <i class="fas fa-cogs"></i> Generate Code
+                            </button>
+                            <button type="button" onclick="copyCode()" class="btn btn-custom btn-secondary-custom">
+                                <i class="fas fa-copy"></i> Copy Code
+                            </button>
+                            <button type="button" onclick="clearCode()" class="btn btn-custom btn-danger-custom">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                        </div>
+
+                        <!-- Result Display -->
+                        <div class="mt-4">
+                            <div class="result-header">
+                                <h5 class="mb-0"><i class="fas fa-code"></i> Hasil Kode:</h5>
+                                <span class="result-badge" id="resultType">ORI Game</span>
+                            </div>
+                            <div id="result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="custom-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-gamepad"></i> Detail Game Android</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="myForm">
+                            <!-- Basic Game Info -->
+                            <div class="game-info-badge">
+                                <i class="fas fa-info-circle"></i> Informasi Dasar Game
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="inputName"><i class="fas fa-tag"></i> Nama Game:</label>
+                                <input type="text" id="inputName" name="inputName" placeholder="Masukkan nama game...">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="inputSingleSize"><i class="fas fa-hdd"></i> Ukuran Game:</label>
+                                <input type="text" id="inputSingleSize" name="inputSingleSize" placeholder="Contoh: 3.2 GB">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="inputCategory"><i class="fas fa-list"></i> Category:</label>
+                                <input type="text" id="inputCategory" name="inputCategory" placeholder="Contoh: RPG, Adventure, Puzzle">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="inputVersion"><i class="fas fa-id-card"></i> Versi:</label>
+                                <input type="text" id="inputVersion" name="inputVersion" placeholder="Masukkan versi game...">
+                            </div>
+
+                            <!-- MOD Input (Only for MOD games) -->
+                            <div id="modInputContainer" class="input-group" style="display: none;">
+                                <label for="inputMod"><i class="fas fa-code-branch"></i> MOD Game:</label>
+                                <input type="text" id="inputMod" name="inputMod" placeholder="Masukkan MOD game...">
+                            </div>
+
+                            <!-- MOD Inputs Container (For multiple MODs) -->
+                            <div id="modInputsContainer" class="mod-inputs-container"></div>
+
+                            <!-- Link Input -->
+                            <div class="input-group">
+                                <label for="inputLink"><i class="fas fa-link"></i> Link Game:</label>
+                                <input type="text" id="inputLink" name="inputLink" placeholder="https://example.com/download">
+                            </div>
+
+                            <!-- Additional Info for MOD Games -->
+                            <div id="additionalModInfo" style="display: none;">
+                                <div class="game-info-badge">
+                                    <i class="fas fa-exclamation-triangle"></i> Informasi Tambahan MOD
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="inputModNote"><i class="fas fa-sticky-note"></i> Catatan MOD:</label>
+                                    <textarea id="inputModNote" name="inputModNote" placeholder="Masukkan catatan khusus untuk MOD...&#10;Contoh:&#10;1. Perlu download data 4GB pertama kali&#10;2. Hanya support Android 11 ke atas" rows="3"></textarea>
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="inputModType"><i class="fas fa-cogs"></i> Tipe MOD:</label>
+                                    <input type="text" id="inputModType" name="inputModType" placeholder="Contoh: MOD Menu, Unlocked, Unlimited Money">
+                                </div>
+                            </div>
+
+                            <!-- Buttons for MOD Management -->
+                            <div id="modButtons" style="display: none;" class="mt-3">
+                                <button type="button" onclick="addModField()" class="btn btn-custom btn-warning-custom">
+                                    <i class="fas fa-plus"></i> Tambah MOD Lain
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Scripts-->
+    <script>
+        // State variables
+        let gameType = 'ori'; // 'ori' or 'mod'
+        let modCount = 1;
+        let currentModCount = 1;
+        let modInputs = [];
+
+        // Theme Toggle Function
+        function toggleTheme() {
+            const body = document.body;
+            const themeSwitch = document.querySelector('.theme-switch');
+            
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                themeSwitch.classList.remove('active');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                themeSwitch.classList.add('active');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeSwitch = document.querySelector('.theme-switch');
+            
+            if (savedTheme === 'light') {
+                document.body.setAttribute('data-theme', 'light');
+                themeSwitch.classList.add('active');
+            }
+
+            // Initialize mod inputs array
+            modInputs = [{ id: 1, value: '' }];
+        });
+
+        // Game Type Selection
+        function selectGameType(type) {
+            gameType = type;
+            
+            // Update UI
+            document.querySelectorAll('.game-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (type === 'ori') {
+                document.querySelector('.game-type-btn.ori').classList.add('active');
+                document.getElementById('modCountSelector').classList.remove('show');
+                document.getElementById('modInputContainer').style.display = 'none';
+                document.getElementById('modInputsContainer').classList.remove('show');
+                document.getElementById('additionalModInfo').style.display = 'none';
+                document.getElementById('modButtons').style.display = 'none';
+                document.getElementById('resultType').textContent = 'ORI Game';
+                document.getElementById('resultType').style.background = 'linear-gradient(45deg, var(--accent-green), #00b3ff)';
+            } else {
+                document.querySelector('.game-type-btn.mod').classList.add('active');
+                document.getElementById('modCountSelector').classList.add('show');
+                document.getElementById('additionalModInfo').style.display = 'block';
+                document.getElementById('modButtons').style.display = 'block';
+                document.getElementById('resultType').textContent = 'MOD Game';
+                document.getElementById('resultType').style.background = 'linear-gradient(45deg, var(--accent-secondary), var(--accent-purple))';
+                
+                updateModInputsDisplay();
+            }
+            
+            // Update textarea placeholder
+            updateTextareaPlaceholder();
+        }
+
+        // MOD Count Selection
+        function selectModCount(count) {
+            modCount = count;
+            currentModCount = count;
+            
+            // Update UI
+            document.querySelectorAll('.mod-count-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update mod inputs
+            updateModInputs();
+            updateModInputsDisplay();
+        }
+
+        // Update MOD Inputs based on count
+        function updateModInputs() {
+            if (gameType !== 'mod') return;
+            
+            // Ensure we have the right number of mod inputs
+            if (modInputs.length < modCount) {
+                // Add missing inputs
+                for (let i = modInputs.length + 1; i <= modCount; i++) {
+                    modInputs.push({ id: i, value: '' });
+                }
+            } else if (modInputs.length > modCount) {
+                // Remove extra inputs
+                modInputs = modInputs.slice(0, modCount);
+            }
+            
+            // Update currentModCount
+            currentModCount = modCount;
+        }
+
+        // Update MOD Inputs Display
+        function updateModInputsDisplay() {
+            const container = document.getElementById('modInputsContainer');
+            const singleModInput = document.getElementById('modInputContainer');
+            
+            if (gameType !== 'mod') return;
+            
+            if (modCount === 1) {
+                container.classList.remove('show');
+                singleModInput.style.display = 'block';
+            } else {
+                singleModInput.style.display = 'none';
+                container.classList.add('show');
+                
+                // Generate mod input fields
+                let html = '';
+                for (let i = 1; i <= modCount; i++) {
+                    html += `
+                        <div class="mod-input-item">
+                            <div class="mod-input-header">
+                                <div class="mod-number">${i}</div>
+                                ${i > 1 ? '<button type="button" class="btn-remove-mod" onclick="removeModField(${i})"><i class="fas fa-times"></i></button>' : ''}
+                            </div>
+                            <input type="text" class="form-control mod-input" 
+                                   data-mod-id="${i}" 
+                                   placeholder="Masukkan MOD ${i}... (Contoh: Unlimited Money, God Mode)"
+                                   oninput="updateModInput(${i}, this.value)">
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
+                
+                // Load existing values
+                modInputs.forEach(mod => {
+                    if (mod.id <= modCount) {
+                        const input = document.querySelector(`.mod-input[data-mod-id="${mod.id}"]`);
+                        if (input) input.value = mod.value;
+                    }
+                });
+            }
+        }
+
+        // Update single MOD input value
+        function updateModInput(id, value) {
+            const mod = modInputs.find(m => m.id === id);
+            if (mod) {
+                mod.value = value;
+            } else {
+                modInputs.push({ id, value });
+            }
+        }
+
+        // Add MOD field
+        function addModField() {
+            modCount++;
+            currentModCount++;
+            modInputs.push({ id: modCount, value: '' });
+            updateModInputsDisplay();
+            
+            // Update MOD count selector
+            document.querySelectorAll('.mod-count-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent) === modCount) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Remove MOD field
+        function removeModField(id) {
+            if (modCount <= 1) return;
+            
+            modCount--;
+            modInputs = modInputs.filter(mod => mod.id !== id);
+            
+            // Reassign IDs
+            modInputs.forEach((mod, index) => {
+                mod.id = index + 1;
+            });
+            
+            updateModInputsDisplay();
+            
+            // Update MOD count selector
+            document.querySelectorAll('.mod-count-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent) === modCount) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Update textarea placeholder based on game type
+        function updateTextareaPlaceholder() {
+            const textarea = document.getElementById('myTextarea');
+            
+            if (gameType === 'ori') {
+                textarea.placeholder = `Masukkan detail game ORI...\nContoh:\nNine Sols\n368.53 MB\nRPG, Port Emulator\nv1.0\nhttps://www.indapk.com/nine-sols-android`;
+            } else {
+                if (modCount === 1) {
+                    textarea.placeholder = `Masukkan detail game MOD...\nContoh:\nManeater\n619.75 MB\nAdventure\nv1.5.18\nMOD: Unlocked\nhttps://www.indapk.com/maneater-mod-menu-android`;
+                } else {
+                    textarea.placeholder = `Masukkan detail game MOD...\nContoh:\nManeater\n1.21 GB\nAdventure\nv1.3\nMod Menu\nUnlock full content, built-in save files...\n1.No Google required\n2.Shark Invincible\n3.Unlimited oxygen\n...\nhttps://www.indapk.com/maneater-mod-menu-android`;
+                }
+            }
+        }
+
+        // Clear all inputs and results
+        function clearCode() {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerText = "";
+            
+            // Add animation
+            resultDiv.style.animation = 'pulse 0.3s ease-out';
+            setTimeout(() => {
+                resultDiv.style.animation = '';
+            }, 300);
+
+            // Clear all inputs and textarea
+            const allInputs = document.querySelectorAll('input, textarea');
+            allInputs.forEach(input => {
+                input.value = '';
+            });
+            
+            // Reset mod inputs
+            modInputs = [{ id: 1, value: '' }];
+            if (gameType === 'mod') {
+                updateModInputsDisplay();
+            }
+            
+            showNotification("Semua data berhasil dihapus!", "success");
+        }
+
+        // Copy code to clipboard
+        function copyCode() {
+            const resultDiv = document.getElementById("result");
+            const generatedHtml = resultDiv.innerText;
+
+            if (generatedHtml.trim() === "") {
+                showNotification("Maaf, codingan belum dibuat!", "error");
+                return;
+            }
+
+            const tempTextarea = document.createElement("textarea");
+            tempTextarea.value = generatedHtml;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextarea);
+            
+            showNotification("Codingan berhasil disalin!", "success");
+            
+            // Add success animation
+            resultDiv.classList.add('success-animation');
+            setTimeout(() => {
+                resultDiv.classList.remove('success-animation');
+            }, 500);
+        }
+
+        // Generate code based on inputs
+        function generateCode() {
+            // Show loading state
+            const generateBtn = document.querySelector('.btn-primary-custom');
+            const originalText = generateBtn.innerHTML;
+            generateBtn.innerHTML = '<span class="loading"></span> Generating...';
+            generateBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Get values from game form
+                const inputName = document.getElementById("inputName").value;
+                const inputSingleSize = document.getElementById("inputSingleSize").value;
+                const inputCategory = document.getElementById("inputCategory").value;
+                const inputVersion = document.getElementById("inputVersion").value;
+                const inputLink = document.getElementById("inputLink").value;
+                const inputModNote = document.getElementById("inputModNote") ? document.getElementById("inputModNote").value : '';
+                const inputModType = document.getElementById("inputModType") ? document.getElementById("inputModType").value : '';
+                
+                // Get MOD values
+                let modText = '';
+                if (gameType === 'mod') {
+                    if (modCount === 1) {
+                        const singleModInput = document.getElementById("inputMod");
+                        modText = singleModInput ? singleModInput.value : '';
+                    } else {
+                        // Collect all mod inputs
+                        const modValues = [];
+                        for (let i = 1; i <= modCount; i++) {
+                            const mod = modInputs.find(m => m.id === i);
+                            if (mod && mod.value.trim() !== '') {
+                                modValues.push(mod.value);
+                            }
+                        }
+                        modText = modValues.join('\n');
+                    }
+                }
+                
+                // Get selected post type
+                const postType = document.querySelector('input[name="postType"]:checked').value;
+
+                let generatedHtml;
+                let postTypeText = '';
+                
+                // Determine post type text
+                switch(postType) {
+                    case 'share':
+                        postTypeText = 'SHARE GAME Android Premium';
+                        break;
+                    case 'upload':
+                        postTypeText = 'Upload Ulang GAME Android Premium';
+                        break;
+                    default:
+                        postTypeText = 'UPDATE REQUEST GAME Android Premium';
+                }
+                
+                // Generate the code based on game type
+                if (gameType === 'ori') {
+                    // ORI Game Format
+                    generatedHtml = `🎮${postTypeText}
+🎮Update Game:
+Nama Game: ${inputName}
+Ukuran Game: ${inputSingleSize} (APK)
+Category: ${inputCategory}
+Versi: ${inputVersion}
+Platform: Android
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: APK (Android)
+
+🌐Link Game:
+${inputLink}
+
+🌐Link Alternative Download:
+https://indapk.github.io
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+                } else {
+                    // MOD Game Format
+                    generatedHtml = `🎮${postTypeText}
+🎮Update Game:
+Nama Game: ${inputName}
+Ukuran Game: ${inputSingleSize} (APK)
+Category: ${inputCategory}
+Versi: ${inputVersion}
+MOD: ${inputModType || 'Modified'}
+Platform: Android
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: APK (Android)`;
+
+                    // Add MOD details
+                    if (modCount === 1 && modText) {
+                        generatedHtml += `\n\n🎮MOD Details:
+${modText}`;
+                    } else if (modCount > 1) {
+                        generatedHtml += `\n\n🎮MOD Features:`;
+                        modInputs.forEach((mod, index) => {
+                            if (mod.value.trim() !== '') {
+                                generatedHtml += `\n${index + 1}. ${mod.value}`;
+                            }
+                        });
+                    }
+                    
+                    // Add MOD notes if available
+                    if (inputModNote.trim() !== '') {
+                        generatedHtml += `\n\n📝Catatan MOD:
+${inputModNote}`;
+                    }
+                    
+                    // Add links
+                    generatedHtml += `\n\n🌐Link Game:
+${inputLink}
+
+🌐Link Alternative Download:
+https://indapk.github.io
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+                }
+
+                // Display the generated HTML
+                document.getElementById("result").innerText = generatedHtml;
+                
+                // Reset button
+                generateBtn.innerHTML = originalText;
+                generateBtn.disabled = false;
+                
+                // Show success notification
+                showNotification("Code berhasil di-generate!", "success");
+            }, 1000);
+        }
+
+        // Notification function
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 15px 25px;
+                border-radius: 25px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideDown 0.3s ease-out;
+                ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideUp 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add CSS for notification animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+                to { transform: translateX(-50%) translateY(0); opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { transform: translateX(-50%) translateY(0); opacity: 1; }
+                to { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Textarea to form synchronization
+        const textarea = document.getElementById('myTextarea');
+        const form = document.getElementById('myForm');
+        const inputs = form.querySelectorAll('input');
+
+        textarea.addEventListener('input', () => {
+            const text = textarea.value.trim();
+            const values = text.split('\n');
+
+            // Basic inputs mapping
+            const basicInputs = ['inputName', 'inputSingleSize', 'inputCategory', 'inputVersion', 'inputLink'];
+            
+            basicInputs.forEach((inputId, index) => {
+                const input = document.getElementById(inputId);
+                if (input && values[index]) {
+                    input.value = values[index];
+                }
+            });
+            
+            // Handle MOD inputs differently based on game type
+            if (gameType === 'mod' && values.length > 4) {
+                // For MOD games, lines after version might contain MOD info
+                const modLineIndex = 4;
+                
+                if (modCount === 1) {
+                    // Single MOD
+                    const modInput = document.getElementById('inputMod');
+                    if (modInput && values[modLineIndex]) {
+                        modInput.value = values[modLineIndex];
+                        updateModInput(1, values[modLineIndex]);
+                    }
+                    
+                    // Check for additional MOD info in subsequent lines
+                    let modNote = '';
+                    for (let i = modLineIndex + 1; i < values.length - 1; i++) {
+                        if (!values[i].startsWith('http')) {
+                            modNote += values[i] + '\n';
+                        }
+                    }
+                    
+                    const modNoteInput = document.getElementById('inputModNote');
+                    if (modNoteInput && modNote.trim() !== '') {
+                        modNoteInput.value = modNote.trim();
+                    }
+                } else {
+                    // Multiple MODs
+                    let modIndex = 0;
+                    for (let i = modLineIndex; i < values.length; i++) {
+                        if (values[i].startsWith('http')) break; // Stop at link
+                        
+                        if (values[i].match(/^\d+\./) || values[i].trim() !== '') {
+                            const modId = modIndex + 1;
+                            if (modId <= modCount) {
+                                // Remove numbering if present
+                                let modValue = values[i].replace(/^\d+\.\s*/, '');
+                                updateModInput(modId, modValue);
+                                modIndex++;
+                            }
+                        }
+                    }
+                    
+                    // Update display
+                    updateModInputsDisplay();
+                }
+            }
+        });
+
+        textarea.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+
+                const currentIndex = Array.from(inputs).findIndex((input) => input === document.activeElement);
+
+                if (currentIndex === -1) {
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+
+                    textarea.value = textarea.value.substring(0, start) + '\n' + textarea.value.substring(end);
+                    textarea.selectionStart = textarea.selectionEnd = start + 1;
+                } else {
+                    const nextIndex = currentIndex + 1;
+
+                    if (nextIndex < inputs.length) {
+                        inputs[nextIndex].focus();
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
