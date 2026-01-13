@@ -1091,6 +1091,8 @@
             const originalText = generateBtn.innerHTML;
             generateBtn.innerHTML = '<span class="loading"></span> Generating...';
             generateBtn.disabled = true;
+            const altLink = buildAlternativeLink(inputName);
+
             
             setTimeout(() => {
                 // Get values from game form
@@ -1157,7 +1159,7 @@ Format: APK (Android)
 ${inputLink}
 
 🌐Link Alternative Download:
-https://indapk.github.io
+${altLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1205,7 +1207,7 @@ ${inputModNote}`;
 ${inputLink}
 
 🌐Link Alternative Download:
-https://indapk.github.io
+${altLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1229,6 +1231,14 @@ https://indapk.com/requestgame.html
             }, 1000);
         }
 
+  function buildAlternativeLink(gameName) {
+      const name = (gameName || '').trim();
+      if (!name) return 'https://indapk.github.io';
+
+      // Ubah spasi jadi + sesuai contoh kamu
+      const q = encodeURIComponent(name).replace(/%20/g, '+');
+      return `https://indapk.github.io/?q=${q}`;
+  }
         // Notification function
         function showNotification(message, type) {
             const notification = document.createElement('div');
