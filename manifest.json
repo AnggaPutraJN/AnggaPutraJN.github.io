@@ -2,7 +2,7 @@
   "name": "Manajemen Keuangan Personal",
   "short_name": "Keuangan pribadi AnggaPutraJN",
   "description": "Aplikasi manajemen keuangan pribadi",
-  "start_url": "keuangan.html",
+  "start_url": "/keuangan.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0a0e1a",
