@@ -1,53 +1,47 @@
 {
-  "name": "Manajemen Keuangan Personal",
-  "short_name": "Keuangan pribadi AnggaPutraJN",
-  "description": "Aplikasi manajemen keuangan pribadi",
-  "start_url": "/keuangan.html",
-  "scope": "/",
+  "name": "Keuangan Pribadi",
+  "short_name": "Keuangan",
+  "start_url": "index.html",
+  "scope": "",
   "display": "standalone",
-  "background_color": "#0a0e1a",
   "theme_color": "#2563eb",
-  "orientation": "portrait-primary",
+  "background_color": "#0a0e1a",
+  "description": "Aplikasi manajemen keuangan personal",
+  "orientation": "portrait",
+  "lang": "id-ID",
+  "categories": ["finance", "productivity"],
+  
   "icons": [
-    {
-      "src": "icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
     {
       "src": "icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Transaksi Baru",
+      "short_name": "Transaksi",
+      "description": "Tambah transaksi baru",
+      "url": "index.html?tab=transaction",
+      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
     }
   ]
 }
