@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <!-- PWA Configuration -->
 <!-- Manifest -->
-<link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+<link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
 <meta name="theme-color" content="#0a0e1a">
 
 <!-- Apple Touch Icons -->
@@ -2375,8 +2375,8 @@ if ('serviceWorker' in navigator) {
 const swCode = `
     const CACHE_NAME = 'keuangan-v1';
     const urlsToCache = [
-        'keuangan.html',
-        'manifest.json',
+        '/keuangan.html',
+        '/manifest.json',
         'icon-192x192.png',
         'icon-512x512.png'
     ];
@@ -2393,8 +2393,8 @@ const swCode = `
         if (event.request.url.endsWith('/') || 
             event.request.url.endsWith('/anggaputrajn.github.io/')) {
             event.respondWith(
-                caches.match('keuangan.html')
-                    .then(response => response || fetch('keuangan.html'))
+                caches.match('/keuangan.html')
+                    .then(response => response || fetch('/keuangan.html'))
             );
             return;
         }
@@ -5680,7 +5680,7 @@ function renderExpenseCharts() {
         // ============================================
 
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('FinTrack Pro - Tema Gelap Loaded');
+            console.log('Keuangan Pro - Tema Gelap Loaded');
 
             const today = new Date().toISOString().split('T')[0];
             const debtUploadArea = document.getElementById('debtUploadArea');
