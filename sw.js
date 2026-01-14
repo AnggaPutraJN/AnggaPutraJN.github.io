@@ -1,81 +1,84 @@
-// Nama cache
-const CACHE_NAME = 'fintrack-v1.0';
-
-// File yang akan di-cache
-const urlsToCache = [
-  '/',
-  '/keuangan.html',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
-  'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css',
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
-  'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js'
+// sw.js
+const CACHE_NAME = 'keuangan-pwa-v2.0';
+const APP_SHELL = [
+  '',
+  'index.html',
+  'manifest.json',
+  'icon-192x192.png'
 ];
 
-// Install service worker
-self.addEventListener('install', event => {
+// Install event
+self.addEventListener('install', (event) => {
+  console.log('🔄 Service Worker installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Cache opened');
-        return cache.addAll(urlsToCache);
+      .then((cache) => {
+        console.log('📦 Caching app shell');
+        return cache.addAll(APP_SHELL);
       })
+      .then(() => self.skipWaiting())
   );
 });
 
-// Fetch event - cache first strategy
-self.addEventListener('fetch', event => {
+// Activate event
+self.addEventListener('activate', (event) => {
+  console.log('✅ Service Worker activated');
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('🗑️ Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+// Fetch event - Network First Strategy
+self.addEventListener('fetch', (event) => {
+  // Skip Google Sheets API
+  if (event.request.url.includes('script.google.com')) {
+    return fetch(event.request);
+  }
+  
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+  
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
+    fetch(event.request)
+      .then((response) => {
+        // Cache successful responses
+        if (response.status === 200) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
         }
-
-        // Clone request
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest)
-          .then(response => {
-            // Check if valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+        return response;
+      })
+      .catch(() => {
+        // Fallback to cache when offline
+        return caches.match(event.request)
+          .then((response) => {
+            if (response) {
               return response;
             }
-
-            // Clone response
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          })
-          .catch(() => {
-            // Fallback jika offline
-            if (event.request.headers.get('accept').includes('text/html')) {
-              return caches.match('/keuangan.html');
+            // Return cached HTML for navigation requests
+            if (event.request.mode === 'navigate') {
+              return caches.match('index.html');
             }
           });
       })
   );
 });
 
-// Activate event - clean up old caches
-self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
-  
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
+// Background sync (opsional)
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-transactions') {
+    console.log('🔄 Background sync triggered');
+    // Implement background sync logic here
+  }
 });
