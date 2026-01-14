@@ -10,6 +10,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FinTrack">
+
+    <!-- Icons for iOS -->
+    <link rel="apple-touch-icon" href="icon-152x152.png">
+
+    <!-- Icons for Android -->
+    <link rel="icon" type="image/png" href="icon-192x192.png">
     
     <style>
         /* ============================================
@@ -2347,6 +2359,137 @@ GRAFIK KEUANGAN PANEL
         // ============================================
         // FUNGSI UTILITAS
         // ============================================
+
+
+// Register Service Worker untuk PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        
+        // Cek apakah ada update service worker
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Update tersedia
+              showUpdateNotification();
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
+}
+
+// Deteksi jika app bisa di-install
+let deferredPrompt;
+const installButton = document.createElement('button');
+installButton.className = 'btn btn-success btn-sm position-fixed bottom-0 end-0 m-3';
+installButton.innerHTML = '<i class="bi bi-download"></i> Install App';
+installButton.style.zIndex = '9999';
+installButton.style.display = 'none';
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Tampilkan tombol install
+  installButton.style.display = 'block';
+  document.body.appendChild(installButton);
+  
+  installButton.addEventListener('click', () => {
+    installButton.style.display = 'none';
+    deferredPrompt.prompt();
+    
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      }
+      deferredPrompt = null;
+    });
+  });
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('PWA installed successfully');
+  installButton.style.display = 'none';
+  deferredPrompt = null;
+});
+
+// Fungsi untuk menunjukkan notifikasi update
+function showUpdateNotification() {
+  const updateToast = document.createElement('div');
+  updateToast.className = 'position-fixed bottom-0 start-50 translate-middle-x mb-3';
+  updateToast.style.zIndex = '9999';
+  updateToast.innerHTML = `
+    <div class="toast show" role="alert">
+      <div class="toast-header bg-warning">
+        <strong class="me-auto"><i class="bi bi-arrow-clockwise"></i> Update Tersedia</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body">
+        Versi baru tersedia. Refresh untuk mendapatkan fitur terbaru.
+        <div class="mt-2">
+          <button class="btn btn-sm btn-primary" id="refreshApp">Refresh Sekarang</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(updateToast);
+  
+  document.getElementById('refreshApp').addEventListener('click', () => {
+    window.location.reload();
+  });
+}
+
+// Deteksi mode offline
+window.addEventListener('offline', () => {
+  showOfflineNotification();
+});
+
+window.addEventListener('online', () => {
+  hideOfflineNotification();
+});
+
+function showOfflineNotification() {
+  if (!document.getElementById('offlineToast')) {
+    const offlineToast = document.createElement('div');
+    offlineToast.id = 'offlineToast';
+    offlineToast.className = 'position-fixed top-0 start-50 translate-middle-x mt-3';
+    offlineToast.style.zIndex = '9999';
+    offlineToast.innerHTML = `
+      <div class="toast show" role="alert">
+        <div class="toast-header bg-danger text-white">
+          <strong class="me-auto"><i class="bi bi-wifi-off"></i> Mode Offline</strong>
+        </div>
+        <div class="toast-body">
+          Anda sedang offline. Beberapa fitur mungkin tidak tersedia.
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(offlineToast);
+  }
+}
+
+function hideOfflineNotification() {
+  const offlineToast = document.getElementById('offlineToast');
+  if (offlineToast) {
+    offlineToast.remove();
+  }
+}
+
+// Cek status koneksi saat load
+if (!navigator.onLine) {
+  showOfflineNotification();
+}
+
+
         function setMainTabsHidden(isHidden) {
             const tabs = document.getElementById('mainTabs');
             const tabContent = document.querySelector('.tab-content');
