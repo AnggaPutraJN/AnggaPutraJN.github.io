@@ -12,976 +12,1037 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-/* ============================================
-   VARIABEL CSS & RESET
-   ============================================ */
-:root {
-    /* Warna tema profesional akuntan */
-    --bg-primary: #0a0e1a;
-    --bg-secondary: #151b2e;
-    --bg-card: #1a2332;
-    --bg-hover: #253049;
-    --text-primary: #e8edf4;
-    --text-secondary: #b4bfcd;
-    --text-muted: #8892a6;
-    --border-color: #2d3748;
-    --shadow-color: rgba(0, 0, 0, 0.4);
-    
-    /* Warna aksen profesional */
-    --accent-primary: #2563eb;
-    --accent-success: #059669;
-    --accent-warning: #d97706;
-    --accent-danger: #dc2626;
-    --accent-info: #0891b2;
-    --accent-purple: #7c3aed;
-    
-    /* Gradien profesional */
-    --gradient-primary: linear-gradient(135deg, #1e40af, #3b82f6);
-    --gradient-success: linear-gradient(135deg, #047857, #059669);
-    --gradient-warning: linear-gradient(135deg, #b45309, #d97706);
-    --gradient-danger: linear-gradient(135deg, #b91c1c, #dc2626);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-}
-
-body {
-    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    min-height: 100vh;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
-}
-
-.container {
-    max-width: 1400px;
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-/* ============================================
-   HEADER PROFESIONAL
-   ============================================ */
-header {
-    background: var(--bg-secondary);
-    border-radius: 16px;
-    padding: 1.25rem 1.5rem;
-    margin: 1rem 0 1.5rem 0;
-    box-shadow: 0 4px 20px var(--shadow-color);
-    border: 1px solid var(--border-color);
-    animation: slideDown 0.5s ease-out;
-}
-
-@keyframes slideDown {
-    from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.brand-title {
-    color: var(--accent-primary);
-    font-weight: 700;
-    font-size: 1.5rem;
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 0;
-}
-
-.brand-subtitle {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    font-weight: 400;
-    margin-top: 4px;
-}
-
-/* ============================================
-   BUTTON PROFESIONAL
-   ============================================ */
-.btn {
-    border-radius: 10px;
-    font-weight: 500;
-    padding: 0.625rem 1.25rem;
-    transition: all 0.2s ease;
-    border: none;
-    font-size: 0.9rem;
-    letter-spacing: 0.3px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-
-.btn-primary {
-    background: var(--gradient-primary);
-    border: none;
-    color: white;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-}
-
-.btn-success {
-    background: var(--gradient-success);
-    border: none;
-    color: white;
-}
-
-.btn-success:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
-}
-
-.btn-outline-primary {
-    border: 2px solid var(--accent-primary);
-    color: var(--accent-primary);
-    background: transparent;
-}
-
-.btn-outline-primary:hover {
-    background: var(--accent-primary);
-    color: white;
-    transform: translateY(-2px);
-}
-
-/* ============================================
-   TAB NAVIGASI
-   ============================================ */
-.nav-tabs {
-    border: none;
-    gap: 8px;
-    margin-bottom: 1.5rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-}
-
-.nav-tabs::-webkit-scrollbar {
-    display: none;
-}
-
-.nav-tabs .nav-link {
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 0.75rem 1.25rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.nav-tabs .nav-link:hover {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-    border-color: var(--accent-primary);
-}
-
-.nav-tabs .nav-link.active {
-    background: var(--gradient-primary);
-    color: white;
-    border-color: transparent;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-
-.nav-tabs .nav-link i {
-    margin-right: 6px;
-    font-size: 0.95rem;
-}
-
-/* ============================================
-   CARD PROFESIONAL
-   ============================================ */
-.card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: 0 2px 12px var(--shadow-color);
-    margin-bottom: 1.25rem;
-    overflow: hidden;
-}
-
-.card:hover {
-    box-shadow: 0 4px 20px var(--shadow-color);
-}
-
-.card-header {
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    padding: 1rem 1.25rem;
-    font-weight: 600;
-}
-
-.card-header h5 {
-    margin: 0;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1.05rem;
-}
-
-.card-body {
-    padding: 1.25rem;
-}
-
-/* ============================================
-   STAT CARD DASHBOARD
-   ============================================ */
-.stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 1.25rem;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px var(--shadow-color);
-}
-
-.stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    border-radius: 16px 16px 0 0;
-}
-
-.stat-income::before { background: var(--gradient-success); }
-.stat-expense::before { background: var(--gradient-danger); }
-.stat-balance::before { background: var(--gradient-primary); }
-.stat-cash::before { background: var(--gradient-warning); }
-.stat-dana::before { background: linear-gradient(135deg, #047857, #0891b2); }
-.stat-mandiri::before { background: linear-gradient(135deg, #b91c1c, #dc2626); }
-.stat-qris::before { background: linear-gradient(135deg, #7c3aed, #a855f7); }
-
-.stat-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.875rem;
-}
-
-.stat-label {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-}
-
-.stat-value {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 4px 0;
-    line-height: 1.2;
-}
-
-.stat-meta {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    margin: 0;
-}
-
-.stat-icon {
-    background: rgba(255, 255, 255, 0.08);
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    flex-shrink: 0;
-}
-
-.stat-income .stat-icon { color: var(--accent-success); }
-.stat-expense .stat-icon { color: var(--accent-danger); }
-.stat-balance .stat-icon { color: var(--accent-primary); }
-.stat-cash .stat-icon { color: var(--accent-warning); }
-.stat-dana .stat-icon { color: #0891b2; }
-.stat-mandiri .stat-icon { color: #dc2626; }
-.stat-qris .stat-icon { color: #a855f7; }
-
-.stat-foot {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 0.875rem;
-}
-
-.stat-pill {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 4px 10px;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-/* ============================================
-   MINI CARD
-   ============================================ */
-.mini-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 0.875rem;
-    margin-bottom: 0.625rem;
-}
-
-.mini-card:hover {
-    background: var(--bg-hover);
-    border-color: var(--accent-primary);
-}
-
-.mini-card-danger { border-left: 3px solid var(--accent-danger); }
-.mini-card-success { border-left: 3px solid var(--accent-success); }
-.mini-card-primary { border-left: 3px solid var(--accent-primary); }
-.mini-card-warning { border-left: 3px solid var(--accent-warning); }
-.mini-card-muted { border-left: 3px solid var(--border-color); }
-
-.mini-card-title {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-bottom: 4px;
-}
-
-.mini-card-value {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 4px 0;
-}
-
-.mini-card-sub {
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    margin: 0;
-}
-
-/* ============================================
-   TABLE PROFESIONAL
-   ============================================ */
-.table {
-    color: var(--text-primary);
-    border-color: var(--border-color);
-    width: 100%;
-    margin-bottom: 0;
-}
-
-.table thead th {
-    background: var(--bg-secondary);
-    border-color: var(--border-color);
-    font-weight: 600;
-    color: var(--text-secondary);
-    border-top: none;
-    font-size: 0.85rem;
-    padding: 0.875rem;
-    white-space: nowrap;
-}
-
-.table tbody tr {
-    border-color: var(--border-color);
-}
-
-.table tbody td {
-    padding: 0.875rem;
-    font-size: 0.9rem;
-}
-
-.table tbody tr:hover {
-    background: var(--bg-hover);
-}
-
-.income-bg {
-    background: rgba(5, 150, 105, 0.1);
-    border-left: 3px solid var(--accent-success);
-}
-
-.expense-bg {
-    background: rgba(220, 38, 38, 0.1);
-    border-left: 3px solid var(--accent-danger);
-}
-
-/* Tabel Responsif */
-.table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -1.25rem;
-    padding: 0 1.25rem;
-}
-
-/* ============================================
-   BADGE
-   ============================================ */
-.badge {
-    padding: 4px 10px;
-    border-radius: 16px;
-    font-weight: 500;
-    font-size: 0.8rem;
-}
-
-.bg-success { background: var(--accent-success) !important; }
-.bg-warning { background: var(--accent-warning) !important; color: white !important; }
-.bg-danger { background: var(--accent-danger) !important; }
-
-/* ============================================
-   FORM PROFESIONAL
-   ============================================ */
-.form-control, .form-select {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    border-radius: 10px;
-    padding: 0.625rem 0.875rem;
-    font-size: 0.9rem;
-    width: 100%;
-}
-
-.form-control:focus, .form-select:focus {
-    background: var(--bg-secondary);
-    border-color: var(--accent-primary);
-    color: var(--text-primary);
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
-    outline: none;
-}
-
-.form-label {
-    color: var(--text-secondary);
-    font-weight: 500;
-    margin-bottom: 6px;
-    font-size: 0.875rem;
-}
-
-.form-label.required::after {
-    content: ' *';
-    color: var(--accent-danger);
-}
-
-.input-group-text {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    border-right: none;
-    font-size: 0.9rem;
-}
-
-.upload-area {
-    background: var(--bg-secondary);
-    border: 2px dashed var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.upload-area:hover {
-    border-color: var(--accent-primary);
-    background: var(--bg-hover);
-}
-
-.upload-area i {
-    font-size: 2.5rem;
-    color: var(--text-muted);
-    margin-bottom: 0.875rem;
-}
-
-/* ============================================
-   SELECTOR (INCOME SOURCE & WALLET)
-   ============================================ */
-.income-source-selector,
-.wallet-selector {
-    background: var(--bg-secondary);
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
-    padding: 1rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.income-source-selector:hover,
-.wallet-selector:hover {
-    border-color: var(--accent-primary);
-    transform: translateY(-2px);
-}
-
-.income-source-selector.active,
-.wallet-selector.active {
-    background: rgba(37, 99, 235, 0.1);
-    border-color: var(--accent-primary);
-    color: var(--accent-primary);
-}
-
-.wallet-icon {
-    font-size: 1.4rem;
-    margin-bottom: 6px;
-}
-
-/* ============================================
-   TARGET & DEBT CARDS
-   ============================================ */
-.target-card { border-left: 3px solid var(--accent-primary); }
-.target-completed { border-left: 3px solid var(--accent-success); }
-.target-warning { border-left: 3px solid var(--accent-warning); }
-.target-danger { border-left: 3px solid var(--accent-danger); }
-
-.debt-status-active { border-left: 3px solid var(--accent-warning); }
-.debt-status-lunas { border-left: 3px solid var(--accent-success); }
-.debt-status-macet { border-left: 3px solid var(--accent-danger); }
-.debt-card { border-left: 3px solid var(--accent-warning); }
-
-.payment-row:hover {
-    background: rgba(8, 145, 178, 0.1) !important;
-}
-
-.installment-plan {
-    background: rgba(217, 119, 6, 0.1);
-    border-radius: 10px;
-    padding: 1rem;
-    margin-top: 0.875rem;
-}
-
-/* ============================================
-   UTILITY CLASSES
-   ============================================ */
-.hidden { display: none !important; }
-.text-success { color: var(--accent-success) !important; }
-.text-danger { color: var(--accent-danger) !important; }
-.text-warning { color: var(--accent-warning) !important; }
-.text-primary { color: var(--accent-primary) !important; }
-.text-muted { color: var(--text-muted) !important; }
-
-/* ============================================
-   ANIMASI
-   ============================================ */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-.fade-in { animation: fadeIn 0.4s ease-out; }
-.fade-out { animation: fadeOut 0.4s ease-out; }
-.pulse { animation: pulse 2s infinite; }
-
-/* ============================================
-   SCROLLBAR CUSTOM
-   ============================================ */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--accent-primary);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-info);
-}
-
-/* ============================================
-   MODAL
-   ============================================ */
-.modal-content {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-}
-
-.modal-header {
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--bg-secondary);
-    border-radius: 16px 16px 0 0;
-}
-
-.modal-footer {
-    border-top: 1px solid var(--border-color);
-    background-color: var(--bg-secondary);
-    border-radius: 0 0 16px 16px;
-}
-
-#editPreview {
-    background-color: rgba(37, 99, 235, 0.1);
-    border-left: 3px solid var(--accent-primary);
-}
-
-/* ============================================
-   READONLY FIELDS
-   ============================================ */
-#amount[readonly],
-#description[readonly] {
-    background-color: var(--bg-primary) !important;
-    color: var(--text-secondary) !important;
-    opacity: 1 !important;
-}
-
-/* ============================================
-   COLLECT TARGET FORM
-   ============================================ */
-#collectTargetForm {
-    border-left: 3px solid var(--accent-success);
-}
-
-#collectTargetForm .card-header {
-    background: linear-gradient(135deg, rgba(5, 150, 105, 0.1), rgba(8, 145, 178, 0.1));
-}
-
-/* ============================================
-   DEBT UPLOAD AREA
-   ============================================ */
-.debt-upload-area {
-    background: rgba(217, 119, 6, 0.1);
-    border: 2px dashed rgba(217, 119, 6, 0.5);
-}
-
-.debt-upload-area:hover {
-    background: rgba(217, 119, 6, 0.15);
-    border-color: var(--accent-warning);
-}
-
-/* ============================================
-   BUTTON ACTION
-   ============================================ */
-.btn-group-sm .btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-}
-
-.edit-btn:hover {
-    background-color: #d97706;
-    border-color: #d97706;
-    color: white;
-}
-
-.delete-btn:hover {
-    background-color: #dc2626;
-    border-color: #dc2626;
-    color: white;
-}
-
-/* ============================================
-   SPINNER
-   ============================================ */
-.spinner {
-    border: 3px solid var(--bg-secondary);
-    border-top: 3px solid var(--accent-primary);
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ============================================
-   SKELETON LOADING
-   ============================================ */
-.skeleton {
-    background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-hover) 50%, var(--bg-secondary) 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* ============================================
-   CHART CONTAINER
-   ============================================ */
-canvas {
-    max-height: 200px;
-    width: 100% !important;
-}
-
-/* ============================================
-   SEPARATOR
-   ============================================ */
-.separator {
-    height: 2px;
-    background: var(--border-color);
-    margin: 1.5rem 0;
-    position: relative;
-}
-
-.separator::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: -3px;
-    width: 40px;
-    height: 8px;
-    background: var(--gradient-primary);
-    border-radius: 4px;
-}
-
-/* ============================================
-   FOOTER
-   ============================================ */
-footer {
-    padding: 1.5rem 0;
-    margin-top: 2rem;
-    border-top: 1px solid var(--border-color);
-    color: var(--text-muted);
-    font-size: 0.85rem;
-}
-
-/* ============================================
-   RESPONSIVE MOBILE (CRITICAL)
-   ============================================ */
-@media (max-width: 768px) {
-    body {
-        font-size: 14px;
-    }
-    
-    .container {
-        padding-right: 12px;
-        padding-left: 12px;
-    }
-    
-    header {
-        padding: 1rem;
-        margin: 0.75rem 0 1rem 0;
-        border-radius: 12px;
-    }
-    
-    .brand-title {
-        font-size: 1.25rem;
-    }
-    
-    .brand-subtitle {
-        font-size: 0.75rem;
-    }
-    
-    /* Tab navigasi mobile */
-    .nav-tabs {
-        margin-bottom: 1rem;
-        gap: 6px;
-    }
-    
-    .nav-tabs .nav-link {
-        padding: 0.625rem 1rem;
-        font-size: 0.85rem;
-    }
-    
-    .nav-tabs .nav-link i {
-        margin-right: 4px;
-        font-size: 0.9rem;
-    }
-    
-    /* Card mobile */
-    .card {
-        border-radius: 12px;
-        margin-bottom: 1rem;
-    }
-    
-    .card-header {
-        padding: 0.875rem 1rem;
-    }
-    
-    .card-header h5 {
-        font-size: 0.95rem;
-    }
-    
-    .card-body {
-        padding: 1rem;
-    }
-    
-    /* Stat card mobile */
-    .stat-card {
-        padding: 1rem;
-        border-radius: 12px;
-        margin-bottom: 0.875rem;
-    }
-    
-    .stat-value {
-        font-size: 1.35rem;
-    }
-    
-    .stat-label {
-        font-size: 0.75rem;
-    }
-    
-    .stat-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
-    }
-    
-    .stat-meta {
-        font-size: 0.75rem;
-    }
-    
-    /* Button mobile */
-    .btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    
-    .btn-group {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    /* Form mobile */
-    .form-control,
-    .form-select {
-        font-size: 16px; /* Prevent zoom on iOS */
-        padding: 0.625rem;
-    }
-    
-    .form-label {
-        font-size: 0.85rem;
-    }
-    
-    /* Table mobile */
-    .table {
-        font-size: 0.8rem;
-    }
-    
-    .table thead th,
-    .table tbody td {
-        padding: 0.5rem;
-    }
-    
-    .table-responsive {
-        margin: 0 -1rem;
-        padding: 0 1rem;
-    }
-    
-    /* Mini card mobile */
-    .mini-card {
-        padding: 0.75rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .mini-card-value {
-        font-size: 1rem;
-    }
-    
-    /* Modal mobile */
-    .modal-content {
-        margin: 1rem;
-    }
-    
-    /* Upload area mobile */
-    .upload-area {
-        padding: 1.25rem;
-    }
-    
-    .upload-area i {
-        font-size: 2rem;
-    }
-    
-    /* Selector mobile */
-    .income-source-selector,
-    .wallet-selector {
-        padding: 0.875rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    /* Grid mobile */
-    .row > div {
-        margin-bottom: 0.875rem;
-    }
-    
-    #collectTargetForm .row > div {
-        margin-bottom: 0.875rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .brand-title {
-        font-size: 1.1rem;
-    }
-    
-    .stat-value {
-        font-size: 1.2rem;
-    }
-    
-    .nav-tabs .nav-link {
-        padding: 0.5rem 0.875rem;
-        font-size: 0.8rem;
-    }
-    
-    .table {
-        font-size: 0.75rem;
-    }
-}
-
-/* Fix untuk mencegah horizontal scroll */
-html, body {
-    overflow-x: hidden;
-    width: 100%;
-    position: relative;
-}
-
-.row {
-    margin-right: 0;
-    margin-left: 0;
-}
-
-.col, .col-md-3, .col-md-4, .col-md-6, .col-md-8, .col-md-12 {
-    padding-right: 8px;
-    padding-left: 8px;
-}
+        /* ============================================
+           VARIABEL CSS & RESET
+           ============================================ */
+        :root {
+            /* Warna tema profesional akuntan */
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #151b2e;
+            --bg-card: #1a2332;
+            --bg-hover: #253049;
+            --text-primary: #e8edf4;
+            --text-secondary: #b4bfcd;
+            --text-muted: #8892a6;
+            --border-color: #2d3748;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            
+            /* Warna aksen profesional */
+            --accent-primary: #2563eb;
+            --accent-success: #059669;
+            --accent-warning: #d97706;
+            --accent-danger: #dc2626;
+            --accent-info: #0891b2;
+            --accent-purple: #7c3aed;
+            
+            /* Gradien profesional */
+            --gradient-primary: linear-gradient(135deg, #1e40af, #3b82f6);
+            --gradient-success: linear-gradient(135deg, #047857, #059669);
+            --gradient-warning: linear-gradient(135deg, #b45309, #d97706);
+            --gradient-danger: linear-gradient(135deg, #b91c1c, #dc2626);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        /* ============================================
+           HEADER PROFESIONAL
+           ============================================ */
+        header {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            margin: 1rem 0 1.5rem 0;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .brand-title {
+            color: var(--accent-primary);
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0;
+        }
+
+        .brand-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 400;
+            margin-top: 4px;
+        }
+
+        /* ============================================
+           BUTTON PROFESIONAL
+           ============================================ */
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 0.625rem 1.25rem;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-success {
+            background: var(--gradient-success);
+            border: none;
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--accent-primary);
+            color: var(--accent-primary);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ============================================
+           TAB NAVIGASI
+           ============================================ */
+        .nav-tabs {
+            border: none;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tabs .nav-link {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .nav-tabs .nav-link i {
+            margin-right: 6px;
+            font-size: 0.95rem;
+        }
+
+        /* ============================================
+           CARD PROFESIONAL
+           ============================================ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px var(--shadow-color);
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        .card-header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.05rem;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        /* ============================================
+           STAT CARD DASHBOARD
+           ============================================ */
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .stat-income::before { background: var(--gradient-success); }
+        .stat-expense::before { background: var(--gradient-danger); }
+        .stat-balance::before { background: var(--gradient-primary); }
+        .stat-cash::before { background: var(--gradient-warning); }
+        .stat-dana::before { background: linear-gradient(135deg, #047857, #0891b2); }
+        .stat-mandiri::before { background: linear-gradient(135deg, #b91c1c, #dc2626); }
+        .stat-qris::before { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+
+        .stat-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.875rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 4px 0;
+            line-height: 1.2;
+        }
+
+        .stat-meta {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        .stat-icon {
+            background: rgba(255, 255, 255, 0.08);
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .stat-income .stat-icon { color: var(--accent-success); }
+        .stat-expense .stat-icon { color: var(--accent-danger); }
+        .stat-balance .stat-icon { color: var(--accent-primary); }
+        .stat-cash .stat-icon { color: var(--accent-warning); }
+        .stat-dana .stat-icon { color: #0891b2; }
+        .stat-mandiri .stat-icon { color: #dc2626; }
+        .stat-qris .stat-icon { color: #a855f7; }
+
+        .stat-foot {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 0.875rem;
+        }
+
+        .stat-pill {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ============================================
+           MINI CARD
+           ============================================ */
+        .mini-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.875rem;
+            margin-bottom: 0.625rem;
+        }
+
+        .mini-card:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent-primary);
+        }
+
+        .mini-card-danger { border-left: 3px solid var(--accent-danger); }
+        .mini-card-success { border-left: 3px solid var(--accent-success); }
+        .mini-card-primary { border-left: 3px solid var(--accent-primary); }
+        .mini-card-warning { border-left: 3px solid var(--accent-warning); }
+        .mini-card-muted { border-left: 3px solid var(--border-color); }
+
+        .mini-card-title {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .mini-card-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 4px 0;
+        }
+
+        .mini-card-sub {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+
+        /* ============================================
+           TABLE PROFESIONAL
+           ============================================ */
+        .table {
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: var(--bg-secondary);
+            border-color: var(--border-color);
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-top: none;
+            font-size: 0.85rem;
+            padding: 0.875rem;
+            white-space: nowrap;
+        }
+
+        .table tbody tr {
+            border-color: var(--border-color);
+        }
+
+        .table tbody td {
+            padding: 0.875rem;
+            font-size: 0.9rem;
+        }
+
+        .table tbody tr:hover {
+            background: var(--bg-hover);
+        }
+
+        .income-bg {
+            background: rgba(5, 150, 105, 0.1);
+            border-left: 3px solid var(--accent-success);
+        }
+
+        .expense-bg {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 3px solid var(--accent-danger);
+        }
+
+        /* Tabel Responsif */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 -1.25rem;
+            padding: 0 1.25rem;
+        }
+
+        /* ============================================
+           BADGE
+           ============================================ */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        .bg-success { background: var(--accent-success) !important; }
+        .bg-warning { background: var(--accent-warning) !important; color: white !important; }
+        .bg-danger { background: var(--accent-danger) !important; }
+
+        /* ============================================
+           FORM PROFESIONAL
+           ============================================ */
+        .form-control, .form-select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: var(--bg-secondary);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+            outline: none;
+        }
+
+        .form-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.875rem;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: var(--accent-danger);
+        }
+
+        .input-group-text {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-right: none;
+            font-size: 0.9rem;
+        }
+
+        .upload-area {
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-hover);
+        }
+
+        .upload-area i {
+            font-size: 2.5rem;
+            color: var(--text-muted);
+            margin-bottom: 0.875rem;
+        }
+
+        /* ============================================
+           SELECTOR (INCOME SOURCE & WALLET)
+           ============================================ */
+        .income-source-selector,
+        .wallet-selector {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .income-source-selector:hover,
+        .wallet-selector:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .income-source-selector.active,
+        .wallet-selector.active {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .wallet-icon {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+
+        /* ============================================
+           TARGET & DEBT CARDS
+           ============================================ */
+        .target-card { border-left: 3px solid var(--accent-primary); }
+        .target-completed { border-left: 3px solid var(--accent-success); }
+        .target-warning { border-left: 3px solid var(--accent-warning); }
+        .target-danger { border-left: 3px solid var(--accent-danger); }
+
+        .debt-status-active { border-left: 3px solid var(--accent-warning); }
+        .debt-status-lunas { border-left: 3px solid var(--accent-success); }
+        .debt-status-macet { border-left: 3px solid var(--accent-danger); }
+        .debt-card { border-left: 3px solid var(--accent-warning); }
+
+        .payment-row:hover {
+            background: rgba(8, 145, 178, 0.1) !important;
+        }
+
+        .installment-plan {
+            background: rgba(217, 119, 6, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 0.875rem;
+        }
+
+        /* ============================================
+           UTILITY CLASSES
+           ============================================ */
+        .hidden { display: none !important; }
+        .text-success { color: var(--accent-success) !important; }
+        .text-danger { color: var(--accent-danger) !important; }
+        .text-warning { color: var(--accent-warning) !important; }
+        .text-primary { color: var(--accent-primary) !important; }
+        .text-muted { color: var(--text-muted) !important; }
+
+        /* ============================================
+           ANIMASI
+           ============================================ */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        .fade-out { animation: fadeOut 0.4s ease-out; }
+        .pulse { animation: pulse 2s infinite; }
+
+        /* ============================================
+           SCROLLBAR CUSTOM
+           ============================================ */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-info);
+        }
+
+        /* ============================================
+           MODAL
+           ============================================ */
+        .modal-content {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            border-radius: 0 0 16px 16px;
+        }
+
+        #editPreview {
+            background-color: rgba(37, 99, 235, 0.1);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* ============================================
+           READONLY FIELDS
+           ============================================ */
+        #amount[readonly],
+        #description[readonly] {
+            background-color: var(--bg-primary) !important;
+            color: var(--text-secondary) !important;
+            opacity: 1 !important;
+        }
+
+        /* ============================================
+           COLLECT TARGET FORM
+           ============================================ */
+        #collectTargetForm {
+            border-left: 3px solid var(--accent-success);
+        }
+
+        #collectTargetForm .card-header {
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.1), rgba(8, 145, 178, 0.1));
+        }
+
+        /* ============================================
+           DEBT UPLOAD AREA
+           ============================================ */
+        .debt-upload-area {
+            background: rgba(217, 119, 6, 0.1);
+            border: 2px dashed rgba(217, 119, 6, 0.5);
+        }
+
+        .debt-upload-area:hover {
+            background: rgba(217, 119, 6, 0.15);
+            border-color: var(--accent-warning);
+        }
+
+        /* ============================================
+           BUTTON ACTION
+           ============================================ */
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .edit-btn:hover {
+            background-color: #d97706;
+            border-color: #d97706;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
+            color: white;
+        }
+
+        /* ============================================
+           SPINNER
+           ============================================ */
+        .spinner {
+            border: 3px solid var(--bg-secondary);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ============================================
+           SKELETON LOADING
+           ============================================ */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-hover) 50%, var(--bg-secondary) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================
+           CHART CONTAINER
+           ============================================ */
+        canvas {
+            max-height: 200px;
+            width: 100% !important;
+        }
+
+        /* ============================================
+           SEPARATOR
+           ============================================ */
+        .separator {
+            height: 2px;
+            background: var(--border-color);
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .separator::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: -3px;
+            width: 40px;
+            height: 8px;
+            background: var(--gradient-primary);
+            border-radius: 4px;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ============================================
+           RESPONSIVE MOBILE (CRITICAL)
+           ============================================ */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .container {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+            
+            header {
+                padding: 1rem;
+                margin: 0.75rem 0 1rem 0;
+                border-radius: 12px;
+            }
+            
+            .brand-title {
+                font-size: 1.25rem;
+            }
+            
+            .brand-subtitle {
+                font-size: 0.75rem;
+            }
+            
+            /* Tab navigasi mobile */
+            .nav-tabs {
+                margin-bottom: 1rem;
+                gap: 6px;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 0.625rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            .nav-tabs .nav-link i {
+                margin-right: 4px;
+                font-size: 0.9rem;
+            }
+            
+            /* Card mobile */
+            .card {
+                border-radius: 12px;
+                margin-bottom: 1rem;
+            }
+            
+            .card-header {
+                padding: 0.875rem 1rem;
+            }
+            
+            .card-header h5 {
+                font-size: 0.95rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            /* Stat card mobile */
+            .stat-card {
+                padding: 1rem;
+                border-radius: 12px;
+                margin-bottom: 0.875rem;
+            }
+            
+            .stat-value {
+                font-size: 1.35rem;
+            }
+            
+            .stat-label {
+                font-size: 0.75rem;
+            }
+            
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .stat-meta {
+                font-size: 0.75rem;
+            }
+            
+            /* Button mobile */
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .btn-group {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            /* Form mobile */
+            .form-control,
+            .form-select {
+                font-size: 16px; /* Prevent zoom on iOS */
+                padding: 0.625rem;
+            }
+            
+            .form-label {
+                font-size: 0.85rem;
+            }
+            
+            /* Table mobile */
+            .table {
+                font-size: 0.8rem;
+            }
+            
+            .table thead th,
+            .table tbody td {
+                padding: 0.5rem;
+            }
+            
+            .table-responsive {
+                margin: 0 -1rem;
+                padding: 0 1rem;
+            }
+            
+            /* Mini card mobile */
+            .mini-card {
+                padding: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .mini-card-value {
+                font-size: 1rem;
+            }
+            
+            /* Modal mobile */
+            .modal-content {
+                margin: 1rem;
+            }
+            
+            /* Upload area mobile */
+            .upload-area {
+                padding: 1.25rem;
+            }
+            
+            .upload-area i {
+                font-size: 2rem;
+            }
+            
+            /* Selector mobile */
+            .income-source-selector,
+            .wallet-selector {
+                padding: 0.875rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            /* Grid mobile */
+            .row > div {
+                margin-bottom: 0.875rem;
+            }
+            
+            #collectTargetForm .row > div {
+                margin-bottom: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-title {
+                font-size: 1.1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.2rem;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 0.5rem 0.875rem;
+                font-size: 0.8rem;
+            }
+            
+            .table {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Fix untuk mencegah horizontal scroll */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        .row {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .col, .col-md-3, .col-md-4, .col-md-6, .col-md-8, .col-md-12 {
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+        /* ============================================
+           CHART CONTROL BUTTONS
+           ============================================ */
+        .chart-controls {
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-type-btn {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .chart-type-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--accent-primary);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .chart-type-btn:not(.active):hover {
+            background: var(--bg-hover);
+            border-color: var(--accent-primary);
+        }
+
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            min-height: 300px;
+        }
+
+        /* Switch toggle untuk animasi */
+        .form-check-input:checked {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .form-check-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            user-select: none;
+        }
+
+        /* Responsive chart controls */
+        @media (max-width: 768px) {
+            .chart-controls .btn-group {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .chart-controls .btn-group .btn {
+                flex: 1;
+                min-width: 100px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .chart-container {
+                min-height: 250px;
+            }
+        }
     </style>
 </head>
 
@@ -1269,53 +1330,106 @@ html, body {
                 </div>
             </div>
 
-            <!-- ============================================
-            GRAFIK KEUANGAN PANEL
-            ============================================ -->
-            <div class="tab-pane fade" id="grafik-panel">
-                <div class="row g-3 fade-in">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Chart Pengeluaran Bulan Ini</h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="chartEmptyState" class="mini-card mini-card-muted hidden">
-                                    <div class="mini-card-title">Info</div>
-                                    <div class="mini-card-sub">Belum ada transaksi pengeluaran pada bulan ini.</div>
+<!-- ============================================
+GRAFIK KEUANGAN PANEL
+============================================ -->
+<div class="tab-pane fade" id="grafik-panel">
+    <div class="row g-3 fade-in">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Chart Pengeluaran Bulan Ini</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Kontrol Pemilihan Jenis Chart -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="mb-0">Pilih Tampilan Chart:</h6>
+                                    <p class="text-muted small mb-0">Anda dapat mengganti tampilan chart sesuai preferensi</p>
                                 </div>
-                                
-                                <div class="row g-4" id="chartWrapper">
-                                    <div class="col-12 col-md-6">
-                                        <div class="card">
-                                            <div class="card-header bg-secondary">
-                                                <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Per Kategori</h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <canvas id="expenseCategoryChart" height="250"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <div class="card">
-                                            <div class="card-header bg-secondary">
-                                                <h6 class="mb-0"><i class="bi bi-bar-chart-line"></i> Per Dompet</h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <canvas id="expenseWalletChart" height="250"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="text-muted small mt-3">
-                                    <i class="bi bi-info-circle"></i> Hanya menampilkan transaksi Pengeluaran pada bulan berjalan
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-primary active" id="chartPieBtn">
+                                        <i class="bi bi-pie-chart"></i> Pie
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" id="chartBarBtn">
+                                        <i class="bi bi-bar-chart"></i> Bar
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" id="chartLineBtn">
+                                        <i class="bi bi-graph-up"></i> Line
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <div id="chartEmptyState" class="mini-card mini-card-muted hidden">
+                        <div class="mini-card-title">Info</div>
+                        <div class="mini-card-sub">Belum ada transaksi pengeluaran pada bulan ini.</div>
+                    </div>
+                    
+                    <!-- Chart Container - Satu chart yang bisa diubah-ubah -->
+                    <div class="row g-4" id="chartWrapper">
+                        <div class="col-12 col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-secondary d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Pengeluaran Per Kategori</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="toggleCategoryChart">
+                                        <label class="form-check-label small" for="toggleCategoryChart">Animasi</label>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" style="position: relative; height:300px;">
+                                        <canvas id="expenseCategoryChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-secondary d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0"><i class="bi bi-wallet"></i> Pengeluaran Per Dompet</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="toggleWalletChart">
+                                        <label class="form-check-label small" for="toggleWalletChart">Animasi</label>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" style="position: relative; height:300px;">
+                                        <canvas id="expenseWalletChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Tipe Lain (Line Chart) -->
+                    <div class="row g-4 hidden" id="lineChartWrapper">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-secondary">
+                                    <h6 class="mb-0"><i class="bi bi-graph-up"></i> Trend Pengeluaran Bulanan</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" style="position: relative; height:350px;">
+                                        <canvas id="monthlyTrendChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-muted small mt-3">
+                        <i class="bi bi-info-circle"></i> Hanya menampilkan transaksi Pengeluaran pada bulan berjalan. 
+                        <span class="text-primary" id="currentChartType">Mode: Pie Chart</span>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
             <!-- ============================================
             TRANSAKSI PANEL
@@ -2217,7 +2331,9 @@ html, body {
         let lastTransactions = [];
         let expenseCategoryChart = null;
         let expenseWalletChart = null;
+        let monthlyTrendChart = null;
         let debtChart = null;
+        let currentChartType = 'bar'; // 'pie', 'bar', 'line
         let debtsData = [];
         let paymentsData = [];
         const DAILY_JAJAN_LIMIT = 50000;
@@ -3393,138 +3509,311 @@ html, body {
             }).join('');
         }
 
-        // Render chart pengeluaran
-        function renderExpenseCharts() {
-            const summary = buildMonthlyExpenseSummary(lastTransactions);
-            const byCategory = summary.byCategory;
-            const byWallet = summary.byWallet;
-            const totalExpense = summary.totalExpense;
-            
-            const emptyState = document.getElementById('chartEmptyState');
-            const chartWrapper = document.getElementById('chartWrapper');
+// Fungsi untuk mengganti jenis chart
+function changeChartType(type) {
+    currentChartType = type;
+    
+    // Update UI button states
+    document.querySelectorAll('#grafik-panel .btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    if (type === 'pie') {
+        document.getElementById('chartPieBtn').classList.add('active');
+        document.getElementById('currentChartType').textContent = 'Mode: Pie Chart';
+        document.getElementById('lineChartWrapper').classList.add('hidden');
+        document.getElementById('chartWrapper').classList.remove('hidden');
+    } else if (type === 'bar') {
+        document.getElementById('chartBarBtn').classList.add('active');
+        document.getElementById('currentChartType').textContent = 'Mode: Bar Chart';
+        document.getElementById('lineChartWrapper').classList.add('hidden');
+        document.getElementById('chartWrapper').classList.remove('hidden');
+    } else if (type === 'line') {
+        document.getElementById('chartLineBtn').classList.add('active');
+        document.getElementById('currentChartType').textContent = 'Mode: Line Chart';
+        document.getElementById('chartWrapper').classList.add('hidden');
+        document.getElementById('lineChartWrapper').classList.remove('hidden');
+    }
+    
+    // Render ulang chart dengan tipe baru
+    renderExpenseCharts();
+}
 
-            const catCanvas = document.getElementById('expenseCategoryChart');
-            const walCanvas = document.getElementById('expenseWalletChart');
-
-            if (!catCanvas || !walCanvas || typeof Chart === 'undefined') return;
-
-            // Empty state
-            if (totalExpense <= 0) {
-                if (emptyState) emptyState.classList.remove('hidden');
-                if (chartWrapper) chartWrapper.classList.add('hidden');
-
-                if (expenseCategoryChart) { expenseCategoryChart.destroy(); expenseCategoryChart = null; }
-                if (expenseWalletChart) { expenseWalletChart.destroy(); expenseWalletChart = null; }
-                return;
-            } else {
-                if (emptyState) emptyState.classList.add('hidden');
-                if (chartWrapper) chartWrapper.classList.remove('hidden');
-            }
-
-            // Chart kategori
-            const catEntries = Object.entries(byCategory || {}).sort((a, b) => b[1] - a[1]);
-            const top = catEntries.slice(0, 5);
-            const topSum = top.reduce((acc, x) => acc + x[1], 0);
-            const other = Math.max(totalExpense - topSum, 0);
-
-            const catLabels = top.map(x => x[0]).concat(other > 0 ? ['Lainnya'] : []);
-            const catValues = top.map(x => x[1]).concat(other > 0 ? [other] : []);
-
-            if (expenseCategoryChart) expenseCategoryChart.destroy();
-            expenseCategoryChart = new Chart(catCanvas, {
-                type: 'pie',
-                data: {
-                    labels: catLabels,
-                    datasets: [{
-                        data: catValues,
-                        backgroundColor: [
-                            'rgba(59, 130, 246, 0.8)',
-                            'rgba(16, 185, 129, 0.8)',
-                            'rgba(245, 158, 11, 0.8)',
-                            'rgba(239, 68, 68, 0.8)',
-                            'rgba(139, 92, 246, 0.8)',
-                            'rgba(148, 163, 184, 0.8)'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { 
-                            position: 'bottom',
-                            labels: {
-                                color: '#cbd5e1'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(ctx) {
-                                    const val = ctx.parsed || 0;
-                                    const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
-                                    return `${ctx.label}: ${formatRupiah(val)} (${pct}%)`;
-                                }
-                            }
-                        }
+// Fungsi untuk mendapatkan konfigurasi chart berdasarkan tipe
+function getChartConfig(type, labels, data, title, colors = null) {
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { 
+                position: 'bottom',
+                labels: {
+                    color: '#cbd5e1',
+                    padding: 15,
+                    font: {
+                        size: 11
                     }
                 }
-            });
-
-            // Chart dompet
-            const walEntries = Object.entries(byWallet || {}).sort((a, b) => b[1] - a[1]);
-            const walLabels = walEntries.map(x => x[0]);
-            const walValues = walEntries.map(x => x[1]);
-
-            if (expenseWalletChart) expenseWalletChart.destroy();
-            expenseWalletChart = new Chart(walCanvas, {
-                type: 'bar',
-                data: {
-                    labels: walLabels,
-                    datasets: [{
-                        label: 'Total Pengeluaran',
-                        data: walValues,
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        borderColor: 'rgb(59, 130, 246)',
-                        borderWidth: 1
-                    }]
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(ctx) {
+                        const label = ctx.label || '';
+                        const value = ctx.parsed || ctx.raw || 0;
+                        const total = Array.isArray(data) ? data.reduce((a, b) => a + b, 0) : 0;
+                        const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+                        return `${label}: ${formatRupiah(value)} (${pct}%)`;
+                    }
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(ctx) {
-                                    const val = ctx.parsed.y || 0;
-                                    const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
-                                    return `${formatRupiah(val)} (${pct}%)`;
-                                }
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleColor: '#e2e8f0',
+                bodyColor: '#cbd5e1',
+                borderColor: '#475569',
+                borderWidth: 1
+            }
+        }
+    };
+    
+    // Warna default jika tidak disediakan
+    const defaultColors = [
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(239, 68, 68, 0.8)',
+        'rgba(139, 92, 246, 0.8)',
+        'rgba(148, 163, 184, 0.8)',
+        'rgba(14, 165, 233, 0.8)',
+        'rgba(236, 72, 153, 0.8)'
+    ];
+    
+    const chartColors = colors || defaultColors;
+    
+    if (type === 'pie') {
+        return {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: chartColors,
+                    borderColor: chartColors.map(color => color.replace('0.8', '1')),
+                    borderWidth: 2,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                ...commonOptions,
+                animation: {
+                    animateScale: document.getElementById('toggleCategoryChart')?.checked || false,
+                    animateRotate: document.getElementById('toggleCategoryChart')?.checked || false
+                }
+            }
+        };
+    } else if (type === 'bar') {
+        return {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: data,
+                    backgroundColor: chartColors.map(color => color.replace('0.8', '0.7')),
+                    borderColor: chartColors.map(color => color.replace('0.8', '1')),
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                ...commonOptions,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#cbd5e1',
+                            callback: function(value) {
+                                return formatRupiah(value);
                             }
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
                         }
                     },
-                    scales: {
-                        y: {
-                            ticks: {
-                                color: '#cbd5e1',
-                                callback: function(value) {
-                                    return formatRupiah(value);
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.1)'
-                            }
+                    x: {
+                        ticks: {
+                            color: '#cbd5e1'
                         },
-                        x: {
-                            ticks: {
-                                color: '#cbd5e1'
-                            },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.1)'
-                            }
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
                         }
                     }
                 }
-            });
+            }
+        };
+    } else if (type === 'line') {
+        return {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: data,
+                    borderColor: chartColors[0],
+                    backgroundColor: chartColors[0].replace('0.8', '0.1'),
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: chartColors[0],
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                ...commonOptions,
+                animation: {
+                    duration: 1500
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#cbd5e1',
+                            callback: function(value) {
+                                return formatRupiah(value);
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#cbd5e1'
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    }
+                }
+            }
+        };
+    }
+}
+
+// Fungsi untuk membuat monthly trend chart
+function createMonthlyTrendChart() {
+    const summary = buildMonthlyExpenseSummary(lastTransactions);
+    const totalExpense = summary.totalExpense;
+    
+    // Hitung pengeluaran per hari dalam bulan ini
+    const now = new Date();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const dailyExpenses = Array(daysInMonth).fill(0);
+    
+    // Isi data harian
+    lastTransactions.forEach(t => {
+        if ((t.jenis || '').trim() !== 'Pengeluaran') return;
+        
+        const dt = parseDateFlexible(t.tanggal);
+        if (!dt) return;
+        
+        if (dt.getFullYear() === now.getFullYear() && dt.getMonth() === now.getMonth()) {
+            const day = dt.getDate() - 1; // array index 0-based
+            if (day >= 0 && day < daysInMonth) {
+                dailyExpenses[day] += toInt(t.jumlah || 0);
+            }
         }
+    });
+    
+    // Buat labels (1, 2, 3, ...)
+    const labels = Array.from({length: daysInMonth}, (_, i) => `Hari ${i + 1}`);
+    
+    const ctx = document.getElementById('monthlyTrendChart');
+    if (!ctx) return;
+    
+    if (monthlyTrendChart) {
+        monthlyTrendChart.destroy();
+    }
+    
+    monthlyTrendChart = new Chart(ctx, getChartConfig('line', labels, dailyExpenses, 'Pengeluaran Harian'));
+}
+
+// Render expense charts dengan tipe yang dipilih
+function renderExpenseCharts() {
+    const summary = buildMonthlyExpenseSummary(lastTransactions);
+    const byCategory = summary.byCategory;
+    const byWallet = summary.byWallet;
+    const totalExpense = summary.totalExpense;
+    
+    const emptyState = document.getElementById('chartEmptyState');
+    const chartWrapper = document.getElementById('chartWrapper');
+    const lineChartWrapper = document.getElementById('lineChartWrapper');
+
+    const catCanvas = document.getElementById('expenseCategoryChart');
+    const walCanvas = document.getElementById('expenseWalletChart');
+
+    if (!catCanvas || !walCanvas || typeof Chart === 'undefined') return;
+
+    // Empty state
+    if (totalExpense <= 0) {
+        if (emptyState) emptyState.classList.remove('hidden');
+        if (chartWrapper) chartWrapper.classList.add('hidden');
+        if (lineChartWrapper) lineChartWrapper.classList.add('hidden');
+
+        if (expenseCategoryChart) { expenseCategoryChart.destroy(); expenseCategoryChart = null; }
+        if (expenseWalletChart) { expenseWalletChart.destroy(); expenseWalletChart = null; }
+        if (monthlyTrendChart) { monthlyTrendChart.destroy(); monthlyTrendChart = null; }
+        return;
+    } else {
+        if (emptyState) emptyState.classList.add('hidden');
+        
+        // Tampilkan wrapper yang sesuai
+        if (currentChartType === 'line') {
+            if (lineChartWrapper) lineChartWrapper.classList.remove('hidden');
+            if (chartWrapper) chartWrapper.classList.add('hidden');
+            createMonthlyTrendChart();
+            return;
+        } else {
+            if (chartWrapper) chartWrapper.classList.remove('hidden');
+            if (lineChartWrapper) lineChartWrapper.classList.add('hidden');
+        }
+    }
+
+    // Chart kategori
+    const catEntries = Object.entries(byCategory || {}).sort((a, b) => b[1] - a[1]);
+    const top = catEntries.slice(0, 8); // Ambil 8 kategori teratas
+    const topSum = top.reduce((acc, x) => acc + x[1], 0);
+    const other = Math.max(totalExpense - topSum, 0);
+
+    const catLabels = top.map(x => x[0]).concat(other > 0 ? ['Lainnya'] : []);
+    const catValues = top.map(x => x[1]).concat(other > 0 ? [other] : []);
+
+    if (expenseCategoryChart) expenseCategoryChart.destroy();
+    expenseCategoryChart = new Chart(catCanvas, getChartConfig(
+        currentChartType,
+        catLabels,
+        catValues,
+        'Pengeluaran per Kategori'
+    ));
+
+    // Chart dompet
+    const walEntries = Object.entries(byWallet || {}).sort((a, b) => b[1] - a[1]);
+    const walLabels = walEntries.map(x => x[0]);
+    const walValues = walEntries.map(x => x[1]);
+
+    if (expenseWalletChart) expenseWalletChart.destroy();
+    expenseWalletChart = new Chart(walCanvas, getChartConfig(
+        currentChartType,
+        walLabels,
+        walValues,
+        'Pengeluaran per Dompet'
+    ));
+}
 
         // Get transaction date key
         function getTxnDateKey(raw) {
@@ -5094,6 +5383,32 @@ html, body {
         }
     });
     
+    document.getElementById('chartPieBtn')?.addEventListener('click', () => changeChartType('pie'));
+    document.getElementById('chartBarBtn')?.addEventListener('click', () => changeChartType('bar'));
+    document.getElementById('chartLineBtn')?.addEventListener('click', () => changeChartType('line'));
+    
+    // Toggle animation untuk chart
+    document.getElementById('toggleCategoryChart')?.addEventListener('change', () => {
+        if (expenseCategoryChart) {
+            renderExpenseCharts();
+        }
+    });
+    
+    document.getElementById('toggleWalletChart')?.addEventListener('change', () => {
+        if (expenseWalletChart) {
+            renderExpenseCharts();
+        }
+    });
+    
+    // Saat tab grafik diklik
+    const grafikTab = document.getElementById('grafik-tab');
+    if (grafikTab) {
+        grafikTab.addEventListener('click', function() {
+            setTimeout(() => {
+                renderExpenseCharts();
+            }, 300);
+        });
+    }
     // Event listener untuk tombol save edit
     const saveEditBtn = document.getElementById('saveEditTransaction');
     if (saveEditBtn) {
