@@ -2362,31 +2362,188 @@ GRAFIK KEUANGAN PANEL
 
 
 // Register Service Worker untuk PWA
+// 1. Service Worker Registration
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        
-        // Cek apakah ada update service worker
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // Update tersedia
-              showUpdateNotification();
-            }
-          });
-        });
-      })
-      .catch(error => {
-        console.log('ServiceWorker registration failed: ', error);
-      });
-  });
+    window.addEventListener('load', () => {
+        // Buat service worker inline (sederhana)
+        const swCode = `
+            const CACHE_NAME = 'keuangan-v1';
+            const urlsToCache = [
+                'keuangan.html',
+                './', // Root path
+                'manifest.json',
+                'icon-192.png'
+            ];
+
+            self.addEventListener('install', (event) => {
+                event.waitUntil(
+                    caches.open(CACHE_NAME)
+                        .then(cache => cache.addAll(urlsToCache))
+                );
+            });
+
+            self.addEventListener('fetch', (event) => {
+                event.respondWith(
+                    caches.match(event.request)
+                        .then(response => response || fetch(event.request))
+                );
+            });
+        `;
+
+        // Convert to blob URL
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swURL = URL.createObjectURL(blob);
+
+        navigator.serviceWorker.register(swURL)
+            .then(registration => {
+                console.log('✅ Service Worker terdaftar:', registration.scope);
+            })
+            .catch(error => {
+                console.log('❌ Service Worker gagal:', error);
+            });
+    });
 }
 
-// Deteksi jika app bisa di-install
+// 2. Install Prompt Handler
 let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Tampilkan tombol install
+    showInstallPrompt();
+});
+
+// 3. Show Install Button
+function showInstallPrompt() {
+    // Cek apakah sudah di-install
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        return; // Sudah di-install
+    }
+    
+    // Buat tombol install
+    const installBtn = document.createElement('button');
+    installBtn.id = 'pwaInstallBtn';
+    installBtn.innerHTML = `
+        <i class="bi bi-download"></i> Install App
+    `;
+    installBtn.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        animation: pulse 2s infinite;
+    `;
+    
+    installBtn.onclick = async () => {
+        if (!deferredPrompt) return;
+        
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+            console.log('✅ Pengguna menerima install prompt');
+            installBtn.remove();
+        }
+        
+        deferredPrompt = null;
+    };
+    
+    // Tambahkan ke DOM
+    document.body.appendChild(installBtn);
+    
+    // Auto hide setelah 10 detik
+    setTimeout(() => {
+        if (installBtn.parentNode) {
+            installBtn.style.opacity = '0.5';
+        }
+    }, 10000);
+}
+
+// 4. Deteksi setelah terinstall
+window.addEventListener('appinstalled', () => {
+    console.log('🎉 Aplikasi berhasil di-install!');
+    const btn = document.getElementById('pwaInstallBtn');
+    if (btn) btn.remove();
+    
+    // Redirect ke halaman utama jika di subfolder
+    if (window.location.pathname.includes('.html')) {
+        window.location.href = window.location.origin + window.location.pathname.replace('keuangan.html', '');
+    }
+});
+
+// 5. Mode Offline Detection
+window.addEventListener('offline', () => {
+    const offlineMsg = document.createElement('div');
+    offlineMsg.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-danger);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 9998;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        ">
+            <i class="bi bi-wifi-off"></i>
+            <span>Mode Offline</span>
+        </div>
+    `;
+    offlineMsg.id = 'offlineNotification';
+    document.body.appendChild(offlineMsg);
+    
+    setTimeout(() => {
+        const el = document.getElementById('offlineNotification');
+        if (el) el.remove();
+    }, 5000);
+});
+
+window.addEventListener('online', () => {
+    const el = document.getElementById('offlineNotification');
+    if (el) el.remove();
+});
+
+// 6. Load aplikasi
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('📱 Aplikasi Keuangan PWA Loaded');
+    
+    // Cek jika sudah di-install
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('📦 Running in standalone mode (Installed)');
+        document.body.classList.add('pwa-installed');
+    }
+    
+    // Cek koneksi awal
+    if (!navigator.onLine) {
+        window.dispatchEvent(new Event('offline'));
+    }
+});
+
+// 7. Update Handler
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('🔄 Controller changed - reloading for update');
+        window.location.reload();
+    });
+}
+
 const installButton = document.createElement('button');
 installButton.className = 'btn btn-success btn-sm position-fixed bottom-0 end-0 m-3';
 installButton.innerHTML = '<i class="bi bi-download"></i> Install App';
