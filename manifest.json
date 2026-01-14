@@ -7,7 +7,7 @@
   "theme_color": "#2563eb",
   "background_color": "#0a0e1a",
   "description": "Aplikasi manajemen keuangan personal",
-  "orientation": "portrait",
+  "orientation": "any",
   "lang": "id-ID",
   "categories": ["finance", "productivity"],
   
