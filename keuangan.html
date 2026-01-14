@@ -12,10 +12,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <!-- PWA Configuration -->
 <!-- Manifest -->
-<link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+<link rel="manifest" href="manifest.json" crossorigin="use-credentials">
 <meta name="theme-color" content="#0a0e1a">
 
 <!-- Apple Touch Icons -->
+
 <link rel="apple-touch-icon" sizes="152x152" href="icon-152x152.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-192x192.png">
 
@@ -24,10 +25,9 @@
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
 
 <!-- PWA Metadata -->
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Keuangan pribadi AnggaPutraJN">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Keuangan Pribadi">
     
     <style>
         /* ============================================
@@ -2373,37 +2373,38 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         // Buat service worker inline (sederhana)
 const swCode = `
-    const CACHE_NAME = 'keuangan-v1';
-    const urlsToCache = [
-        '/keuangan.html',
-        '/manifest.json',
-        'icon-192x192.png',
-        'icon-512x512.png'
-    ];
+const CACHE_NAME = 'keuangan-v1';
+const urlsToCache = [
+  '/keuangan.html',
+  'manifest.json',
+  'icon-192x192.png',
+  'icon-512x512.png'
+];
 
-    self.addEventListener('install', (event) => {
-        event.waitUntil(
-            caches.open(CACHE_NAME)
-                .then(cache => cache.addAll(urlsToCache))
-        );
-    });
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
 
-    self.addEventListener('fetch', (event) => {
-        // Redirect root to keuangan.html
-        if (event.request.url.endsWith('/') || 
-            event.request.url.endsWith('/anggaputrajn.github.io/')) {
-            event.respondWith(
-                caches.match('/keuangan.html')
-                    .then(response => response || fetch('/keuangan.html'))
-            );
-            return;
-        }
-        
-        event.respondWith(
-            caches.match(event.request)
-                .then(response => response || fetch(event.request))
-        );
-    });
+self.addEventListener('fetch', (event) => {
+  // 🔥 PERBAIKAN PENTING: Redirect root ke keuangan.html
+  if (event.request.url.endsWith('/') || 
+      event.request.url === 'https://anggaputrajn.github.io/' ||
+      event.request.url === 'https://anggaputrajn.github.io') {
+    event.respondWith(
+      caches.match('/keuangan.html')
+        .then(response => response || fetch('/keuangan.html'))
+    );
+    return;
+  }
+  
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
+  );
+});
 `;
 
         // Convert to blob URL
