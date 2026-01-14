@@ -2375,7 +2375,7 @@ if ('serviceWorker' in navigator) {
 const swCode = `
     const CACHE_NAME = 'keuangan-v1';
     const urlsToCache = [
-        '/keuangan.html',
+        'keuangan.html',
         'manifest.json',
         'icon-192x192.png',
         'icon-512x512.png'
@@ -2393,8 +2393,8 @@ const swCode = `
         if (event.request.url.endsWith('/') || 
             event.request.url.endsWith('/anggaputrajn.github.io/')) {
             event.respondWith(
-                caches.match('/keuangan.html')
-                    .then(response => response || fetch('/keuangan.html'))
+                caches.match('keuangan.html')
+                    .then(response => response || fetch('keuangan.html'))
             );
             return;
         }
