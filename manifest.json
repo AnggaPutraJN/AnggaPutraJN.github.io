@@ -1,8 +1,8 @@
 {
   "name": "Manajemen Keuangan Personal",
-  "short_name": "FinTrack",
+  "short_name": "INDapk",
   "description": "Aplikasi manajemen keuangan pribadi dengan tema gelap profesional",
-  "start_url": "/",
+  "start_url": "/keuangan.html",
   "display": "standalone",
   "background_color": "#0a0e1a",
   "theme_color": "#2563eb",
