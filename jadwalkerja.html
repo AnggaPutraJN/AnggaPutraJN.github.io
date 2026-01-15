@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Upload Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ffffff 0%, #e0f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .date-display {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+        }
+
+        .back-button {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 10px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Styles */
+        .section {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            color: #3b82f6;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* TARGET TAB */
+        .target-input-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .target-input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .target-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .target-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .progress-section {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            background: rgba(71, 85, 105, 0.5);
+            border-radius: 12px;
+            height: 25px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-text {
+            position: absolute;
+            right: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Game List */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .game-card {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 5px solid;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: #3b82f6;
+        }
+
+        .game-card.completed {
+            border-left-color: #10b981;
+        }
+
+        .game-card.in-progress {
+            border-left-color: #f59e0b;
+        }
+
+        .game-card.pending {
+            border-left-color: #64748b;
+        }
+
+        .game-card.bonus {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .game-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .game-status.pending {
+            background: rgba(100, 116, 139, 0.3);
+            color: #cbd5e1;
+        }
+
+        .game-status.in-progress {
+            background: rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+        }
+
+        .game-status.completed {
+            background: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .game-details {
+            margin: 15px 0;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #94a3b8;
+        }
+
+        .detail-item strong {
+            color: #cbd5e1;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Bonus Section */
+        .bonus-section {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border: 2px dashed #f59e0b;
+        }
+
+        .bonus-title {
+            color: #f59e0b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* CHARTS TAB */
+        .chart-container {
+          background: rgba(15, 23, 42, 0.8);
+          border-radius: 15px;
+          padding: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-area {
+          position: relative;
+          height: 300px; /* kamu bisa ubah: 280-380 */
+        }
+
+        .chart-area canvas {
+          width: 100% !important;
+          height: 100% !important;
+          display: block;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .chart-wrapper {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .time-filter {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+
+        /* PERFORMANCE TAB */
+        .performance-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+        }
+
+        .stat-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-card-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+
+        .stat-card-label {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .performance-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .platform-breakdown {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .platform-list {
+            margin-top: 15px;
+        }
+
+        .platform-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .platform-item:last-child {
+            border-bottom: none;
+        }
+
+        .platform-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .platform-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .platform-name {
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .platform-count {
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        .achievement-section {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .achievement-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid;
+        }
+
+        .achievement-item.success {
+            border-left-color: #10b981;
+        }
+
+        .achievement-item.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .achievement-item.danger {
+            border-left-color: #ef4444;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* Timer Modal */
+        .timer-display {
+            font-size: 3.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: #3b82f6;
+            margin: 30px 0;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .performance-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .target-input-group {
+                flex-direction: column;
+            }
+            
+            .target-input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .timer-display {
+                font-size: 2.5rem;
+            }
+        }
+
+
+        .chart-canvas {
+          display: block;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🎮 Game Upload Dashboard</h1>
+                <div class="date-display" id="currentDate"></div>
+            </div>
+            <a href="https://indapk.github.io" class="back-button">← Kembali ke Beranda</a>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+          <button class="tab active" onclick="switchTab('target', this)">🎯 Tugas Target</button>
+          <button class="tab" onclick="switchTab('charts', this)">📊 Grafik</button>
+          <button class="tab" onclick="switchTab('performance', this)">⭐ Kinerja Kerja</button>
+        </nav>
+
+
+        <!-- TARGET TAB -->
+        <div id="targetTab" class="tab-content active">
+            <!-- Target Input Section -->
+            <div class="section target-input-section">
+                <h2 class="section-title">🎯 Set Target Harian</h2>
+                <div class="target-input-group">
+                    <input type="number" id="targetInput" class="target-input" 
+                           placeholder="Masukkan jumlah game target hari ini" min="1" max="20">
+                    <button class="btn btn-primary" onclick="setDailyTarget()" id="setTargetBtn">
+                        <span>🚀 Set Target</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="section progress-section" id="progressSection" style="display: none;">
+                <div class="progress-header">
+                    <h2 class="section-title">📊 Progress Harian</h2>
+                    <div class="progress-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="completedCount">0</div>
+                            <div class="stat-label">Selesai</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalTarget">0</div>
+                            <div class="stat-label">Target</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalTime">0</div>
+                            <div class="stat-label">Menit</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%;">
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game List -->
+            <div class="section">
+                <h2 class="section-title">🎮 Daftar Game Hari Ini</h2>
+                <div class="game-grid" id="gameList">
+                    <!-- Game cards will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Bonus Section -->
+            <div class="bonus-section">
+                <h3 class="bonus-title">⭐ Bonus Game (Optional)</h3>
+                <p style="color: #fbbf24; margin-bottom: 20px;">Setelah menyelesaikan semua target, Anda bisa menambah game bonus jika ingin melanjutkan kerja.</p>
+                <button class="btn btn-warning" onclick="addBonusGame()" id="addBonusBtn" disabled>
+                    <span>➕ Tambah Game Bonus</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- CHARTS TAB -->
+        <div id="chartsTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">📈 Grafik Kinerja</h2>
+                
+                <!-- Time Filter -->
+                <div class="chart-header">
+                    <h3>Performa berdasarkan Periode</h3>
+                <div class="time-filter">
+                  <button class="filter-btn active" data-period="day" onclick="loadCharts('day')">Hari Ini</button>
+                  <button class="filter-btn" data-period="week" onclick="loadCharts('week')">Minggu Ini</button>
+                  <button class="filter-btn" data-period="month" onclick="loadCharts('month')">Bulan Ini</button>
+                </div>
+
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="chart-grid">
+                    <!-- Pie Chart -->
+                    <div class="chart-container">
+                      <h3>📊 Distribusi Platform</h3>
+                      <div class="chart-area">
+                        <canvas id="platformPieChart"></canvas>
+                      </div>
+                    </div>
+                    <!-- Line Chart -->
+                    <div class="chart-container">
+                      <h3>📈 Trend Penyelesaian</h3>
+                      <div class="chart-area">
+                        <canvas id="completionLineChart"></canvas>
+                      </div>
+                    </div>
+
+                    <!-- Bar Chart -->
+                    <div class="chart-container">
+                      <h3>📊 Distribusi Platform</h3>
+                      <div class="chart-area">
+                        <canvas id="platformBarChart"></canvas>
+                      </div>
+                    </div>
+
+                    <!-- Time Chart -->
+                    <div class="chart-container">
+                      <h3>⏱️ Waktu Pengerjaan</h3>
+                      <div class="chart-area">
+                        <canvas id="timeChart"></canvas>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERFORMANCE TAB -->
+        <div id="performanceTab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">⭐ Statistik Kinerja</h2>
+                
+                <!-- Performance Stats -->
+                <div class="performance-stats">
+                    <div class="stat-card">
+                        <div class="stat-card-icon">🎮</div>
+                        <div class="stat-card-value" id="dailyTotal">0</div>
+                        <div class="stat-card-label">Total Game Hari Ini</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">📅</div>
+                        <div class="stat-card-value" id="weeklyTotal">0</div>
+                        <div class="stat-card-label">Total Game Minggu Ini</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">📊</div>
+                        <div class="stat-card-value" id="monthlyTotal">0</div>
+                        <div class="stat-card-label">Total Game Bulan Ini</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">⏱️</div>
+                        <div class="stat-card-value" id="avgTime">0</div>
+                        <div class="stat-card-label">Rata-rata Waktu/Game</div>
+                    </div>
+                </div>
+
+                <!-- Performance Details -->
+                <div class="performance-details">
+                    <!-- Platform Breakdown -->
+                    <div class="platform-breakdown">
+                        <h3>🎮 Breakdown per Platform</h3>
+                        <div class="platform-list" id="platformList">
+                            <!-- Platform items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Achievement Summary -->
+                    <div class="achievement-section">
+                        <h3>🏆 Ringkasan Pencapaian</h3>
+                        <div id="achievementSummary">
+                            <!-- Achievement items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yesterday Performance -->
+                <div class="section" style="margin-top: 30px;">
+                    <h2 class="section-title">📅 Performa Kemarin</h2>
+                    <div id="yesterdayPerformance">
+                        <!-- Yesterday performance will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complete Game Modal -->
+    <div class="modal" id="completeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">✅ Selesaikan Game</h2>
+            </div>
+            <form id="completeForm">
+                <input type="hidden" id="completeGameId">
+                
+                <div class="form-group">
+                    <label for="gameName">Nama Game</label>
+                    <input type="text" id="gameName" placeholder="Masukkan nama game" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gameLink">Link Game</label>
+                    <input type="url" id="gameLink" placeholder="https://example.com/game-link" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="platform">Platform</label>
+                    <select id="platform" required>
+                        <option value="">Pilih platform</option>
+                        <option value="Switch">Switch</option>
+                        <option value="PS Vita">PS Vita</option>
+                        <option value="PSP">PSP</option>
+                        <option value="PS2">PS2</option>
+                        <option value="Android">Android</option>
+                        <option value="PC">PC</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Durasi: <span id="durationDisplay">0 menit</span></label>
+                    <input type="hidden" id="durationMinutes">
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-danger" onclick="closeCompleteModal()">Batal</button>
+                    <button type="submit" class="btn btn-success">Simpan & Selesai</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Game Timer Modal -->
+    <div class="modal" id="timerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">⏱️ Timer Berjalan</h2>
+            </div>
+            <div style="text-align: center;">
+                <div class="timer-display" id="timerDisplay">
+                    00:00:00
+                </div>
+                <p style="color: #94a3b8; margin-bottom: 30px;">Game sedang dikerjakan...</p>
+                <button class="btn btn-success" onclick="showCompleteModal()" style="padding: 15px 40px; font-size: 1.2rem;">
+                    ✅ Selesaikan Game
+                </button>
+                <button class="btn btn-danger" onclick="closeTimerModal()" style="padding: 12px 28px; margin-top: 12px;">
+                  ❌ Tutup Timer
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlSACLvFk0b0njYyGP7hzVD8Vg9uPNdORA-8qedhKhvEbYVamwN_M02obxFrGnt5Z74Q/exec';
+        
+        // Global variables
+        let currentTarget = 0;
+        let completedGames = 0;
+        let gameList = [];
+        let startTime = null;
+        let timerInterval = null;
+        let currentGameId = null;
+        let charts = {};
+        let currentChartPeriod = 'day';
+
+        // Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  updateCurrentDate();
+  loadData();
+
+  setInterval(updateCurrentDate, 60000);
+  setInterval(checkDateChange, 60000);
+
+  setInterval(() => {
+    const completeOpen = document.getElementById('completeModal')?.style.display === 'flex';
+    const timerOpen = document.getElementById('timerModal')?.style.display === 'flex';
+    if (completeOpen || timerOpen) return;
+
+    loadData();
+  }, 30000);
+});
+
+function closeTimerModal() {
+  document.getElementById('timerModal').style.display = 'none';
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+function updateCurrentDate() {
+  const now = new Date();
+  document.getElementById('currentDate').textContent = now.toLocaleString('id-ID', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+
+        function checkDateChange() {
+            const now = new Date();
+            const lastCheck = window.lastDateCheck || now;
+            
+            // Check if date has changed
+            if (now.getDate() !== lastCheck.getDate() ||
+                now.getMonth() !== lastCheck.getMonth() ||
+                now.getFullYear() !== lastCheck.getFullYear()) {
+                
+                // Date changed, reset UI
+                resetUIForNewDay();
+            }
+            
+            window.lastDateCheck = now;
+        }
+
+function resetUIForNewDay() {
+  // Reset state JS
+  currentTarget = 0;
+  completedGames = 0;
+  gameList = [];
+  currentGameId = null;
+  startTime = null;
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  // Reset target input
+  document.getElementById('targetInput').value = '';
+  document.getElementById('setTargetBtn').disabled = false;
+  document.getElementById('setTargetBtn').innerHTML = '<span>🚀 Set Target</span>';
+
+  // Hide progress section
+  document.getElementById('progressSection').style.display = 'none';
+
+  // Disable bonus button
+  document.getElementById('addBonusBtn').disabled = true;
+  document.getElementById('addBonusBtn').innerHTML = '<span>➕ Tambah Game Bonus</span>';
+
+  // Clear game list UI
+  document.getElementById('gameList').innerHTML = '';
+
+  // Reload data
+  loadData();
+
+  // Notification
+  showNotification('Hari baru telah dimulai! Silakan set target untuk hari ini.', 'info');
+}
+
+
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+
+  const bg =
+    type === 'success' ? '#10b981' :
+    type === 'error' ? '#ef4444' :
+    '#3b82f6';
+
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: ${bg};
+    color: white;
+    border-radius: 10px;
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  `;
+
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex; align-items:center; gap:10px;';
+
+  const icon = document.createElement('span');
+  icon.textContent = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+
+  const text = document.createElement('span');
+  text.textContent = String(message);
+
+  row.appendChild(icon);
+  row.appendChild(text);
+  notification.appendChild(row);
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.3s ease';
+    setTimeout(() => notification.remove(), 300);
+  }, 5000);
+}
+
+
+async function loadData() {
+  try {
+    await loadTodayTarget();
+    await loadGameList();
+    await loadPerformanceStats();
+
+    if (document.getElementById('chartsTab').classList.contains('active')) {
+      await loadCharts(currentChartPeriod);
+    }
+  } catch (error) {
+    console.error('Error loading data:', error);
+    showNotification('Gagal memuat data: ' + error.message, 'error');
+  }
+}
+
+
+
+async function loadTodayTarget() {
+  try {
+    const response = await fetch(`${SCRIPT_URL}?action=getTodayTarget`);
+    const data = await response.json();
+
+    if (data.status === 'success' && data.data) {
+      currentTarget = data.data.target || 0;
+      completedGames = data.data.completed || 0;
+
+      if (currentTarget > 0) {
+        document.getElementById('targetInput').value = currentTarget;
+        document.getElementById('setTargetBtn').disabled = true;
+        document.getElementById('setTargetBtn').innerHTML = '<span>✅ Target Sudah Diset</span>';
+
+        // Show progress
+        document.getElementById('progressSection').style.display = 'block';
+        document.getElementById('completedCount').textContent = completedGames;
+        document.getElementById('totalTarget').textContent = currentTarget;
+        document.getElementById('totalTime').textContent = data.data.totalTime || 0;
+
+        // Clamp progress supaya tidak lewat 100%
+        const progressRaw = (completedGames / currentTarget) * 100;
+        const progress = Math.min(100, Math.max(0, progressRaw));
+
+        document.getElementById('progressBar').style.width = `${progress}%`;
+        document.getElementById('progressText').textContent = `${Math.round(progress)}%`;
+
+        // Enable bonus jika target terpenuhi
+        document.getElementById('addBonusBtn').disabled = completedGames < currentTarget;
+      } else {
+        // Reset UI jika hari baru belum ada target
+        document.getElementById('targetInput').value = '';
+        document.getElementById('setTargetBtn').disabled = false;
+        document.getElementById('setTargetBtn').innerHTML = '<span>🚀 Set Target</span>';
+        document.getElementById('progressSection').style.display = 'none';
+        document.getElementById('addBonusBtn').disabled = true;
+      }
+    }
+  } catch (error) {
+    console.error('Error loading target:', error);
+  }
+}
+
+
+        async function loadGameList() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getGameList`);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data) {
+                    gameList = data.data;
+                    renderGameList();
+                }
+            } catch (error) {
+                console.error('Error loading game list:', error);
+            }
+        }
+
+function renderGameList() {
+  const gameListContainer = document.getElementById('gameList');
+  gameListContainer.innerHTML = '';
+
+  if (gameList.length === 0) {
+    gameListContainer.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #94a3b8;">
+        <div style="font-size: 3rem; margin-bottom: 20px;">🎮</div>
+        <h3 style="margin-bottom: 10px;">Belum ada game hari ini</h3>
+        <p>Set target terlebih dahulu untuk memulai</p>
+      </div>
+    `;
+    return;
+  }
+
+  gameList.forEach(game => {
+    const gameCard = document.createElement('div');
+    gameCard.className = `game-card ${game.status.toLowerCase().replace(' ', '-')} ${game.isBonus ? 'bonus' : ''}`;
+
+    let statusBadge = '';
+    let actionButton = '';
+
+    if (game.status === 'Pending') {
+      statusBadge = '<span class="game-status pending">🕐 Menunggu</span>';
+      actionButton = game.canStart
+        ? `<button class="btn btn-primary" onclick="startGame('${game.id}')">▶️ Mulai</button>`
+        : `<button class="btn btn-primary" disabled>⏳ Tunggu Sebelumnya</button>`;
+    } else if (game.status === 'In Progress') {
+      statusBadge = '<span class="game-status in-progress">⏱️ Sedang Dikerjakan</span>';
+      actionButton = `<button class="btn btn-warning" onclick="showTimerModal('${game.id}')">⏱️ Lihat Timer</button>`;
+    } else if (game.status === 'Completed') {
+      statusBadge = '<span class="game-status completed">✅ Selesai</span>';
+      actionButton = `<button class="btn btn-success" disabled>✅ Selesai</button>`;
+    }
+
+    const durationText = game.duration ? `${game.duration} menit` : '-';
+    const platformText = game.platform || 'Belum diisi';
+    const linkText = game.link
+      ? `<a href="${game.link}" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: none;">🔗 Lihat</a>`
+      : '<span style="color: #94a3b8;">-</span>';
+
+    gameCard.innerHTML = `
+      <div class="game-header">
+        <div class="game-number">
+          ${game.isBonus ? '⭐ ' : ''}Game ${game.gameNumber}
+        </div>
+        ${statusBadge}
+      </div>
+      <div class="game-details">
+        <div class="detail-item">
+          <span>🎮 Platform:</span>
+          <strong>${platformText}</strong>
+        </div>
+        <div class="detail-item">
+          <span>⏱️ Durasi:</span>
+          <strong>${durationText}</strong>
+        </div>
+        <div class="detail-item">
+          <span>🔗 Link:</span>
+          ${linkText}
+        </div>
+        ${game.gameName && game.gameName !== `Game ${game.gameNumber}` ? `
+        <div class="detail-item">
+          <span>📝 Nama:</span>
+          <strong>${game.gameName}</strong>
+        </div>
+        ` : ''}
+      </div>
+      <div class="game-actions">
+        ${actionButton}
+      </div>
+    `;
+
+    gameListContainer.appendChild(gameCard);
+  });
+}
+
+
+        // FIX 4: Add lock mechanism simulation
+        let lock = false;
+
+        async function withLock(fn) {
+            if (lock) {
+                throw new Error('Sedang memproses, harap tunggu...');
+            }
+            lock = true;
+            try {
+                return await fn();
+            } finally {
+                lock = false;
+            }
+        }
+
+        async function setDailyTarget() {
+            await withLock(async () => {
+                const targetInput = document.getElementById('targetInput');
+                const target = parseInt(targetInput.value);
+                
+                if (!target || target < 1 || target > 20) {
+                    showNotification('Masukkan jumlah target yang valid (1-20)', 'error');
+                    return;
+                }
+                
+                const btn = document.getElementById('setTargetBtn');
+                btn.innerHTML = '<div class="loading"></div>';
+                btn.disabled = true;
+                
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `action=setDailyTarget&target=${target}`
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        showNotification('Target harian berhasil disimpan!', 'success');
+                        loadData();
+                    } else {
+                        showNotification('Gagal menyimpan target: ' + data.message, 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<span>🚀 Set Target</span>';
+                    }
+                } catch (error) {
+                    console.error('Error setting target:', error);
+                    showNotification('Terjadi kesalahan: ' + error.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>🚀 Set Target</span>';
+                }
+            });
+        }
+
+async function startGame(gameId) {
+  await withLock(async () => {
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=startGame&gameId=${encodeURIComponent(gameId)}`
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        currentGameId = gameId;
+        startTime = new Date(data.data.startTime);
+        showTimerModal(gameId);
+        startTimerDisplay();
+      } else {
+        showNotification('Gagal memulai game: ' + data.message, 'error');
+      }
+    } catch (error) {
+      console.error('Error starting game:', error);
+      showNotification('Terjadi kesalahan: ' + error.message, 'error');
+
+      // Fallback: ambil startTime dari list terbaru jika backend menyimpannya
+      await loadGameList();
+      const game = gameList.find(g => g.id === gameId);
+
+      showTimerModal(
+        gameId,
+        game?.startTime ? new Date(game.startTime) : new Date()
+      );
+    }
+  });
+}
+
+
+        function showTimerModal(gameId, forcedStartTime) {
+          const game = gameList.find(g => g.id === gameId);
+          currentGameId = gameId;
+          startTime = forcedStartTime ?? (game?.startTime ? new Date(game.startTime) : new Date());
+          document.getElementById('timerModal').style.display = 'flex';
+          startTimerDisplay();
+        }
+
+        function startTimerDisplay() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            if (!startTime) return;
+            
+            const now = new Date();
+            const diff = now.getTime() - startTime.getTime();
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('timerDisplay').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function showCompleteModal() {
+            if (!currentGameId || !startTime) return;
+            
+            const now = new Date();
+            const diff = now.getTime() - startTime.getTime();
+            const minutes = Math.max(1, Math.round(diff / (1000 * 60)));
+            
+            document.getElementById('timerModal').style.display = 'none';
+            document.getElementById('completeModal').style.display = 'flex';
+            document.getElementById('completeGameId').value = currentGameId;
+            document.getElementById('durationDisplay').textContent = `${minutes} menit`;
+            document.getElementById('durationMinutes').value = minutes;
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function closeCompleteModal() {
+            document.getElementById('completeModal').style.display = 'none';
+            document.getElementById('completeForm').reset();
+        }
+
+            document.getElementById('completeForm').addEventListener('submit', async function(e) {
+              e.preventDefault();
+
+              await withLock(async () => {
+                const gameId = document.getElementById('completeGameId').value;
+                const gameName = document.getElementById('gameName').value.trim();
+                const gameLink = document.getElementById('gameLink').value.trim();
+                const platform = document.getElementById('platform').value;
+                const duration = document.getElementById('durationMinutes').value;
+
+                // Validasi
+                if (!gameName || gameName.length > 100) {
+                  showNotification('Nama game harus diisi (maks 100 karakter)', 'error');
+                  return;
+                }
+
+                if (!gameLink || !isValidUrl(gameLink)) {
+                  showNotification('Link game harus berupa URL yang valid', 'error');
+                  return;
+                }
+
+                if (!platform) {
+                  showNotification('Platform harus dipilih', 'error');
+                  return;
+                }
+
+                const btn = this.querySelector('button[type="submit"]');
+                btn.innerHTML = '<div class="loading"></div>';
+                btn.disabled = true;
+
+                try {
+                  const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body:
+                      `action=completeGame` +
+                      `&gameId=${encodeURIComponent(gameId)}` +
+                      `&gameName=${encodeURIComponent(gameName)}` +
+                      `&gameLink=${encodeURIComponent(gameLink)}` +
+                      `&platform=${encodeURIComponent(platform)}` +
+                      `&duration=${encodeURIComponent(duration)}`
+                  });
+
+                  const data = await response.json();
+
+                  if (data.status === 'success') {
+                    // Update summary hanya saat sukses
+                    await updateDailySummary();
+
+                    btn.disabled = false;
+                    btn.innerHTML = 'Simpan & Selesai';
+
+                    showNotification('Game berhasil diselesaikan!', 'success');
+                    closeCompleteModal();
+                    loadData();
+                    return;
+                  }
+
+                  showNotification('Gagal menyelesaikan game: ' + data.message, 'error');
+                  btn.disabled = false;
+                  btn.innerHTML = 'Simpan & Selesai';
+                } catch (error) {
+                  console.error('Error completing game:', error);
+                  showNotification('Terjadi kesalahan: ' + error.message, 'error');
+                  btn.disabled = false;
+                  btn.innerHTML = 'Simpan & Selesai';
+                }
+              });
+            });
+
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // FIX 2: Correct bonus game calculation
+        async function addBonusGame() {
+            await withLock(async () => {
+                const btn = document.getElementById('addBonusBtn');
+                btn.innerHTML = '<div class="loading"></div>';
+                btn.disabled = true;
+                
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'action=addBonusGame'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        showNotification('Game bonus berhasil ditambahkan!', 'success');
+                        loadData();
+                    } else {
+                        showNotification('Gagal menambahkan game bonus: ' + data.message, 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<span>➕ Tambah Game Bonus</span>';
+                    }
+                } catch (error) {
+                    console.error('Error adding bonus game:', error);
+                    showNotification('Terjadi kesalahan: ' + error.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>➕ Tambah Game Bonus</span>';
+                }
+            });
+        }
+
+async function loadPerformanceStats() {
+  try {
+    const response = await fetch(`${SCRIPT_URL}?action=getPerformanceStats`);
+    const data = await response.json();
+
+    if (!(data.status === 'success' && data.data)) return;
+
+    // Update performance stats
+    document.getElementById('dailyTotal').textContent = data.data.daily?.total || 0;
+    document.getElementById('weeklyTotal').textContent = data.data.weekly?.total || 0;
+    document.getElementById('monthlyTotal').textContent = data.data.monthly?.total || 0;
+    document.getElementById('avgTime').textContent = data.data.averageTime
+      ? Math.round(data.data.averageTime) + 'm'
+      : '0m';
+
+    // Update platform breakdown
+    const platformList = document.getElementById('platformList');
+    if (platformList) {
+      platformList.innerHTML = '';
+
+      const platforms = data.data.platforms || {};
+      const entries = Object.entries(platforms);
+
+      if (entries.length === 0) {
+        platformList.innerHTML = `<div style="color:#94a3b8; padding: 12px 0;">Belum ada data platform.</div>`;
+      } else {
+        entries.forEach(([platform, count]) => {
+          const platformItem = document.createElement('div');
+          platformItem.className = 'platform-item';
+
+          const left = document.createElement('div');
+          left.className = 'platform-info';
+
+          const icon = document.createElement('div');
+          icon.className = 'platform-icon';
+          icon.textContent = '🎮';
+
+          const name = document.createElement('span');
+          name.className = 'platform-name';
+          name.textContent = platform;
+
+          const right = document.createElement('span');
+          right.className = 'platform-count';
+          right.textContent = String(count);
+
+          left.appendChild(icon);
+          left.appendChild(name);
+          platformItem.appendChild(left);
+          platformItem.appendChild(right);
+
+          platformList.appendChild(platformItem);
+        });
+      }
+    }
+
+    // Achievement summary
+    const achievementSummary = document.getElementById('achievementSummary');
+    if (achievementSummary) {
+      achievementSummary.innerHTML = '';
+
+      // Yesterday
+      if (data.data.yesterday) {
+        const y = data.data.yesterday;
+
+        const yesterdayDiv = document.createElement('div');
+        yesterdayDiv.className = `achievement-item ${y.status || 'warning'}`;
+
+        const lines = [
+          `Kemarin: Target ${y.target || 0}`,
+          `Selesai ${y.completed || 0}`,
+        ];
+
+        if (y.bonus) lines.push(`Bonus ${y.bonus}`);
+
+        yesterdayDiv.innerHTML = `<strong>${lines[0]}</strong><br>${lines.slice(1).join('<br>')}`;
+        achievementSummary.appendChild(yesterdayDiv);
+      }
+
+      // Today (pakai state currentTarget dan completedGames)
+      const todayDiv = document.createElement('div');
+      todayDiv.className = `achievement-item ${
+        currentTarget > 0 && completedGames >= currentTarget ? 'success' : 'warning'
+      }`;
+
+      const todayText =
+        currentTarget <= 0
+          ? `Hari ini: belum ada target`
+          : `Hari ini: Target ${currentTarget}, Selesai ${completedGames}`;
+
+      todayDiv.innerHTML = `<strong>${todayText}</strong>`;
+      achievementSummary.appendChild(todayDiv);
+    }
+
+    // Isi section "Performa Kemarin"
+    const yesterdayPerformance = document.getElementById('yesterdayPerformance');
+    if (yesterdayPerformance) {
+      yesterdayPerformance.innerHTML = '';
+
+      if (!data.data.yesterday) {
+        yesterdayPerformance.innerHTML = `<div style="color:#94a3b8;">Belum ada data kemarin.</div>`;
+      } else {
+        const y = data.data.yesterday;
+
+        const box = document.createElement('div');
+        box.className = `achievement-item ${y.status || 'warning'}`;
+
+        const p1 = document.createElement('div');
+        p1.innerHTML = `<strong>Target:</strong> ${y.target || 0}`;
+
+        const p2 = document.createElement('div');
+        p2.innerHTML = `<strong>Selesai:</strong> ${y.completed || 0}`;
+
+        const p3 = document.createElement('div');
+        p3.innerHTML = `<strong>Bonus:</strong> ${y.bonus || 0}`;
+
+        box.appendChild(p1);
+        box.appendChild(p2);
+        box.appendChild(p3);
+
+        yesterdayPerformance.appendChild(box);
+      }
+    }
+  } catch (error) {
+    console.error('Error loading performance stats:', error);
+  }
+}
+
+
+async function loadCharts(period) {
+  currentChartPeriod = period;
+
+  // Set active button based on data-period
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.period === period);
+  });
+
+  try {
+    const response = await fetch(`${SCRIPT_URL}?action=getChartData&period=${period}`);
+    const data = await response.json();
+
+    if (data.status === 'success' && data.data) {
+      renderCharts(data.data);
+
+      // Optional: pastikan resize benar setelah tab tampil
+      setTimeout(() => {
+        Object.values(charts).forEach(ch => {
+          if (ch) ch.resize();
+        });
+      }, 0);
+    }
+  } catch (error) {
+    console.error('Error loading charts:', error);
+  }
+}
+
+
+        function renderCharts(chartData) {
+            // Destroy existing charts
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            
+            // Platform Pie Chart
+            const platformPieCtx = document.getElementById('platformPieChart').getContext('2d');
+            charts.pie = new Chart(platformPieCtx, {
+                type: 'pie',
+                data: {
+                    labels: chartData.platforms?.labels || [],
+                    datasets: [{
+                        data: chartData.platforms?.data || [],
+                        backgroundColor: [
+                            '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+                            '#8b5cf6', '#06b6d4', '#64748b'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#0f172a'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#cbd5e1',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Completion Line Chart
+            const completionLineCtx = document.getElementById('completionLineChart').getContext('2d');
+            charts.line = new Chart(completionLineCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.trend?.labels || [],
+                    datasets: [{
+                        label: 'Game Selesai',
+                        data: chartData.trend?.data || [],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#cbd5e1'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Platform Bar Chart
+            const platformBarCtx = document.getElementById('platformBarChart').getContext('2d');
+            charts.bar = new Chart(platformBarCtx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.comparison?.labels || [],
+                    datasets: [{
+                        label: 'Jumlah Game',
+                        data: chartData.comparison?.data || [],
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#1d4ed8',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#cbd5e1'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Time Chart
+            const timeCtx = document.getElementById('timeChart').getContext('2d');
+            charts.time = new Chart(timeCtx, {
+                type: 'radar',
+                data: {
+                    labels: chartData.time?.labels || [],
+                    datasets: [{
+                        label: 'Waktu (menit)',
+                        data: chartData.time?.data || [],
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: '#3b82f6',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#cbd5e1'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#cbd5e1'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+function switchTab(tabName, buttonEl) {
+  // Hide all tabs
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+
+  // Deactivate all tab buttons
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  // Show selected tab
+  document.getElementById(tabName + 'Tab').classList.add('active');
+
+  // Activate selected button
+  if (buttonEl) buttonEl.classList.add('active');
+
+  // Load data for the tab
+  if (tabName === 'charts') {
+    requestAnimationFrame(() => loadCharts(currentChartPeriod));
+  } else if (tabName === 'performance') {
+    loadPerformanceStats();
+  }
+}
+
+
+        // FIX 1: Update daily summary function
+        async function updateDailySummary() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=updateDailySummary`);
+                const data = await response.json();
+                if (data.status === 'error') {
+                    console.warn('Failed to update daily summary:', data.message);
+                }
+            } catch (error) {
+                console.error('Error updating daily summary:', error);
+            }
+        }
+
+        // Add CSS animation for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
