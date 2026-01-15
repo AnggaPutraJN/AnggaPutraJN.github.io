@@ -39,41 +39,25 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - Network First Strategy
 self.addEventListener('fetch', (event) => {
-  // Skip Google Sheets API
-  if (event.request.url.includes('script.google.com')) {
-    return fetch(event.request);
-  }
-  
-  // Skip non-GET requests
+  // Jangan sentuh request ke Apps Script
+  if (event.request.url.includes('script.google.com')) return;
+
+  // Skip non-GET
   if (event.request.method !== 'GET') return;
-  
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Cache successful responses
         if (response.status === 200) {
           const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
         }
         return response;
       })
-      .catch(() => {
-        // Fallback to cache when offline
-        return caches.match(event.request)
-          .then((response) => {
-            if (response) {
-              return response;
-            }
-            // Return cached HTML for navigation requests
-            if (event.request.mode === 'navigate') {
-              return caches.match('keuangan.html');
-            }
-          });
-      })
+      .catch(() => caches.match(event.request))
   );
 });
+
 
 // Background sync (opsional)
 self.addEventListener('sync', (event) => {
