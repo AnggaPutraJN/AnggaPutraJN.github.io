@@ -2,7 +2,7 @@
 const CACHE_NAME = 'keuangan-pwa-v2.0';
 const APP_SHELL = [
   '',
-  'index.html',
+  'keuangan.html',
   'manifest.json',
   'icon-192x192.png'
 ];
@@ -68,7 +68,7 @@ self.addEventListener('fetch', (event) => {
             }
             // Return cached HTML for navigation requests
             if (event.request.mode === 'navigate') {
-              return caches.match('index.html');
+              return caches.match('keuangan.html');
             }
           });
       })
