@@ -1201,48 +1201,58 @@
 /* ============================================
    JADWAL KERJA FULL SCREEN STYLES
    ============================================ */
-#jadwal-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1050;
-    background: var(--bg-primary);
-    padding: 15px;
-    overflow-y: auto;
+#jadwal-panel{
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1050;
+  background: var(--bg-primary);
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  overflow: hidden;
+
+  height: 100vh;
+  height: 100dvh; /* mobile lebih akurat */
 }
 
-#jadwalHeader {
-    margin-bottom: 15px;
-    border-radius: 12px;
+/* Header tidak ikut membesar aneh */
+#jadwalHeader{
+  flex: 0 0 auto;
+  margin-bottom: 10px;
 }
 
-#jadwalIframe {
-    border-radius: 8px;
-    background: white;
+/* Card utama isi sisa tinggi layar */
+.jadwal-card{
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Override untuk tab yang aktif */
-#jadwal-panel.active {
-    display: block !important;
+/* Body card isi sisa tinggi */
+.jadwal-card .card-body{
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
-/* Responsive untuk mobile */
-@media (max-width: 768px) {
-    #jadwal-panel {
-        padding: 10px;
-    }
-    
-    .card[style*="height"] {
-        height: calc(100vh - 150px) !important;
-    }
-    
-    #jadwalHeader .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.8rem;
-    }
+/* Iframe full mengikuti tinggi body */
+#jadwalIframe{
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+  background: #fff;
 }
+
+/* Khusus tombol di header jadwal, jangan full width di mobile */
+@media (max-width: 768px){
+  #jadwalHeader .btn{
+    width: auto !important;
+    margin-bottom: 0 !important;
+  }
     </style>
 </head>
 
@@ -1336,7 +1346,7 @@
         </div>
         
         <!-- Container untuk Iframe Full Screen -->
-        <div class="card" style="height: calc(100vh - 200px);">
+        <div class="card jadwal-card">
             <div class="card-body p-0 position-relative">
                 <!-- Loading Indicator -->
                 <div class="iframe-loading" id="jadwalLoading">
@@ -1355,14 +1365,6 @@
                     title="Jadwal Kerja"
                     allowfullscreen>
                 </iframe>
-            </div>
-            <div class="card-footer bg-secondary text-muted small d-flex justify-content-between align-items-center">
-                <div>
-                    <i class="bi bi-info-circle"></i> Mode full screen - Gunakan tombol "Tutup Jadwal" untuk kembali
-                </div>
-                <button class="btn btn-outline-secondary btn-sm" onclick="openJadwalInNewTab()">
-                    <i class="bi bi-box-arrow-up-right"></i> Buka di Tab Baru
-                </button>
             </div>
         </div>
     </div>
