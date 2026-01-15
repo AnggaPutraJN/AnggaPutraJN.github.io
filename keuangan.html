@@ -1163,104 +1163,6 @@
 .pwa-installed #pwaInstallBtnHeader {
   display: none;
 }
-
-/* ============================================
-   IFRAME STYLES (untuk Jadwal Kerja)
-   ============================================ */
-#iframe-container {
-    position: relative;
-    width: 100%;
-    height: 600px;
-    overflow: hidden;
-}
-
-#jadwalIframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 0 0 16px 16px;
-    background: white;
-}
-
-.iframe-loading {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-card);
-    z-index: 10;
-}
-
-.iframe-loaded .iframe-loading {
-    display: none;
-}
-/* ============================================
-   JADWAL KERJA FULL SCREEN STYLES
-   ============================================ */
-  #jadwal-panel{
-    position: fixed;
-    inset: 0;
-    z-index: 1050;
-    background: var(--bg-primary);
-    padding: 15px;
-    overflow: hidden; /* scroll diatur di dalam layout */
-  }
-
-  /* Layout header + iframe */
-  #jadwal-panel .jadwal-wrap{
-    height: 100vh;
-    height: 100dvh; /* lebih akurat di mobile */
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  /* Iframe container mengisi sisa layar */
-  #jadwal-panel .jadwal-body{
-    flex: 1 1 auto;
-    min-height: 0; /* ini yang biasanya bikin tidak kepotong */
-  }
-
-  /* Iframe full */
-  #jadwalIframe{
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 8px;
-    background: white;
-    display: block;
-  }
-
-  /* Loading overlay */
-  .iframe-loading{
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-card);
-    z-index: 10;
-  }
-
-  /* Jika sudah loaded, sembunyikan loader */
-  .iframe-loaded .iframe-loading{
-    display: none;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px){
-    #jadwal-panel{ padding: 10px; }
-    #jadwalHeader .btn{
-      padding: 0.25rem 0.5rem;
-      font-size: 0.8rem;
-      width: auto;
-      margin-bottom: 0;
-    }
-  }
     </style>
 </head>
 
@@ -1293,13 +1195,11 @@
         TABS NAVIGASI
         ============================================ -->
         <ul class="nav nav-tabs mb-4" id="mainTabs">
-    <!-- Tab yang sudah ada... -->
-<li class="nav-item">
-    <button class="nav-link" id="jadwal-tab" data-bs-toggle="tab" data-bs-target="#jadwal-panel">
-        <i class="bi bi-calendar-check"></i> Jadwal Kerja
-    </button>
-</li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="jadwalkerja.html" id="schedule-tab">
+                        <i class="bi bi-calendar-week"></i> Jadwal Kerja
+                    </a>
+                </li>
             <li class="nav-item">
                 <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-panel">
                     <i class="bi bi-speedometer2"></i> Dashboard
@@ -1331,61 +1231,6 @@
         TAB CONTENT
         ============================================ -->
         <div class="tab-content">
-
-
-    <!-- ============================================
-    JADWAL KERJA PANEL
-    ============================================ -->
-<div class="tab-pane fade" id="jadwal-panel">
-  <div class="jadwal-wrap fade-in">
-
-    <!-- Header Kontrol untuk Jadwal Kerja -->
-    <div class="card mb-0" id="jadwalHeader">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">
-          <i class="bi bi-calendar-check"></i> Jadwal Kerja
-        </h5>
-
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-primary btn-sm" id="refreshJadwal" type="button">
-            <i class="bi bi-arrow-clockwise"></i> Refresh
-          </button>
-
-          <button class="btn btn-danger btn-sm" id="closeJadwalTab" type="button">
-            <i class="bi bi-x-circle"></i> Tutup Jadwal
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Body: mengisi sisa tinggi layar -->
-    <div class="jadwal-body">
-      <div class="card h-100">
-        <div class="card-body p-0 position-relative">
-
-          <!-- Loading Indicator -->
-          <div class="iframe-loading" id="jadwalLoading">
-            <div class="text-center">
-              <div class="spinner mb-3"></div>
-              <p class="text-muted mb-0">Memuat Jadwal Kerja...</p>
-            </div>
-          </div>
-
-          <!-- Iframe untuk Jadwal Kerja -->
-          <iframe
-            src="jadwalkerja.html"
-            id="jadwalIframe"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-            title="Jadwal Kerja"
-            allowfullscreen>
-          </iframe>
-
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
             <!-- ============================================
             DASHBOARD PANEL
             ============================================ -->
@@ -2645,112 +2490,11 @@ GRAFIK KEUANGAN PANEL
             wallets: { Cash: 0, Dana: 0, Mandiri: 0, Qris: 0 }
         };
 
-
-// ============================================
-// JADWAL KERJA FUNCTIONS
-// ============================================
-
-// Fungsi untuk membuka jadwal di tab baru
-function openJadwalInNewTab() {
-    window.open('jadwalkerja.html', '_blank');
-}
-
-// Fungsi untuk kembali ke dashboard
-function closeJadwalAndReturn() {
-    // Kembali ke tab dashboard
-    const dashboardTab = document.querySelector('#dashboard-tab');
-    if (dashboardTab) {
-        const tab = new bootstrap.Tab(dashboardTab);
-        tab.show();
-    }
-}
-
-// Refresh iframe jadwal kerja
-function refreshJadwalIframe() {
-    const iframe = document.getElementById('jadwalIframe');
-    const loading = document.getElementById('jadwalLoading');
-    
-    if (iframe && loading) {
-        loading.classList.remove('hidden');
-        iframe.style.opacity = '0.5';
-        
-        // Simulate refresh dengan mengganti src
-        const currentSrc = iframe.src;
-        iframe.src = '';
-        setTimeout(() => {
-            iframe.src = currentSrc;
-            
-            // Tunggu sampai iframe selesai load
-            iframe.onload = function() {
-                setTimeout(() => {
-                    loading.classList.add('hidden');
-                    iframe.style.opacity = '1';
-                }, 500);
-            };
-        }, 300);
-    }
-}
-
-// Event Listeners untuk Jadwal Kerja
-document.addEventListener('DOMContentLoaded', function() {
-    // Event untuk tombol Tutup Jadwal
-    const closeJadwalBtn = document.getElementById('closeJadwalTab');
-    if (closeJadwalBtn) {
-        closeJadwalBtn.addEventListener('click', closeJadwalAndReturn);
-    }
-    
-    // Event untuk tombol Refresh Jadwal
-    const refreshJadwalBtn = document.getElementById('refreshJadwal');
-    if (refreshJadwalBtn) {
-        refreshJadwalBtn.addEventListener('click', refreshJadwalIframe);
-    }
-    
-    // Event untuk tab jadwal - set iframe height otomatis
-    const jadwalTab = document.getElementById('jadwal-tab');
-    if (jadwalTab) {
-        jadwalTab.addEventListener('click', function() {
-            setTimeout(() => {
-                // Set tinggi iframe sesuai dengan viewport
-                const iframe = document.getElementById('jadwalIframe');
-                if (iframe) {
-                    const headerHeight = document.getElementById('jadwalHeader').offsetHeight;
-                    const viewportHeight = window.innerHeight;
-                    iframe.style.height = (viewportHeight - headerHeight - 100) + 'px';
-                }
-            }, 300);
-        });
-    }
-    
-    // Event untuk menangani jika iframe dimuat
-    const jadwalIframe = document.getElementById('jadwalIframe');
-    if (jadwalIframe) {
-        jadwalIframe.onload = function() {
-            const loading = document.getElementById('jadwalLoading');
-            if (loading) {
-                setTimeout(() => {
-                    loading.classList.add('hidden');
-                }, 1000);
-            }
-        };
-    }
-});
-
-// Handle jika ada komunikasi dari iframe jadwalkerja.html
-window.addEventListener('message', function(event) {
-    // Jika ada pesan dari iframe untuk menutup
-    if (event.data === 'closeJadwal') {
-        closeJadwalAndReturn();
-    }
-    
-    // Jika ada pesan untuk refresh dashboard
-    if (event.data === 'refreshDashboard') {
-        refreshDashboardData();
-    }
-});
-
         // ============================================
         // FUNGSI UTILITAS
         // ============================================
+
+
 // Register Service Worker untuk PWA
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
