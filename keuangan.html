@@ -11,24 +11,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <!-- PWA Configuration -->
-<!-- Manifest -->
-<link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+<!-- PWA Configuration -->
+<meta name="application-name" content="Keuangan Pribadi">
+<meta name="apple-mobile-web-app-title" content="Keuangan Pribadi">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0e1a">
+<meta name="msapplication-TileColor" content="#0a0e1a">
+<meta name="msapplication-starturl" content="keuangan.html">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <!-- Manifest -->
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0a0e1a">
 
 <!-- Apple Touch Icons -->
 
-<link rel="apple-touch-icon" sizes="152x152" href="icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icon-192x192.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon-192x192.png">
 
 <!-- Favicon -->
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
 
-<!-- PWA Metadata -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Keuangan Pribadi">
-    
     <style>
         /* ============================================
            VARIABEL CSS & RESET
@@ -1061,6 +1064,105 @@
                 min-height: 250px;
             }
         }
+
+        /* PWA Standalone Mode */
+.pwa-standalone body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Hide browser UI in standalone mode */
+@media (display-mode: standalone) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  header {
+    padding-top: 1.5rem; /* Extra space for status bar */
+  }
+}
+
+/* PWA Install Container Styles */
+.pwa-install-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;
+  width: 350px;
+  max-width: 90vw;
+  animation: slideUp 0.3s ease-out;
+}
+
+.pwa-install-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.pwa-install-icon {
+  background: var(--gradient-primary);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.pwa-install-content h5 {
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.pwa-install-content p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.pwa-install-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Untuk mode standalone */
+.pwa-standalone #pwaInstallContainer {
+  display: none !important;
+}
+
+/* Install Button di Header */
+#pwaInstallBtnHeader {
+  display: none;
+}
+
+.pwa-installed #pwaInstallBtnHeader {
+  display: none;
+}
     </style>
 </head>
 
@@ -2323,6 +2425,27 @@ GRAFIK KEUANGAN PANEL
             </div>
         </div>
 
+
+                    <!-- PWA Install Container -->
+<div id="pwaInstallContainer" class="pwa-install-container">
+  <div class="pwa-install-card">
+    <div class="pwa-install-icon">
+      <i class="bi bi-download"></i>
+    </div>
+    <div class="pwa-install-content">
+      <h5>Install Aplikasi Keuangan</h5>
+      <p>Dapatkan pengalaman terbaik dengan menginstall aplikasi</p>
+      <div class="pwa-install-buttons">
+        <button id="pwaInstallBtn" class="btn btn-primary">
+          <i class="bi bi-download me-2"></i> Install Sekarang
+        </button>
+        <button id="pwaInstallLater" class="btn btn-outline-secondary">
+          Nanti Saja
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
         <!-- ============================================
         FOOTER
         ============================================ -->
@@ -2368,260 +2491,154 @@ GRAFIK KEUANGAN PANEL
 
 
 // Register Service Worker untuk PWA
-// 1. Service Worker Registration
+// Service Worker Registration
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // Buat service worker inline (sederhana)
-const swCode = `
-const CACHE_NAME = 'keuangan-v1';
-const urlsToCache = [
-  '/keuangan.html',
-  'manifest.json',
-  'icon-192x192.png',
-  'icon-512x512.png'
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  // 🔥 PERBAIKAN PENTING: Redirect root ke keuangan.html
-  if (event.request.url.endsWith('/') || 
-      event.request.url === 'https://anggaputrajn.github.io/' ||
-      event.request.url === 'https://anggaputrajn.github.io') {
-    event.respondWith(
-      caches.match('/keuangan.html')
-        .then(response => response || fetch('/keuangan.html'))
-    );
-    return;
-  }
-  
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
-});
-`;
-
-        // Convert to blob URL
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        const swURL = URL.createObjectURL(blob);
-
-        navigator.serviceWorker.register(swURL)
-            .then(registration => {
-                console.log('✅ Service Worker terdaftar:', registration.scope);
-            })
-            .catch(error => {
-                console.log('❌ Service Worker gagal:', error);
-            });
-    });
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js', { scope: '/' });
+  });
 }
 
-// 2. Install Prompt Handler
+
+// PWA Install Logic
 let deferredPrompt;
+const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+const pwaInstallContainer = document.getElementById('pwaInstallContainer');
+const pwaInstallLaterBtn = document.getElementById('pwaInstallLater');
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    
-    // Tampilkan tombol install
-    showInstallPrompt();
-});
+// Cek apakah sudah diinstall
+function checkIfInstalled() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+         window.navigator.standalone ||
+         document.referrer.includes('android-app://');
+}
 
-// 3. Show Install Button
+// Tampilkan prompt install
 function showInstallPrompt() {
-    // Cek apakah sudah di-install
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        return; // Sudah di-install
+  if (checkIfInstalled() || !deferredPrompt) return;
+  
+  // Tampilkan container setelah delay
+  setTimeout(() => {
+    if (pwaInstallContainer && !localStorage.getItem('pwaInstallDismissed')) {
+      pwaInstallContainer.style.display = 'block';
     }
-    
-    // Buat tombol install
-    const installBtn = document.createElement('button');
-    installBtn.id = 'pwaInstallBtn';
-    installBtn.innerHTML = `
-        <i class="bi bi-download"></i> Install App
-    `;
-    installBtn.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 9999;
-        background: var(--gradient-primary);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 12px 20px;
-        font-weight: 600;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        animation: pulse 2s infinite;
-    `;
-    
-    installBtn.onclick = async () => {
-        if (!deferredPrompt) return;
-        
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        
-        if (outcome === 'accepted') {
-            console.log('✅ Pengguna menerima install prompt');
-            installBtn.remove();
-        }
-        
-        deferredPrompt = null;
-    };
-    
-    // Tambahkan ke DOM
-    document.body.appendChild(installBtn);
-    
-    // Auto hide setelah 10 detik
-    setTimeout(() => {
-        if (installBtn.parentNode) {
-            installBtn.style.opacity = '0.5';
-        }
-    }, 10000);
+  }, 3000);
 }
 
-// 4. Deteksi setelah terinstall
-window.addEventListener('appinstalled', () => {
-    console.log('🎉 Aplikasi berhasil di-install!');
-    const btn = document.getElementById('pwaInstallBtn');
-    if (btn) btn.remove();
-    
-    // Redirect ke halaman utama jika di subfolder
-    if (window.location.pathname.includes('.html')) {
-        window.location.href = window.location.origin + window.location.pathname.replace('keuangan.html', '');
-    }
-});
-
-// 5. Mode Offline Detection
-window.addEventListener('offline', () => {
-    const offlineMsg = document.createElement('div');
-    offlineMsg.innerHTML = `
-        <div style="
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: var(--accent-danger);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            z-index: 9998;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        ">
-            <i class="bi bi-wifi-off"></i>
-            <span>Mode Offline</span>
-        </div>
-    `;
-    offlineMsg.id = 'offlineNotification';
-    document.body.appendChild(offlineMsg);
-    
-    setTimeout(() => {
-        const el = document.getElementById('offlineNotification');
-        if (el) el.remove();
-    }, 5000);
-});
-
-window.addEventListener('online', () => {
-    const el = document.getElementById('offlineNotification');
-    if (el) el.remove();
-});
-
-// 6. Load aplikasi
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('📱 Aplikasi Keuangan PWA Loaded');
-    
-    // Cek jika sudah di-install
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        console.log('📦 Running in standalone mode (Installed)');
-        document.body.classList.add('pwa-installed');
-    }
-    
-    // Cek koneksi awal
-    if (!navigator.onLine) {
-        window.dispatchEvent(new Event('offline'));
-    }
-});
-
-// 7. Update Handler
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('🔄 Controller changed - reloading for update');
-        window.location.reload();
-    });
+// Sembunyikan prompt
+function hideInstallPrompt() {
+  if (pwaInstallContainer) {
+    pwaInstallContainer.style.display = 'none';
+    localStorage.setItem('pwaInstallDismissed', 'true');
+  }
 }
 
-const installButton = document.createElement('button');
-installButton.className = 'btn btn-success btn-sm position-fixed bottom-0 end-0 m-3';
-installButton.innerHTML = '<i class="bi bi-download"></i> Install App';
-installButton.style.zIndex = '9999';
-installButton.style.display = 'none';
-
+// Event: sebelum install prompt muncul
 window.addEventListener('beforeinstallprompt', (e) => {
+  console.log('🎯 beforeinstallprompt event fired');
+  
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
   e.preventDefault();
+  
+  // Stash the event so it can be triggered later
   deferredPrompt = e;
   
-  // Tampilkan tombol install
-  installButton.style.display = 'block';
-  document.body.appendChild(installButton);
+  // Update UI to notify the user they can install the PWA
+  if (pwaInstallBtn) {
+    pwaInstallBtn.style.display = 'flex';
+    pwaInstallBtn.disabled = false;
+  }
   
-  installButton.addEventListener('click', () => {
-    installButton.style.display = 'none';
+  // Tampilkan prompt setelah delay
+  showInstallPrompt();
+});
+
+// Event: ketika aplikasi berhasil diinstall
+window.addEventListener('appinstalled', (evt) => {
+  console.log('🎉 PWA installed successfully');
+  
+  // Sembunyikan tombol install
+  if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+  if (pwaInstallContainer) pwaInstallContainer.style.display = 'none';
+  
+  // Reset deferredPrompt
+  deferredPrompt = null;
+  
+  // Show success message
+  alert('Aplikasi Keuangan berhasil diinstall! 🎉\n\nAnda sekarang dapat mengaksesnya dari desktop/home screen.');
+  
+  // Reload untuk mode standalone
+  setTimeout(() => {
+    window.location.reload();
+  }, 1000);
+});
+
+// Event listener untuk tombol install
+if (pwaInstallBtn) {
+  pwaInstallBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) {
+      alert('Fitur install tidak tersedia. Pastikan Anda menggunakan Chrome versi terbaru.');
+      return;
+    }
+    
+    // Tampilkan prompt install
     deferredPrompt.prompt();
     
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the install prompt');
-      }
-      deferredPrompt = null;
-    });
-  });
-});
-
-window.addEventListener('appinstalled', () => {
-  console.log('PWA installed successfully');
-  installButton.style.display = 'none';
-  deferredPrompt = null;
-});
-
-// Fungsi untuk menunjukkan notifikasi update
-function showUpdateNotification() {
-  const updateToast = document.createElement('div');
-  updateToast.className = 'position-fixed bottom-0 start-50 translate-middle-x mb-3';
-  updateToast.style.zIndex = '9999';
-  updateToast.innerHTML = `
-    <div class="toast show" role="alert">
-      <div class="toast-header bg-warning">
-        <strong class="me-auto"><i class="bi bi-arrow-clockwise"></i> Update Tersedia</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-      </div>
-      <div class="toast-body">
-        Versi baru tersedia. Refresh untuk mendapatkan fitur terbaru.
-        <div class="mt-2">
-          <button class="btn btn-sm btn-primary" id="refreshApp">Refresh Sekarang</button>
-        </div>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(updateToast);
-  
-  document.getElementById('refreshApp').addEventListener('click', () => {
-    window.location.reload();
+    // Tunggu user memilih
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    console.log(`User response: ${outcome}`);
+    
+    // Reset deferredPrompt
+    deferredPrompt = null;
+    
+    // Sembunyikan tombol
+    if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+    if (pwaInstallContainer) pwaInstallContainer.style.display = 'none';
   });
 }
 
-// Deteksi mode offline
+// Event listener untuk tombol "Nanti Saja"
+if (pwaInstallLaterBtn) {
+  pwaInstallLaterBtn.addEventListener('click', hideInstallPrompt);
+}
+
+// Cek status install saat halaman dimuat
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('📱 Checking PWA installation status...');
+  
+  if (checkIfInstalled()) {
+    console.log('✅ Running in standalone mode');
+    document.body.classList.add('pwa-installed');
+    
+    // Sembunyikan semua elemen install
+    if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+    if (pwaInstallContainer) pwaInstallContainer.style.display = 'none';
+    
+    // Tambahkan menu khusus untuk standalone mode
+    addStandaloneMenu();
+  } else {
+    console.log('🌐 Running in browser mode');
+    document.body.classList.remove('pwa-installed');
+  }
+});
+
+// Tambahkan menu khusus untuk standalone mode
+function addStandaloneMenu() {
+  // Tambahkan menu refresh dll untuk standalone mode
+  const header = document.querySelector('header');
+  if (header) {
+    const standaloneMenu = `
+      <div class="pwa-standalone-menu">
+        <button class="btn btn-sm btn-outline-secondary" onclick="window.location.reload()">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </div>
+    `;
+    header.insertAdjacentHTML('beforeend', standaloneMenu);
+  }
+}
+
+// Offline detection
 window.addEventListener('offline', () => {
   showOfflineNotification();
 });
@@ -2632,36 +2649,27 @@ window.addEventListener('online', () => {
 
 function showOfflineNotification() {
   if (!document.getElementById('offlineToast')) {
-    const offlineToast = document.createElement('div');
-    offlineToast.id = 'offlineToast';
-    offlineToast.className = 'position-fixed top-0 start-50 translate-middle-x mt-3';
-    offlineToast.style.zIndex = '9999';
-    offlineToast.innerHTML = `
-      <div class="toast show" role="alert">
-        <div class="toast-header bg-danger text-white">
-          <strong class="me-auto"><i class="bi bi-wifi-off"></i> Mode Offline</strong>
-        </div>
-        <div class="toast-body">
-          Anda sedang offline. Beberapa fitur mungkin tidak tersedia.
+    const toast = `
+      <div class="position-fixed top-0 start-50 translate-middle-x mt-3" id="offlineToast" style="z-index: 9999;">
+        <div class="toast show bg-danger text-white" role="alert">
+          <div class="toast-body d-flex align-items-center">
+            <i class="bi bi-wifi-off me-2"></i>
+            Anda sedang offline. Data mungkin tidak tersinkronisasi.
+          </div>
         </div>
       </div>
     `;
-    
-    document.body.appendChild(offlineToast);
+    document.body.insertAdjacentHTML('beforeend', toast);
   }
 }
 
 function hideOfflineNotification() {
-  const offlineToast = document.getElementById('offlineToast');
-  if (offlineToast) {
-    offlineToast.remove();
-  }
+  const toast = document.getElementById('offlineToast');
+  if (toast) toast.remove();
 }
 
-// Cek status koneksi saat load
-if (!navigator.onLine) {
-  showOfflineNotification();
-}
+
+
 
 
         function setMainTabsHidden(isHidden) {
