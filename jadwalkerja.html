@@ -1565,6 +1565,60 @@ body.modal-open {
       transition: none !important;
     }
   }
+  /* Tambahkan class "animated" saat progres berjalan */
+  .progress-bar.animated {
+    background-size: 200% 100%;
+    animation: progress-stripes 1.2s linear infinite;
+  }
+
+  /* Pola garis miring */
+  .progress-bar.animated::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      45deg,
+      rgba(255,255,255,.16) 0%,
+      rgba(255,255,255,.16) 10%,
+      transparent 10%,
+      transparent 20%,
+      rgba(255,255,255,.16) 20%,
+      rgba(255,255,255,.16) 30%,
+      transparent 30%,
+      transparent 40%,
+      rgba(255,255,255,.16) 40%,
+      rgba(255,255,255,.16) 50%,
+      transparent 50%,
+      transparent 60%,
+      rgba(255,255,255,.16) 60%,
+      rgba(255,255,255,.16) 70%,
+      transparent 70%,
+      transparent 80%,
+      rgba(255,255,255,.16) 80%,
+      rgba(255,255,255,.16) 90%,
+      transparent 90%,
+      transparent 100%
+    );
+    opacity: .45;
+    transform: translateX(0);
+  }
+
+  /* Gerakkan background supaya terlihat "jalan" */
+  @keyframes progress-stripes {
+    from { background-position: 0 0; }
+    to { background-position: 200% 0; }
+  }
+
+  .progress-bar.pop {
+  animation: pop 0.35s ease;
+}
+
+@keyframes pop {
+  0% { transform: scaleY(0.9); filter: brightness(0.9); }
+  50% { transform: scaleY(1.05); filter: brightness(1.1); }
+  100% { transform: scaleY(1); filter: brightness(1); }
+}
+
 </style>
 
 </head>
@@ -2209,43 +2263,75 @@ async function loadTodayTarget() {
     const response = await fetch(`${SCRIPT_URL}?action=getTodayTarget`);
     const data = await response.json();
 
-    if (data.status === 'success' && data.data) {
-      currentTarget = data.data.target || 0;
-      completedGames = data.data.completed || 0;
+    if (!(data.status === 'success' && data.data)) return;
 
-      if (currentTarget > 0) {
-        document.getElementById('targetInput').value = currentTarget;
-        document.getElementById('setTargetBtn').disabled = true;
-        document.getElementById('setTargetBtn').innerHTML = '<span>✅ Target Sudah Diset</span>';
+    currentTarget = data.data.target || 0;
+    completedGames = data.data.completed || 0;
 
-        // Show progress
-        document.getElementById('progressSection').style.display = 'block';
-        document.getElementById('completedCount').textContent = completedGames;
-        document.getElementById('totalTarget').textContent = currentTarget;
-        document.getElementById('totalTime').textContent = data.data.totalTime || 0;
+    const targetInput = document.getElementById('targetInput');
+    const setBtn = document.getElementById('setTargetBtn');
+    const progressSection = document.getElementById('progressSection');
+    const completedEl = document.getElementById('completedCount');
+    const totalTargetEl = document.getElementById('totalTarget');
+    const totalTimeEl = document.getElementById('totalTime');
+    const bar = document.getElementById('progressBar');
+    const text = document.getElementById('progressText');
+    const bonusBtn = document.getElementById('addBonusBtn');
 
-        // Clamp progress supaya tidak lewat 100%
-        const progressRaw = (completedGames / currentTarget) * 100;
-        const progress = Math.min(100, Math.max(0, progressRaw));
+    if (currentTarget > 0) {
+      // Kunci input target
+      targetInput.value = currentTarget;
+      setBtn.disabled = true;
+      setBtn.innerHTML = '<span>✅ Target Sudah Diset</span>';
 
-        document.getElementById('progressBar').style.width = `${progress}%`;
-        document.getElementById('progressText').textContent = `${Math.round(progress)}%`;
+      // Tampilkan progress section
+      progressSection.style.display = 'block';
 
-        // Enable bonus jika target terpenuhi
-        document.getElementById('addBonusBtn').disabled = completedGames < currentTarget;
-      } else {
-        // Reset UI jika hari baru belum ada target
-        document.getElementById('targetInput').value = '';
-        document.getElementById('setTargetBtn').disabled = false;
-        document.getElementById('setTargetBtn').innerHTML = '<span>🚀 Set Target</span>';
-        document.getElementById('progressSection').style.display = 'none';
-        document.getElementById('addBonusBtn').disabled = true;
-      }
+      // Update angka ringkas
+      completedEl.textContent = completedGames;
+      totalTargetEl.textContent = currentTarget;
+      totalTimeEl.textContent = data.data.totalTime || 0;
+
+      // Hitung progres (aman, tidak lewat 100%)
+      const progressRaw = (completedGames / currentTarget) * 100;
+      const progress = Math.min(100, Math.max(0, progressRaw));
+      const progressRounded = Math.round(progress);
+
+      // Update progress bar + teks
+      bar.style.width = `${progress}%`;
+      text.textContent = `${progressRounded}%`;
+
+      // Animasi stripes jalan hanya saat 1% - 99%
+      bar.classList.toggle('animated', progress > 0 && progress < 100);
+
+      // Efek pop tiap kali nilai berubah
+      bar.classList.remove('pop');
+      void bar.offsetWidth; // reset animation
+      bar.classList.add('pop');
+
+      // Bonus aktif kalau target terpenuhi
+      bonusBtn.disabled = completedGames < currentTarget;
+    } else {
+      // Reset UI jika belum ada target hari ini
+      targetInput.value = '';
+      setBtn.disabled = false;
+      setBtn.innerHTML = '<span>🚀 Set Target</span>';
+
+      progressSection.style.display = 'none';
+
+      // Reset progress bar state biar bersih
+      bar.style.width = `0%`;
+      text.textContent = `0%`;
+      bar.classList.remove('animated', 'pop');
+
+      // Bonus nonaktif
+      bonusBtn.disabled = true;
     }
   } catch (error) {
     console.error('Error loading target:', error);
   }
 }
+
 
 
         async function loadGameList() {
