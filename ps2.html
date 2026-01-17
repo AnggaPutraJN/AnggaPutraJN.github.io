@@ -6,6 +6,7 @@
     <title>Generator HTML Game PS2</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         .step {
@@ -323,7 +324,7 @@
                     <li><a class="dropdown-item" href="ps2"><i class="bi bi-caret-right-fill"></i> PS2</a></li>
                     <li><a class="dropdown-item" href="sharegameps2"><i class="bi bi-caret-right-fill"></i> Share Game PS2</a></li>
                     <li><a class="dropdown-item" href="shortinggameps2"><i class="bi bi-caret-right-fill"></i> Shorting Game PS2</a></li>
-                    <li><a class="dropdown-item" href="PS2"><i class="bi bi-caret-right-fill"></i> PS2</a></li>
+                    <li><a class="dropdown-item" href="ps2"><i class="bi bi-caret-right-fill"></i> PS2</a></li>
                     <li><a class="dropdown-item" href="psvita"><i class="bi bi-caret-right-fill"></i> PS Vita</a></li>
                 </ul>
             </div>
@@ -431,6 +432,11 @@
                             <div class="col-md-4">
                                 <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
                                     Load Cache (Ke Step 3)
+                                </button>
+                            </div>
+                            <div class="col-md-4 d-grid">
+                                <button id="btnDeleteCache" class="btn btn-outline-danger">
+                                    Hapus Cache Terpilih
                                 </button>
                             </div>
                         </div>
@@ -1931,6 +1937,7 @@ http://link.indapk.com/U8LVL`;
     <title>${escapeHTML(gameData.gameInfo.nama_game)} - PS2 Download</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --ps2-gradient: linear-gradient(135deg, #0066cc 0%, #003366 100%);
@@ -2061,6 +2068,58 @@ http://link.indapk.com/U8LVL`;
             background-color: #198754 !important;
             color: white !important;
         }
+                   /* Login Prompt */
+        .login-prompt {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px dashed #ffc107;
+            padding: 20px;
+            border-radius: 12px;
+            animation: pulseWarning 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes pulseWarning {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .login-prompt::before {
+            content: '⚠️';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            opacity: 0.2;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* User Info Box */
+        .user-info-box {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #007bff;
+            animation: slideInRight 0.5s ease-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2140,9 +2199,6 @@ http://link.indapk.com/U8LVL`;
                            class="btn btn-success">
                             <i class="bi bi-controller"></i> List Game
                         </a>
-                    </div>
-
-                    <div class="mt-3 text-center">
                         <a href="https://indapk.com/requestgame.html"
                            target="_blank" rel="noopener"
                            class="btn btn-success">
@@ -2209,12 +2265,21 @@ http://link.indapk.com/U8LVL`;
                 <h3>Link Download Tanpa Iklan (Download Link Without Ads)</h3>
                 
                 <div class="login-prompt mb-3" id="loginPrompt">
-                    <p class="mb-2">
+                     <p class="mb-2">
                         <strong>⚠️ Perhatian:</strong>
-                        Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
-                        Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
+                        Untuk mengakses link download tanpa iklan, Anda perlu login.
+                        Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
+                        Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
                     </p>
-                    <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
+
+                    <p class="mb-3 text-muted">
+                        <strong>⚠️ Notice:</strong>
+                        To access the ad-free download links, you must log in.
+                        Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
+                        Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
+                    </p>
+                    <button class="btn btn-primary" onclick="openLoginModal()"><i class="fa fa-sign-in-alt"></i> Login</button>
+                    <button class="btn btn-secondary flex-fill" onclick="register()"><i class="fa fa-user-plus"></i>Register</button>
                 </div>
                 
                 <div id="originalLinksContent" style="display: none;">
@@ -2235,16 +2300,17 @@ http://link.indapk.com/U8LVL`;
                 <div class="modal-body">
                     <div id="telegramWidget">
                         <div class="alert alert-info py-2 mb-3">
-                            <div><strong>Cara daftar dan ambil Telegram ID:</strong></div>
+                            <div><strong>Cara daftar:</strong></div>
                             <ol class="mb-0 ps-3">
-                                <li>Buka bot <strong>@indapkbot</strong></li>
+                                <li>Register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank"><i class="fa fa-sign-in-alt"></i>Register</a></li>
+                                <li>Atau buka bot <strong>@indapkbot</strong></li>
                                 <li>Ketik <strong>/register</strong></li>
                                 <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
                             </ol>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Telegram ID</label>
-                            <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram">
+                            <input type="text" id="telegramId" class="form-control" placeholder="Masukkan Username atau ID Telegram">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Key</label>
@@ -2252,8 +2318,8 @@ http://link.indapk.com/U8LVL`;
                             <small class="text-muted">Dapatkan Key dari bot @INDapkBot (contoh: /key atau cek profil).</small>
                         </div>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-primary flex-fill" onclick="login(this)">Login</button>
-                            <button class="btn btn-secondary flex-fill" onclick="register()">Daftar via Bot</button>
+                            <button class="btn btn-primary flex-fill" onclick="login(this)"><i class="fa fa-sign-in-alt"></i>Login</button>
+                            <button class="btn btn-secondary flex-fill" onclick="register()"><i class="fa fa-user-plus"></i>Register</button>
                         </div>
                     </div>
                 </div>
@@ -2406,7 +2472,7 @@ http://link.indapk.com/U8LVL`;
         }
         
         function register() {
-            window.open('https://web.telegram.org/k/#@indapkbot', '_blank');
+            window.open('https://indapk.github.io/dashboard.html', '_blank');
         }
         
         function updateUserBalanceUI() {
