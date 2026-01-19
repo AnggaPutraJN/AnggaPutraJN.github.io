@@ -1141,16 +1141,17 @@
           <div class="card-body">
             <div id="cloudSelection"></div>
 
-<div class="mt-3">
-  <div class="card border-primary">
-    <div class="card-header bg-primary text-white">
-      <h6 class="mb-0"><i class="bi bi-list-ol"></i> Preview Urutan Cloud</h6>
-    </div>
-    <div class="card-body">
-      <div id="cloudOrderPreview" class="small-note"></div>
-    </div>
-  </div>
-</div>
+            <div class="mt-3">
+              <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                  <h6 class="mb-0"><i class="bi bi-list-ol"></i> Preview Urutan Cloud</h6>
+                </div>
+                <div class="card-body">
+                  <div id="cloudOrderPreview" class="small-note"></div>
+                </div>
+              </div>
+            </div>
+
 
 
             <!-- Cache Controls -->
@@ -2496,7 +2497,7 @@ function createHTMLTemplate() {
 
     // Build link sections
     let adLinksHTML = '';
-    let adLinks2HTML = ''; // ✅ VARIABLE BARU
+    let adLinks2HTML = '';
     let originalLinksHTML = '';
     
     // Ad Links 1
@@ -2510,7 +2511,7 @@ function createHTMLTemplate() {
     }
     adLinksHTML += `</div>`;
     
-    // Ad Links 2 (BARU)
+    // Ad Links 2
     adLinks2HTML += `<h4>Link Dengan Iklan ! (Semawur Short Links)</h4><div class="mb-3">`;
     for (let i = 0; i < gameData.linkCount; i++) {
         const cloudName = gameData.cloudTypes[i] || 'Link ' + (i + 1);
@@ -2534,8 +2535,7 @@ function createHTMLTemplate() {
     // Check jika ada Link Iklan 2
     const hasAdLinks2 = gameData.adLinks2.some(link => link && link.trim() !== '');
     
-    // Di bagian HTML template, tambahkan ini:
-    return  `
+    return `
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -2544,6 +2544,7 @@ function createHTMLTemplate() {
     <title>${escapeHTML(gameData.gameInfo.nama_game)} - PS Vita Download</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Custom Variables */
         :root {
@@ -2822,6 +2823,59 @@ function createHTMLTemplate() {
     padding: 12px 14px;
     box-shadow: 0 10px 24px rgba(0,0,0,0.06);
 }
+
+                   /* Login Prompt */
+        .login-prompt {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px dashed #ffc107;
+            padding: 20px;
+            border-radius: 12px;
+            animation: pulseWarning 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes pulseWarning {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .login-prompt::before {
+            content: '⚠️';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            opacity: 0.2;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* User Info Box */
+        .user-info-box {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #007bff;
+            animation: slideInRight 0.5s ease-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2884,13 +2938,13 @@ function createHTMLTemplate() {
                         <tr><th>Language:</th><td>${escapeHTML(gameData.gameInfo.language)}</td></tr>
                         <tr><th>Platform:</th><td>PlayStation Vita (PS Vita)</td></tr>
                         <tr>
-                      <th>Web 2:</th>
-                      <td>
-                        <a href="${escapeHTML(altLink)}" target="_blank" rel="noopener">
-                          ${escapeHTML(altLink)}
-                        </a>
-                      </td>
-                    </tr>
+                            <th>Web 2:</th>
+                            <td>
+                                <a href="${escapeHTML(altLink)}" target="_blank" rel="noopener">
+                                    ${escapeHTML(altLink)}
+                                </a>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -2903,10 +2957,10 @@ function createHTMLTemplate() {
             </div>
         </div>
         
-  <div class="tab-pane-custom" id="tabAdLinks">
+        <div class="tab-pane-custom" id="tabAdLinks">
             <h3>Link Dengan Iklan ! (Link With Ads !)</h3>
             
-            <!-- NOTE Banner seperti Switch -->
+            <!-- NOTE Banner -->
             <div class="ad-note-banner mb-3">
                 <div class="content">
                     <div class="ad-note-pill">
@@ -2925,7 +2979,7 @@ function createHTMLTemplate() {
                 </div>
             </div>
             
-            <!-- CARD: LINK IKLAN 1 (UTAMA) -->
+            <!-- LINK IKLAN 1 -->
             <div class="card border-primary mb-4" style="border-width: 2px;">
                 <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
                     <span><i class="bi bi-star-fill"></i> INDapk Short</span>
@@ -2939,7 +2993,7 @@ function createHTMLTemplate() {
                 </div>
             </div>
             
-            <!-- CARD: LINK IKLAN 2 (ALTERNATIF) - hanya tampilkan jika ada -->
+            <!-- LINK IKLAN 2 -->
             ${hasAdLinks2 ? `
             <div class="card border-secondary mb-3">
                 <div class="card-header bg-secondary text-white d-flex align-items-center justify-content-between">
@@ -2955,36 +3009,37 @@ function createHTMLTemplate() {
             </div>
             ` : ''}
         </div>
-<div class="tab-pane-custom" id="tabOriginalLinks">
-  <h3>Ad-free link (Tanpa Iklan)</h3>
-
-  <div id="loginPrompt" class="login-prompt">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <div>
-                    <p class="mb-2">
-                        <strong>⚠️ Perhatian:</strong>
-                        Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
-                        Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
-                        Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
-                    </p>
-
-                    <p class="mb-3 text-muted">
-                        <strong>⚠️ Notice:</strong>
-                        To access the ad-free download links, you must log in with Telegram.
-                        Register via the Telegram bot <strong>@INDapkBot</strong>.
-                        Then type <strong>/profile</strong> in the bot to get your Telegram ID.
-                    </p>
-      </div>
-      <button class="btn btn-primary" type="button" onclick="openLoginModal()">
-        <i class="bi bi-box-arrow-in-right"></i> Login
-      </button>
-    </div>
-  </div>
-
-  <div id="originalLinksContent" style="display:none;">
-    ${originalLinksHTML}
-  </div>
-</div>
+        
+        <div class="tab-pane-custom" id="tabOriginalLinks">
+            <h3>Ad-free link (Tanpa Iklan)</h3>
+            
+            <div id="loginPrompt" class="login-prompt mb-3">
+                <p class="mb-2">
+                    <strong>⚠️ Perhatian:</strong>
+                    Untuk mengakses link download tanpa iklan, Anda perlu login.
+                    Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
+                    Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
+                </p>
+                <p class="mb-3 text-muted">
+                    <strong>⚠️ Notice:</strong>
+                    To access the ad-free download links, you must log in.
+                    Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
+                    Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
+                </p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-primary" onclick="openLoginModal()">
+                        <i class="fa fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="btn btn-secondary" onclick="register()">
+                        <i class="fa fa-user-plus"></i> Register
+                    </button>
+                </div>
+            </div>
+            
+            <div id="originalLinksContent" style="display:none;">
+                ${originalLinksHTML}
+            </div>
+        </div>
     </div>
     
     <!-- Login Modal -->
@@ -2992,55 +3047,55 @@ function createHTMLTemplate() {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Login dengan Telegram</h5>
+                    <h5 class="modal-title">Login</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div id="telegramWidget">
                         <div class="alert alert-info py-2 mb-3">
-                            <div><strong>Cara daftar dan ambil Telegram ID & Key:</strong></div>
+                            <div><strong>Cara daftar:</strong></div>
                             <ol class="mb-0 ps-3">
-                                <li>Buka bot <strong>@indapkbot</strong></li>
-                                <li>Ketik <strong>/register</strong> untuk daftar</li>
-                                <li>Ketik <strong>/profile</strong> untuk melihat Telegram ID & Key Anda</li>
+                                <li>Register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank"><i class="fa fa-sign-in-alt"></i> Register</a></li>
+                                <li>Atau buka bot <strong>@indapkbot</strong></li>
+                                <li>Ketik <strong>/register</strong></li>
+                                <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
                             </ol>
-                            <p class="mb-0 mt-2"><small>Key adalah 5 digit angka unik yang Anda dapatkan dari bot</small></p>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Telegram ID</label>
+                            <label class="form-label">Telegram ID atau Username</label>
                             <input
-                              type="text"
-                              id="telegramId"
-                              class="form-control"
-                              placeholder="Masukkan ID Telegram"
-                              inputmode="numeric"
-                              autocomplete="off"
+                                type="text"
+                                id="telegramId"
+                                class="form-control"
+                                placeholder="Masukkan ID Telegram atau Username"
+                                autocomplete="off"
                             />
                         </div>
                         <div class="mb-3">
-                          <label class="form-label">Key</label>
-                          <div class="input-group">
-                            <input
-                              type="password"
-                              id="userKey"
-                              class="form-control"
-                              placeholder="Masukkan Key 5 digit"
-                              inputmode="numeric"
-                              autocomplete="off"
-                              maxlength="5"
-                              pattern="[0-9]*"
-                            />
-                            <button class="btn btn-outline-secondary" type="button" id="toggleKeyBtn" aria-label="Tampilkan key">
-                              <i class="bi bi-eye"></i>
-                            </button>
-                          </div>
-                          <div class="form-text">
-                            <i class="bi bi-info-circle"></i> Key dapat Anda dapatkan dengan mengetik <strong>/profile</strong> di bot @INDapkBot
-                          </div>
+                            <label class="form-label">Key/Password</label>
+                            <div class="input-group">
+                                <input
+                                    type="password"
+                                    id="userKey"
+                                    class="form-control"
+                                    placeholder="Masukkan Key atau Password"
+                                    autocomplete="off"
+                                />
+                                <button class="btn btn-outline-secondary" type="button" id="toggleKeyBtn" aria-label="Tampilkan key">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i> Key dapat Anda dapatkan dengan mengetik <strong>/profile</strong> di bot @INDapkBot
+                            </div>
                         </div>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-primary flex-fill" onclick="login(this)">Login</button>
-                            <button class="btn btn-secondary flex-fill" onclick="register()">Daftar via Bot</button>
+                            <button class="btn btn-primary flex-fill" onclick="login(this)">
+                                <i class="fa fa-sign-in-alt"></i> Login
+                            </button>
+                            <button class="btn btn-secondary flex-fill" onclick="register()">
+                                <i class="fa fa-user-plus"></i> Register
+                            </button>
                         </div>
                     </div>
                     <div id="userInfo" style="display: none;">
@@ -3073,60 +3128,6 @@ function createHTMLTemplate() {
         const USER_API_URL = "${userApiUrl}";
         const DOWNLOAD_ID = "${gameData.downloadId || 'TEMP_' + Date.now().toString().slice(-8)}";
         const BALANCE_REFRESH_MS = 60 * 1000;
-
-function startBalanceAutoRefresh() {
-  stopBalanceAutoRefresh();
-  if (!currentUser?.wa_number || !currentUser?.key) return;
-
-  // refresh sekali langsung, lalu tiap 1 menit
-  refreshBalanceOnce();
-  balanceRefreshInterval = setInterval(refreshBalanceOnce, BALANCE_REFRESH_MS);
-}
-
-function stopBalanceAutoRefresh() {
-  if (balanceRefreshInterval) {
-    clearInterval(balanceRefreshInterval);
-    balanceRefreshInterval = null;
-  }
-}
-
-async function refreshBalanceOnce() {
-  if (!currentUser?.wa_number || !currentUser?.key) return;
-
-  try {
-    const body = new URLSearchParams();
-    body.append("action", "loginUser"); // pakai endpoint yang sudah ada untuk ambil saldo terbaru
-    body.append("wa_number", currentUser.wa_number);
-    body.append("key", currentUser.key);
-
-    const res = await fetch(USER_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept": "application/json"
-      },
-      body: body.toString()
-    });
-
-    if (!res.ok) throw new Error("HTTP " + res.status);
-
-    const result = await res.json();
-    if (result.status !== "success" || !result.data) return;
-
-    const newSaldo = Number(result.data.saldo ?? currentUser.saldo ?? 0);
-
-    currentUser = {
-      ...currentUser,
-      ...result.data,
-      saldo: newSaldo
-    };
-
-    localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
-    updateUserBalanceUI();
-  } catch (err) {
-    console.warn("Saldo refresh gagal:", err);
-  }
-}
 
         // Data links
         const cloudTypes = ${JSON.stringify(gameData.cloudTypes || [])};
@@ -3170,6 +3171,20 @@ async function refreshBalanceOnce() {
                 });
             });
             
+            // Toggle key visibility
+            const toggleKeyBtn = document.getElementById('toggleKeyBtn');
+            const userKeyInput = document.getElementById('userKey');
+            
+            if (toggleKeyBtn && userKeyInput) {
+                toggleKeyBtn.addEventListener('click', function() {
+                    const isHidden = userKeyInput.type === 'password';
+                    userKeyInput.type = isHidden ? 'text' : 'password';
+                    toggleKeyBtn.innerHTML = isHidden
+                        ? '<i class="bi bi-eye-slash"></i>'
+                        : '<i class="bi bi-eye"></i>';
+                });
+            }
+            
             checkLogin();
         });
         
@@ -3211,96 +3226,24 @@ async function refreshBalanceOnce() {
             updateUIForLoggedInUser();
         }
         
-        function normalizeKey(raw) {
-            const ascii = toAsciiDigits(raw);
-            return ascii.replace(/[^0-9]/g, '').trim();
+        function normalizeInput(raw) {
+            return String(raw || '').trim();
         }
-        
-        function normalizeTelegramId(raw) {
-            const ascii = toAsciiDigits(raw);
-            return ascii.replace(/[^0-9]/g, '').trim();
-        }
-        
-        function toAsciiDigits(str) {
-            const s = String(str || '').normalize('NFKC');
-            const map = {
-                '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9',
-                '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9'
-            };
-            return s.replace(/[٠-٩۰-۹]/g, (ch) => map[ch] || ch);
-        }
-        
-        document.addEventListener('DOMContentLoaded', function () {
-            const keyEl = document.getElementById('userKey');
-            const idEl = document.getElementById('telegramId');
-            
-            if (keyEl) {
-                keyEl.addEventListener('input', function () {
-                    const cleaned = normalizeKey(this.value);
-                    this.value = cleaned;
-                });
-                
-                keyEl.addEventListener('paste', function () {
-                    setTimeout(() => {
-                        this.value = normalizeKey(this.value);
-                    }, 0);
-                });
-            }
-            
-            if (idEl) {
-                idEl.addEventListener('input', function () {
-                    const cleaned = normalizeTelegramId(this.value);
-                    this.value = cleaned;
-                });
-                
-                idEl.addEventListener('paste', function () {
-                    setTimeout(() => {
-                        this.value = normalizeTelegramId(this.value);
-                    }, 0);
-                });
-            }
-        });
-        
-        document.addEventListener('DOMContentLoaded', function () {
-            const keyEl = document.getElementById('userKey');
-            const toggleBtn = document.getElementById('toggleKeyBtn');
-            
-            if (toggleBtn && keyEl) {
-                toggleBtn.addEventListener('click', function () {
-                    const isHidden = keyEl.type === 'password';
-                    keyEl.type = isHidden ? 'text' : 'password';
-                    toggleBtn.innerHTML = isHidden
-                        ? '<i class="bi bi-eye-slash"></i>'
-                        : '<i class="bi bi-eye"></i>';
-                });
-            }
-        });
         
         async function login(btn) {
             const telegramIdInput = document.getElementById('telegramId');
             const userKeyInput = document.getElementById('userKey');
             
-            const telegramIdRaw = telegramIdInput.value;
-            const userKeyRaw = userKeyInput.value;
-            
-            const telegramId = normalizeTelegramId(telegramIdRaw);
-            const userKey = normalizeKey(userKeyRaw);
-            
-            telegramIdInput.value = telegramId;
-            userKeyInput.value = userKey;
+            const telegramId = normalizeInput(telegramIdInput.value);
+            const userKey = normalizeInput(userKeyInput.value);
             
             if (!telegramId) {
-                alert('Masukkan Telegram ID!');
+                alert('Masukkan Telegram ID atau Username!');
                 return;
             }
             
             if (!userKey) {
-                alert('Masukkan Key Anda!');
-                return;
-            }
-            
-            if (userKey.length !== 5) {
-                alert('Key harus berupa 5 digit angka!');
+                alert('Masukkan Key atau Password Anda!');
                 return;
             }
             
@@ -3375,7 +3318,7 @@ async function refreshBalanceOnce() {
         }
         
         function register() {
-            window.open('https://web.telegram.org/k/#@indapkbot', '_blank');
+            window.open('https://indapk.github.io/dashboard.html', '_blank');
         }
         
         function logout() {
@@ -3388,40 +3331,37 @@ async function refreshBalanceOnce() {
             }
         }
         
-function updateUIForLoggedOutUser() {
-  const userHeader = document.getElementById('userHeader');
-  const loginPrompt = document.getElementById('loginPrompt');
-  const links = document.getElementById('originalLinksContent');
-
-  if (userHeader) userHeader.style.display = 'none';
-  if (loginPrompt) loginPrompt.style.display = 'block';
-  if (links) links.style.display = 'none';
-
-  stopBalanceAutoRefresh(); // ✅ tambah ini
-}
-
-
-function updateUIForLoggedInUser() {
-  const userHeader = document.getElementById('userHeader');
-  const loginPrompt = document.getElementById('loginPrompt');
-  const links = document.getElementById('originalLinksContent');
-
-  if (userHeader) userHeader.style.display = 'block';
-  if (loginPrompt) loginPrompt.style.display = 'none';
-  if (links) links.style.display = 'block';
-
-  const elName = document.getElementById('loggedUserName');
-  const elBal = document.getElementById('loggedUserBalance');
-  const elId = document.getElementById('loggedUserId');
-
-  if (elName) elName.textContent = currentUser?.nama_user || '';
-  if (elBal) elBal.textContent = (currentUser?.saldo ?? 0).toLocaleString();
-  if (elId) elId.textContent = currentUser?.wa_number || '';
-
-  startBalanceAutoRefresh(); // ✅ tambah ini
-}
-
-
+        function updateUIForLoggedOutUser() {
+            const userHeader = document.getElementById('userHeader');
+            const loginPrompt = document.getElementById('loginPrompt');
+            const links = document.getElementById('originalLinksContent');
+            
+            if (userHeader) userHeader.style.display = 'none';
+            if (loginPrompt) loginPrompt.style.display = 'block';
+            if (links) links.style.display = 'none';
+            
+            stopBalanceAutoRefresh();
+        }
+        
+        function updateUIForLoggedInUser() {
+            const userHeader = document.getElementById('userHeader');
+            const loginPrompt = document.getElementById('loginPrompt');
+            const links = document.getElementById('originalLinksContent');
+            
+            if (userHeader) userHeader.style.display = 'block';
+            if (loginPrompt) loginPrompt.style.display = 'none';
+            if (links) links.style.display = 'block';
+            
+            const elName = document.getElementById('loggedUserName');
+            const elBal = document.getElementById('loggedUserBalance');
+            const elId = document.getElementById('loggedUserId');
+            
+            if (elName) elName.textContent = currentUser?.nama_user || '';
+            if (elBal) elBal.textContent = (currentUser?.saldo ?? 0).toLocaleString();
+            if (elId) elId.textContent = currentUser?.wa_number || '';
+            
+            startBalanceAutoRefresh();
+        }
         
         function openLoginModal() {
             document.getElementById('telegramWidget').style.display = 'block';
@@ -3507,6 +3447,70 @@ function updateUIForLoggedInUser() {
         }
         
         // Helper functions
+        function startBalanceAutoRefresh() {
+            stopBalanceAutoRefresh();
+            if (!currentUser?.wa_number || !currentUser?.key) return;
+            
+            // refresh sekali langsung, lalu tiap 1 menit
+            refreshBalanceOnce();
+            balanceRefreshInterval = setInterval(refreshBalanceOnce, BALANCE_REFRESH_MS);
+        }
+        
+        function stopBalanceAutoRefresh() {
+            if (balanceRefreshInterval) {
+                clearInterval(balanceRefreshInterval);
+                balanceRefreshInterval = null;
+            }
+        }
+        
+        async function refreshBalanceOnce() {
+            if (!currentUser?.wa_number || !currentUser?.key) return;
+            
+            try {
+                const body = new URLSearchParams();
+                body.append("action", "loginUser");
+                body.append("wa_number", currentUser.wa_number);
+                body.append("key", currentUser.key);
+                
+                const res = await fetch(USER_API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Accept": "application/json"
+                    },
+                    body: body.toString()
+                });
+                
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                
+                const result = await res.json();
+                if (result.status !== "success" || !result.data) return;
+                
+                const newSaldo = Number(result.data.saldo ?? currentUser.saldo ?? 0);
+                
+                currentUser = {
+                    ...currentUser,
+                    ...result.data,
+                    saldo: newSaldo
+                };
+                
+                localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
+                updateUserBalanceUI();
+            } catch (err) {
+                console.warn("Saldo refresh gagal:", err);
+            }
+        }
+        
+        function updateUserBalanceUI() {
+            if (currentUser) {
+                document.getElementById('loggedUserBalance').textContent = currentUser.saldo.toLocaleString();
+                const userBalanceEl = document.getElementById('userBalance');
+                if (userBalanceEl) {
+                    userBalanceEl.textContent = currentUser.saldo.toLocaleString();
+                }
+            }
+        }
+        
         function showConfirmModal(index) {
             return new Promise((resolve) => {
                 const cloudName = cloudTypes[index] || 'Link ' + (index + 1);
@@ -3691,20 +3695,10 @@ function updateUIForLoggedInUser() {
             }
         }
         
-        function updateUserBalanceUI() {
-            if (currentUser) {
-                document.getElementById('loggedUserBalance').textContent = currentUser.saldo.toLocaleString();
-                const userBalanceEl = document.getElementById('userBalance');
-                if (userBalanceEl) {
-                    userBalanceEl.textContent = currentUser.saldo.toLocaleString();
-                }
-            }
-        }
-        
     <\/script>
 </body>
 </html>`;
-    }
+}
     
     function generateHTML() {
         if (!gameData.downloadId) {
