@@ -988,6 +988,35 @@
     color: #ef4444;
     font-weight: 600;
   }
+
+  /* Tambahkan di bagian CSS */
+  .modal-footer .btn {
+      min-width: 120px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+  }
+
+  .modal-footer .btn-outline-primary {
+      border-color: #0d6efd;
+      color: #0d6efd;
+  }
+
+  .modal-footer .btn-outline-primary:hover {
+      background-color: #0d6efd;
+      color: white;
+  }
+
+  .modal-footer .btn-outline-info {
+      border-color: #0dcaf0;
+      color: #0dcaf0;
+  }
+
+  .modal-footer .btn-outline-info:hover {
+      background-color: #0dcaf0;
+      color: white;
+  }
   </style>
 </head>
 
@@ -2305,126 +2334,208 @@ async function saveGameData() {
         return game;
     }
     
-    function showSuccessModal(title, gameName, downloadId) {
-        const modalHtml = `
-            <div class="modal fade" id="saveSuccessModal" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title">
-                                <i class="bi bi-check-circle-fill"></i> ${title}
-                            </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center">
-                                <div class="mb-3">
-                                    <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                                </div>
-                                <h4 class="text-success">${gameName}</h4>
-                                <div class="alert alert-success mt-3">
-                                    <strong>Download ID (Unik):</strong>
-                                    <div class="mt-2">
-                                        <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.2rem;">
-                                            ${downloadId}
-                                        </code>
-                                    </div>
-                                    <small class="d-block mt-2">
-                                        <i class="bi bi-shield-check"></i>
-                                        ID ini <strong>100% UNIK</strong> dan tidak akan pernah duplikat
-                                    </small>
-                                </div>
-                                <p class="text-muted mt-3">
-                                    ID digenerate otomatis dengan sistem anti-duplikat
-                                </p>
+function showSuccessModal(title, gameName, downloadId) {
+    const modalHtml = `
+        <div class="modal fade" id="saveSuccessModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-check-circle-fill"></i> ${title}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
                             </div>
+                            <h4 class="text-success">${gameName}</h4>
+                            <div class="alert alert-success mt-3">
+                                <strong>Download ID (Unik):</strong>
+                                <div class="mt-2">
+                                    <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.2rem;">
+                                        ${downloadId}
+                                    </code>
+                                </div>
+                                <small class="d-block mt-2">
+                                    <i class="bi bi-shield-check"></i>
+                                    ID ini <strong>100% UNIK</strong> dan tidak akan pernah duplikat
+                                </small>
+                            </div>
+                            <p class="text-muted mt-3">
+                                ID digenerate otomatis dengan sistem anti-duplikat
+                            </p>
                         </div>
-                        <div class="modal-footer justify-content-center">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                                <i class="bi bi-check"></i> OK
-                            </button>
-                            <button type="button" class="btn btn-outline-success" onclick="copyToClipboard('${downloadId}')">
-                                <i class="bi bi-clipboard"></i> Copy ID
-                            </button>
-                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <i class="bi bi-check"></i> OK
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="copyToClipboard('${downloadId}')">
+                            <i class="bi bi-clipboard"></i> Copy ID
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="copyHTMLFromModal('${downloadId}')">
+                            <i class="bi bi-code-slash"></i> Copy HTML
+                        </button>
                     </div>
                 </div>
             </div>
-        `;
-        
-        let modalContainer = document.getElementById('saveSuccessModalContainer');
-        if (!modalContainer) {
-            modalContainer = document.createElement('div');
-            modalContainer.id = 'saveSuccessModalContainer';
-            document.body.appendChild(modalContainer);
-        }
-        modalContainer.innerHTML = modalHtml;
-        
-        const successModal = new bootstrap.Modal(document.getElementById('saveSuccessModal'));
-        successModal.show();
-    }
+        </div>
+    `;
     
-    function showFallbackModal(title, gameName, downloadId) {
-        const modalHtml = `
-            <div class="modal fade" id="fallbackModal" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-warning text-white">
-                            <h5 class="modal-title">
-                                <i class="bi bi-exclamation-triangle-fill"></i> ${title}
-                            </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center">
-                                <div class="mb-3">
-                                    <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
-                                </div>
-                                <h4 class="text-warning">${gameName}</h4>
-                                <div class="alert alert-warning mt-3">
-                                    <p><strong>Server tidak dapat diakses</strong></p>
-                                    <p>Data disimpan secara lokal di browser Anda</p>
-                                    <strong>Download ID (Sementara):</strong>
-                                    <div class="mt-2">
-                                        <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.1rem;">
-                                            ${downloadId}
-                                        </code>
-                                    </div>
-                                    <small class="d-block mt-2">
-                                        <i class="bi bi-info-circle"></i>
-                                        Data akan hilang jika cache browser dibersihkan
-                                    </small>
-                                </div>
-                                <p class="text-muted mt-3">
-                                    Coba simpan lagi nanti untuk mendapatkan ID permanen
-                                </p>
+    let modalContainer = document.getElementById('saveSuccessModalContainer');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'saveSuccessModalContainer';
+        document.body.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = modalHtml;
+    
+    const successModal = new bootstrap.Modal(document.getElementById('saveSuccessModal'));
+    successModal.show();
+}
+    
+function showFallbackModal(title, gameName, downloadId) {
+    const modalHtml = `
+        <div class="modal fade" id="fallbackModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle-fill"></i> ${title}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
                             </div>
+                            <h4 class="text-warning">${gameName}</h4>
+                            <div class="alert alert-warning mt-3">
+                                <p><strong>Server tidak dapat diakses</strong></p>
+                                <p>Data disimpan secara lokal di browser Anda</p>
+                                <strong>Download ID (Sementara):</strong>
+                                <div class="mt-2">
+                                    <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.1rem;">
+                                        ${downloadId}
+                                    </code>
+                                </div>
+                                <small class="d-block mt-2">
+                                    <i class="bi bi-info-circle"></i>
+                                    Data akan hilang jika cache browser dibersihkan
+                                </small>
+                            </div>
+                            <p class="text-muted mt-3">
+                                Coba simpan lagi nanti untuk mendapatkan ID permanen
+                            </p>
                         </div>
-                        <div class="modal-footer justify-content-center">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                                <i class="bi bi-check"></i> OK
-                            </button>
-                            <button type="button" class="btn btn-outline-warning" onclick="copyToClipboard('${downloadId}')">
-                                <i class="bi bi-clipboard"></i> Copy ID
-                            </button>
-                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <i class="bi bi-check"></i> OK
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" onclick="copyToClipboard('${downloadId}')">
+                            <i class="bi bi-clipboard"></i> Copy ID
+                        </button>
+                        <button type="button" class="btn btn-outline-info" onclick="copyHTMLFromModal('${downloadId}')">
+                            <i class="bi bi-code-slash"></i> Copy HTML
+                        </button>
                     </div>
                 </div>
             </div>
-        `;
-        
-        let modalContainer = document.getElementById('fallbackModalContainer');
-        if (!modalContainer) {
-            modalContainer = document.createElement('div');
-            modalContainer.id = 'fallbackModalContainer';
-            document.body.appendChild(modalContainer);
-        }
-        modalContainer.innerHTML = modalHtml;
-        
-        const fallbackModal = new bootstrap.Modal(document.getElementById('fallbackModal'));
-        fallbackModal.show();
-    }
+        </div>
+    `;
     
+    let modalContainer = document.getElementById('fallbackModalContainer');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'fallbackModalContainer';
+        document.body.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = modalHtml;
+    
+    const fallbackModal = new bootstrap.Modal(document.getElementById('fallbackModal'));
+    fallbackModal.show();
+}
+
+async function copyHTMLFromModal(downloadId) {
+    try {
+        // Tampilkan loading state di tombol
+        const modal = document.querySelector('.modal.show');
+        const copyHtmlBtn = modal.querySelector('button[onclick*="copyHTMLFromModal"]');
+        const originalHtml = copyHtmlBtn.innerHTML;
+        copyHtmlBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+        copyHtmlBtn.disabled = true;
+        
+        // Jika ini adalah data lokal (cache), gunakan data yang sudah ada
+        if (downloadId.startsWith('LOCAL_')) {
+            // Gunakan gameData yang sudah ada di state
+            if (!gameData || !gameData.gameInfo || !gameData.gameInfo.nama_game) {
+                throw new Error('Data game tidak ditemukan di cache lokal');
+            }
+            
+            // Generate HTML dari data yang sudah ada
+            const html = createHTMLTemplate();
+            
+            // Copy ke clipboard
+            await navigator.clipboard.writeText(html);
+            
+            // Tutup modal dan tampilkan toast
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            if (modalInstance) modalInstance.hide();
+            
+            showToast('success', '✅ HTML game berhasil disalin!');
+            
+            // Tampilkan preview HTML
+            setTimeout(() => {
+                document.getElementById('btnGenerateHTML').click();
+                document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+            
+        } else {
+            // Jika ini adalah data dari server, fetch dulu
+            const serverGame = await fetchGameByDownloadId(downloadId);
+            applyServerGameToGameData(serverGame);
+            
+            // Generate HTML
+            const html = createHTMLTemplate();
+            
+            // Copy ke clipboard
+            await navigator.clipboard.writeText(html);
+            
+            // Tutup modal dan tampilkan toast
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            if (modalInstance) modalInstance.hide();
+            
+            showToast('success', `✅ HTML game "${serverGame.nama_game}" berhasil disalin!`);
+            
+            // Tampilkan preview HTML
+            setTimeout(() => {
+                // Pindah ke tab generator
+                document.querySelector('#mainTabs [data-main-tab="generator"]').click();
+                document.getElementById('btnGenerateHTML').click();
+                document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+        
+    } catch (error) {
+        console.error('Error copying HTML:', error);
+        showToast('error', `❌ Gagal menyalin HTML: ${error.message}`);
+        
+        // Reset tombol
+        const modal = document.querySelector('.modal.show');
+        if (modal) {
+            const copyHtmlBtn = modal.querySelector('button[onclick*="copyHTMLFromModal"]');
+            if (copyHtmlBtn) {
+                copyHtmlBtn.innerHTML = '<i class="bi bi-code-slash"></i> Copy HTML';
+                copyHtmlBtn.disabled = false;
+            }
+        }
+    }
+}
+
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
             showToast('success', '✅ Berhasil disalin ke clipboard!');
