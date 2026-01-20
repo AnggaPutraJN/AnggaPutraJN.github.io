@@ -883,6 +883,46 @@
       min-height: 150px;
       font-size: 0.9rem;
     }
+
+    /* Tambahkan di bagian style */
+    .cloud-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .cloud-list .badge {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        border-radius: 12px;
+        animation: none;
+    }
+
+    /* Styling untuk review section */
+    #cacheReviewSection {
+        animation: slideInUp 0.4s ease-out;
+    }
+
+    #cacheReviewContent {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .cloud-list .badge {
+            font-size: 0.8rem;
+            padding: 6px 10px;
+        }
+        
+        #cacheReviewContent {
+            max-height: 200px;
+        }
+    }
   </style>
 </head>
 
@@ -1021,6 +1061,24 @@
                     <option value="">Tidak ada cache</option>
                   </select>
                 </div>
+                <!-- Review Cache yang Dipilih -->
+            <div id="cacheReviewSection" class="mt-4" style="display: none;">
+                <div class="card border-info">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-eye-fill"></i> Review Cloud Cache yang Dipilih</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="cacheReviewContent" class="small-note">
+                            <!-- Review akan ditampilkan di sini -->
+                        </div>
+                        <div class="mt-2">
+                            <button id="btnClearCacheReview" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Clear Review
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
               <div class="col-md-4 d-grid">
                 <button id="btnDeleteCache" class="btn btn-outline-danger">
                   <i class="bi bi-trash-fill"></i> Hapus Cache Terpilih
@@ -1434,6 +1492,8 @@
         document.getElementById('btnSaveCache')?.addEventListener('click', saveCloudCache);
         document.getElementById('btnLoadCacheStep1')?.addEventListener('click', loadCloudCacheFromStep1);
         document.getElementById('btnDeleteCache')?.addEventListener('click', deleteSelectedCloudCache);
+        document.getElementById('cacheListStep1')?.addEventListener('change', loadCacheReview);
+        document.getElementById('btnClearCacheReview')?.addEventListener('click', clearCacheReview);
     }
 
     function isValidHttpUrl(str) {
@@ -1575,23 +1635,38 @@
         currentStep = step;
     }
     
-    function nextStep1() {
-        const linkCount = parseInt(document.getElementById('linkCount').value) || 6;
-        
-        if (linkCount < 1) {
-            alert('Minimal harus ada 1 link!');
-            return;
-        }
-        
-        gameData.linkCount = linkCount;
-        gameData.cloudTypes = [];
-        gameData.adLinks = new Array(linkCount).fill('');
-        gameData.adLinks2 = new Array(linkCount).fill('');
-        gameData.originalLinks = new Array(linkCount).fill('');
-        
-        generateCloudSelection();
-        showStep(2);
-    }
+function nextStep1() {
+  const linkCount = parseInt(document.getElementById('linkCount').value) || 6;
+
+  if (linkCount < 1) {
+    alert('Minimal harus ada 1 link!');
+    return;
+  }
+
+  gameData.linkCount = linkCount;
+
+  // ✅ JANGAN reset cloudTypes kalau sudah ada urutan dari cache
+  if (!Array.isArray(gameData.cloudTypes)) gameData.cloudTypes = [];
+
+  // ✅ Reset link arrays sesuai linkCount, tapi pertahankan kalau sudah ada (panjang disesuaikan)
+  gameData.adLinks = Array.isArray(gameData.adLinks) ? gameData.adLinks : [];
+  gameData.adLinks2 = Array.isArray(gameData.adLinks2) ? gameData.adLinks2 : [];
+  gameData.originalLinks = Array.isArray(gameData.originalLinks) ? gameData.originalLinks : [];
+
+  gameData.adLinks.length = linkCount;
+  gameData.adLinks2.length = linkCount;
+  gameData.originalLinks.length = linkCount;
+
+  for (let i = 0; i < linkCount; i++) {
+    if (typeof gameData.adLinks[i] !== 'string') gameData.adLinks[i] = '';
+    if (typeof gameData.adLinks2[i] !== 'string') gameData.adLinks2[i] = '';
+    if (typeof gameData.originalLinks[i] !== 'string') gameData.originalLinks[i] = '';
+  }
+
+  generateCloudSelection();
+  showStep(2);
+}
+
     
     function generateCloudSelection() {
       const container = document.getElementById('cloudSelection');
@@ -1702,49 +1777,166 @@
       });
     }
 
-    function nextStep2() {
-      const section = document.querySelector('.cloud-section');
-      if (!section) {
-        alert('Harap pilih cloud terlebih dahulu!');
+function nextStep2() {
+  syncCloudSelectionToState(); // ✅ pastikan urutan yang dipakai Step 3 adalah urutan klik
+
+  const section = document.querySelector('.cloud-section');
+  if (!section) {
+    alert('Harap pilih cloud terlebih dahulu!');
+    return;
+  }
+
+  const limit = parseInt(section.dataset.limit, 10) || 0;
+  const selected = Array.isArray(gameData.cloudTypes) ? gameData.cloudTypes : [];
+
+  if (selected.length !== limit) {
+    alert(`Harap pilih tepat ${limit} cloud!`);
+    return;
+  }
+
+  generateLinkInputFields();
+  showStep(3);
+}
+
+    
+function syncCloudSelectionToState() {
+  const section = document.querySelector('.cloud-section');
+  if (!section) return;
+
+  // ambil set cloud yang sedang dicentang (hanya untuk validasi)
+  const checkedSet = new Set(
+    Array.from(section.querySelectorAll('input.cloud-check:checked')).map(cb => cb.value)
+  );
+
+  // ✅ Pertahankan urutan klik (gameData.cloudTypes), hanya buang yang sudah tidak dicentang
+  const prev = Array.isArray(gameData.cloudTypes) ? gameData.cloudTypes : [];
+  gameData.cloudTypes = prev.filter(v => checkedSet.has(v));
+
+  // ✅ Kalau ada yang dicentang tapi belum masuk array (harusnya jarang),
+  // tambahkan di belakang sesuai urutan DOM
+  Array.from(section.querySelectorAll('input.cloud-check:checked')).forEach(cb => {
+    if (!gameData.cloudTypes.includes(cb.value)) gameData.cloudTypes.push(cb.value);
+  });
+
+  renderCloudOrderPreview();
+}
+// Fungsi untuk menampilkan review cache yang dipilih
+function showCacheReview(cacheData) {
+    const reviewSection = document.getElementById('cacheReviewSection');
+    const reviewContent = document.getElementById('cacheReviewContent');
+    
+    if (!cacheData) {
+        reviewSection.style.display = 'none';
         return;
-      }
-
-      const limit = parseInt(section.dataset.limit, 10) || 0;
-      const selected = Array.isArray(gameData.cloudTypes) ? gameData.cloudTypes : [];
-
-      if (selected.length !== limit) {
-        alert(`Harap pilih tepat ${limit} cloud!`);
-        return;
-      }
-
-      generateLinkInputFields();
-      showStep(3);
     }
     
-    function syncCloudSelectionToState() {
-        const section = document.querySelector('.cloud-section');
-        if (!section) return;
+    const { name, savedAt, linkCount, cloudTypes } = cacheData;
+    
+    // Format tanggal
+    const savedDate = new Date(savedAt);
+    const formattedDate = savedDate.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    // Buat HTML untuk review
+    reviewContent.innerHTML = `
+        <div class="mb-2">
+            <strong><i class="bi bi-tag"></i> Nama Cache:</strong> ${name}
+        </div>
+        <div class="mb-2">
+            <strong><i class="bi bi-calendar"></i> Disimpan pada:</strong> ${formattedDate}
+        </div>
+        <div class="mb-2">
+            <strong><i class="bi bi-link"></i> Jumlah Link:</strong> ${linkCount}
+        </div>
+        <div class="mb-2">
+            <strong><i class="bi bi-cloud"></i> Cloud yang Dipilih:</strong>
+        </div>
+        <div class="cloud-list mt-2">
+            ${cloudTypes.map((cloud, index) => `
+                <span class="badge bg-primary me-1 mb-1">
+                    ${index + 1}. ${cloud}
+                </span>
+            `).join('')}
+        </div>
+        <div class="mt-3 alert alert-info">
+            <i class="bi bi-info-circle"></i> 
+            <small>Cache ini akan diterapkan ke Step 1 (jumlah link) dan Step 2 (pilihan cloud).</small>
+        </div>
+    `;
+    
+    reviewSection.style.display = 'block';
+}
 
-        const arrayName = section.dataset.array;
-        const selected = Array
-            .from(section.querySelectorAll('input.cloud-check:checked'))
-            .map(cb => cb.value);
-
-        gameData[arrayName] = selected;
+// Fungsi untuk clear review
+function clearCacheReview() {
+    const reviewSection = document.getElementById('cacheReviewSection');
+    const select = document.getElementById('cacheListStep1');
+    
+    if (select) {
+        select.value = '';
     }
+    
+    reviewSection.style.display = 'none';
+    
+    // Reset gameData cloudTypes
+    gameData.cloudTypes = [];
+    renderCloudOrderPreview();
+    
+    showToast('info', 'Review cache telah dibersihkan');
+}
 
-    function generateLinkInputFields() {
-      const adLinksContainer = document.getElementById('adLinksInput');
-      const adLinks2Container = document.getElementById('adLinks2Input');
-      const originalLinksContainer = document.getElementById('originalLinksInput');
-      
-      adLinksContainer.innerHTML = '';
-      if (adLinks2Container) adLinks2Container.innerHTML = '';
-      originalLinksContainer.innerHTML = '';
-      
-      gameData.adLinks = new Array(gameData.linkCount).fill('');
-      gameData.adLinks2 = new Array(gameData.linkCount).fill('');
-      gameData.originalLinks = new Array(gameData.linkCount).fill('');
+// Fungsi untuk memuat review cache
+function loadCacheReview() {
+    const select = document.getElementById('cacheListStep1');
+    const cacheName = (select?.value || '').trim();
+    
+    if (!cacheName) {
+        clearCacheReview();
+        return;
+    }
+    
+    const caches = getCloudCaches();
+    const cache = caches.find(c => c.name === cacheName);
+    
+    if (cache) {
+        showCacheReview(cache);
+    } else {
+        clearCacheReview();
+        showToast('warning', 'Cache tidak ditemukan');
+    }
+}
+
+function generateLinkInputFields() {
+  const adLinksContainer = document.getElementById('adLinksInput');
+  const adLinks2Container = document.getElementById('adLinks2Input');
+  const originalLinksContainer = document.getElementById('originalLinksInput');
+
+  adLinksContainer.innerHTML = '';
+  if (adLinks2Container) adLinks2Container.innerHTML = '';
+  originalLinksContainer.innerHTML = '';
+
+  // ✅ Jangan timpa data lama, hanya pastikan panjangnya sesuai linkCount
+  const n = Number(gameData.linkCount || 0);
+
+  if (!Array.isArray(gameData.adLinks)) gameData.adLinks = [];
+  if (!Array.isArray(gameData.adLinks2)) gameData.adLinks2 = [];
+  if (!Array.isArray(gameData.originalLinks)) gameData.originalLinks = [];
+
+  gameData.adLinks.length = n;
+  gameData.adLinks2.length = n;
+  gameData.originalLinks.length = n;
+
+  for (let i = 0; i < n; i++) {
+    if (typeof gameData.adLinks[i] !== 'string') gameData.adLinks[i] = '';
+    if (typeof gameData.adLinks2[i] !== 'string') gameData.adLinks2[i] = '';
+    if (typeof gameData.originalLinks[i] !== 'string') gameData.originalLinks[i] = '';
+  }
       
       // Ad Links 1
       const adSection = document.createElement('div');
@@ -3681,25 +3873,35 @@ Sound: DirectX® 9.0c-compatible`;
         localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(list));
     }
     
-    function refreshCloudCacheUI() {
-      const caches = getCloudCaches();
-      const step1Select = document.getElementById('cacheListStep1');
-
-      if (!step1Select) return;
-      step1Select.innerHTML = '';
-
-      const opt0 = document.createElement('option');
-      opt0.value = '';
-      opt0.textContent = caches.length ? 'Pilih cache' : 'Tidak ada cache';
-      step1Select.appendChild(opt0);
-
-      caches.forEach(c => {
+function refreshCloudCacheUI() {
+    const caches = getCloudCaches();
+    const step1Select = document.getElementById('cacheListStep1');
+    
+    if (!step1Select) return;
+    
+    // Simpan nilai yang sedang dipilih
+    const currentValue = step1Select.value;
+    
+    step1Select.innerHTML = '';
+    
+    const opt0 = document.createElement('option');
+    opt0.value = '';
+    opt0.textContent = caches.length ? 'Pilih cache' : 'Tidak ada cache';
+    step1Select.appendChild(opt0);
+    
+    caches.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.name;
-        opt.textContent = `${c.name} (saved ${new Date(c.savedAt).toLocaleString()})`;
+        opt.textContent = `${c.name} (${new Date(c.savedAt).toLocaleDateString()})`;
         step1Select.appendChild(opt);
-      });
+    });
+    
+    // Kembalikan nilai yang dipilih sebelumnya
+    if (currentValue) {
+        step1Select.value = currentValue;
+        loadCacheReview(); // Tampilkan review jika ada cache yang dipilih
     }
+}
 
     function saveCloudCache() {
       try {
@@ -3732,6 +3934,7 @@ Sound: DirectX® 9.0c-compatible`;
 
         setCloudCaches(caches);
         refreshCloudCacheUI();
+        renderCloudOrderPreview(); // ✅ biar preview tetap konsisten
         showToast('success', `Cache "${cacheName}" tersimpan.`);
       } catch (err) {
         showToast('error', err.message || 'Gagal simpan cache.');
@@ -3764,15 +3967,32 @@ Sound: DirectX® 9.0c-compatible`;
       showToast('info', `Cache "${name}" dimuat. Kamu sudah di Step 3.`);
     }
     
-    function loadCloudCacheFromStep1() {
-        const select = document.getElementById('cacheListStep1');
-        const name = (select?.value || '').trim();
-        if (!name) {
-            alert('Pilih cache dulu.');
-            return;
-        }
-        loadCloudCacheByName(name);
+function loadCloudCacheFromStep1() {
+    const select = document.getElementById('cacheListStep1');
+    const name = (select?.value || '').trim();
+    
+    if (!name) {
+        alert('Pilih cache dulu.');
+        return;
     }
+    
+    // Tampilkan loading
+    const loadBtn = document.getElementById('btnLoadCacheStep1');
+    const originalText = loadBtn.innerHTML;
+    loadBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+    loadBtn.disabled = true;
+    
+    setTimeout(() => {
+        loadCloudCacheByName(name);
+        
+        // Reset button
+        loadBtn.innerHTML = originalText;
+        loadBtn.disabled = false;
+        
+        // Clear review setelah berhasil dimuat
+        clearCacheReview();
+    }, 500);
+}
     
     function deleteSelectedCloudCache() {
       const select = document.getElementById('cacheListStep1');
