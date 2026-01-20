@@ -2466,8 +2466,11 @@ async function copyHTMLFromModal(downloadId) {
         const modal = document.querySelector('.modal.show');
         const copyHtmlBtn = modal.querySelector('button[onclick*="copyHTMLFromModal"]');
         const originalHtml = copyHtmlBtn.innerHTML;
-        copyHtmlBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+        copyHtmlBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyalin...';
         copyHtmlBtn.disabled = true;
+        
+        let html = '';
+        let gameName = '';
         
         // Jika ini adalah data lokal (cache), gunakan data yang sudah ada
         if (downloadId.startsWith('LOCAL_')) {
@@ -2477,22 +2480,8 @@ async function copyHTMLFromModal(downloadId) {
             }
             
             // Generate HTML dari data yang sudah ada
-            const html = createHTMLTemplate();
-            
-            // Copy ke clipboard
-            await navigator.clipboard.writeText(html);
-            
-            // Tutup modal dan tampilkan toast
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            if (modalInstance) modalInstance.hide();
-            
-            showToast('success', '✅ HTML game berhasil disalin!');
-            
-            // Tampilkan preview HTML
-            setTimeout(() => {
-                document.getElementById('btnGenerateHTML').click();
-                document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
-            }, 500);
+            html = createHTMLTemplate();
+            gameName = gameData.gameInfo.nama_game;
             
         } else {
             // Jika ini adalah data dari server, fetch dulu
@@ -2500,39 +2489,40 @@ async function copyHTMLFromModal(downloadId) {
             applyServerGameToGameData(serverGame);
             
             // Generate HTML
-            const html = createHTMLTemplate();
-            
-            // Copy ke clipboard
-            await navigator.clipboard.writeText(html);
-            
-            // Tutup modal dan tampilkan toast
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            if (modalInstance) modalInstance.hide();
-            
-            showToast('success', `✅ HTML game "${serverGame.nama_game}" berhasil disalin!`);
-            
-            // Tampilkan preview HTML
-            setTimeout(() => {
-                // Pindah ke tab generator
-                document.querySelector('#mainTabs [data-main-tab="generator"]').click();
-                document.getElementById('btnGenerateHTML').click();
-                document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
-            }, 500);
+            html = createHTMLTemplate();
+            gameName = serverGame.nama_game || 'Game PS Vita';
         }
+        
+        // Copy ke clipboard
+        await navigator.clipboard.writeText(html);
+        
+        // Reset tombol dengan indikasi sukses
+        copyHtmlBtn.innerHTML = '<i class="bi bi-check-circle"></i> Tersalin!';
+        copyHtmlBtn.classList.remove('btn-outline-primary', 'btn-outline-info');
+        copyHtmlBtn.classList.add('btn-success');
+        
+        // Kembalikan ke tampilan semula setelah 2 detik
+        setTimeout(() => {
+            copyHtmlBtn.innerHTML = originalHtml;
+            copyHtmlBtn.disabled = false;
+            copyHtmlBtn.classList.remove('btn-success');
+            if (modal.id === 'saveSuccessModal') {
+                copyHtmlBtn.classList.add('btn-outline-primary');
+            } else {
+                copyHtmlBtn.classList.add('btn-outline-info');
+            }
+        }, 2000);
+        
+        // Tampilkan toast sukses
+        showToast('success', `✅ HTML game "${gameName}" berhasil disalin!`);
         
     } catch (error) {
         console.error('Error copying HTML:', error);
         showToast('error', `❌ Gagal menyalin HTML: ${error.message}`);
         
         // Reset tombol
-        const modal = document.querySelector('.modal.show');
-        if (modal) {
-            const copyHtmlBtn = modal.querySelector('button[onclick*="copyHTMLFromModal"]');
-            if (copyHtmlBtn) {
-                copyHtmlBtn.innerHTML = '<i class="bi bi-code-slash"></i> Copy HTML';
-                copyHtmlBtn.disabled = false;
-            }
-        }
+        copyHtmlBtn.innerHTML = originalHtml;
+        copyHtmlBtn.disabled = false;
     }
 }
 
@@ -2646,8 +2636,7 @@ function createHTMLTemplate() {
     // Check jika ada Link Iklan 2
     const hasAdLinks2 = gameData.adLinks2.some(link => link && link.trim() !== '');
     
-    return `
-<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -3495,8 +3484,8 @@ function createHTMLTemplate() {
                 return;
             }
             
-            if (currentUser.saldo < 2000) {
-                alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
+            if (currentUser.saldo < 1000) {
+                alert('Saldo tidak mencukupi. Harga per link: Rp 1000. Saldo Anda: Rp ' + currentUser.saldo);
                 return;
             }
             
@@ -3540,7 +3529,7 @@ function createHTMLTemplate() {
                     showLinkModal(link, {
                         game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
                         cloud: result.data.cloud || cloudName,
-                        amount_deducted: result.data.amount_deducted || 2000,
+                        amount_deducted: result.data.amount_deducted || 1000,
                         new_balance: result.data.new_balance || currentUser.saldo,
                         download_id: DOWNLOAD_ID
                     });
@@ -3640,9 +3629,9 @@ function createHTMLTemplate() {
                                     <p>Anda akan mengakses link <strong>\${cloudName}</strong></p>
                                     <div class="alert alert-warning">
                                         <i class="bi bi-exclamation-triangle"></i>
-                                        <strong>Biaya: Rp 2.000</strong><br>
+                                        <strong>Biaya: Rp 1.000</strong><br>
                                         Saldo Anda: Rp \${currentUser.saldo.toLocaleString()}<br>
-                                        Saldo setelah potongan: Rp \${(currentUser.saldo - 2000).toLocaleString()}
+                                        Saldo setelah potongan: Rp \${(currentUser.saldo - 1000).toLocaleString()}
                                     </div>
                                     <p>Apakah Anda yakin ingin melanjutkan?</p>
                                 </div>
