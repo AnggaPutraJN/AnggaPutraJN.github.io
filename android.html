@@ -509,6 +509,50 @@ h1::after {
   margin-right: var(--space-sm);
 }
 
+/* Cache Preview */
+.cloud-cache-preview {
+  background: var(--color-bg-secondary);
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.cloud-section-preview {
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm);
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.cloud-cache-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.cloud-cache-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #f1f5f9;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  border: 1px solid #cbd5e1;
+}
+
+.cloud-type-label {
+  background: var(--color-android);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
 /* ============================================
    MOD SPECIFIC STYLES
 ============================================= */
@@ -1183,7 +1227,7 @@ img {
             <div class="mt-4">
               <hr />
               <h5><i class="bi bi-cloud-arrow-down"></i> Cloud Cache</h5>
-              <div class="row g-2 align-items-center">
+              <div class="row g-2 align-items-center mb-3">
                 <div class="col-md-8">
                   <select id="cacheListStep1" class="form-select">
                     <option value="">Tidak ada cache</option>
@@ -1192,6 +1236,27 @@ img {
                 <div class="col-md-4">
                   <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
                     <i class="bi bi-cloud-download-fill"></i> Load Cache
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Cache Preview -->
+              <div id="cachePreviewContainer" class="cloud-cache-preview" style="display: none;">
+                <h6><i class="bi bi-eye"></i> Preview Cloud Cache</h6>
+                <div id="cachePreviewContent">
+                  <!-- Akan diisi oleh JavaScript -->
+                </div>
+                <div class="mt-2">
+                  <small class="text-muted">
+                    <i class="bi bi-info-circle"></i> Cache akan mengisi Step 1 (tipe game) dan Step 3 (pilihan cloud) secara otomatis.
+                  </small>
+                </div>
+              </div>
+              
+              <div class="row g-2 mt-2">
+                <div class="col-md-6 d-grid">
+                  <button id="btnDeleteCacheStep1" class="btn btn-outline-danger">
+                    <i class="bi bi-trash-fill"></i> Hapus Cache Terpilih
                   </button>
                 </div>
               </div>
@@ -1373,7 +1438,7 @@ img {
               <th style="width:140px;">Category</th>
               <th style="width:160px;">Versi Game</th>
               <th style="width:140px;">Updated</th>
-              <th style="width:240px;">Aksi</th>
+              <th style="width:300px;">Aksi</th>
             </tr>
           </thead>
           <tbody id="savedGamesBody">
@@ -1434,14 +1499,28 @@ img {
         .replace(/'/g, '&#039;');
     }
 
-    // Cloud options untuk Game Android
+    // Cloud options untuk Game Android - DIPERBARUI DENGAN LEBIH BANYAK OPTIONS
     const CLOUD_OPTIONS = [
       { id: 'Google Drive', name: 'Google Drive', color: 'btn-primary' },
       { id: 'MediaFire', name: 'Mediafire', color: 'btn-warning' },
       { id: 'VikingFile', name: 'Vikingfile', color: 'btn-danger' },
       { id: 'PixelDrain', name: 'Pixeldrain', color: 'btn-info' },
       { id: '1Fichier', name: '1Fichier', color: 'btn-dark' },
-      { id: 'MultiUp', name: 'Multiup', color: 'btn-success' }
+      { id: 'MultiUp', name: 'Multiup', color: 'btn-success' },
+      { id: 'Qiwi', name: 'Qiwi', color: 'btn-danger' },
+      { id: 'Mega', name: 'Mega', color: 'btn-danger' },
+      { id: 'Clicknupload', name: 'Clicknupload', color: 'btn-danger' },
+      { id: 'KatFile', name: 'KatFile', color: 'btn-danger' },
+      { id: 'Bowfile', name: 'Bowfile', color: 'btn-danger' },
+      { id: 'Dupload', name: 'Dupload', color: 'btn-danger' },
+      { id: 'TeraboxApp', name: 'TeraboxApp', color: 'btn-danger' },
+      { id: 'SolidFiles', name: 'SolidFiles', color: 'btn-info' },
+      { id: 'AnonFiles', name: 'AnonFiles', color: 'btn-info' },
+      { id: 'GoFile', name: 'GoFile', color: 'btn-info' },
+      { id: 'Uptobox', name: 'Uptobox', color: 'btn-info' },
+      { id: 'TeraBox', name: 'TeraBox', color: 'btn-info' },
+      { id: 'Dropbox', name: 'Dropbox', color: 'btn-primary' },
+      { id: 'OneDrive', name: 'OneDrive', color: 'btn-primary' }
     ];
     
     // Initialize
@@ -1499,11 +1578,32 @@ img {
       document.getElementById('btnSaveCache').addEventListener('click', saveCloudCache);
       document.getElementById('btnLoadCacheStep1').addEventListener('click', loadCloudCacheFromStep1);
       document.getElementById('btnDeleteCache').addEventListener('click', deleteSelectedCloudCache);
+      document.getElementById('btnDeleteCacheStep1').addEventListener('click', deleteSelectedCloudCacheStep1);
       
       // Paste functionality
       document.getElementById('btnParseData').addEventListener('click', parsePasteData);
       document.getElementById('btnClearPaste').addEventListener('click', clearPasteArea);
       document.getElementById('btnShowExample').addEventListener('click', showExampleData);
+      
+      // Cache preview
+      const cacheSelect = document.getElementById('cacheListStep1');
+      if (cacheSelect) {
+        cacheSelect.addEventListener('change', function() {
+          const selectedName = this.value.trim();
+          if (!selectedName) {
+            hideCachePreview();
+            return;
+          }
+          
+          const caches = getCloudCaches();
+          const selectedCache = caches.find(c => c.name === selectedName);
+          if (selectedCache) {
+            showCachePreview(selectedCache);
+          } else {
+            hideCachePreview();
+          }
+        });
+      }
     }
     
 
@@ -1559,6 +1659,12 @@ img {
             <td>
               <button class="btn btn-sm btn-outline-primary" onclick="previewSavedGame('${escapeHTML(game.download_id)}')">
                 <i class="bi bi-eye"></i> Preview
+              </button>
+              <button class="btn btn-sm btn-success" onclick="downloadSavedGame('${escapeHTML(game.download_id)}')">
+                <i class="bi bi-download"></i> Download
+              </button>
+              <button class="btn btn-sm btn-warning" onclick="copySavedGame('${escapeHTML(game.download_id)}')">
+                <i class="bi bi-clipboard"></i> Copy
               </button>
             </td>
           </tr>
@@ -1640,6 +1746,94 @@ img {
 
       } catch (err) {
         previewBox.innerHTML = `<div class="text-danger">Error: ${escapeHTML(err.message)}</div>`;
+      }
+    }
+
+    // Fungsi untuk download game dari spreadsheet
+    async function downloadSavedGame(downloadId) {
+      try {
+        const response = await fetch(GAME_ANDROID_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'action=getGameByDownloadId&download_id=' + encodeURIComponent(downloadId)
+        });
+
+        const result = await response.json();
+        if (result.status !== 'success') throw new Error(result.message || 'Game tidak ditemukan');
+
+        const full = result.data?.game_data;
+        if (!full) throw new Error('game_data kosong.');
+
+        const backup = JSON.parse(JSON.stringify(gameData));
+        const backupId = gameData.downloadId;
+
+        gameData = {
+          type: full.type || 'ori-only',
+          modCount: full.modCount || 0,
+          linkCount: full.linkCount || 0,
+          cloudSelection: full.cloud || { original: [], ad1: [], ad2: [] },
+          oriGame: full.oriGame || {},
+          modGame: (full.modGames && full.modGames[0]) ? full.modGames[0] : null,
+          downloadId: result.data.download_id
+        };
+
+        const html = createHTMLTemplate();
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `android_game_${downloadId}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        gameData = backup;
+        gameData.downloadId = backupId;
+
+        showToast('success', 'HTML berhasil didownload!');
+      } catch (err) {
+        showToast('error', 'Gagal download: ' + err.message);
+      }
+    }
+
+    // Fungsi untuk copy game dari spreadsheet
+    async function copySavedGame(downloadId) {
+      try {
+        const response = await fetch(GAME_ANDROID_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'action=getGameByDownloadId&download_id=' + encodeURIComponent(downloadId)
+        });
+
+        const result = await response.json();
+        if (result.status !== 'success') throw new Error(result.message || 'Game tidak ditemukan');
+
+        const full = result.data?.game_data;
+        if (!full) throw new Error('game_data kosong.');
+
+        const backup = JSON.parse(JSON.stringify(gameData));
+        const backupId = gameData.downloadId;
+
+        gameData = {
+          type: full.type || 'ori-only',
+          modCount: full.modCount || 0,
+          linkCount: full.linkCount || 0,
+          cloudSelection: full.cloud || { original: [], ad1: [], ad2: [] },
+          oriGame: full.oriGame || {},
+          modGame: (full.modGames && full.modGames[0]) ? full.modGames[0] : null,
+          downloadId: result.data.download_id
+        };
+
+        const html = createHTMLTemplate();
+        await navigator.clipboard.writeText(html);
+
+        gameData = backup;
+        gameData.downloadId = backupId;
+
+        showToast('success', 'HTML berhasil disalin ke clipboard!');
+      } catch (err) {
+        showToast('error', 'Gagal copy: ' + err.message);
       }
     }
 
@@ -1859,9 +2053,80 @@ img {
       caches.forEach(c => {
         const option = document.createElement('option');
         option.value = c.name;
-        option.textContent = `${c.name} (${c.linkCount} link)`;
+        option.textContent = `${c.name} (${c.linkCount} link, ${c.gameType || 'unknown'})`;
         select.appendChild(option);
       });
+    }
+    
+    function showCachePreview(cache) {
+      const container = document.getElementById('cachePreviewContainer');
+      const content = document.getElementById('cachePreviewContent');
+      
+      if (!container || !content || !cache) {
+        hideCachePreview();
+        return;
+      }
+      
+      let html = '';
+      
+      html += `<div class="cloud-section-preview">`;
+      html += `<div class="fw-bold mb-2"><i class="bi bi-info-circle"></i> Informasi Cache</div>`;
+      html += `<div class="small">`;
+      html += `<div><strong>Tipe Game:</strong> ${cache.gameType || 'unknown'}</div>`;
+      html += `<div><strong>Jumlah Link:</strong> ${cache.linkCount || 0}</div>`;
+      if (cache.modCount) {
+        html += `<div><strong>Jumlah MOD:</strong> ${cache.modCount}</div>`;
+      }
+      html += `</div></div>`;
+      
+      if (cache.cloudOriginal && cache.cloudOriginal.length > 0) {
+        html += `<div class="cloud-section-preview">`;
+        html += `<div class="fw-bold mb-2"><i class="bi bi-cloud-upload"></i> Link Asli</div>`;
+        html += `<div class="cloud-cache-list">`;
+        cache.cloudOriginal.forEach((cloud, index) => {
+          html += `<span class="cloud-cache-badge">`;
+          html += `<span>${cloud}</span>`;
+          html += `<span class="cloud-type-label">${index + 1}</span>`;
+          html += `</span>`;
+        });
+        html += `</div></div>`;
+      }
+      
+      if (cache.cloudAd1 && cache.cloudAd1.length > 0) {
+        html += `<div class="cloud-section-preview">`;
+        html += `<div class="fw-bold mb-2"><i class="bi bi-link-45deg"></i> Link Iklan 1</div>`;
+        html += `<div class="cloud-cache-list">`;
+        cache.cloudAd1.forEach((cloud, index) => {
+          html += `<span class="cloud-cache-badge">`;
+          html += `<span>${cloud}</span>`;
+          html += `<span class="cloud-type-label">${index + 1}</span>`;
+          html += `</span>`;
+        });
+        html += `</div></div>`;
+      }
+      
+      if (cache.cloudAd2 && cache.cloudAd2.length > 0) {
+        html += `<div class="cloud-section-preview">`;
+        html += `<div class="fw-bold mb-2"><i class="bi bi-link"></i> Link Iklan 2</div>`;
+        html += `<div class="cloud-cache-list">`;
+        cache.cloudAd2.forEach((cloud, index) => {
+          html += `<span class="cloud-cache-badge">`;
+          html += `<span>${cloud}</span>`;
+          html += `<span class="cloud-type-label">${index + 1}</span>`;
+          html += `</span>`;
+        });
+        html += `</div></div>`;
+      }
+      
+      content.innerHTML = html;
+      container.style.display = 'block';
+    }
+    
+    function hideCachePreview() {
+      const container = document.getElementById('cachePreviewContainer');
+      if (container) {
+        container.style.display = 'none';
+      }
     }
     
     function saveCloudCache() {
@@ -2013,6 +2278,10 @@ function loadCloudCacheFromStep1() {
       
       document.getElementById('cacheName').value = '';
       showToast('warning', `Cache "${name}" dihapus.`);
+    }
+    
+    function deleteSelectedCloudCacheStep1() {
+      deleteSelectedCloudCache();
     }
     
     // ===================== GAME DATA INPUT =====================
@@ -3120,18 +3389,18 @@ https://sfl.gl/iSJU7SP`;
             <p class="mb-2">
               <strong>⚠️ Perhatian:</strong>
               Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
-              Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
-              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
+              Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
+              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
             </p>
 
             <p class="mb-3 text-muted">
               <strong>⚠️ Notice:</strong>
-              To access the ad-free download links, you must log in with Telegram.
-              Register via the Telegram bot <strong>@INDapkBot</strong>.
-              Then type <strong>/profile</strong> in the bot to get your Telegram ID.
+              To access the ad-free download links, you must log in.
+              Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
+              Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
             </p>
-
-            <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
+            <button class="btn btn-primary" onclick="openLoginModal()"><i class="bi bi-telegram"></i> Login dengan Telegram</button>
+            <button class="btn btn-secondary" onclick="register()"><i class="bi bi-person-plus"></i> Register</button>
           </div>
 
           <div id="originalLinksContent" style="display: none;">
@@ -3173,18 +3442,18 @@ https://sfl.gl/iSJU7SP`;
             <p class="mb-2">
               <strong>⚠️ Perhatian:</strong>
               Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
-              Daftar melalui bot Telegram <strong>@INDapkBot</strong>.
-              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda.
+              Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
+              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
             </p>
 
             <p class="mb-3 text-muted">
               <strong>⚠️ Notice:</strong>
-              To access the ad-free download links, you must log in with Telegram.
-              Register via the Telegram bot <strong>@INDapkBot</strong>.
-              Then type <strong>/profile</strong> in the bot to get your Telegram ID.
+              To access the ad-free download links, you must log in.
+              Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
+              Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
             </p>
-
-            <button class="btn btn-primary" onclick="openLoginModal()">Login dengan Telegram</button>
+            <button class="btn btn-primary" onclick="openLoginModal()"><i class="bi bi-telegram"></i> Login dengan Telegram</button>
+            <button class="btn btn-secondary" onclick="register()"><i class="bi bi-person-plus"></i> Register</button>
           </div>
 
           <div id="originalLinksContent" style="display: none;">
@@ -3194,8 +3463,7 @@ https://sfl.gl/iSJU7SP`;
         `;
       }
 
-      return `
-<!DOCTYPE html>
+      return `<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -3547,27 +3815,25 @@ https://sfl.gl/iSJU7SP`;
     <div class="modal fade" id="loginModal">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header" style="background: var(--android-gradient); color: white;">
             <h5 class="modal-title">Login dengan Telegram</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
             <div id="telegramWidget">
-              <p>Silakan login menggunakan Telegram ID Anda.</p>
-
               <div class="alert alert-info py-2 mb-3">
                 <div><strong>Cara daftar dan ambil Telegram ID:</strong></div>
                 <ol class="mb-0 ps-3">
-                  <li>Buka bot <strong>@indapkbot</strong></li>
+                  <li>Register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a></li>
+                  <li>Atau buka bot <strong>@indapkbot</strong></li>
                   <li>Ketik <strong>/register</strong></li>
                   <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
                 </ol>
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Telegram ID</label>
-                <input type="text" id="telegramId" class="form-control" placeholder="Masukkan ID Telegram">
-                <small class="text-muted">Dapatkan ID Telegram dari @INDapkBot di Telegram</small>
+                <label class="form-label">Telegram ID / Username</label>
+                <input type="text" id="telegramId" class="form-control" placeholder="Masukkan Username atau ID Telegram">
               </div>
 
               <div class="mb-3">
@@ -3577,8 +3843,8 @@ https://sfl.gl/iSJU7SP`;
               </div>
 
               <div class="d-flex gap-2">
-                <button class="btn btn-primary flex-fill" onclick="login(this)">Login</button>
-                <button class="btn btn-secondary flex-fill" onclick="register()">Daftar via Bot</button>
+                <button class="btn btn-primary flex-fill" onclick="login(this)"><i class="bi bi-telegram"></i> Login</button>
+                <button class="btn btn-secondary flex-fill" onclick="register()"><i class="bi bi-person-plus"></i> Register</button>
               </div>
             </div>
 
@@ -3804,9 +4070,10 @@ https://sfl.gl/iSJU7SP`;
       function register() {
         const urlWeb = "https://web.telegram.org/k/#@indapkbot";
         const urlTme = "https://t.me/indapkbot";
+        const urlDashboard = "https://indapk.github.io/dashboard.html";
 
-        const w = window.open(urlWeb, "_blank", "noopener");
-        if (!w) window.location.href = urlTme;
+        const w = window.open(urlDashboard, "_blank", "noopener");
+        if (!w) window.open(urlTme, "_blank", "noopener");
       }
 
       function logout() {
@@ -4227,6 +4494,12 @@ https://sfl.gl/iSJU7SP`;
               <td>
                 <button class="btn btn-sm btn-outline-primary" onclick="previewSavedGame('${game.download_id}')">
                   <i class="bi bi-eye"></i> Preview
+                </button>
+                <button class="btn btn-sm btn-success" onclick="downloadSavedGame('${game.download_id}')">
+                  <i class="bi bi-download"></i> Download
+                </button>
+                <button class="btn btn-sm btn-warning" onclick="copySavedGame('${game.download_id}')">
+                  <i class="bi bi-clipboard"></i> Copy
                 </button>
               </td>
             </tr>
