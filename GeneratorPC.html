@@ -1439,24 +1439,48 @@
     
     let currentUser = null;
     // Cloud options untuk PC
-    const CLOUD_OPTIONS = [
-        { id: 'Google Drive', name: 'Google Drive', color: 'btn-primary' },
-        { id: 'MediaFire', name: 'Mediafire', color: 'btn-warning' },
-        { id: 'VikingFile', name: 'Vikingfile', color: 'btn-danger' },
-        { id: 'PixelDrain', name: 'Pixeldrain', color: 'btn-info' },
-        { id: '1Fichier', name: '1Fichier', color: 'btn-dark' },
-        { id: 'MultiUp', name: 'Multiup', color: 'btn-success' },
-        { id: 'MEGA', name: 'MEGA', color: 'btn-success' },
-        { id: 'KatFile', name: 'KatFile', color: 'btn-success' },
-        { id: 'ClicknUpload', name: 'ClicknUpload', color: 'btn-success' },
-        { id: 'MixDrop', name: 'MixDrop', color: 'btn-success' },
-        { id: 'RapidGator', name: 'RapidGator', color: 'btn-success' },
-        { id: 'SendCM', name: 'SendCM', color: 'btn-success' },
-        { id: 'GoFile', name: 'GoFile', color: 'btn-success' },
-        { id: 'Dupload', name: 'Dupload', color: 'btn-success' },
-        { id: 'Terabox', name: 'Terabox', color: 'btn-success' },
-        { id: 'Qiwi', name: 'Qiwi', color: 'btn-warning' }
-    ];
+const CLOUD_OPTIONS = [
+    { id: 'Google Drive', name: 'Google Drive', color: 'btn-primary' },
+    { id: 'MediaFire', name: 'MediaFire', color: 'btn-warning' },
+    { id: 'VikingFile', name: 'VikingFile', color: 'btn-danger' },
+    { id: 'PixelDrain', name: 'PixelDrain', color: 'btn-info' },
+    { id: '1Fichier', name: '1Fichier', color: 'btn-dark' },
+    { id: 'MultiUp', name: 'MultiUp', color: 'btn-success' },
+    { id: 'MEGA', name: 'MEGA', color: 'btn-secondary' },
+    { id: 'KatFile', name: 'KatFile', color: 'btn-danger' },
+    { id: 'ClicknUpload', name: 'ClicknUpload', color: 'btn-info' },
+    { id: 'MixDrop', name: 'MixDrop', color: 'btn-warning' },
+    { id: 'RapidGator', name: 'RapidGator', color: 'btn-dark' },
+    { id: 'SendCM', name: 'SendCM', color: 'btn-success' },
+    { id: 'GoFile', name: 'GoFile', color: 'btn-primary' },
+    { id: 'Dupload', name: 'Dupload', color: 'btn-secondary' },
+    { id: 'Terabox', name: 'Terabox', color: 'btn-info' },
+    { id: 'Qiwi', name: 'Qiwi', color: 'btn-warning' },
+
+    // Tambahan
+    { id: 'DooDrive', name: 'DooDrive', color: 'btn-success' },
+    { id: 'BowFile', name: 'BowFile', color: 'btn-danger' },
+    { id: 'DownloadGG', name: 'DownloadGG', color: 'btn-primary' },
+    { id: 'UploadBoy', name: 'UploadBoy', color: 'btn-info' },
+    { id: 'UploadDrive', name: 'UploadDrive', color: 'btn-secondary' },
+    { id: 'FileCrypt', name: 'FileCrypt', color: 'btn-dark' },
+    { id: 'UsersDrive', name: 'UsersDrive', color: 'btn-warning' },
+    { id: 'HexUpload', name: 'HexUpload', color: 'btn-success' },
+    { id: 'AnonFiles', name: 'AnonFiles', color: 'btn-secondary' },
+    { id: 'BayFiles', name: 'BayFiles', color: 'btn-primary' },
+    { id: 'TurboBit', name: 'TurboBit', color: 'btn-danger' },
+    { id: 'NitroFlare', name: 'NitroFlare', color: 'btn-info' },
+    { id: 'FileUpload', name: 'FileUpload', color: 'btn-warning' },
+    { id: 'DropAPK', name: 'DropAPK', color: 'btn-success' },
+    { id: 'Uptobox', name: 'Uptobox', color: 'btn-dark' },
+    { id: 'ZippyShare', name: 'ZippyShare', color: 'btn-primary' },
+    { id: 'Fembed', name: 'Fembed', color: 'btn-secondary' },
+    { id: 'StreamTape', name: 'StreamTape', color: 'btn-info' },
+    { id: 'SolidFiles', name: 'SolidFiles', color: 'btn-warning' },
+    { id: 'FileMoon', name: 'FileMoon', color: 'btn-danger' },
+    { id: 'Keep2Share', name: 'Keep2Share', color: 'btn-success' },
+];
+
     
     let _savedHtmlCache = { html: '', filename: '' };
     let _mainTabsInited = false;
@@ -2540,27 +2564,50 @@ Sound: DirectX® 9.0c-compatible`;
                 .replace(/\//g, "&#47;");
         }
         
-        function getCloudColorClass(cloud) {
-            const colors = {
-                'Google Drive': 'btn-primary',
-                'MediaFire': 'btn-warning',
-                'VikingFile': 'btn-danger',
-                'PixelDrain': 'btn-info',
-                '1Fichier': 'btn-dark',
-                'MultiUp': 'btn-success',
-                'Qiwi': 'btn-danger',
-                'MEGA': 'btn-danger',
-                'KatFile': 'btn-danger',
-                'MixDrop': 'btn-danger',
-                'RapidGator': 'btn-danger',
-                'SendCM': 'btn-danger',
-                'GoFile': 'btn-danger',
-                'Dupload': 'btn-danger',
-                'Terabox': 'btn-danger',
-                'ClicknUpload': 'btn-danger',
-            };
-            return colors[cloud] || 'btn-secondary';
-        }
+function getCloudColorClass(cloud) {
+    const colors = {
+        'Google Drive': 'btn-primary',
+        'MediaFire': 'btn-warning',
+        'VikingFile': 'btn-danger',
+        'PixelDrain': 'btn-info',
+        '1Fichier': 'btn-dark',
+        'MultiUp': 'btn-success',
+        'MEGA': 'btn-secondary',
+        'KatFile': 'btn-danger',
+        'ClicknUpload': 'btn-info',
+        'MixDrop': 'btn-warning',
+        'RapidGator': 'btn-dark',
+        'SendCM': 'btn-success',
+        'GoFile': 'btn-primary',
+        'Dupload': 'btn-secondary',
+        'Terabox': 'btn-info',
+        'Qiwi': 'btn-warning',
+        'DooDrive': 'btn-success',
+        'BowFile': 'btn-danger',
+        'DownloadGG': 'btn-primary',
+        'UploadBoy': 'btn-info',
+        'UploadDrive': 'btn-secondary',
+        'FileCrypt': 'btn-dark',
+        'UsersDrive': 'btn-warning',
+        'HexUpload': 'btn-success',
+        'AnonFiles': 'btn-secondary',
+        'BayFiles': 'btn-primary',
+        'TurboBit': 'btn-danger',
+        'NitroFlare': 'btn-info',
+        'FileUpload': 'btn-warning',
+        'DropAPK': 'btn-success',
+        'Uptobox': 'btn-dark',
+        'ZippyShare': 'btn-primary',
+        'Fembed': 'btn-secondary',
+        'StreamTape': 'btn-info',
+        'SolidFiles': 'btn-warning',
+        'FileMoon': 'btn-danger',
+        'Keep2Share': 'btn-success',
+    };
+
+    return colors[cloud] || 'btn-secondary';
+}
+
         
         function createHTMLTemplate() {
             const SCRIPT_END = '</' + 'script>';
