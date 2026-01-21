@@ -2866,7 +2866,6 @@ async function saveGameData() {
         const LS_USER_KEY = 'wiiGameUser';
         const LS_LOGOUT_AT_KEY = 'wiiGameLogoutAt';
         let pendingAccess = null;
-        const COST_PER_LINK = 2000;
         
         // ====== AUTO REFRESH SALDO TIAP 1 MENIT ======
         let _saldoIntervalId = null;
@@ -3007,16 +3006,16 @@ async function saveGameData() {
         }
         
         // ====== PAYMENT MODALS ======
-        function openPayConfirmModal(format, cloudName, saldo) {
-            document.getElementById('payFormat').textContent = format || '-';
-            document.getElementById('payCloudName').textContent = cloudName || '-';
-            document.getElementById('payCost').textContent = rupiah(COST_PER_LINK);
-            document.getElementById('payBalance').textContent = rupiah(saldo);
-            document.getElementById('payAfter').textContent = rupiah(Number(saldo || 0) - COST_PER_LINK);
-            
-            const el = document.getElementById('payConfirmModal');
-            new bootstrap.Modal(el).show();
-        }
+function openPayConfirmModal(format, cloudName, saldo, cost = 1000) {
+    document.getElementById('payFormat').textContent = format || '-';
+    document.getElementById('payCloudName').textContent = cloudName || '-';
+    document.getElementById('payCost').textContent = rupiah(cost);
+    document.getElementById('payBalance').textContent = rupiah(saldo);
+    document.getElementById('payAfter').textContent = rupiah(Number(saldo || 0) - cost);
+    
+    const el = document.getElementById('payConfirmModal');
+    new bootstrap.Modal(el).show();
+}
         
         function openLinkReadyModal(link) {
             const input = document.getElementById('readyLinkInput');
@@ -3051,8 +3050,9 @@ async function saveGameData() {
             }
             
             const saldo = Number(currentUser.saldo || 0);
-            if (saldo < COST_PER_LINK) {
-                alert('Saldo tidak mencukupi. Harga per link: Rp ' + rupiah(COST_PER_LINK) + '. Saldo Anda: Rp ' + rupiah(saldo));
+            const hargaPerLink = 1000; // Diambil dari CODE GS
+            if (saldo < hargaPerLink) {
+                alert('Saldo tidak mencukupi. Harga per link: Rp ' + rupiah(hargaPerLink) + '. Saldo Anda: Rp ' + rupiah(saldo));
                 return;
             }
             
