@@ -3515,8 +3515,8 @@ function getCloudColorClass(cloud) {
                 return;
             }
             
-            if (currentUser.saldo < 2000) {
-                alert('Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp ' + currentUser.saldo);
+            if (currentUser.saldo < 1000) {
+                alert('Saldo tidak mencukupi. Harga per link: Rp 1.000. Saldo Anda: Rp ' + currentUser.saldo);
                 return;
             }
             
@@ -3559,7 +3559,7 @@ function getCloudColorClass(cloud) {
                     showLinkModal(link, {
                         game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
                         cloud: result.data.cloud || cloudName,
-                        amount_deducted: result.data.amount_deducted || 2000,
+                        amount_deducted: result.data.amount_deducted || 1000,
                         new_balance: result.data.new_balance || currentUser.saldo,
                         download_id: DOWNLOAD_ID
                     });
@@ -3657,9 +3657,9 @@ function getCloudColorClass(cloud) {
                                     <p>Anda akan mengakses link <strong>\${cloudName}</strong></p>
                                     <div class="alert alert-warning">
                                         <i class="bi bi-exclamation-triangle"></i>
-                                        <strong>Biaya: Rp 2.000</strong><br>
+                                        <strong>Biaya: Rp 1.000</strong><br>
                                         Saldo Anda: Rp \${currentUser.saldo.toLocaleString()}<br>
-                                        Saldo setelah potongan: Rp \${(currentUser.saldo - 2000).toLocaleString()}
+                                        Saldo setelah potongan: Rp \${(currentUser.saldo - 1000).toLocaleString()}
                                     </div>
                                     <p>Apakah Anda yakin ingin melanjutkan?</p>
                                 </div>
