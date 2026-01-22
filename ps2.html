@@ -306,6 +306,55 @@
             border-left: 4px solid #17a2b8;
             padding-left: 10px;
         }
+        /* Cloud Cache Preview */
+        .cloud-cache-preview {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        .cloud-cache-preview h6 {
+            color: #0066cc;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cloud-cache-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .cloud-cache-badge {
+            background: linear-gradient(135deg, #0066cc 0%, #003366 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .cloud-type-label {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 5px;
+        }
+        .cloud-section-preview {
+            margin-bottom: 12px;
+        }
+        .no-cloud-preview {
+            color: #6c757d;
+            font-style: italic;
+            padding: 10px;
+            text-align: center;
+            background: #fff;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -401,50 +450,66 @@
         
         <!-- ===== TAB PANELS ===== -->
         <div id="mainTabGenerator" class="main-tab-panel active">
-            <!-- Step 1: Input Jumlah Link -->
-            <div id="step1" class="step active">
-                <div class="card">
-                    <div class="card-header" style="background: linear-gradient(135deg, #0066cc 0%, #003366 100%); color: white;">
-                        <h4 class="mb-0">Step 1: Input Jumlah Link</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="isoCount" class="form-label required">Jumlah Link ISO</label>
-                                <input type="number" id="isoCount" class="form-control" min="0" value="0">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="chdCount" class="form-label required">Jumlah Link CHD</label>
-                                <input type="number" id="chdCount" class="form-control" min="0" value="0">
-                            </div>
-                        </div>
-                        <button id="btnNext1" class="btn btn-primary">Lanjutkan</button>
-                    </div>
-                    <div class="mt-4">
-                        <hr>
-                        <h5>Cloud Cache</h5>
-                        <div class="row g-2 align-items-center">
-                            <div class="col-md-8">
-                                <select id="cacheListStep1" class="form-select">
-                                    <option value="">Tidak ada cache</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
-                                    Load Cache (Ke Step 3)
-                                </button>
-                            </div>
-                            <div class="col-md-4 d-grid">
-                                <button id="btnDeleteCache" class="btn btn-outline-danger">
-                                    Hapus Cache Terpilih
-                                </button>
-                            </div>
-                        </div>
-                        <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis, lalu langsung ke Step 3.</small>
-
-                    </div>
+<!-- Step 1: Input Jumlah Link -->
+<div id="step1" class="step active">
+    <div class="card">
+        <div class="card-header" style="background: linear-gradient(135deg, #0066cc 0%, #003366 100%); color: white;">
+            <h4 class="mb-0">Step 1: Input Jumlah Link</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="isoCount" class="form-label required">Jumlah Link ISO</label>
+                    <input type="number" id="isoCount" class="form-control" min="0" value="0">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="chdCount" class="form-label required">Jumlah Link CHD</label>
+                    <input type="number" id="chdCount" class="form-control" min="0" value="0">
                 </div>
             </div>
+            <button id="btnNext1" class="btn btn-primary">Lanjutkan</button>
+            
+            <!-- Cloud Cache Section -->
+            <div class="mt-4 pt-3 border-top">
+                <h5>Cloud Cache</h5>
+                <div class="row g-2 align-items-center mb-3">
+                    <div class="col-md-8">
+                        <select id="cacheListStep1" class="form-select">
+                            <option value="">Tidak ada cache</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-cloud-download"></i> Load Cache (Ke Step 3)
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Cache Preview -->
+                <div id="cachePreviewContainer" class="cloud-cache-preview" style="display: none;">
+                    <h6><i class="bi bi-eye"></i> Preview Cloud Cache</h6>
+                    <div id="cachePreviewContent">
+                        <!-- Akan diisi oleh JavaScript -->
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Cache akan mengisi Step 1 (jumlah link) dan Step 2 (pilihan cloud) secara otomatis.
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="row g-2 mt-2">
+                    <div class="col-md-6 d-grid">
+                        <button id="btnDeleteCacheStep1" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Hapus Cache Terpilih
+                        </button>
+                    </div>
+                </div>
+                <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis, lalu langsung ke Step 3.</small>
+            </div>
+        </div>
+    </div>
+</div>
             
             <!-- Step 2: Pilih Cloud Download -->
             <div id="step2" class="step">
@@ -799,67 +864,209 @@ http://link.indapk.com/U8LVL"></textarea>
         let _generatedFilename = 'game.html';
         
         // Cloud options untuk PS2
-        const CLOUD_OPTIONS = [
-            { id: 'Google Drive', name: 'Google Drive', color: 'btn-primary' },
-            { id: 'MediaFire', name: 'Mediafire', color: 'btn-warning' },
-            { id: 'VikingFile', name: 'Vikingfile', color: 'btn-danger' },
-            { id: 'PixelDrain', name: 'Pixeldrain', color: 'btn-info' },
-            { id: '1Fichier', name: '1Fichier', color: 'btn-dark' },
-            { id: 'MultiUp', name: 'Multiup', color: 'btn-success' },
-            { id: 'Qiwi', name: 'Qiwi', color: 'btn-success' },
-            { id: 'Mega', name: 'Mega', color: 'btn-success' },
-            { id: 'Clicknupload', name: 'Clicknupload', color: 'btn-success' },
-            { id: 'KatFile', name: 'KatFile', color: 'btn-success' },
-            { id: 'Bowfile', name: 'Bowfile', color: 'btn-success' },
-            { id: 'Dupload', name: 'Dupload', color: 'btn-success' },
-            { id: 'TeraboxApp', name: 'TeraboxApp', color: 'btn-success' },
-        ];
+const CLOUD_OPTIONS = [
+    { id: 'Google Drive', name: 'Google Drive', color: 'btn-primary' },
+    { id: 'MediaFire', name: 'MediaFire', color: 'btn-warning' },
+    { id: 'VikingFile', name: 'VikingFile', color: 'btn-danger' },
+    { id: 'PixelDrain', name: 'PixelDrain', color: 'btn-info' },
+    { id: '1Fichier', name: '1Fichier', color: 'btn-dark' },
+    { id: 'MultiUp', name: 'MultiUp', color: 'btn-success' },
+    { id: 'Qiwi', name: 'Qiwi', color: 'btn-success' },
+    { id: 'MegaUp', name: 'MegaUp', color: 'btn-secondary' }, 
+    { id: 'MEGA', name: 'MEGA', color: 'btn-danger' },
+    { id: 'WorkUpload', name: 'WorkUpload', color: 'btn-secondary' },
+    { id: 'KatFile', name: 'KatFile', color: 'btn-dark' },
+    { id: 'BowFile', name: 'BowFile', color: 'btn-info' },
+    { id: 'ClicknUpload', name: 'ClicknUpload', color: 'btn-warning' },
+    { id: 'Dupload', name: 'Dupload', color: 'btn-secondary' },
+    { id: 'TeraboxApp', name: 'TeraboxApp', color: 'btn-primary' },
+    { id: 'GoFile', name: 'GoFile', color: 'btn-info' },
+    { id: 'SendCM', name: 'SendCM', color: 'btn-success' },
+    { id: 'RapidGator', name: 'RapidGator', color: 'btn-danger' },
+    { id: 'MixDrop', name: 'MixDrop', color: 'btn-warning' },
+    { id: 'DooDrive', name: 'DooDrive', color: 'btn-success' },
+    { id: 'DownloadGG', name: 'DownloadGG', color: 'btn-primary' },
+    { id: 'UploadBoy', name: 'UploadBoy', color: 'btn-info' },
+    { id: 'UploadDrive', name: 'UploadDrive', color: 'btn-secondary' },
+    { id: 'UsersDrive', name: 'UsersDrive', color: 'btn-warning' },
+    { id: 'HexUpload', name: 'HexUpload', color: 'btn-success' },
+    { id: 'AnonFiles', name: 'AnonFiles', color: 'btn-secondary' },
+    { id: 'BayFiles', name: 'BayFiles', color: 'btn-primary' },
+    { id: 'TurboBit', name: 'TurboBit', color: 'btn-danger' },
+    { id: 'NitroFlare', name: 'NitroFlare', color: 'btn-info' },
+    { id: 'FileUpload', name: 'FileUpload', color: 'btn-warning' },
+    { id: 'DropAPK', name: 'DropAPK', color: 'btn-success' },
+    { id: 'Uptobox', name: 'Uptobox', color: 'btn-dark' },
+    { id: 'ZippyShare', name: 'ZippyShare', color: 'btn-primary' },
+    { id: 'SolidFiles', name: 'SolidFiles', color: 'btn-secondary' },
+    { id: 'FileMoon', name: 'FileMoon', color: 'btn-danger' },
+    { id: 'Keep2Share', name: 'Keep2Share', color: 'btn-success' },
+];
         
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            refreshCloudCacheUI();
-            setupEventListeners();
-            initMainTabs();
-            wireSavedTabControls();
-            setTimeout(() => {
-                setupPasteFunctionality();
-            }, 500);
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    refreshCloudCacheUI();
+    setupEventListeners();
+    initMainTabs();
+    wireSavedTabControls();
+    
+    // Event listener untuk cache dropdown
+    const cacheSelect = document.getElementById('cacheListStep1');
+    if (cacheSelect) {
+        cacheSelect.addEventListener('change', function() {
+            const selectedName = this.value.trim();
+            if (!selectedName) {
+                hideCachePreview();
+                return;
+            }
+            
+            const caches = getCloudCaches();
+            const selectedCache = caches.find(c => c.name === selectedName);
+            if (selectedCache) {
+                showCachePreview(selectedCache);
+            } else {
+                hideCachePreview();
+            }
         });
+    }
+    
+    // Event listener untuk tombol save cache di Step 1
+    const btnSaveCacheStep1 = document.getElementById('btnSaveCacheFromStep1');
+    if (btnSaveCacheStep1) {
+        btnSaveCacheStep1.addEventListener('click', saveCloudCacheFromStep1);
+    }
+    
+    // Event listener untuk tombol delete cache di Step 1
+    const btnDeleteCacheStep1 = document.getElementById('btnDeleteCacheStep1');
+    if (btnDeleteCacheStep1) {
+        btnDeleteCacheStep1.addEventListener('click', deleteSelectedCloudCacheStep1);
+    }
+    
+    // Event listener untuk tombol load cache di Step 1
+    const btnLoadCacheStep1 = document.getElementById('btnLoadCacheStep1');
+    if (btnLoadCacheStep1) {
+        btnLoadCacheStep1.addEventListener('click', loadCloudCacheFromStep1);
+    }
+    
+    setTimeout(() => {
+        setupPasteFunctionality();
+    }, 500);
+});
         
         // ===================== CLOUD CACHE =====================
-        const CLOUD_CACHE_KEY = 'ps2CloudCaches';
+const CLOUD_CACHE_KEY = 'ps2CloudCaches';
+
+function getCloudCaches() {
+    try {
+        return JSON.parse(localStorage.getItem(CLOUD_CACHE_KEY) || '[]');
+    } catch {
+        return [];
+    }
+}
+
+function setCloudCaches(list) {
+    localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(list));
+}
+
+function refreshCloudCacheUI() {
+    const caches = getCloudCaches();
+    const step1Select = document.getElementById('cacheListStep1');
+    
+    if (!step1Select) return;
+    step1Select.innerHTML = '';
+    
+    const opt0 = document.createElement('option');
+    opt0.value = '';
+    opt0.textContent = caches.length ? 'Pilih cache' : 'Tidak ada cache';
+    step1Select.appendChild(opt0);
+    
+    caches.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = `${c.name} (${c.isoCount} ISO, ${c.chdCount} CHD) - ${new Date(c.savedAt).toLocaleDateString('id-ID')}`;
+        opt.dataset.cache = JSON.stringify(c);
+        step1Select.appendChild(opt);
+    });
+    
+    // Reset preview
+    hideCachePreview();
+}
+
+function showCachePreview(cache) {
+    const container = document.getElementById('cachePreviewContainer');
+    const content = document.getElementById('cachePreviewContent');
+    
+    if (!container || !content || !cache) {
+        hideCachePreview();
+        return;
+    }
+    
+    let html = '';
+    
+    // Preview untuk CHD
+    if (cache.chdCount > 0 && cache.cloudCHD && cache.cloudCHD.length > 0) {
+        html += `<div class="cloud-section-preview">`;
+        html += `<div class="fw-bold mb-2"><i class="bi bi-archive"></i> CHD (${cache.chdCount} link)</div>`;
+        html += `<div class="cloud-cache-list">`;
         
-        function getCloudCaches() {
-            try {
-                return JSON.parse(localStorage.getItem(CLOUD_CACHE_KEY) || '[]');
-            } catch {
-                return [];
-            }
-        }
+        cache.cloudCHD.forEach((cloud, index) => {
+            html += `<span class="cloud-cache-badge">`;
+            html += `<span>${cloud}</span>`;
+            html += `<span class="cloud-type-label">${index + 1}</span>`;
+            html += `</span>`;
+        });
         
-        function setCloudCaches(list) {
-            localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(list));
-        }
+        html += `</div></div>`;
+    } else if (cache.chdCount > 0) {
+        html += `<div class="cloud-section-preview">`;
+        html += `<div class="fw-bold mb-2"><i class="bi bi-archive"></i> CHD (${cache.chdCount} link)</div>`;
+        html += `<div class="no-cloud-preview">Belum ada cloud dipilih untuk CHD</div>`;
+        html += `</div>`;
+    }
+    
+    // Preview untuk ISO
+    if (cache.isoCount > 0 && cache.cloudISO && cache.cloudISO.length > 0) {
+        html += `<div class="cloud-section-preview">`;
+        html += `<div class="fw-bold mb-2"><i class="bi bi-disc"></i> ISO (${cache.isoCount} link)</div>`;
+        html += `<div class="cloud-cache-list">`;
         
-        function refreshCloudCacheUI() {
-            const caches = getCloudCaches();
-            const step1Select = document.getElementById('cacheListStep1');
-            
-            if (!step1Select) return;
-            step1Select.innerHTML = '';
-            
-            const opt0 = document.createElement('option');
-            opt0.value = '';
-            opt0.textContent = caches.length ? 'Pilih cache' : 'Tidak ada cache';
-            step1Select.appendChild(opt0);
-            
-            caches.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.name;
-                opt.textContent = `${c.name} (saved ${new Date(c.savedAt).toLocaleString()})`;
-                step1Select.appendChild(opt);
-            });
-        }
+        cache.cloudISO.forEach((cloud, index) => {
+            html += `<span class="cloud-cache-badge">`;
+            html += `<span>${cloud}</span>`;
+            html += `<span class="cloud-type-label">${index + 1}</span>`;
+            html += `</span>`;
+        });
+        
+        html += `</div></div>`;
+    } else if (cache.isoCount > 0) {
+        html += `<div class="cloud-section-preview">`;
+        html += `<div class="fw-bold mb-2"><i class="bi bi-disc"></i> ISO (${cache.isoCount} link)</div>`;
+        html += `<div class="no-cloud-preview">Belum ada cloud dipilih untuk ISO</div>`;
+        html += `</div>`;
+    }
+    
+    if (!html) {
+        html = '<div class="no-cloud-preview">Cache tidak memiliki data cloud</div>';
+    }
+    
+    content.innerHTML = html;
+    container.style.display = 'block';
+    
+    // Tambahkan info jumlah link
+    const totalLinks = (cache.isoCount || 0) + (cache.chdCount || 0);
+    const infoHtml = `<small class="text-muted d-block mt-2">
+        <i class="bi bi-info-circle"></i> 
+        Total: ${totalLinks} link (${cache.isoCount || 0} ISO, ${cache.chdCount || 0} CHD)
+    </small>`;
+    content.insertAdjacentHTML('beforeend', infoHtml);
+}
+
+function hideCachePreview() {
+    const container = document.getElementById('cachePreviewContainer');
+    if (container) {
+        container.style.display = 'none';
+    }
+}
         
 function collectCloudSelectionsOrThrow() {
     const sections = document.querySelectorAll('.cloud-section');
@@ -947,73 +1154,139 @@ function renderAllCloudPreviews() {
     }
 }
 
-        function saveCloudCache() {
-            try {
-                const nameEl = document.getElementById('cacheName');
-                const cacheName = (nameEl?.value || '').trim();
-                
-                if (!cacheName) {
-                    alert('Isi nama cache dulu.');
-                    return;
-                }
-                
-                const total = (gameData.isoCount || 0) + (gameData.chdCount || 0);
-                if (total === 0) {
-                    alert('Isi Step 1 dulu (jumlah link).');
-                    return;
-                }
-                
-                const selections = collectCloudSelectionsOrThrow();
-                Object.keys(selections).forEach(k => gameData[k] = selections[k]);
-                
-                const caches = getCloudCaches();
-                const existingIndex = caches.findIndex(c => c.name === cacheName);
-                
-                const payload = {
-                    name: cacheName,
-                    savedAt: new Date().toISOString(),
-                    isoCount: gameData.isoCount,
-                    chdCount: gameData.chdCount,
-                    cloudISO: gameData.cloudISO || [],
-                    cloudCHD: gameData.cloudCHD || []
-                };
-                
-                if (existingIndex >= 0) {
-                    const ok = confirm(`Cache "${cacheName}" sudah ada. Timpa?`);
-                    if (!ok) return;
-                    caches[existingIndex] = payload;
-                } else {
-                    caches.push(payload);
-                }
-                
-                setCloudCaches(caches);
-                refreshCloudCacheUI();
-                showToast('success', `Cache "${cacheName}" tersimpan.`);
-            } catch (err) {
-                showToast('error', err.message || 'Gagal simpan cache.');
-            }
+function saveCloudCache() {
+    try {
+        const nameEl = document.getElementById('cacheName');
+        const cacheName = (nameEl?.value || '').trim();
+        
+        if (!cacheName) {
+            alert('Isi nama cache dulu.');
+            return;
         }
         
-        function applyCloudCache(cache) {
-            gameData.isoCount = cache.isoCount || 0;
-            gameData.chdCount = cache.chdCount || 0;
-            gameData.cloudISO = cache.cloudISO || [];
-            gameData.cloudCHD = cache.cloudCHD || [];
-            
-            document.getElementById('isoCount').value = gameData.isoCount;
-            document.getElementById('chdCount').value = gameData.chdCount;
-            
-            // tetap dibuat (biar state cloud-nya siap)
-            generateCloudSelection();
-            
-            const nameEl = document.getElementById('cacheName');
-            if (nameEl) nameEl.value = cache.name;
-            
-            // langsung siapkan Step 3
-            generateLinkInputFields();
-            showStep(3);
+        const total = (gameData.isoCount || 0) + (gameData.chdCount || 0);
+        if (total === 0) {
+            alert('Isi Step 1 dulu (jumlah link).');
+            return;
         }
         
+        const selections = collectCloudSelectionsOrThrow();
+        Object.keys(selections).forEach(k => gameData[k] = selections[k]);
+        
+        const caches = getCloudCaches();
+        const existingIndex = caches.findIndex(c => c.name === cacheName);
+        
+        const payload = {
+            name: cacheName,
+            savedAt: new Date().toISOString(),
+            isoCount: gameData.isoCount,
+            chdCount: gameData.chdCount,
+            cloudISO: gameData.cloudISO || [],
+            cloudCHD: gameData.cloudCHD || []
+        };
+        
+        if (existingIndex >= 0) {
+            const ok = confirm(`Cache "${cacheName}" sudah ada. Timpa?`);
+            if (!ok) return;
+            caches[existingIndex] = payload;
+        } else {
+            caches.push(payload);
+        }
+        
+        setCloudCaches(caches);
+        refreshCloudCacheUI(); // Tambahkan ini
+        showToast('success', `Cache "${cacheName}" tersimpan.`);
+    } catch (err) {
+        showToast('error', err.message || 'Gagal simpan cache.');
+    }
+}
+        
+function applyCloudCache(cache) {
+    gameData.isoCount = cache.isoCount || 0;
+    gameData.chdCount = cache.chdCount || 0;
+    gameData.cloudISO = cache.cloudISO || [];
+    gameData.cloudCHD = cache.cloudCHD || [];
+    
+    document.getElementById('isoCount').value = gameData.isoCount;
+    document.getElementById('chdCount').value = gameData.chdCount;
+    
+    // Generate cloud selection (tetap dibuat tapi tidak ditampilkan)
+    generateCloudSelection();
+    
+    const nameEl = document.getElementById('cacheName');
+    if (nameEl) nameEl.value = cache.name;
+    
+    // Langsung ke Step 3
+    generateLinkInputFields();
+    showStep(3);
+}
+
+
+function saveCloudCacheFromStep1() {
+    const isoCount = parseInt(document.getElementById('isoCount').value) || 0;
+    const chdCount = parseInt(document.getElementById('chdCount').value) || 0;
+    
+    if (isoCount === 0 && chdCount === 0) {
+        alert('Isi jumlah link ISO/CHD terlebih dahulu!');
+        return;
+    }
+    
+    const nameEl = document.getElementById('cacheName');
+    const cacheName = (nameEl?.value || '').trim();
+    
+    if (!cacheName) {
+        alert('Isi nama cache dulu.');
+        return;
+    }
+    
+    // Simpan cache dengan data dasar
+    const caches = getCloudCaches();
+    const existingIndex = caches.findIndex(c => c.name === cacheName);
+    
+    const payload = {
+        name: cacheName,
+        savedAt: new Date().toISOString(),
+        isoCount: isoCount,
+        chdCount: chdCount,
+        cloudISO: [],
+        cloudCHD: []
+    };
+    
+    if (existingIndex >= 0) {
+        const ok = confirm(`Cache "${cacheName}" sudah ada. Timpa?`);
+        if (!ok) return;
+        caches[existingIndex] = payload;
+    } else {
+        caches.push(payload);
+    }
+    
+    setCloudCaches(caches);
+    refreshCloudCacheUI();
+    nameEl.value = '';
+    showToast('success', `Cache "${cacheName}" tersimpan. Lengkapi pilihan cloud di Step 2.`);
+}
+
+
+function deleteSelectedCloudCacheStep1() {
+    const select = document.getElementById('cacheListStep1');
+    const name = (select?.value || '').trim();
+    if (!name) {
+        alert('Pilih cache dulu.');
+        return;
+    }
+    
+    const ok = confirm(`Hapus cache "${name}"?`);
+    if (!ok) return;
+    
+    const caches = getCloudCaches().filter(c => c.name !== name);
+    setCloudCaches(caches);
+    refreshCloudCacheUI();
+    
+    const nameEl = document.getElementById('cacheName');
+    if (nameEl && nameEl.value.trim() === name) nameEl.value = '';
+    
+    showToast('warning', `Cache "${name}" dihapus.`);
+}
         function loadCloudCacheByName(name) {
             const caches = getCloudCaches();
             const cache = caches.find(c => c.name === name);
@@ -1025,16 +1298,27 @@ function renderAllCloudPreviews() {
             showToast('info', `Cache "${name}" dimuat. Kamu sudah di Step 3.`);
 
         }
-        
-        function loadCloudCacheFromStep1() {
-            const select = document.getElementById('cacheListStep1');
-            const name = (select?.value || '').trim();
-            if (!name) {
-                alert('Pilih cache dulu.');
-                return;
-            }
-            loadCloudCacheByName(name);
-        }
+
+
+function loadCloudCacheFromStep1() {
+    const select = document.getElementById('cacheListStep1');
+    const name = (select?.value || '').trim();
+    if (!name) {
+        alert('Pilih cache dulu.');
+        return;
+    }
+    
+    const caches = getCloudCaches();
+    const cache = caches.find(c => c.name === name);
+    if (!cache) {
+        alert('Cache tidak ditemukan.');
+        return;
+    }
+    
+    // Langsung load cache tanpa konfirmasi
+    applyCloudCache(cache);
+    showToast('info', `Cache "${name}" dimuat. Kamu sudah di Step 3.`);
+}
         
         function deleteSelectedCloudCache() {
             const select = document.getElementById('cacheListStep1');
@@ -1854,24 +2138,48 @@ http://link.indapk.com/U8LVL`;
 
         function createHTMLTemplate() {
             // Helper function untuk cloud color
-            const getCloudColorClass = (cloud) => {
-                const colors = {
-                    'Google Drive': 'btn-primary',
-                    'MediaFire': 'btn-warning',
-                    'VikingFile': 'btn-danger',
-                    'PixelDrain': 'btn-info',
-                    '1Fichier': 'btn-dark',
-                    'Qiwi': 'btn-danger',
-                    'Mega': 'btn-danger',
-                    'Clicknupload': 'btn-danger',
-                    'KatFile': 'btn-danger',
-                    'Bowfile': 'btn-danger',
-                    'Dupload': 'btn-danger',
-                    'TeraboxApp': 'btn-danger',
-                    'MultiUp': 'btn-success'
-                };
-                return colors[cloud] || 'btn-secondary';
-            };
+const getCloudColorClass = (cloud) => {
+    const colors = {
+        'Google Drive': 'btn-primary',
+        'MediaFire': 'btn-warning',
+        'VikingFile': 'btn-danger',
+        'PixelDrain': 'btn-info',
+        '1Fichier': 'btn-dark',
+        'MultiUp': 'btn-success',
+        'MegaUp': 'btn-secondary',
+        'MEGA': 'btn-danger',
+        'WorkUpload': 'btn-secondary',
+        'KatFile': 'btn-dark',
+        'BowFile': 'btn-info',
+        'ClicknUpload': 'btn-warning',
+        'Qiwi': 'btn-success',
+        'Dupload': 'btn-secondary',
+        'TeraboxApp': 'btn-primary',
+        'GoFile': 'btn-info',
+        'SendCM': 'btn-success',
+        'RapidGator': 'btn-danger',
+        'MixDrop': 'btn-warning',
+        'DooDrive': 'btn-success',
+        'DownloadGG': 'btn-primary',
+        'UploadBoy': 'btn-info',
+        'UploadDrive': 'btn-secondary',
+        'UsersDrive': 'btn-warning',
+        'HexUpload': 'btn-success',
+        'AnonFiles': 'btn-secondary',
+        'BayFiles': 'btn-primary',
+        'TurboBit': 'btn-danger',
+        'NitroFlare': 'btn-info',
+        'FileUpload': 'btn-warning',
+        'DropAPK': 'btn-success',
+        'Uptobox': 'btn-dark',
+        'ZippyShare': 'btn-primary',
+        'SolidFiles': 'btn-secondary',
+        'FileMoon': 'btn-danger',
+        'Keep2Share': 'btn-success',
+    };
+
+    return colors[cloud] || 'btn-secondary';
+};
             
             // Build link sections - CHD di atas, ISO di bawah
             let adLinks1HTML = '';
@@ -2294,7 +2602,7 @@ http://link.indapk.com/U8LVL`;
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="background: var(--ps2-gradient); color: white;">
-                    <h5 class="modal-title">Login dengan Telegram</h5>
+                    <h5 class="modal-title">Login</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -2309,7 +2617,7 @@ http://link.indapk.com/U8LVL`;
                             </ol>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Telegram ID</label>
+                            <label class="form-label">Telegram ID / Username</label>
                             <input type="text" id="telegramId" class="form-control" placeholder="Masukkan Username atau ID Telegram">
                         </div>
                         <div class="mb-3">
