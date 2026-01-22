@@ -678,6 +678,9 @@ function generateCode() {
         // Get selected post type
         const postType = document.querySelector('input[name="postType"]:checked').value;
 
+        // Encode game name for URL
+        const encodedGameName = encodeURIComponent(inputName.replace(/ /g, '+'));
+        
         let generatedHtml;
         
         if (postType === 'share') {
@@ -696,8 +699,35 @@ Format: CHD dan ISO
 🌐Link Game:
 ${inputLink}
 
-🌐Link Alternative Download:
-https://indapk.github.io
+🌐Link Alternatif:
+https://indapk.github.io/?q=${encodedGameName}
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+        } else if (postType === 'upload') {
+            generatedHtml = `🎮Upload Ulang GAME PS2
+🎮Update Game PS2:
+Nama Game: ${inputName}
+Ukuran Game CHD: ${inputSingleSizeCHD}
+Ukuran Game ISO: ${inputSingleSizeISO}
+Category: ${inputCategory}
+Region: ${inputRegion}
+Emulator: AetherSX2 (Android), PCSX2 (Windows)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: CHD dan ISO
+
+🌐Link Game:
+${inputLink}
+
+🌐Link Alternatif:
+https://indapk.github.io/?q=${encodedGameName}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -723,35 +753,8 @@ Format: CHD dan ISO
 🌐Link Game:
 ${inputLink}
 
-🌐Link Alternative Download:
-https://indapk.github.io
-
-🌐Join Komunitas INDapk:
-https://www.kuysocial.com/pages/INDapk
-
-🌐Request Game:
-https://indapk.com/requestgame.html
-
-
-#INDapk`;
-        } if (postType === 'upload') {
-            generatedHtml = `🎮Upload Ulang GAME PS2
-🎮Update Game PS2:
-Nama Game: ${inputName}
-Ukuran Game CHD: ${inputSingleSizeCHD}
-Ukuran Game ISO: ${inputSingleSizeISO}
-Category: ${inputCategory}
-Region: ${inputRegion}
-Emulator: AetherSX2 (Android), PCSX2 (Windows)
-Connection: Offline
-Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: CHD dan ISO
-
-🌐Link Game:
-${inputLink}
-
-🌐Link Alternative Download:
-https://indapk.github.io
+🌐Link Alternatif:
+https://indapk.github.io/?q=${encodedGameName}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
