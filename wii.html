@@ -2487,6 +2487,16 @@ async function saveGameData() {
             padding: 15px;
             margin-bottom: 20px;
         }
+        .recommended-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .ad-note-banner.warning {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%);
+            border: 2px solid #ff9800;
+        }
         .ad-note-pill {
             background: #2196f3;
             color: white;
@@ -2703,6 +2713,37 @@ async function saveGameData() {
                         ${adLinks1HTML}
                     </div>
                 </div>
+            <!-- NOTE (Banner) -->
+<div class="ad-note-banner warning mb-3">
+    <div class="content">
+        <div class="ad-note-pill">
+            <i class="bi bi-exclamation-triangle"></i> Important Note
+        </div>
+        <div class="ad-note-grid">
+            <div class="ad-note-box">
+                <div class="fw-bold mb-1"><i class="bi bi-google-drive"></i> Google Drive Warning</div>
+                <div class="text-danger fw-bold mb-1">Link Google Drive rawan mati/takedown!</div>
+                <div class="text-muted small">
+                    <i class="bi bi-info-circle"></i> Jika menemui link Google Drive yang error, gunakan link dari penyedia lain.
+                </div>
+            </div>
+            <div class="ad-note-box">
+                <div class="fw-bold mb-1"><i class="bi bi-star-fill"></i> Recommended Alternatives</div>
+                <div class="recommended-list">
+                    <span class="badge bg-warning mb-1">MediaFire</span>
+                    <span class="badge bg-info mb-1">PixelDrain</span>
+                    <span class="badge bg-danger mb-1">VikingFile</span>
+                </div>
+                <div class="text-muted small mt-1">
+                    <i class="bi bi-check-circle"></i> Link alternatif lebih stabil dan jarang error.
+                </div>
+            </div>
+        </div>
+        <div class="mt-2 text-center small">
+            <i class="bi bi-lightbulb"></i> Tips: Selalu coba link alternatif jika link utama error
+        </div>
+    </div>
+</div>
                 
                 <!-- CARD: LINK IKLAN 2 (ALTERNATIF) -->
                 ${includeAd2 ? `
