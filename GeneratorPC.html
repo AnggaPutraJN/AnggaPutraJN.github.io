@@ -1802,24 +1802,29 @@ function nextStep1() {
     }
 
 function nextStep2() {
-  syncCloudSelectionToState(); // ✅ pastikan urutan yang dipakai Step 3 adalah urutan klik
-
-  const section = document.querySelector('.cloud-section');
-  if (!section) {
-    alert('Harap pilih cloud terlebih dahulu!');
-    return;
-  }
-
-  const limit = parseInt(section.dataset.limit, 10) || 0;
-  const selected = Array.isArray(gameData.cloudTypes) ? gameData.cloudTypes : [];
-
-  if (selected.length !== limit) {
-    alert(`Harap pilih tepat ${limit} cloud!`);
-    return;
-  }
-
-  generateLinkInputFields();
-  showStep(3);
+    syncCloudSelectionToState(); 
+    
+    const section = document.querySelector('.cloud-section');
+    if (!section) {
+        alert('Harap pilih cloud terlebih dahulu!');
+        return;
+    }
+    
+    const limit = parseInt(section.dataset.limit, 10) || 0;
+    const selected = Array.isArray(gameData.cloudTypes) ? gameData.cloudTypes : [];
+    
+    if (selected.length !== limit) {
+        alert(`Harap pilih tepat ${limit} cloud! Saat ini: ${selected.length} terpilih.`);
+        return;
+    }
+    
+    // Reset arrays link dengan panjang yang sesuai
+    gameData.originalLinks = ensureArrayLength(gameData.originalLinks, limit);
+    gameData.adLinks = ensureArrayLength(gameData.adLinks, limit);
+    gameData.adLinks2 = ensureArrayLength(gameData.adLinks2, limit);
+    
+    generateLinkInputFields();
+    showStep(3);
 }
 
     
@@ -2278,120 +2283,191 @@ Sound: DirectX® 9.0c-compatible`;
     }
 
     // ===================== SAVE GAME DATA =====================
-    async function saveGameData() {
-        const gameName = document.getElementById('gameName').value.trim();
-        const gameSize = document.getElementById('gameSize').value.trim();
-        const category = document.getElementById('category').value.trim();
-        const developer = document.getElementById('developer').value.trim();
-        const systemRequirements = document.getElementById('systemRequirements').value.trim();
-        const thumbnailUrl = document.getElementById('thumbnailUrl').value.trim();
+async function saveGameData() {
+    const gameName = document.getElementById('gameName').value.trim();
+    const gameSize = document.getElementById('gameSize').value.trim();
+    const category = document.getElementById('category').value.trim();
+    const developer = document.getElementById('developer').value.trim();
+    const systemRequirements = document.getElementById('systemRequirements').value.trim();
+    const thumbnailUrl = document.getElementById('thumbnailUrl').value.trim();
+    
+    if (!gameName || !gameSize || !category || !developer) {
+        alert('Harap isi semua field yang wajib!');
+        return;
+    }
+    
+    // Pastikan gameData.cloudTypes selalu array dan sinkron dengan linkCount
+    if (!Array.isArray(gameData.cloudTypes)) {
+        gameData.cloudTypes = [];
+    }
+    
+    // Sync cloud selection terlebih dahulu
+    syncCloudSelectionToState();
+    
+    // Validasi: jumlah cloudTypes harus sama dengan linkCount
+    if (gameData.cloudTypes.length !== gameData.linkCount) {
+        alert(`ERROR: Jumlah cloud (${gameData.cloudTypes.length}) tidak sesuai dengan jumlah link (${gameData.linkCount}).\n\nPastikan Anda sudah memilih tepat ${gameData.linkCount} cloud di Step 2!`);
+        showStep(2); // Kembali ke step 2 untuk perbaikan
+        return;
+    }
+    
+    // Validasi semua links di gameData (bukan dari DOM langsung)
+    const allLinks = [
+        ...(gameData.originalLinks || []),
+        ...(gameData.adLinks || []),
+        ...(gameData.adLinks2 || [])
+    ];
+    
+    // Filter hanya link yang ada (tidak undefined/null)
+    const validLinks = allLinks.filter(link => link && link.trim() !== '');
+    
+    // Validasi minimal ada link yang diisi
+    if (validLinks.length === 0) {
+        alert('Harap isi minimal satu link!');
+        return;
+    }
+    
+    // Validasi tiap array link harus memiliki panjang sesuai linkCount
+    const expectedLength = gameData.linkCount;
+    if (gameData.originalLinks.length !== expectedLength ||
+        gameData.adLinks.length !== expectedLength ||
+        gameData.adLinks2.length !== expectedLength) {
         
-        if (!gameName || !gameSize || !category || !developer) {
-            alert('Harap isi semua field yang wajib!');
-            return;
-        }
+        console.warn('Panjang array link tidak sesuai, melakukan koreksi...');
         
-        // Validate all links are filled
-        const allLinks = [...gameData.originalLinks, ...gameData.adLinks, ...gameData.adLinks2];
-        if (allLinks.some(link => !link.trim())) {
-            alert('Harap isi semua link!');
-            return;
-        }
+        // Koreksi panjang array
+        gameData.originalLinks = ensureArrayLength(gameData.originalLinks, expectedLength);
+        gameData.adLinks = ensureArrayLength(gameData.adLinks, expectedLength);
+        gameData.adLinks2 = ensureArrayLength(gameData.adLinks2, expectedLength);
+    }
+    
+    gameData.gameInfo = {
+        nama_game: gameName,
+        ukuran_game: gameSize,
+        category: category,
+        developer: developer
+    };
+    
+    gameData.systemRequirements = systemRequirements;
+    gameData.thumbnailUrl = thumbnailUrl;
+    
+    try {
+        const saveBtn = document.getElementById('btnSaveGame');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+        saveBtn.disabled = true;
         
-        gameData.gameInfo = {
-            nama_game: gameName,
-            ukuran_game: gameSize,
-            category: category,
-            developer: developer
-        };
+        // Log untuk debugging
+        console.log('Data yang akan disimpan:', {
+            linkCount: gameData.linkCount,
+            cloudTypesCount: gameData.cloudTypes.length,
+            cloudTypes: gameData.cloudTypes,
+            originalLinksCount: gameData.originalLinks.length,
+            adLinksCount: gameData.adLinks.length,
+            adLinks2Count: gameData.adLinks2.length
+        });
         
-        gameData.systemRequirements = systemRequirements;
-        gameData.thumbnailUrl = thumbnailUrl;
+        // Prepare form data
+        const params = new URLSearchParams();
+        params.append('action', 'saveGame');
+        params.append('nama_game', gameData.gameInfo.nama_game);
+        params.append('ukuran_game', gameData.gameInfo.ukuran_game);
+        params.append('category', gameData.gameInfo.category);
+        params.append('developer', gameData.gameInfo.developer);
+        params.append('system_requirements', gameData.systemRequirements);
+        params.append('link_asli', JSON.stringify(gameData.originalLinks));
+        params.append('link_iklan', JSON.stringify(gameData.adLinks));
+        params.append('link_iklan2', JSON.stringify(gameData.adLinks2));
+        params.append('cloud_types', JSON.stringify(gameData.cloudTypes));
+        params.append('thumbnail_url', gameData.thumbnailUrl);
+        params.append('link_count', gameData.linkCount); // Tambahkan link_count
         
-        try {
-            const saveBtn = document.getElementById('btnSaveGame');
-            const originalText = saveBtn.innerHTML;
-            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
-            saveBtn.disabled = true;
+        console.log('Saving PC game data...');
+        
+        const response = await fetch(PC_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: params.toString()
+        });
             
-            // Prepare form data
-            const params = new URLSearchParams();
-            params.append('action', 'saveGame');
-            params.append('nama_game', gameData.gameInfo.nama_game);
-            params.append('ukuran_game', gameData.gameInfo.ukuran_game);
-            params.append('category', gameData.gameInfo.category);
-            params.append('developer', gameData.gameInfo.developer);
-            params.append('system_requirements', gameData.systemRequirements);
-            params.append('link_asli', JSON.stringify(gameData.originalLinks));
-            params.append('link_iklan', JSON.stringify(gameData.adLinks));
-            params.append('link_iklan2', JSON.stringify(gameData.adLinks2));
-            params.append('cloud_types', JSON.stringify(gameData.cloudTypes));
-            params.append('thumbnail_url', gameData.thumbnailUrl);
+        console.log('Response status:', response.status);
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Response result:', result);
             
-            console.log('Saving PC game data...');
-            
-            const response = await fetch(PC_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: params.toString()
-            });
+            if (result.status === 'success') {
+                gameData.downloadId = result.data.download_id;
+                showSuccessModal(
+                    '✅ Game PC Berhasil Disimpan!',
+                    gameData.gameInfo.nama_game,
+                    result.data.download_id
+                );
                 
-                console.log('Response status:', response.status);
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log('Response result:', result);
-                    
-                    if (result.status === 'success') {
-                        gameData.downloadId = result.data.download_id;
-                        showSuccessModal(
-                            '✅ Game PC Berhasil Disimpan!',
-                            gameData.gameInfo.nama_game,
-                            result.data.download_id
-                        );
-                        
-                        // Simpan ke localStorage
-                        saveGameToLocalStorage({
-                            downloadId: gameData.downloadId,
-                            name: gameData.gameInfo.nama_game,
-                            developer: gameData.gameInfo.developer,
-                            updatedAt: new Date().toISOString()
-                        });
-                    } else {
-                        throw new Error(result.message || 'Gagal menyimpan');
-                    }
-                } else {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-            } catch (error) {
-                console.error('Save error:', error);
-                
-                // Fallback: Simpan ke localStorage
-                try {
-                    const gameDataToSave = {
-                        ...gameData,
-                        savedAt: new Date().toISOString()
-                    };
-                    localStorage.setItem('pcGameData', JSON.stringify(gameDataToSave));
-                    gameData.downloadId = 'LOCAL_' + Date.now().toString().slice(-8);
-                    
-                    showFallbackModal(
-                        '⚠️ Disimpan Secara Lokal',
-                        gameData.gameInfo.nama_game,
-                        gameData.downloadId
-                    );
-                } catch (localError) {
-                    alert('❌ Gagal menyimpan game: ' + error.message);
-                }
-            } finally {
-                const saveBtn = document.getElementById('btnSaveGame');
-                saveBtn.innerHTML = '<i class="bi bi-save-fill"></i> Simpan Data Game';
-                saveBtn.disabled = false;
+                // Simpan ke localStorage
+                saveGameToLocalStorage({
+                    downloadId: gameData.downloadId,
+                    name: gameData.gameInfo.nama_game,
+                    developer: gameData.gameInfo.developer,
+                    updatedAt: new Date().toISOString()
+                });
+            } else {
+                throw new Error(result.message || 'Gagal menyimpan');
             }
+        } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+    } catch (error) {
+        console.error('Save error:', error);
+        
+        // Fallback: Simpan ke localStorage
+        try {
+            const gameDataToSave = {
+                ...gameData,
+                savedAt: new Date().toISOString()
+            };
+            localStorage.setItem('pcGameData', JSON.stringify(gameDataToSave));
+            gameData.downloadId = 'LOCAL_' + Date.now().toString().slice(-8);
+            
+            showFallbackModal(
+                '⚠️ Disimpan Secara Lokal',
+                gameData.gameInfo.nama_game,
+                gameData.downloadId
+            );
+        } catch (localError) {
+            alert('❌ Gagal menyimpan game: ' + error.message);
+        }
+    } finally {
+        const saveBtn = document.getElementById('btnSaveGame');
+        saveBtn.innerHTML = '<i class="bi bi-save-fill"></i> Simpan Data Game';
+        saveBtn.disabled = false;
+    }
+}
+
+// Helper function untuk memastikan panjang array
+function ensureArrayLength(arr, length) {
+    if (!Array.isArray(arr)) {
+        return new Array(length).fill('');
+    }
+    
+    if (arr.length === length) {
+        return arr;
+    }
+    
+    if (arr.length > length) {
+        return arr.slice(0, length);
+    }
+    
+    // Jika lebih pendek, tambahkan item kosong
+    const newArr = [...arr];
+    while (newArr.length < length) {
+        newArr.push('');
+    }
+    return newArr;
+}
         
         function saveGameToLocalStorage(game) {
             const KEY = "pc_saved_games_v1";
@@ -4003,16 +4079,43 @@ function refreshCloudCacheUI() {
         showStep(3);
     }
     
-    function loadCloudCacheByName(name) {
-      const caches = getCloudCaches();
-      const cache = caches.find(c => c.name === name);
-      if (!cache) {
+function loadCloudCacheByName(name) {
+    const caches = getCloudCaches();
+    const cache = caches.find(c => c.name === name);
+    if (!cache) {
         alert('Cache tidak ditemukan.');
         return;
-      }
-      applyCloudCache(cache);
-      showToast('info', `Cache "${name}" dimuat. Kamu sudah di Step 3.`);
     }
+    
+    // Terapkan cache ke gameData
+    gameData.linkCount = cache.linkCount || 6;
+    gameData.cloudTypes = cache.cloudTypes || [];
+    
+    // Update UI Step 1
+    document.getElementById('linkCount').value = gameData.linkCount;
+    
+    // Update UI Step 2
+    generateCloudSelection();
+    
+    // Reset arrays link dengan panjang yang sesuai
+    const expectedLength = gameData.linkCount;
+    gameData.originalLinks = ensureArrayLength(gameData.originalLinks, expectedLength);
+    gameData.adLinks = ensureArrayLength(gameData.adLinks, expectedLength);
+    gameData.adLinks2 = ensureArrayLength(gameData.adLinks2, expectedLength);
+    
+    // Update cache name field
+    const nameEl = document.getElementById('cacheName');
+    if (nameEl) nameEl.value = cache.name;
+    
+    // Generate UI Step 3
+    generateLinkInputFields();
+    
+    // Update input fields dengan data yang ada
+    updateLinkInputsUI();
+    
+    showStep(3);
+    showToast('info', `Cache "${name}" dimuat. Kamu sudah di Step 3.`);
+}
     
 function loadCloudCacheFromStep1() {
     const select = document.getElementById('cacheListStep1');
