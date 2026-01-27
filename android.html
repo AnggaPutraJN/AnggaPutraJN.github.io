@@ -1053,29 +1053,9 @@ h1::after {
 }
 
 .modal {
-  z-index: 1060;
-}
-
-.modal-backdrop {
   z-index: 1050;
 }
 
-/* Pastikan modal bisa ditutup dengan klik backdrop */
-.modal.fade .modal-dialog {
-  pointer-events: auto;
-}
-
-/* Tombol di modal harus selalu bisa diklik */
-.modal .btn {
-  position: relative;
-  z-index: 1;
-}
-
-/* Pastikan konten modal tidak terpotong */
-.modal-body {
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
-}
 /* ============================================
    CUSTOM PROPERTIES FALLBACK
 ============================================= */
@@ -1485,63 +1465,10 @@ img {
 
   </div> <!-- /container -->
 
-  <!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="successModalLabel"><i class="bi bi-check-circle-fill"></i> Game Berhasil Disimpan!</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="text-center mb-3">
-          <i class="bi bi-cloud-check-fill" style="font-size: 3rem; color: var(--color-success);"></i>
-        </div>
-        <p>Data game telah berhasil disimpan ke spreadsheet.</p>
-        
-        <div class="alert alert-info">
-          <p class="mb-1"><strong>Download ID:</strong> <code id="downloadIdDisplay"></code></p>
-          <div class="d-flex gap-2 mt-3">
-            <button class="btn btn-outline-primary flex-fill" type="button" id="copyHTMLBtn">
-              <i class="bi bi-clipboard-check-fill"></i> Copy HTML Sekarang
-            </button>
-            <button class="btn btn-outline-success flex-fill" type="button" onclick="generateAndCopyHTML()">
-              <i class="bi bi-code-slash"></i> Generate & Copy HTML
-            </button>
-          </div>
-          <small class="text-muted mt-2 d-block">
-            <i class="bi bi-info-circle"></i> ID ini digunakan untuk mengakses game di halaman HTML yang dihasilkan.
-          </small>
-        </div>
-        
-        <div class="mt-3">
-          <h6><i class="bi bi-lightning-charge"></i> Opsi Cepat:</h6>
-          <div class="d-flex flex-wrap gap-2">
-            <button class="btn btn-primary" onclick="goToStep4()">
-              <i class="bi bi-arrow-left"></i> Kembali ke Input Data
-            </button>
-            <button class="btn btn-success" onclick="generateAndPreviewHTML()">
-              <i class="bi bi-eye"></i> Preview HTML
-            </button>
-            <button class="btn btn-info" onclick="loadSavedGames()">
-              <i class="bi bi-table"></i> Lihat di Spreadsheet
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-        <button type="button" class="btn btn-primary" onclick="continueToPreview()">
-          <i class="bi bi-arrow-right"></i> Lanjut ke Preview
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+  
   <script>
     // ============= KONFIGURASI URL =============
     const USER_API_URL = "https://script.google.com/macros/s/AKfycbweRCcVmuWrz2gpvIanBqeIsyubAUgOjSssHhnXBW3WUiOu9QbNeUq-y4-9Ps6BuQ8L/exec";
@@ -1604,173 +1531,81 @@ img {
     });
     
     // ===================== EVENT LISTENERS =====================
-function setupEventListeners() {
-  // Step navigation
-  document.getElementById('btnOriOnly').addEventListener('click', () => selectGameType('ori-only'));
-  document.getElementById('btnOriMod').addEventListener('click', () => selectGameType('ori-mod'));
-  document.getElementById('btnOnlyMod').addEventListener('click', () => selectGameType('only-mod'));
-  document.getElementById('btnPrev2').addEventListener('click', prevStep);
-  document.getElementById('btnNext2').addEventListener('click', nextStep2);
-  document.getElementById('btnNext3').addEventListener('click', showStep4);
-  document.getElementById('btnPrev3').addEventListener('click', prevStep);
-  document.getElementById('btnPrev4').addEventListener('click', prevStep);
-  document.getElementById('btnSaveGame').addEventListener('click', saveGameData);
-  document.getElementById('btnGenerateHTML').addEventListener('click', generateHTML);
-  document.getElementById('btnNewGame').addEventListener('click', newGame);
-  
-  // Saved tab buttons
-  document.getElementById('btnRefreshSaved').addEventListener('click', loadSavedGames);
+    function setupEventListeners() {
+      // Step navigation
+      document.getElementById('btnOriOnly').addEventListener('click', () => selectGameType('ori-only'));
+      document.getElementById('btnOriMod').addEventListener('click', () => selectGameType('ori-mod'));
+      document.getElementById('btnOnlyMod').addEventListener('click', () => selectGameType('only-mod')); // NEW
+      document.getElementById('btnPrev2').addEventListener('click', prevStep);
+      document.getElementById('btnNext2').addEventListener('click', nextStep2);
+      document.getElementById('btnNext3').addEventListener('click', showStep4);
+      document.getElementById('btnPrev3').addEventListener('click', prevStep);
+      document.getElementById('btnPrev4').addEventListener('click', prevStep);
+      document.getElementById('btnSaveGame').addEventListener('click', saveGameData);
+      document.getElementById('btnGenerateHTML').addEventListener('click', generateHTML);
+      document.getElementById('btnCopyHTML').addEventListener('click', copyHTML);
+      document.getElementById('btnDownloadHTML').addEventListener('click', downloadHTML);
+      document.getElementById('btnNewGame').addEventListener('click', newGame);
+      // Saved tab buttons
+      document.getElementById('btnRefreshSaved').addEventListener('click', loadSavedGames);
 
-  // Search functionality
-  document.getElementById('savedSearch').addEventListener('input', debounce(async (e) => {
-    const keyword = (e.target.value || '').trim();
-    await searchSavedGames(keyword);
-  }, 300));
+      document.getElementById('savedSearch').addEventListener('input', debounce(async (e) => {
+        const keyword = (e.target.value || '').trim();
+        await searchSavedGames(keyword);
+      }, 300));
 
-  // Cache buttons
-  document.getElementById('btnSaveCache').addEventListener('click', saveCloudCache);
-  document.getElementById('btnLoadCacheStep1').addEventListener('click', loadCloudCacheFromStep1);
-  document.getElementById('btnDeleteCache').addEventListener('click', deleteSelectedCloudCache);
-  document.getElementById('btnDeleteCacheStep1').addEventListener('click', deleteSelectedCloudCacheStep1);
-  
-  // Paste functionality - AUTO PARSE ON PASTE
-  const pasteArea = document.getElementById('pasteArea');
-  if (pasteArea) {
-    pasteArea.addEventListener('paste', function(e) {
-      setTimeout(() => {
-        parsePasteData();
-      }, 100);
-    });
-  }
-  
-  document.getElementById('btnParseData').addEventListener('click', parsePasteData);
-  document.getElementById('btnClearPaste').addEventListener('click', clearPasteArea);
-  document.getElementById('btnShowExample').addEventListener('click', showExampleData);
-  
-  // Cache preview
-  const cacheSelect = document.getElementById('cacheListStep1');
-  if (cacheSelect) {
-    cacheSelect.addEventListener('change', function() {
-      const selectedName = this.value.trim();
-      if (!selectedName) {
-        hideCachePreview();
-        return;
+      document.getElementById('btnCopySavedHTML').addEventListener('click', () => {
+        if (!window.__savedHtmlSource) return alert('Belum ada preview.');
+        navigator.clipboard.writeText(window.__savedHtmlSource);
+        alert('✅ HTML (Saved) berhasil disalin!');
+      });
+
+      document.getElementById('btnDownloadSavedHTML').addEventListener('click', () => {
+        if (!window.__savedHtmlSource) return alert('Belum ada preview.');
+        const blob = new Blob([window.__savedHtmlSource], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `saved_${Date.now()}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      
+      // Cache buttons
+      document.getElementById('btnSaveCache').addEventListener('click', saveCloudCache);
+      document.getElementById('btnLoadCacheStep1').addEventListener('click', loadCloudCacheFromStep1);
+      document.getElementById('btnDeleteCache').addEventListener('click', deleteSelectedCloudCache);
+      document.getElementById('btnDeleteCacheStep1').addEventListener('click', deleteSelectedCloudCacheStep1);
+      
+      // Paste functionality
+      document.getElementById('btnParseData').addEventListener('click', parsePasteData);
+      document.getElementById('btnClearPaste').addEventListener('click', clearPasteArea);
+      document.getElementById('btnShowExample').addEventListener('click', showExampleData);
+      
+      // Cache preview
+      const cacheSelect = document.getElementById('cacheListStep1');
+      if (cacheSelect) {
+        cacheSelect.addEventListener('change', function() {
+          const selectedName = this.value.trim();
+          if (!selectedName) {
+            hideCachePreview();
+            return;
+          }
+          
+          const caches = getCloudCaches();
+          const selectedCache = caches.find(c => c.name === selectedName);
+          if (selectedCache) {
+            showCachePreview(selectedCache);
+          } else {
+            hideCachePreview();
+          }
+        });
       }
-      
-      const caches = getCloudCaches();
-      const selectedCache = caches.find(c => c.name === selectedName);
-      if (selectedCache) {
-        showCachePreview(selectedCache);
-      } else {
-        hideCachePreview();
-      }
-    });
-  }
-  
-  // ========== MODAL EVENT LISTENERS ==========
-  
-  // Tombol Copy HTML di modal
-  const copyHTMLBtn = document.getElementById('copyHTMLBtn');
-  if (copyHTMLBtn) {
-    copyHTMLBtn.addEventListener('click', async function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      await copyHTMLDirectly();
-    });
-  }
-  
-  // Tombol Generate & Copy HTML di modal
-  const generateCopyBtn = document.getElementById('generateAndCopyBtn');
-  if (generateCopyBtn) {
-    generateCopyBtn.addEventListener('click', function() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
-      if (modal) modal.hide();
-      
-      // Generate HTML dan copy
-      setTimeout(() => {
-        generateHTML();
-      }, 300);
-    });
-  }
-  
-  // Tombol Kembali ke Input Data di modal
-  const backToInputBtn = document.getElementById('backToInputBtn');
-  if (backToInputBtn) {
-    backToInputBtn.addEventListener('click', function() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
-      if (modal) modal.hide();
-      
-      // Kembali ke step 4
-      setTimeout(() => {
-        showStep(4);
-      }, 200);
-    });
-  }
-  
-  // Tombol Lihat di Spreadsheet di modal
-  const viewSpreadsheetBtn = document.getElementById('viewSpreadsheetBtn');
-  if (viewSpreadsheetBtn) {
-    viewSpreadsheetBtn.addEventListener('click', function() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
-      if (modal) modal.hide();
-      
-      // Switch ke tab Saved
-      setTimeout(() => {
-        document.querySelector('#mainTabs [data-main-tab="saved"]').click();
-        loadSavedGames();
-      }, 200);
-    });
-  }
-  
-  // Tombol Tutup di modal
-  const closeModalBtn = document.getElementById('closeModalBtn');
-  if (closeModalBtn) {
-    closeModalBtn.addEventListener('click', function() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
-      if (modal) modal.hide();
-    });
-  }
-  
-  // Tombol Lanjut di modal
-  const continueBtn = document.getElementById('continueBtn');
-  if (continueBtn) {
-    continueBtn.addEventListener('click', function() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
-      if (modal) modal.hide();
-      
-      // Buat game baru
-      setTimeout(() => {
-        if (confirm('Buat game baru?')) {
-          newGame();
-        }
-      }, 300);
-    });
-  }
-  
-  // Event untuk modal ketika ditutup
-  const successModal = document.getElementById('successModal');
-  if (successModal) {
-    successModal.addEventListener('hidden.bs.modal', function() {
-      console.log('Modal sukses ditutup');
-      // Reset tombol copy jika perlu
-      const copyBtn = document.getElementById('copyHTMLBtn');
-      if (copyBtn) {
-        copyBtn.innerHTML = '<i class="bi bi-clipboard-check-fill"></i> Copy HTML Sekarang';
-        copyBtn.classList.remove('btn-success');
-        copyBtn.classList.add('btn-outline-primary');
-      }
-    });
-  }
-  
-  // Thumbnail test button
-  const testThumbBtn = document.querySelector('[onclick="testThumbnail()"]');
-  if (testThumbBtn) {
-    testThumbBtn.addEventListener('click', testThumbnail);
-  }
-  
-  // Main tabs navigation
-  initMainTabs();
-}
+    }
+    
 
     function debounce(fn, delay = 300) {
       let t = null;
@@ -1788,6 +1623,7 @@ function setupEventListeners() {
       document.getElementById(`step${step}`).classList.add('active');
       currentStep = step;
     }
+    
 
     async function searchSavedGames(keyword) {
       const tbody = document.getElementById('savedGamesBody');
@@ -2089,6 +1925,7 @@ function setupEventListeners() {
       showStep(3);
     }
 
+    
     function nextStep3() {
       const linkCount = parseInt(document.getElementById('linkCount').value) || 6;
       if (linkCount < 1 || linkCount > 20) {
@@ -2337,91 +2174,92 @@ function setupEventListeners() {
         showToast('error', 'Gagal simpan cache: ' + err.message);
       }
     }
+    
+function loadCloudCacheFromStep1() {
+  const select = document.getElementById('cacheListStep1');
+  const name = (select?.value || '').trim();
+  if (!name) {
+    alert('Pilih cache dulu.');
+    return;
+  }
 
-    function loadCloudCacheFromStep1() {
-      const select = document.getElementById('cacheListStep1');
-      const name = (select?.value || '').trim();
-      if (!name) {
-        alert('Pilih cache dulu.');
-        return;
-      }
+  const caches = getCloudCaches();
+  const cache = caches.find(c => c.name === name);
+  if (!cache) {
+    alert('Cache tidak ditemukan.');
+    return;
+  }
 
-      const caches = getCloudCaches();
-      const cache = caches.find(c => c.name === name);
-      if (!cache) {
-        alert('Cache tidak ditemukan.');
-        return;
-      }
+  // Apply cache meta
+  gameType = cache.gameType || 'ori-only';
+  gameData.type = gameType;
+  gameData.linkCount = Number(cache.linkCount || 6);
+  gameData.modCount = Number(cache.modCount || 0);
 
-      // Apply cache meta
-      gameType = cache.gameType || 'ori-only';
-      gameData.type = gameType;
-      gameData.linkCount = Number(cache.linkCount || 6);
-      gameData.modCount = Number(cache.modCount || 0);
+  // (Opsional) siapkan UI Step 2 biar kalau user pencet "Kembali", form Step 2 sudah sesuai
+  if (gameType === 'ori-only') {
+    document.getElementById('modConfigSection').innerHTML = `
+      <div class="mb-4">
+        <label class="form-label required">
+          <i class="bi bi-link"></i> Jumlah Link per Game
+        </label>
+        <input type="number" id="linkCount" class="form-control" min="1" max="20" value="${gameData.linkCount}" />
+        <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
+      </div>
+    `;
+  } else {
+    document.getElementById('modConfigSection').innerHTML = `
+      <div class="mb-4">
+        <label class="form-label required">
+          <i class="bi bi-stars"></i> Jumlah MOD (Jumlah Fitur MOD)
+        </label>
+        <input type="number" id="modCount" class="form-control" min="1" max="10" value="${Math.max(1, gameData.modCount || 1)}" />
+        <div class="form-text">Contoh: 2 MOD artinya ada Mod 1 dan Mod 2 dalam 1 game MOD.</div>
+      </div>
 
-      // (Opsional) siapkan UI Step 2 biar kalau user pencet "Kembali", form Step 2 sudah sesuai
-      if (gameType === 'ori-only') {
-        document.getElementById('modConfigSection').innerHTML = `
-          <div class="mb-4">
-            <label class="form-label required">
-              <i class="bi bi-link"></i> Jumlah Link per Game
-            </label>
-            <input type="number" id="linkCount" class="form-control" min="1" max="20" value="${gameData.linkCount}" />
-            <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
-          </div>
-        `;
-      } else {
-        document.getElementById('modConfigSection').innerHTML = `
-          <div class="mb-4">
-            <label class="form-label required">
-              <i class="bi bi-stars"></i> Jumlah MOD (Jumlah Fitur MOD)
-            </label>
-            <input type="number" id="modCount" class="form-control" min="1" max="10" value="${Math.max(1, gameData.modCount || 1)}" />
-            <div class="form-text">Contoh: 2 MOD artinya ada Mod 1 dan Mod 2 dalam 1 game MOD.</div>
-          </div>
+      <div class="mb-4">
+        <label class="form-label required">
+          <i class="bi bi-link"></i> Jumlah Link per Game
+        </label>
+        <input type="number" id="linkCount" class="form-control" min="1" max="20" value="${gameData.linkCount}" />
+        <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
+      </div>
+    `;
+  }
 
-          <div class="mb-4">
-            <label class="form-label required">
-              <i class="bi bi-link"></i> Jumlah Link per Game
-            </label>
-            <input type="number" id="linkCount" class="form-control" min="1" max="20" value="${gameData.linkCount}" />
-            <div class="form-text">Masukkan jumlah link untuk setiap game (Link Asli, Link Iklan 1, Link Iklan 2)</div>
-          </div>
-        `;
-      }
+  // Ambil cloud dari cache
+  const cloudOriginal = Array.isArray(cache.cloudOriginal) ? cache.cloudOriginal : [];
+  const cloudAd1 = Array.isArray(cache.cloudAd1) ? cache.cloudAd1 : [];
+  const cloudAd2 = Array.isArray(cache.cloudAd2) ? cache.cloudAd2 : [];
 
-      // Ambil cloud dari cache
-      const cloudOriginal = Array.isArray(cache.cloudOriginal) ? cache.cloudOriginal : [];
-      const cloudAd1 = Array.isArray(cache.cloudAd1) ? cache.cloudAd1 : [];
-      const cloudAd2 = Array.isArray(cache.cloudAd2) ? cache.cloudAd2 : [];
+  // Validasi harus tepat sesuai linkCount
+  const need = gameData.linkCount;
+  if (cloudOriginal.length !== need || cloudAd1.length !== need || cloudAd2.length !== need) {
+    alert(
+      `Cache "${name}" tidak valid.\n` +
+      `Harus tepat ${need} cloud untuk masing-masing Link Asli, Iklan 1, Iklan 2.\n\n` +
+      `Saat ini:\n` +
+      `Asli: ${cloudOriginal.length}\n` +
+      `Iklan 1: ${cloudAd1.length}\n` +
+      `Iklan 2: ${cloudAd2.length}`
+    );
+    return;
+  }
 
-      // Validasi harus tepat sesuai linkCount
-      const need = gameData.linkCount;
-      if (cloudOriginal.length !== need || cloudAd1.length !== need || cloudAd2.length !== need) {
-        alert(
-          `Cache "${name}" tidak valid.\n` +
-          `Harus tepat ${need} cloud untuk masing-masing Link Asli, Iklan 1, Iklan 2.\n\n` +
-          `Saat ini:\n` +
-          `Asli: ${cloudOriginal.length}\n` +
-          `Iklan 1: ${cloudAd1.length}\n` +
-          `Iklan 2: ${cloudAd2.length}`
-        );
-        return;
-      }
+  // Set langsung selection ke state (tanpa buka Step 3)
+  gameData.cloudSelection = {
+    original: cloudOriginal,
+    ad1: cloudAd1,
+    ad2: cloudAd2
+  };
 
-      // Set langsung selection ke state (tanpa buka Step 3)
-      gameData.cloudSelection = {
-        original: cloudOriginal,
-        ad1: cloudAd1,
-        ad2: cloudAd2
-      };
+  // Langsung bangun Step 4
+  generateGameDataInput();
+  showStep(4);
 
-      // Langsung bangun Step 4
-      generateGameDataInput();
-      showStep(4);
+  showToast('info', `Cache "${name}" dimuat. Langsung ke Step 4.`);
+}
 
-      showToast('info', `Cache "${name}" dimuat. Langsung ke Step 4.`);
-    }
     
     function deleteSelectedCloudCache() {
       const select = document.getElementById('cacheListStep1');
@@ -2481,219 +2319,224 @@ function setupEventListeners() {
       generateGameDataInput();
       showStep(4);
     }
+    
 
-    function generateGameDataInput() {
-      const container = document.getElementById('gameDataInput');
-      container.innerHTML = '';
 
-      // Update paste instructions berdasarkan tipe game
-      const instructions = document.getElementById('pasteInstructions');
-      if (instructions) {
-        if (gameData.type === 'ori-only') {
-          instructions.innerHTML = `
-            <li>Baris 1: Nama Game</li>
-            <li>Baris 2: Ukuran Game ORI</li>
-            <li>Baris 3: Ukuran Game MOD (opsional)</li>
-            <li>Baris 4: Category</li>
-            <li>Baris 5: Versi Game</li>
-            <li>Baris berikutnya: Link Asli (sesuai jumlah link)</li>
-            <li>Baris berikutnya: Link Iklan 1 (sesuai jumlah link)</li>
-            <li>Baris terakhir: Link Iklan 2 (sesuai jumlah link)</li>
-            <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
-          `;
-        } else if (gameData.type === 'ori-mod') {
-          instructions.innerHTML = `
-            <li>Baris 1: Nama Game ORI</li>
-            <li>Baris 2: Ukuran Game ORI</li>
-            <li>Baris 3: Ukuran Game MOD (opsional)</li>
-            <li>Baris 4: Category</li>
-            <li>Baris 5: Versi Game ORI</li>
-            <li>Baris berikutnya: Link Asli ORI (sesuai jumlah link)</li>
-            <li>Baris berikutnya: Link Iklan 1 ORI (sesuai jumlah link)</li>
-            <li>Baris berikutnya: Link Iklan 2 ORI (sesuai jumlah link)</li>
-            <li>Baris kosong (opsional)</li>
-            <li>Baris berikutnya: Nama Game MOD</li>
-            <li>Baris berikutnya: Ukuran Game MOD</li>
-            <li>Baris berikutnya: Category MOD</li>
-            <li>Baris berikutnya: Versi Game MOD</li>
-            <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
-            <li>Baris berikutnya: Link Asli MOD (sesuai jumlah link)</li>
-            <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah link)</li>
-            <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah link)</li>
-            <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
-          `;
-        } else if (gameData.type === 'only-mod') {
-          instructions.innerHTML = `
-            <li>Baris 1: Nama Game MOD</li>
-            <li>Baris 2: Ukuran Game MOD</li>
-            <li>Baris 3: Category</li>
-            <li>Baris 4: Versi Game MOD</li>
-            <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
-            <li>Baris berikutnya: Link Asli MOD (sesuai jumlah link)</li>
-            <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah link)</li>
-            <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah link)</li>
-            <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
-          `;
-        }
-      }
+function generateGameDataInput() {
+  const container = document.getElementById('gameDataInput');
+  container.innerHTML = '';
 
-      // ORI hanya untuk tipe ori-only dan ori-mod
-      if (gameData.type === 'ori-only' || gameData.type === 'ori-mod') {
-        container.innerHTML += `
-          <div class="ori-game-data mb-4">
-            <h5><i class="bi bi-phone"></i> Data Game ORI</h5>
-            <div class="row">
-              <div class="col-md-12 mb-3">
-                <label class="form-label required">Nama Game ORI</label>
-                <input type="text" id="oriGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition ORI">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Ukuran Game ORI</label>
-                <input type="text" id="oriSize" class="form-control" placeholder="Contoh: 2.79 GB">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Category</label>
-                <input type="text" id="oriCategory" class="form-control" placeholder="Contoh: Action">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Versi Game</label>
-                <input type="text" id="oriVersion" class="form-control" placeholder="Contoh: v1.4.299">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Ukuran Game MOD (opsional)</label>
-                <input type="text" id="oriModSize" class="form-control" placeholder="Contoh: 2.79 GB (jika ada)">
-              </div>
-            </div>
-
-            <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('oriOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
-
-            <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('oriAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
-
-            <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('oriAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
-          </div>
-        `;
-      }
-
-      // MOD untuk tipe ori-mod dan only-mod
-      if (gameData.type === 'ori-mod' || gameData.type === 'only-mod') {
-        const modFeatureInputs = Array.from({ length: gameData.modCount }).map((_, idx) => {
-          const n = idx + 1;
-          return `
-            <div class="col-md-12 mb-3">
-              <label class="form-label required">Mod ${n}</label>
-              <input type="text" id="modFeature${n}" class="form-control" placeholder="Contoh: Unlimited Money">
-            </div>
-          `;
-        }).join('');
-
-        container.innerHTML += `
-          <div class="mod-game-data mb-4">
-            <div class="mod-header">
-              <h5><i class="bi bi-magic"></i> Data Game MOD (${gameData.modCount} MOD)</h5>
-              <span class="mod-number">MOD</span>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12 mb-3">
-                <label class="form-label required">Nama Game MOD</label>
-                <input type="text" id="modGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition MOD">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Ukuran Game MOD</label>
-                <input type="text" id="modSize" class="form-control" placeholder="Contoh: 2.79 GB">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Category</label>
-                <input type="text" id="modCategory" class="form-control" placeholder="Contoh: Action">
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label class="form-label required">Versi Game</label>
-                <input type="text" id="modVersion" class="form-control" placeholder="Contoh: v1.4.299">
-              </div>
-
-              ${modFeatureInputs}
-            </div>
-
-            <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('modOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
-
-            <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('modAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
-
-            <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
-            ${generateLinkInputs('modAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
-          </div>
-        `;
-      }
-
-      // Thumbnail selalu muncul untuk semua tipe game
-      container.innerHTML += renderThumbnailSection();
+  // Update paste instructions berdasarkan tipe game
+  const instructions = document.getElementById('pasteInstructions');
+  if (instructions) {
+    if (gameData.type === 'ori-only') {
+      instructions.innerHTML = `
+        <li>Baris 1: Nama Game</li>
+        <li>Baris 2: Ukuran Game ORI</li>
+        <li>Baris 3: Ukuran Game MOD (opsional)</li>
+        <li>Baris 4: Category</li>
+        <li>Baris 5: Versi Game</li>
+        <li>Baris berikutnya: Link Asli (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 1 (sesuai jumlah link)</li>
+        <li>Baris terakhir: Link Iklan 2 (sesuai jumlah link)</li>
+        <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
+      `;
+    } else if (gameData.type === 'ori-mod') {
+      instructions.innerHTML = `
+        <li>Baris 1: Nama Game ORI</li>
+        <li>Baris 2: Ukuran Game ORI</li>
+        <li>Baris 3: Ukuran Game MOD (opsional)</li>
+        <li>Baris 4: Category</li>
+        <li>Baris 5: Versi Game ORI</li>
+        <li>Baris berikutnya: Link Asli ORI (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 1 ORI (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 2 ORI (sesuai jumlah link)</li>
+        <li>Baris kosong (opsional)</li>
+        <li>Baris berikutnya: Nama Game MOD</li>
+        <li>Baris berikutnya: Ukuran Game MOD</li>
+        <li>Baris berikutnya: Category MOD</li>
+        <li>Baris berikutnya: Versi Game MOD</li>
+        <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
+        <li>Baris berikutnya: Link Asli MOD (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah link)</li>
+        <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah link)</li>
+        <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
+      `;
+    } else if (gameData.type === 'only-mod') {
+      instructions.innerHTML = `
+        <li>Baris 1: Nama Game MOD</li>
+        <li>Baris 2: Ukuran Game MOD</li>
+        <li>Baris 3: Category</li>
+        <li>Baris 4: Versi Game MOD</li>
+        <li>Baris berikutnya: Mod Features (sesuai jumlah MOD)</li>
+        <li>Baris berikutnya: Link Asli MOD (sesuai jumlah link)</li>
+        <li>Baris berikutnya: Link Iklan 1 MOD (sesuai jumlah link)</li>
+        <li>Baris terakhir: Link Iklan 2 MOD (sesuai jumlah link)</li>
+        <li>(Opsional) Baris paling akhir: URL Thumbnail (jpg/png/webp)</li>
+      `;
     }
+  }
 
-    function renderThumbnailSection() {
+  // ORI hanya untuk tipe ori-only dan ori-mod
+  if (gameData.type === 'ori-only' || gameData.type === 'ori-mod') {
+    container.innerHTML += `
+      <div class="ori-game-data mb-4">
+        <h5><i class="bi bi-phone"></i> Data Game ORI</h5>
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label required">Nama Game ORI</label>
+            <input type="text" id="oriGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition ORI">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Ukuran Game ORI</label>
+            <input type="text" id="oriSize" class="form-control" placeholder="Contoh: 2.79 GB">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Category</label>
+            <input type="text" id="oriCategory" class="form-control" placeholder="Contoh: Action">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Versi Game</label>
+            <input type="text" id="oriVersion" class="form-control" placeholder="Contoh: v1.4.299">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Ukuran Game MOD (opsional)</label>
+            <input type="text" id="oriModSize" class="form-control" placeholder="Contoh: 2.79 GB (jika ada)">
+          </div>
+        </div>
+
+        <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('oriOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
+
+        <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('oriAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
+
+        <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('oriAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
+      </div>
+    `;
+  }
+
+  // MOD untuk tipe ori-mod dan only-mod
+  if (gameData.type === 'ori-mod' || gameData.type === 'only-mod') {
+    const modFeatureInputs = Array.from({ length: gameData.modCount }).map((_, idx) => {
+      const n = idx + 1;
       return `
-        <!-- Thumbnail Input -->
-        <div class="thumbnail-input mt-4">
-          <div class="card">
-            <div class="card-header bg-info text-white">
-              <h5 class="mb-0"><i class="bi bi-image"></i> Thumbnail Game (Optional)</h5>
+        <div class="col-md-12 mb-3">
+          <label class="form-label required">Mod ${n}</label>
+          <input type="text" id="modFeature${n}" class="form-control" placeholder="Contoh: Unlimited Money">
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML += `
+      <div class="mod-game-data mb-4">
+        <div class="mod-header">
+          <h5><i class="bi bi-magic"></i> Data Game MOD (${gameData.modCount} MOD)</h5>
+          <span class="mod-number">MOD</span>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label required">Nama Game MOD</label>
+            <input type="text" id="modGameName" class="form-control" placeholder="Contoh: Bully: Anniversary Edition MOD">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Ukuran Game MOD</label>
+            <input type="text" id="modSize" class="form-control" placeholder="Contoh: 2.79 GB">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Category</label>
+            <input type="text" id="modCategory" class="form-control" placeholder="Contoh: Action">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label required">Versi Game</label>
+            <input type="text" id="modVersion" class="form-control" placeholder="Contoh: v1.4.299">
+          </div>
+
+          ${modFeatureInputs}
+        </div>
+
+        <h6 class="mt-4">Link Asli (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('modOriginalLinks', gameData.linkCount, gameData.cloudSelection.original)}
+
+        <h6 class="mt-4">Link Iklan 1 (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('modAdLinks1', gameData.linkCount, gameData.cloudSelection.ad1)}
+
+        <h6 class="mt-4">Link Iklan 2 (${gameData.linkCount} link)</h6>
+        ${generateLinkInputs('modAdLinks2', gameData.linkCount, gameData.cloudSelection.ad2)}
+      </div>
+    `;
+  }
+
+  // Thumbnail selalu muncul untuk semua tipe game
+  container.innerHTML += renderThumbnailSection();
+}
+
+  
+
+
+function renderThumbnailSection() {
+  return `
+    <!-- Thumbnail Input -->
+    <div class="thumbnail-input mt-4">
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0"><i class="bi bi-image"></i> Thumbnail Game (Optional)</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle-fill"></i>
+            <div>
+              <strong>Informasi:</strong> Upload thumbnail game Anda ke hosting gambar terlebih dahulu (seperti Imgur, Postimg, dll), lalu masukkan URL-nya di sini.
+              <br><small class="text-muted">Ukuran rekomendasi: 1280x720 px atau rasio 16:9</small>
             </div>
-            <div class="card-body">
-              <div class="alert alert-info">
-                <i class="bi bi-info-circle-fill"></i>
-                <div>
-                  <strong>Informasi:</strong> Upload thumbnail game Anda ke hosting gambar terlebih dahulu (seperti Imgur, Postimg, dll), lalu masukkan URL-nya di sini.
-                  <br><small class="text-muted">Ukuran rekomendasi: 1280x720 px atau rasio 16:9</small>
-                </div>
-              </div>
+          </div>
 
-              <div class="row">
-                <div class="col-md-8">
-                  <label class="form-label">
-                    <i class="bi bi-link-45deg"></i> URL Thumbnail
-                  </label>
-                  <input type="url" id="thumbnailUrl" class="form-control"
-                         placeholder="https://example.com/thumbnail.jpg"
-                         pattern="https?://.+" />
-                  <div class="form-text">Masukkan URL lengkap gambar thumbnail</div>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label d-block">&nbsp;</label>
-                  <button type="button" class="btn btn-outline-info w-100" onclick="testThumbnail()">
-                    <i class="bi bi-eye"></i> Test Preview
-                  </button>
-                </div>
-              </div>
+          <div class="row">
+            <div class="col-md-8">
+              <label class="form-label">
+                <i class="bi bi-link-45deg"></i> URL Thumbnail
+              </label>
+              <input type="url" id="thumbnailUrl" class="form-control"
+                     placeholder="https://example.com/thumbnail.jpg"
+                     pattern="https?://.+" />
+              <div class="form-text">Masukkan URL lengkap gambar thumbnail</div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label d-block">&nbsp;</label>
+              <button type="button" class="btn btn-outline-info w-100" onclick="testThumbnail()">
+                <i class="bi bi-eye"></i> Test Preview
+              </button>
+            </div>
+          </div>
 
-              <div id="thumbnailPreview" class="mt-3" style="display:none;">
-                <div class="card">
-                  <div class="card-header">Preview Thumbnail</div>
-                  <div class="card-body text-center">
-                    <img id="thumbnailImage" src="" class="img-fluid rounded"
-                         style="max-height: 200px;"
-                         onerror="this.style.display='none'; document.getElementById('thumbnailError').style.display='block';"
-                         alt="Thumbnail Preview">
-                    <div id="thumbnailError" class="alert alert-danger mt-2" style="display:none;">
-                      <i class="bi bi-exclamation-triangle"></i> Gagal memuat gambar. Pastikan URL benar dan bisa diakses.
-                    </div>
-                  </div>
+          <div id="thumbnailPreview" class="mt-3" style="display:none;">
+            <div class="card">
+              <div class="card-header">Preview Thumbnail</div>
+              <div class="card-body text-center">
+                <img id="thumbnailImage" src="" class="img-fluid rounded"
+                     style="max-height: 200px;"
+                     onerror="this.style.display='none'; document.getElementById('thumbnailError').style.display='block';"
+                     alt="Thumbnail Preview">
+                <div id="thumbnailError" class="alert alert-danger mt-2" style="display:none;">
+                  <i class="bi bi-exclamation-triangle"></i> Gagal memuat gambar. Pastikan URL benar dan bisa diakses.
                 </div>
               </div>
             </div>
           </div>
         </div>
-      `;
-    }
+      </div>
+    </div>
+  `;
+}
 
     function generateLinkInputs(prefix, count, clouds, modIndex = null) {
       let html = '';
@@ -2714,105 +2557,109 @@ function setupEventListeners() {
     }
     
     // ===================== PASTE FUNCTIONALITY =====================
-    function parsePasteData() {
-      const pasteText = (document.getElementById('pasteArea')?.value || '').trim();
-      if (!pasteText) {
-        alert('Tidak ada data untuk diparse!');
-        return;
-      }
+function parsePasteData() {
+  const pasteText = (document.getElementById('pasteArea')?.value || '').trim();
+  if (!pasteText) {
+    alert('Tidak ada data untuk diparse!');
+    return;
+  }
 
-      try {
-        // Ambil semua baris, rapikan
-        let lines = pasteText.split('\n').map(l => l.trim());
+  try {
+    // Ambil semua baris, rapikan
+    let lines = pasteText.split('\n').map(l => l.trim());
 
-        // Buang baris kosong DI DEPAN & DI BELAKANG saja
-        while (lines.length && !lines[0]) lines.shift();
-        while (lines.length && !lines[lines.length - 1]) lines.pop();
+    // Buang baris kosong DI DEPAN & DI BELAKANG saja
+    while (lines.length && !lines[0]) lines.shift();
+    while (lines.length && !lines[lines.length - 1]) lines.pop();
 
-        // Deteksi thumbnail dari baris terakhir (opsional)
-        const lastLine = (lines[lines.length - 1] || '').trim();
-        const isImageUrl =
-          /^https?:\/\/.+/i.test(lastLine) &&
-          /\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i.test(lastLine);
+    // Deteksi thumbnail dari baris terakhir (opsional)
+    const lastLine = (lines[lines.length - 1] || '').trim();
+    const isImageUrl =
+      /^https?:\/\/.+/i.test(lastLine) &&
+      /\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i.test(lastLine);
 
-        // Kalau lastLine adalah image url, keluarkan dari lines dulu
-        let thumbUrlFromPaste = '';
-        if (isImageUrl) {
-          thumbUrlFromPaste = lastLine;
-          lines.pop();
-        }
-
-        // Buang baris kosong lagi di belakang setelah pop thumbnail
-        while (lines.length && !lines[lines.length - 1]) lines.pop();
-
-        // Parse sesuai tipe
-        if (gameData.type === 'ori-only') {
-          parseOriOnlyData(lines);
-        } else if (gameData.type === 'ori-mod') {
-          parseOriModData(lines);
-        } else if (gameData.type === 'only-mod') {
-          parseOnlyModData(lines);
-        }
-
-        // Isi thumbnail kalau ada elemen + ada url
-        const thumbEl = document.getElementById('thumbnailUrl');
-        if (thumbEl && thumbUrlFromPaste) {
-          thumbEl.value = thumbUrlFromPaste;
-          if (typeof testThumbnail === 'function') testThumbnail();
-        }
-
-        // Status UI
-        const status = document.getElementById('pasteStatus');
-        if (status) {
-          status.style.display = 'inline-block';
-          setTimeout(() => { status.style.display = 'none'; }, 3000);
-        }
-
-        showToast('success', 'Data berhasil diparse dan diisi otomatis!');
-      } catch (error) {
-        showToast('error', 'Gagal memparse data: ' + error.message);
-      }
+    // Kalau lastLine adalah image url, keluarkan dari lines dulu
+    let thumbUrlFromPaste = '';
+    if (isImageUrl) {
+      thumbUrlFromPaste = lastLine;
+      lines.pop();
     }
 
-// Fungsi untuk test thumbnail
+    // Buang baris kosong lagi di belakang setelah pop thumbnail
+    while (lines.length && !lines[lines.length - 1]) lines.pop();
+
+    // Parse sesuai tipe
+    if (gameData.type === 'ori-only') {
+      parseOriOnlyData(lines);
+    } else if (gameData.type === 'ori-mod') {
+      parseOriModData(lines);
+    } else if (gameData.type === 'only-mod') {
+      parseOnlyModData(lines);
+    }
+
+    // Isi thumbnail kalau ada elemen + ada url
+    const thumbEl = document.getElementById('thumbnailUrl');
+    if (thumbEl && thumbUrlFromPaste) {
+      thumbEl.value = thumbUrlFromPaste;
+      if (typeof testThumbnail === 'function') testThumbnail();
+    }
+
+    // Status UI
+    const status = document.getElementById('pasteStatus');
+    if (status) {
+      status.style.display = 'inline-block';
+      setTimeout(() => { status.style.display = 'none'; }, 3000);
+    }
+
+    showToast('success', 'Data berhasil diparse dan diisi otomatis!');
+  } catch (error) {
+    showToast('error', 'Gagal memparse data: ' + error.message);
+  }
+}
+
+  
+
+
 function testThumbnail() {
   const urlInput = document.getElementById('thumbnailUrl');
   const previewDiv = document.getElementById('thumbnailPreview');
   const image = document.getElementById('thumbnailImage');
   const errorDiv = document.getElementById('thumbnailError');
   
-  const url = urlInput?.value.trim() || '';
+  const url = urlInput.value.trim();
   
   if (!url) {
     alert('Masukkan URL thumbnail terlebih dahulu');
     return;
   }
   
+  // Validasi URL
   if (!url.startsWith('http://') && !url.startsWith('https://')) {
     alert('URL harus dimulai dengan http:// atau https://');
     return;
   }
   
   // Tampilkan preview
-  if (previewDiv) previewDiv.style.display = 'block';
-  if (errorDiv) errorDiv.style.display = 'none';
-  if (image) {
-    image.style.display = 'block';
-    image.src = url;
-  }
+  previewDiv.style.display = 'block';
+  errorDiv.style.display = 'none';
+  image.style.display = 'block';
+  image.src = url;
   
-  // Test load image
+  // Cek apakah gambar bisa dimuat
   const testImage = new Image();
   testImage.onload = function() {
-    if (errorDiv) errorDiv.style.display = 'none';
-    if (image) image.style.display = 'block';
+    // Gambar berhasil dimuat
+    errorDiv.style.display = 'none';
+    image.style.display = 'block';
   };
   testImage.onerror = function() {
-    if (image) image.style.display = 'none';
-    if (errorDiv) errorDiv.style.display = 'block';
+    // Gambar gagal dimuat
+    image.style.display = 'none';
+    errorDiv.style.display = 'block';
   };
   testImage.src = url;
 }
+
     function parseOriOnlyData(lines) {
       let idx = 0;
 
@@ -2928,6 +2775,7 @@ function testThumbnail() {
         if (input && idx < lines.length) input.value = lines[idx++] || '';
       }
     }
+
     
     function clearPasteArea() {
       document.getElementById('pasteArea').value = '';
@@ -3039,339 +2887,216 @@ https://sfl.gl/iSJU7SP`;
       showToast('info', 'Contoh data telah dimuat.');
     }
 
+
     // ===================== SAVE GAME DATA =====================
-async function saveGameData() {
-  // ORI (hanya untuk ori-only dan ori-mod)
-  let oriGame = null;
+    async function saveGameData() {
+      // ORI (hanya untuk ori-only dan ori-mod)
+      let oriGame = null;
 
-  // Get thumbnail URL
-  const thumbnailUrl = document.getElementById('thumbnailUrl')?.value.trim() || '';
-  
-  // Jika ada thumbnail URL, validasi
-  if (thumbnailUrl && !thumbnailUrl.startsWith('http')) {
-    alert('URL thumbnail harus dimulai dengan http:// atau https://');
-    return;
-  }
-  
-  if (gameData.type === 'ori-only' || gameData.type === 'ori-mod') {
-    oriGame = {
-      name: document.getElementById('oriGameName').value.trim(),
-      sizeOri: document.getElementById('oriSize').value.trim(),
-      sizeMod: document.getElementById('oriModSize').value.trim(),
-      category: document.getElementById('oriCategory').value.trim(),
-      version: document.getElementById('oriVersion').value.trim(),
-      originalLinks: [],
-      adLinks1: [],
-      adLinks2: []
-    };
-
-    if (!oriGame.name || !oriGame.sizeOri || !oriGame.category || !oriGame.version) {
-      alert('Harap isi semua field yang wajib untuk Game ORI!');
-      return;
-    }
-
-    for (let i = 0; i < gameData.linkCount; i++) {
-      const originalInput = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
-      const ad1Input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
-      const ad2Input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
-
-      if (originalInput) oriGame.originalLinks.push(originalInput.value.trim());
-      if (ad1Input) oriGame.adLinks1.push(ad1Input.value.trim());
-      if (ad2Input) oriGame.adLinks2.push(ad2Input.value.trim());
-    }
-
-    if (
-      oriGame.originalLinks.some(link => !link) ||
-      oriGame.adLinks1.some(link => !link) ||
-      oriGame.adLinks2.some(link => !link)
-    ) {
-      alert('Harap isi semua link untuk Game ORI!');
-      return;
-    }
-  }
-  
-  gameData.oriGame = oriGame;
-
-  // MOD (untuk ori-mod dan only-mod)
-  let modGame = null;
-  if (gameData.type === 'ori-mod' || gameData.type === 'only-mod') {
-    const modName = document.getElementById('modGameName').value.trim();
-    const modSize = document.getElementById('modSize').value.trim();
-    const modCategory = document.getElementById('modCategory').value.trim();
-    const modVersion = document.getElementById('modVersion').value.trim();
-
-    const modFeatures = [];
-    for (let k = 1; k <= gameData.modCount; k++) {
-      const v = document.getElementById(`modFeature${k}`)?.value.trim() || '';
-      modFeatures.push(v);
-    }
-
-    if (!modName || !modSize || !modCategory || !modVersion) {
-      alert('Harap isi semua field yang wajib untuk Game MOD!');
-      return;
-    }
-    if (modFeatures.some(x => !x)) {
-      alert(`Harap isi semua Mod 1 sampai Mod ${gameData.modCount}!`);
-      return;
-    }
-
-    modGame = {
-      name: modName,
-      size: modSize,
-      category: modCategory,
-      version: modVersion,
-      modDescription: modFeatures.join('\n'),
-      originalLinks: [],
-      adLinks1: [],
-      adLinks2: []
-    };
-
-    for (let i = 0; i < gameData.linkCount; i++) {
-      const originalInput = document.querySelector(`input[data-type="modOriginalLinks"][data-index="${i}"]`);
-      const ad1Input = document.querySelector(`input[data-type="modAdLinks1"][data-index="${i}"]`);
-      const ad2Input = document.querySelector(`input[data-type="modAdLinks2"][data-index="${i}"]`);
-
-      if (originalInput) modGame.originalLinks.push(originalInput.value.trim());
-      if (ad1Input) modGame.adLinks1.push(ad1Input.value.trim());
-      if (ad2Input) modGame.adLinks2.push(ad2Input.value.trim());
-    }
-
-    if (
-      modGame.originalLinks.some(link => !link) ||
-      modGame.adLinks1.some(link => !link) ||
-      modGame.adLinks2.some(link => !link)
-    ) {
-      alert('Harap isi semua link untuk Game MOD!');
-      return;
-    }
-  }
-  
-  gameData.modGame = modGame;
-
-  // Save to server
-  try {
-    const btn = document.getElementById('btnSaveGame');
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
-    btn.disabled = true;
-
-    // Nonaktifkan tombol lain sementara
-    document.querySelectorAll('#btnGenerateHTML, #btnPrev4').forEach(b => {
-      if (b) b.disabled = true;
-    });
-
-    const params = new URLSearchParams();
-    params.append('action', 'saveGame');
-    params.append('type', gameData.type);
-    params.append('link_count', gameData.linkCount);
-
-    // mod_count buat server = jumlah game MOD, bukan jumlah fitur MOD
-    params.append('mod_count', (gameData.type === 'ori-mod' || gameData.type === 'only-mod') ? 1 : 0);
-    params.append('thumbnail_url', thumbnailUrl);
-
-    params.append('cloud_original', JSON.stringify(gameData.cloudSelection.original));
-    params.append('cloud_ad1', JSON.stringify(gameData.cloudSelection.ad1));
-    params.append('cloud_ad2', JSON.stringify(gameData.cloudSelection.ad2));
-
-    // ORI (hanya jika ada)
-    if (gameData.oriGame) {
-      params.append('ori_name', gameData.oriGame.name);
-      params.append('ori_size_ori', gameData.oriGame.sizeOri);
-      params.append('ori_size_mod', gameData.oriGame.sizeMod);
-      params.append('ori_category', gameData.oriGame.category);
-      params.append('ori_version', gameData.oriGame.version);
-      params.append('ori_original_links', JSON.stringify(gameData.oriGame.originalLinks));
-      params.append('ori_ad_links1', JSON.stringify(gameData.oriGame.adLinks1));
-      params.append('ori_ad_links2', JSON.stringify(gameData.oriGame.adLinks2));
-    } else {
-      params.append('ori_name', '');
-      params.append('ori_size_ori', '');
-      params.append('ori_size_mod', '');
-      params.append('ori_category', '');
-      params.append('ori_version', '');
-      params.append('ori_original_links', '[]');
-      params.append('ori_ad_links1', '[]');
-      params.append('ori_ad_links2', '[]');
-    }
-
-    // MOD arrays (1 item jika ada)
-    if (gameData.modGame) {
-      params.append('mod_names', JSON.stringify([gameData.modGame.name]));
-      params.append('mod_sizes', JSON.stringify([gameData.modGame.size]));
-      params.append('mod_versions', JSON.stringify([gameData.modGame.version]));
-      params.append('mod_descriptions', JSON.stringify([gameData.modGame.modDescription]));
-      params.append('mod_original_links', JSON.stringify([gameData.modGame.originalLinks]));
-      params.append('mod_ad_links1', JSON.stringify([gameData.modGame.adLinks1]));
-      params.append('mod_ad_links2', JSON.stringify([gameData.modGame.adLinks2]));
-    } else {
-      params.append('mod_names', '[]');
-      params.append('mod_sizes', '[]');
-      params.append('mod_versions', '[]');
-      params.append('mod_descriptions', '[]');
-      params.append('mod_original_links', '[]');
-      params.append('mod_ad_links1', '[]');
-      params.append('mod_ad_links2', '[]');
-    }
-
-    console.log('Mengirim data ke server...', params.toString());
-
-    const response = await fetch(GAME_ANDROID_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
-    });
-
-    if (!response.ok) {
-      throw new Error(`Network error: ${response.status} ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    console.log('Response dari server:', result);
-
-    if (result.status === 'success') {
-      gameData.downloadId = result.data.download_id;
+      // Get thumbnail URL
+      const thumbnailUrl = document.getElementById('thumbnailUrl')?.value.trim() || '';
       
-      // Simpan data untuk digunakan nanti
-      window.lastSavedGameData = {
-        downloadId: result.data.download_id,
-        gameName: gameData.oriGame?.name || gameData.modGame?.name || 'Unknown Game',
-        timestamp: new Date().toISOString()
-      };
+      // Jika ada thumbnail URL, validasi
+      if (thumbnailUrl && !thumbnailUrl.startsWith('http')) {
+        alert('URL thumbnail harus dimulai dengan http:// atau https://');
+        return;
+      }
+      if (gameData.type === 'ori-only' || gameData.type === 'ori-mod') {
+        oriGame = {
+          name: document.getElementById('oriGameName').value.trim(),
+          sizeOri: document.getElementById('oriSize').value.trim(),
+          sizeMod: document.getElementById('oriModSize').value.trim(),
+          category: document.getElementById('oriCategory').value.trim(),
+          version: document.getElementById('oriVersion').value.trim(),
+          originalLinks: [],
+          adLinks1: [],
+          adLinks2: []
+        };
+
+        if (!oriGame.name || !oriGame.sizeOri || !oriGame.category || !oriGame.version) {
+          alert('Harap isi semua field yang wajib untuk Game ORI!');
+          return;
+        }
+
+        for (let i = 0; i < gameData.linkCount; i++) {
+          const originalInput = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
+          const ad1Input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
+          const ad2Input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
+
+          if (originalInput) oriGame.originalLinks.push(originalInput.value.trim());
+          if (ad1Input) oriGame.adLinks1.push(ad1Input.value.trim());
+          if (ad2Input) oriGame.adLinks2.push(ad2Input.value.trim());
+        }
+
+        if (
+          oriGame.originalLinks.some(link => !link) ||
+          oriGame.adLinks1.some(link => !link) ||
+          oriGame.adLinks2.some(link => !link)
+        ) {
+          alert('Harap isi semua link untuk Game ORI!');
+          return;
+        }
+      }
       
-      // Tampilkan modal sukses dengan delay
-      setTimeout(() => {
-        showSuccessModal(result.data.download_id);
-      }, 100);
+      gameData.oriGame = oriGame;
+
+      // MOD (untuk ori-mod dan only-mod)
+      let modGame = null;
+      if (gameData.type === 'ori-mod' || gameData.type === 'only-mod') {
+        const modName = document.getElementById('modGameName').value.trim();
+        const modSize = document.getElementById('modSize').value.trim();
+        const modCategory = document.getElementById('modCategory').value.trim();
+        const modVersion = document.getElementById('modVersion').value.trim();
+
+        const modFeatures = [];
+        for (let k = 1; k <= gameData.modCount; k++) {
+          const v = document.getElementById(`modFeature${k}`)?.value.trim() || '';
+          modFeatures.push(v);
+        }
+
+        if (!modName || !modSize || !modCategory || !modVersion) {
+          alert('Harap isi semua field yang wajib untuk Game MOD!');
+          return;
+        }
+        if (modFeatures.some(x => !x)) {
+          alert(`Harap isi semua Mod 1 sampai Mod ${gameData.modCount}!`);
+          return;
+        }
+
+        modGame = {
+          name: modName,
+          size: modSize,
+          category: modCategory,
+          version: modVersion,
+          modDescription: modFeatures.join('\n'),
+          originalLinks: [],
+          adLinks1: [],
+          adLinks2: []
+        };
+
+        for (let i = 0; i < gameData.linkCount; i++) {
+          const originalInput = document.querySelector(`input[data-type="modOriginalLinks"][data-index="${i}"]`);
+          const ad1Input = document.querySelector(`input[data-type="modAdLinks1"][data-index="${i}"]`);
+          const ad2Input = document.querySelector(`input[data-type="modAdLinks2"][data-index="${i}"]`);
+
+          if (originalInput) modGame.originalLinks.push(originalInput.value.trim());
+          if (ad1Input) modGame.adLinks1.push(ad1Input.value.trim());
+          if (ad2Input) modGame.adLinks2.push(ad2Input.value.trim());
+        }
+
+        if (
+          modGame.originalLinks.some(link => !link) ||
+          modGame.adLinks1.some(link => !link) ||
+          modGame.adLinks2.some(link => !link)
+        ) {
+          alert('Harap isi semua link untuk Game MOD!');
+          return;
+        }
+      }
       
-    } else {
-      throw new Error(result.message || 'Gagal menyimpan');
+      gameData.modGame = modGame;
+
+      // Save to server
+      try {
+        const btn = document.getElementById('btnSaveGame');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+        btn.disabled = true;
+
+        const params = new URLSearchParams();
+        params.append('action', 'saveGame');
+        params.append('type', gameData.type);
+        params.append('link_count', gameData.linkCount);
+
+        // mod_count buat server = jumlah game MOD, bukan jumlah fitur MOD
+        params.append('mod_count', (gameData.type === 'ori-mod' || gameData.type === 'only-mod') ? 1 : 0);
+        params.append('thumbnail_url', thumbnailUrl); // ← TAMBAH INI!
+
+        params.append('cloud_original', JSON.stringify(gameData.cloudSelection.original));
+        params.append('cloud_ad1', JSON.stringify(gameData.cloudSelection.ad1));
+        params.append('cloud_ad2', JSON.stringify(gameData.cloudSelection.ad2));
+
+        // ORI (hanya jika ada)
+        if (gameData.oriGame) {
+          params.append('ori_name', gameData.oriGame.name);
+          params.append('ori_size_ori', gameData.oriGame.sizeOri);
+          params.append('ori_size_mod', gameData.oriGame.sizeMod);
+          params.append('ori_category', gameData.oriGame.category);
+          params.append('ori_version', gameData.oriGame.version);
+          params.append('ori_original_links', JSON.stringify(gameData.oriGame.originalLinks));
+          params.append('ori_ad_links1', JSON.stringify(gameData.oriGame.adLinks1));
+          params.append('ori_ad_links2', JSON.stringify(gameData.oriGame.adLinks2));
+        } else {
+          params.append('ori_name', '');
+          params.append('ori_size_ori', '');
+          params.append('ori_size_mod', '');
+          params.append('ori_category', '');
+          params.append('ori_version', '');
+          params.append('ori_original_links', '[]');
+          params.append('ori_ad_links1', '[]');
+          params.append('ori_ad_links2', '[]');
+        }
+
+        // MOD arrays (1 item jika ada)
+        if (gameData.modGame) {
+          params.append('mod_names', JSON.stringify([gameData.modGame.name]));
+          params.append('mod_sizes', JSON.stringify([gameData.modGame.size]));
+          params.append('mod_versions', JSON.stringify([gameData.modGame.version]));
+          params.append('mod_descriptions', JSON.stringify([gameData.modGame.modDescription]));
+          params.append('mod_original_links', JSON.stringify([gameData.modGame.originalLinks]));
+          params.append('mod_ad_links1', JSON.stringify([gameData.modGame.adLinks1]));
+          params.append('mod_ad_links2', JSON.stringify([gameData.modGame.adLinks2]));
+        } else {
+          params.append('mod_names', '[]');
+          params.append('mod_sizes', '[]');
+          params.append('mod_versions', '[]');
+          params.append('mod_descriptions', '[]');
+          params.append('mod_original_links', '[]');
+          params.append('mod_ad_links1', '[]');
+          params.append('mod_ad_links2', '[]');
+        }
+
+        const response = await fetch(GAME_ANDROID_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString()
+        });
+
+        if (!response.ok) throw new Error('Network error: ' + response.status);
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          gameData.downloadId = result.data.download_id;
+          showToast('success', `Game berhasil disimpan! Download ID: ${result.data.download_id}`);
+        } else {
+          throw new Error(result.message || 'Gagal menyimpan');
+        }
+      } catch (error) {
+        console.error('Save error:', error);
+        showToast('error', 'Gagal menyimpan game: ' + error.message);
+      } finally {
+        const btn = document.getElementById('btnSaveGame');
+        btn.innerHTML = 'Simpan Data Game';
+        btn.disabled = false;
+      }
     }
-  } catch (error) {
-    console.error('Save error:', error);
-    showToast('error', 'Gagal menyimpan game: ' + error.message);
-    resetSaveButton();
-  }
-}
 
-
-
-// Fungsi untuk menampilkan modal sukses
-function showSuccessModal(downloadId) {
-  const modalElement = document.getElementById('successModal');
-  
-  if (!modalElement) {
-    console.error('Modal element tidak ditemukan!');
-    resetSaveButton();
-    showToast('success', `Game berhasil disimpan! Download ID: ${downloadId}`);
-    return;
-  }
-  
-  // Isi download ID
-  const downloadIdDisplay = document.getElementById('downloadIdDisplay');
-  if (downloadIdDisplay) {
-    downloadIdDisplay.textContent = downloadId;
-  }
-  
-  // Buat instance modal
-  const modal = new bootstrap.Modal(modalElement, {
-    backdrop: 'static',
-    keyboard: false
-  });
-  
-  // Tampilkan modal
-  modal.show();
-  
-  // Reset tombol
-  resetSaveButton();
-  
-  // Set focus ke tombol utama di modal
-  setTimeout(() => {
-    const copyBtn = document.getElementById('copyHTMLBtn');
-    if (copyBtn) copyBtn.focus();
-  }, 200);
-  
-  // Event untuk modal ketika ditutup
-  modalElement.addEventListener('hidden.bs.modal', function() {
-    console.log('Modal sukses ditutup');
-  });
-}
-
-// Fungsi untuk reset tombol save
-function resetSaveButton() {
-  const btn = document.getElementById('btnSaveGame');
-  if (btn) {
-    btn.innerHTML = '<i class="bi bi-save-fill"></i> Simpan Data Game';
-    btn.disabled = false;
-  }
-  
-  // Aktifkan kembali tombol lain
-  document.querySelectorAll('#btnGenerateHTML, #btnPrev4').forEach(b => {
-    if (b) b.disabled = false;
-  });
-}
-
-// Fungsi untuk langsung copy HTML saat tombol ditekan
-async function copyHTMLDirectly() {
-  try {
-    // Pastikan gameData sudah ada
-    if (!gameData.downloadId) {
-      showToast('error', 'Download ID tidak ditemukan!');
-      return;
-    }
-    
-    // Generate HTML
-    const html = createHTMLTemplate();
-    
-    if (!html || html.trim() === '') {
-      showToast('error', 'Gagal generate HTML!');
-      return;
-    }
-    
-    // Copy ke clipboard
-    await navigator.clipboard.writeText(html);
-    
-    // Tampilkan feedback di tombol
-    const copyBtn = document.getElementById('copyHTMLBtn');
-    if (copyBtn) {
-      const originalHtml = copyBtn.innerHTML;
-      copyBtn.innerHTML = '<i class="bi bi-check2-circle"></i> HTML Disalin!';
-      copyBtn.classList.remove('btn-outline-primary');
-      copyBtn.classList.add('btn-success');
-      
-      setTimeout(() => {
-        copyBtn.innerHTML = originalHtml;
-        copyBtn.classList.remove('btn-success');
-        copyBtn.classList.add('btn-outline-primary');
-      }, 2000);
-    }
-    
-    showToast('success', '✅ HTML berhasil disalin ke clipboard!');
-    
-  } catch (error) {
-    console.error('Direct copy error:', error);
-    showToast('error', '❌ Gagal menyalin HTML: ' + error.message);
-  }
-}
 
     // ===================== GENERATE HTML =====================
-
-function generateHTML() {
-  if (!gameData.downloadId) {
-    if (confirm('Data belum disimpan ke server. Generate HTML dengan data saat ini?')) {
-      gameData.downloadId = 'TEMP_' + Date.now().toString().slice(-8);
-    } else {
-      return;
+    function generateHTML() {
+      if (!gameData.downloadId) {
+        if (confirm('Data belum disimpan ke server. Generate HTML dengan data saat ini?')) {
+          gameData.downloadId = 'TEMP_' + Date.now().toString().slice(-8);
+        } else {
+          return;
+        }
+      }
+      
+      const html = createHTMLTemplate();
+      document.getElementById('htmlPreview').textContent = html;
+      document.getElementById('previewSection').style.display = 'block';
+      document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
     }
-  }
-  
-  const html = createHTMLTemplate();
-  
-  // Langsung copy ke clipboard
-  navigator.clipboard.writeText(html).then(() => {
-    showToast('success', '✅ HTML berhasil digenerate dan disalin ke clipboard!');
-  }).catch(err => {
-    showToast('error', '❌ Gagal menyalin HTML: ' + err.message);
-  });
-}
     
     function createHTMLTemplate() {
       // Escape HTML untuk data yang masuk ke template output
@@ -3663,7 +3388,7 @@ function generateHTML() {
           <div class="login-prompt mb-3" id="loginPrompt">
             <p class="mb-2">
               <strong>⚠️ Perhatian:</strong>
-              Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
+              Untuk mengakses link download tanpa iklan, Anda perlu login.
               Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
               Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
             </p>
@@ -3674,7 +3399,7 @@ function generateHTML() {
               Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
               Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
             </p>
-            <button class="btn btn-primary" onclick="openLoginModal()"><i class="bi bi-telegram"></i> Login dengan Telegram</button>
+            <button class="btn btn-primary" onclick="openLoginModal()"><i class="bi bi-telegram"></i> Login</button>
             <button class="btn btn-secondary" onclick="register()"><i class="bi bi-person-plus"></i> Register</button>
           </div>
 
@@ -3716,7 +3441,7 @@ function generateHTML() {
           <div class="login-prompt mb-3" id="loginPrompt">
             <p class="mb-2">
               <strong>⚠️ Perhatian:</strong>
-              Untuk mengakses link download tanpa iklan, Anda perlu login dengan Telegram.
+              Untuk mengakses link download tanpa iklan, Anda perlu login.
               Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
               Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
             </p>
@@ -3727,7 +3452,7 @@ function generateHTML() {
               Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
               Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
             </p>
-            <button class="btn btn-primary" onclick="openLoginModal()"><i class="bi bi-telegram"></i> Login dengan Telegram</button>
+            <button class="btn btn-primary" onclick="openLoginModal()"><i class="bi bi-telegram"></i> Login</button>
             <button class="btn btn-secondary" onclick="register()"><i class="bi bi-person-plus"></i> Register</button>
           </div>
 
@@ -4051,8 +3776,15 @@ function generateHTML() {
         ${modFeaturesSection}
 
         <div class="mt-3 text-center">
-          <a href="https://indapk.com/requestgame.html" target="_blank" rel="noopener" class="btn btn-success">
-            <i class="bi bi-controller"></i> Request Game
+          <a href="https://indapk.com/listgame.html"
+          target="_blank" rel="noopener"
+          class="btn btn-success">
+          <i class="bi bi-controller me-2"></i> List Game PSP
+          </a>
+          <a href="https://indapk.com/requestgame.html"
+          target="_blank" rel="noopener"
+          class="btn btn-success">
+          <i class="bi bi-controller me-2"></i> Request Game PSP
           </a>
         </div>
       </div>
@@ -4091,18 +3823,18 @@ function generateHTML() {
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header" style="background: var(--android-gradient); color: white;">
-            <h5 class="modal-title">Login dengan Telegram</h5>
+            <h5 class="modal-title">Login</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
             <div id="telegramWidget">
               <div class="alert alert-info py-2 mb-3">
-                <div><strong>Cara daftar dan ambil Telegram ID:</strong></div>
+                <div><strong>Cara daftar:</strong></div>
                 <ol class="mb-0 ps-3">
-                  <li>Register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a></li>
-                  <li>Atau buka bot <strong>@indapkbot</strong></li>
-                  <li>Ketik <strong>/register</strong></li>
-                  <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
+                <li>Register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank"><i class="fa fa-sign-in-alt"></i>Register</a></li>
+                <li>Atau buka bot <strong>@indapkbot</strong></li>
+                <li>Ketik <strong>/register</strong></li>
+                <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
                 </ol>
               </div>
 
@@ -4128,7 +3860,7 @@ function generateHTML() {
                 <h5>Login Berhasil!</h5>
                 <p><strong>Nama:</strong> <span id="userName"></span></p>
                 <p><strong>Saldo:</strong> Rp <span id="userBalance"></span></p>
-                <p><strong>ID Telegram:</strong> <span id="userId"></span></p>
+                <p><strong>ID Telegram / Username:</strong> <span id="userId"></span></p>
               </div>
 
               <div class="d-flex gap-2 flex-wrap">
@@ -4281,7 +4013,7 @@ function generateHTML() {
         const telegramId = (telegramIdInput?.value || "").trim();
         const inputKey = (keyInput?.value || "").trim();
 
-        if (!telegramId) return alert("Masukkan Telegram ID!");
+        if (!telegramId) return alert("Masukkan Telegram ID atau Username!");
         if (!inputKey) return alert("Masukkan Key!");
 
         const originalBtnHtml = btn ? btn.innerHTML : "";
@@ -4343,8 +4075,8 @@ function generateHTML() {
       }
 
       function register() {
-        const urlWeb = "https://web.telegram.org/k/#@indapkbot";
-        const urlTme = "https://t.me/indapkbot";
+        const urlWeb = "https://indapk.github.io/dashboard.html";
+        const urlTme = "https://indapk.github.io/dashboard.html";
         const urlDashboard = "https://indapk.github.io/dashboard.html";
 
         const w = window.open(urlDashboard, "_blank", "noopener");
@@ -4418,8 +4150,8 @@ function generateHTML() {
           return;
         }
 
-        if ((currentUser.saldo || 0) < 2000) {
-          alert("Saldo tidak mencukupi. Harga per link: Rp 2.000. Saldo Anda: Rp " + (currentUser.saldo || 0));
+        if ((currentUser.saldo || 0) < 1000) {
+          alert("Saldo tidak mencukupi. Harga per link: Rp 1.000. Saldo Anda: Rp " + (currentUser.saldo || 0));
           return;
         }
 
@@ -4459,7 +4191,7 @@ function generateHTML() {
               game_name: result.data.game_name || "${escapeHTML((gameData.oriGame?.name || gameData.modGame?.name) || "")}",
               game_type: gameType,
               cloud: result.data.cloud || getCloudName(linkIndex),
-              amount_deducted: result.data.amount_deducted || 2000,
+              amount_deducted: result.data.amount_deducted || 1000,
               new_balance: result.data.new_balance || currentUser.saldo,
               download_id: DOWNLOAD_ID
             });
@@ -4492,9 +4224,9 @@ function generateHTML() {
                     <h4>Konfirmasi Akses Link</h4>
                     <p>Anda akan mengakses link <strong>\${cloudName}</strong></p>
                     <div class="alert alert-warning">
-                      <strong>Biaya: Rp 2.000</strong><br>
+                      <strong>Biaya: Rp 1.000</strong><br>
                       Saldo Anda: Rp \${(currentUser.saldo || 0).toLocaleString()}<br>
-                      Saldo setelah potongan: Rp \${((currentUser.saldo || 0) - 2000).toLocaleString()}
+                      Saldo setelah potongan: Rp \${((currentUser.saldo || 0) - 1000).toLocaleString()}
                     </div>
                     <p>Apakah Anda yakin ingin melanjutkan?</p>
                   </div>
@@ -4680,52 +4412,12 @@ function generateHTML() {
       alert('✅ HTML berhasil didownload!');
     }
     
-function newGame() {
-  if (confirm('Buat game baru? Semua data yang belum disimpan akan hilang.')) {
-    location.reload();
-  }
-}
-
-// Fungsi untuk menutup semua modal dengan aman
-function closeAllModals() {
-  const modals = document.querySelectorAll('.modal.show');
-  modals.forEach(modal => {
-    const bsModal = bootstrap.Modal.getInstance(modal);
-    if (bsModal) {
-      bsModal.hide();
-    } else {
-      modal.classList.remove('show');
-      modal.style.display = 'none';
-      document.body.classList.remove('modal-open');
-      const backdrops = document.querySelectorAll('.modal-backdrop');
-      backdrops.forEach(backdrop => backdrop.remove());
+    function newGame() {
+      if (confirm('Buat game baru? Semua data yang belum disimpan akan hilang.')) {
+        location.reload();
+      }
     }
-  });
-  
-  document.body.style.overflow = 'auto';
-  document.body.style.paddingRight = '0';
-}
-
-// Event listener untuk tombol ESC
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    closeAllModals();
-  }
-});
-
-
-function copyDownloadId() {
-  const downloadId = document.getElementById('downloadIdDisplay')?.value;
-  if (!downloadId) return;
-  
-  navigator.clipboard.writeText(downloadId).then(() => {
-    showToast('success', 'Download ID berhasil disalin!');
-  }).catch(err => {
-    console.error('Failed to copy:', err);
-    showToast('error', 'Gagal menyalin Download ID');
-  });
-}
-
+    
     // ===================== UTILITIES =====================
     function showToast(type, message) {
       // Create toast container if not exists
