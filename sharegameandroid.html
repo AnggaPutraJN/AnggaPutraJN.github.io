@@ -1085,67 +1085,68 @@
         }
 
         // Generate code based on inputs
-        function generateCode() {
-            // Show loading state
-            const generateBtn = document.querySelector('.btn-primary-custom');
-            const originalText = generateBtn.innerHTML;
-            generateBtn.innerHTML = '<span class="loading"></span> Generating...';
-            generateBtn.disabled = true;
+// Generate code based on inputs
+function generateCode() {
+    // Show loading state
+    const generateBtn = document.querySelector('.btn-primary-custom');
+    const originalText = generateBtn.innerHTML;
+    generateBtn.innerHTML = '<span class="loading"></span> Generating...';
+    generateBtn.disabled = true;
 
-            
-            setTimeout(() => {
-                // Get values from game form
-                const inputName = document.getElementById("inputName").value;
-                const inputSingleSize = document.getElementById("inputSingleSize").value;
-                const inputCategory = document.getElementById("inputCategory").value;
-                const inputVersion = document.getElementById("inputVersion").value;
-                const inputLink = document.getElementById("inputLink").value;
-                const inputModNote = document.getElementById("inputModNote") ? document.getElementById("inputModNote").value : '';
-                const inputModType = document.getElementById("inputModType") ? document.getElementById("inputModType").value : '';
-            const altLink = buildAlternativeLink(inputName);
-                
-                // Get MOD values
-                let modText = '';
-                if (gameType === 'mod') {
-                    if (modCount === 1) {
-                        const singleModInput = document.getElementById("inputMod");
-                        modText = singleModInput ? singleModInput.value : '';
-                    } else {
-                        // Collect all mod inputs
-                        const modValues = [];
-                        for (let i = 1; i <= modCount; i++) {
-                            const mod = modInputs.find(m => m.id === i);
-                            if (mod && mod.value.trim() !== '') {
-                                modValues.push(mod.value);
-                            }
-                        }
-                        modText = modValues.join('\n');
+    setTimeout(() => {
+        // Get values from game form
+        const inputName = document.getElementById("inputName").value;
+        const inputSingleSize = document.getElementById("inputSingleSize").value;
+        const inputCategory = document.getElementById("inputCategory").value;
+        const inputVersion = document.getElementById("inputVersion").value;
+        const inputLink = document.getElementById("inputLink").value;
+        const inputModNote = document.getElementById("inputModNote") ? document.getElementById("inputModNote").value : '';
+        const inputModType = document.getElementById("inputModType") ? document.getElementById("inputModType").value : '';
+        
+        // Build alternative link
+        const altLink = buildAlternativeLink(inputName);
+        
+        // Get MOD values
+        let modText = '';
+        if (gameType === 'mod') {
+            if (modCount === 1) {
+                const singleModInput = document.getElementById("inputMod");
+                modText = singleModInput ? singleModInput.value : '';
+            } else {
+                // Collect all mod inputs
+                const modValues = [];
+                for (let i = 1; i <= modCount; i++) {
+                    const mod = modInputs.find(m => m.id === i);
+                    if (mod && mod.value.trim() !== '') {
+                        modValues.push(mod.value);
                     }
                 }
-                
-                // Get selected post type
-                const postType = document.querySelector('input[name="postType"]:checked').value;
+                modText = modValues.join('\n');
+            }
+        }
+        
+        // Get selected post type
+        const postType = document.querySelector('input[name="postType"]:checked').value;
 
-                let generatedHtml;
-                let postTypeText = '';
-                
-                // Determine post type text
-                switch(postType) {
-                    case 'share':
-                        postTypeText = 'SHARE GAME Android Premium';
-                        break;
-                    case 'upload':
-                        postTypeText = 'Upload Ulang GAME Android Premium';
-                        break;
-                    default:
-                        postTypeText = 'UPDATE REQUEST GAME Android Premium';
-                }
-                
-                // Generate the code based on game type
-                if (gameType === 'ori') {
-                    // ORI Game Format
-                    generatedHtml = `🎮${postTypeText}
-🎮Update Game:
+        let generatedHtml;
+        let postTypeText = '';
+        
+        // Determine post type text
+        switch(postType) {
+            case 'share':
+                postTypeText = 'SHARE GAME Android Premium';
+                break;
+            case 'upload':
+                postTypeText = 'Upload Ulang GAME Android Premium';
+                break;
+            default:
+                postTypeText = 'UPDATE REQUEST GAME Android Premium';
+        }
+        
+        // Generate the code based on game type
+        if (gameType === 'ori') {
+            // ORI Game Format - PERUBAHAN DISINI
+            generatedHtml = `🎮${postTypeText}:
 Nama Game: ${inputName}
 Ukuran Game: ${inputSingleSize} (APK)
 Category: ${inputCategory}
@@ -1156,10 +1157,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: APK (Android)
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1169,10 +1170,9 @@ https://indapk.com/requestgame.html
 
 
 #INDapk`;
-                } else {
-                    // MOD Game Format
-                    generatedHtml = `🎮${postTypeText}
-🎮Update Game:
+        } else {
+            // MOD Game Format - PERUBAHAN DISINI
+            generatedHtml = `🎮${postTypeText}:
 Nama Game: ${inputName}
 Ukuran Game: ${inputSingleSize} (APK)
 Category: ${inputCategory}
@@ -1183,31 +1183,31 @@ Connection: Offline
 Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: APK (Android)`;
 
-                    // Add MOD details
-                    if (modCount === 1 && modText) {
-                        generatedHtml += `\n\n🎮MOD Details:
+            // Add MOD details
+            if (modCount === 1 && modText) {
+                generatedHtml += `\n\n🎮MOD Details:
 ${modText}`;
-                    } else if (modCount > 1) {
-                        generatedHtml += `\n\n🎮MOD Features:`;
-                        modInputs.forEach((mod, index) => {
-                            if (mod.value.trim() !== '') {
-                                generatedHtml += `\n${index + 1}. ${mod.value}`;
-                            }
-                        });
+            } else if (modCount > 1) {
+                generatedHtml += `\n\n🎮MOD Features:`;
+                modInputs.forEach((mod, index) => {
+                    if (mod.value.trim() !== '') {
+                        generatedHtml += `\n${index + 1}. ${mod.value}`;
                     }
-                    
-                    // Add MOD notes if available
-                    if (inputModNote.trim() !== '') {
-                        generatedHtml += `\n\n📝Catatan MOD:
+                });
+            }
+            
+            // Add MOD notes if available
+            if (inputModNote.trim() !== '') {
+                generatedHtml += `\n\n📝Catatan MOD:
 ${inputModNote}`;
-                    }
-                    
-                    // Add links
-                    generatedHtml += `\n\n🌐Link Game:
-${inputLink}
+            }
+            
+            // Add links - PERUBAHAN DISINI
+            generatedHtml += `\n\n🌐Link Game:
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1217,19 +1217,19 @@ https://indapk.com/requestgame.html
 
 
 #INDapk`;
-                }
-
-                // Display the generated HTML
-                document.getElementById("result").innerText = generatedHtml;
-                
-                // Reset button
-                generateBtn.innerHTML = originalText;
-                generateBtn.disabled = false;
-                
-                // Show success notification
-                showNotification("Code berhasil di-generate!", "success");
-            }, 1000);
         }
+
+        // Display the generated HTML
+        document.getElementById("result").innerText = generatedHtml;
+        
+        // Reset button
+        generateBtn.innerHTML = originalText;
+        generateBtn.disabled = false;
+        
+        // Show success notification
+        showNotification("Code berhasil di-generate!", "success");
+    }, 1000);
+}
 
 function buildAlternativeLink(gameName) {
     let name = '';
