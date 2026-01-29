@@ -3,178 +3,1164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Laporan User</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Admin Panel Dashboard | Game Management</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f72585;
+            --info-color: #7209b7;
+            --dark-color: #121212;
+            --light-color: #f8f9fa;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+            --card-radius: 12px;
+            --transition-speed: 0.3s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            background: #f5f7fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-color);
+            color: #e9ecef;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color var(--transition-speed);
+        }
+        
+        /* Dark Mode */
+        body.dark-mode {
+            --dark-color: #121212;
+            --light-color: #f8f9fa;
+            --sidebar-bg: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --card-border: #3a3a3a;
+            --text-color: #e9ecef;
+            --text-muted: #adb5bd;
+            --hover-bg: #3a3a3a;
+        }
+        
+        /* Light Mode */
+        body.light-mode {
+            --dark-color: #f8f9fa;
+            --light-color: #212529;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: #e0e0e0;
+            --text-color: #212529;
+            --text-muted: #6c757d;
+            --hover-bg: #f5f5f5;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            padding: 1.5rem 0;
+            z-index: 1000;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+            transition: all var(--transition-speed);
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-header h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 0;
+        }
+        
+        .sidebar-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-header .logo-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            color: var(--text-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 0 50px 50px 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .nav-link i {
+            font-size: 1.2rem;
+            width: 24px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 1.5rem;
+            min-height: 100vh;
+            transition: all var(--transition-speed);
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-title h1 {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--text-color);
+        }
+        
+        .header-title p {
+            color: var(--text-muted);
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            width: 60px;
+            height: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        body.dark-mode .theme-toggle::after {
+            transform: translateX(30px);
+        }
+        
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--card-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+            color: var(--text-color);
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            background-color: rgba(0, 0, 0, 0.03);
+            border-bottom: 1px solid var(--card-border);
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
+        }
+        
+        .card-title {
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--primary-color);
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: var(--card-radius);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .stat-card .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .stat-card-primary {
+            background: linear-gradient(135deg, var(--primary-color), #5a7aff);
+        }
+        
+        .stat-card-success {
+            background: linear-gradient(135deg, var(--success-color), #2ab7d9);
+        }
+        
+        .stat-card-warning {
+            background: linear-gradient(135deg, var(--warning-color), #ffb347);
+        }
+        
+        .stat-card-danger {
+            background: linear-gradient(135deg, var(--danger-color), #ff6b9d);
+        }
+        
+        /* Tables */
+        .table {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            border-bottom: 2px solid var(--card-border);
+            font-weight: 600;
+            color: var(--text-color);
+            padding: 1rem;
+        }
+        
+        .table tbody td {
+            padding: 1rem;
+            border-color: var(--card-border);
+            vertical-align: middle;
+        }
+        
+        .table tbody tr:hover {
+            background-color: var(--hover-bg);
+        }
+        
+        /* Badges */
+        .badge {
+            padding: 0.35rem 0.75rem;
+            font-weight: 600;
+            border-radius: 50px;
         }
         
         .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
             font-weight: 600;
         }
         
         .status-pending {
-            background: #fff3cd;
-            color: #856404;
+            background-color: rgba(248, 150, 30, 0.15);
+            color: #f8961e;
         }
         
         .status-processing {
-            background: #cce5ff;
-            color: #004085;
+            background-color: rgba(67, 97, 238, 0.15);
+            color: #4361ee;
         }
         
         .status-resolved {
-            background: #d4edda;
-            color: #155724;
+            background-color: rgba(76, 201, 240, 0.15);
+            color: #4cc9f0;
         }
         
         .status-rejected {
-            background: #f8d7da;
-            color: #721c24;
+            background-color: rgba(247, 37, 133, 0.15);
+            color: #f72585;
         }
         
-        .report-card {
-            border-left: 4px solid;
-            transition: all 0.3s ease;
+        /* Buttons */
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.2s;
         }
         
-        .report-card:hover {
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2f4fdb;
+            border-color: #2f4fdb;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
-        .platform-badge {
-            background: #6c757d;
+        .btn-refresh {
+            background-color: var(--info-color);
+            border-color: var(--info-color);
             color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
+            position: relative;
+            overflow: hidden;
         }
         
-        .modal-lg {
-            max-width: 800px;
+        .btn-refresh:hover {
+            background-color: #5d08a0;
+            border-color: #5d08a0;
+            color: white;
+        }
+        
+        /* Animasi Rotasi */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .btn-refresh.rotating i {
+            animation: spin 0.6s linear;
+        }
+        
+        /* Tabs */
+        .nav-tabs {
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--text-muted);
+            border: none;
+            border-radius: 8px 8px 0 0;
+            padding: 0.75rem 1.5rem;
+            margin-right: 5px;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: var(--text-color);
+            background-color: var(--hover-bg);
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.1);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        /* Modal */
+        .modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--card-border);
+            border-radius: var(--card-radius);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--card-border);
+        }
+        
+        /* Platform Badges */
+        .platform-badge {
+            display: inline-block;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0.1rem;
+        }
+        
+        .platform-ps2 {
+            background-color: rgba(52, 152, 219, 0.15);
+            color: #3498db;
+        }
+        
+        .platform-switch {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+        
+        .platform-psp {
+            background-color: rgba(155, 89, 182, 0.15);
+            color: #9b59b6;
+        }
+        
+        .platform-android {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+        }
+        
+        .platform-psvita {
+            background-color: rgba(241, 196, 15, 0.15);
+            color: #f1c40f;
+        }
+        
+        .platform-pc {
+            background-color: rgba(52, 73, 94, 0.15);
+            color: #34495e;
+        }
+        
+        .platform-wii {
+            background-color: rgba(230, 126, 34, 0.15);
+            color: #e67e22;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block !important;
+            }
+        }
+        
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+        }
+        
+        /* Loading Spinner */
+        .spinner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2f4fdb;
+        }
+        
+        /* Toast Notification */
+        .toast-container {
+            z-index: 9999;
         }
     </style>
 </head>
-<body>
-    <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow mb-4">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0"><i class="bi bi-flag-fill me-2"></i> Laporan User</h4>
-                        <div>
-                            <button class="btn btn-light btn-sm" onclick="refreshReports()">
-                                <i class="bi bi-arrow-clockwise"></i> Refresh
-                            </button>
-                            <button class="btn btn-success btn-sm ms-2" onclick="exportToExcel()">
-                                <i class="bi bi-download"></i> Export
+<body class="dark-mode">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="bi bi-controller"></i>
+                </div>
+                <h3>Game Admin INDapk</h3>
+            </div>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#pinned-games" data-section="pinned-games">
+                    <i class="bi bi-pin-angle-fill"></i>
+                    <span>Pinned Games</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#count-games" data-section="count-games">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Count Games</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#report-games" data-section="report-games">
+                    <i class="bi bi-flag-fill"></i>
+                    <span>Report Games</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#settings" data-section="settings">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="mt-auto px-3 py-4">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff&size=40" 
+                         class="rounded-circle" alt="Admin">
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-0">Admin User</h6>
+                    <small class="text-muted">Administrator</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="d-flex align-items-center">
+                <button class="mobile-menu-btn me-3">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="header-title">
+                    <h1 id="page-title">Dashboard Overview</h1>
+                    <p>Welcome back! Here's what's happening with your games today.</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button class="btn btn-refresh" id="refresh-all">
+                    <i class="bi bi-arrow-clockwise me-2"></i> Refresh All
+                </button>
+                
+                <div class="theme-toggle" id="theme-toggle"></div>
+                
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="badge bg-danger rounded-pill" id="notification-count">3</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" id="notification-list">
+                        <li><h6 class="dropdown-header">Notifications</h6></li>
+                        <li><a class="dropdown-item notification-item" href="#" data-type="reports"><i class="bi bi-flag text-warning me-2"></i> <span>5 new reports</span></a></li>
+                        <li><a class="dropdown-item notification-item" href="#" data-type="stats"><i class="bi bi-bar-chart text-success me-2"></i> <span>Game stats updated</span></a></li>
+                        <li><a class="dropdown-item notification-item" href="#" data-type="pinned"><i class="bi bi-pin-angle text-primary me-2"></i> <span>Pinned games modified</span></a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center" href="#" id="mark-all-read">Mark all as read</a></li>
+                        <li><a class="dropdown-item text-center" href="#">View all</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card stat-card stat-card-primary">
+                        <div class="stat-icon">
+                            <i class="bi bi-pin-angle-fill"></i>
+                        </div>
+                        <div class="stat-value" id="pinned-count">0</div>
+                        <div class="stat-label">Pinned Games</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card stat-card-success">
+                        <div class="stat-icon">
+                            <i class="bi bi-controller"></i>
+                        </div>
+                        <div class="stat-value" id="total-games">0</div>
+                        <div class="stat-label">Total Games Tracked</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card stat-card-warning">
+                        <div class="stat-icon">
+                            <i class="bi bi-flag-fill"></i>
+                        </div>
+                        <div class="stat-value" id="total-reports">0</div>
+                        <div class="stat-label">Total Reports</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card stat-card-danger">
+                        <div class="stat-icon">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+                        <div class="stat-value" id="pending-reports">0</div>
+                        <div class="stat-label">Pending Reports</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><i class="bi bi-bar-chart-line me-2"></i> Reports Overview</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="reportsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><i class="bi bi-pie-chart-fill me-2"></i> Reports by Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><i class="bi bi-trophy-fill me-2"></i> Top Games (Last 7 Days)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="topGamesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Game</th>
+                                            <th>Platform</th>
+                                            <th>Clicks</th>
+                                            <th>Trend</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="topGamesBody">
+                                        <tr>
+                                            <td colspan="4" class="text-center">
+                                                <div class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><i class="bi bi-clock-history me-2"></i> Recent Reports</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="recentReportsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Game</th>
+                                            <th>Platform</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentReportsBody">
+                                        <tr>
+                                            <td colspan="4" class="text-center">
+                                                <div class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pinned Games Section -->
+        <div id="pinned-games" class="section d-none">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title"><i class="bi bi-pin-angle-fill me-2"></i> Pinned Games Management</h5>
+                            <div>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPinnedModal">
+                                    <i class="bi bi-plus-circle me-2"></i> Add Pinned Game
+                                </button>
+                                <button class="btn btn-refresh ms-2" id="refresh-pinned">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label">Filter by Platform</label>
+                                    <select id="filterPlatformPinned" class="form-select">
+                                        <option value="all">All Platforms</option>
+                                        <option value="ps2">PS2</option>
+                                        <option value="switch">Switch</option>
+                                        <option value="psp">PSP</option>
+                                        <option value="android">Android</option>
+                                        <option value="psvita">PS Vita</option>
+                                        <option value="pc">PC</option>
+                                        <option value="wii">Wii</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Sort By</label>
+                                    <select id="sortPinned" class="form-select">
+                                        <option value="slot">Slot</option>
+                                        <option value="name">Game Name</option>
+                                        <option value="platform">Platform</option>
+                                        <option value="updated">Last Updated</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Search</label>
+                                    <input type="text" id="searchPinned" class="form-control" placeholder="Search games...">
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="pinnedGamesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Slot</th>
+                                            <th>Game Name</th>
+                                            <th>Platform</th>
+                                            <th>Updated At</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pinnedGamesBody">
+                                        <tr>
+                                            <td colspan="5" class="text-center">
+                                                <div class="spinner-border" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Count Games Section -->
+        <div id="count-games" class="section d-none">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title"><i class="bi bi-bar-chart-fill me-2"></i> Game Click Statistics</h5>
+                            <div>
+                                <button class="btn btn-refresh" id="refresh-stats">
+                                    <i class="bi bi-arrow-clockwise me-2"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">Platform</label>
+                                    <select id="filterPlatformStats" class="form-select">
+                                        <option value="all">All Platforms</option>
+                                        <option value="ps2">PS2</option>
+                                        <option value="switch">Switch</option>
+                                        <option value="psp">PSP</option>
+                                        <option value="android">Android</option>
+                                        <option value="psvita">PS Vita</option>
+                                        <option value="pc">PC</option>
+                                        <option value="wii">Wii</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Sort By</label>
+                                    <select id="sortStats" class="form-select">
+                                        <option value="clicks">Total Clicks</option>
+                                        <option value="name">Game Name</option>
+                                        <option value="platform">Platform</option>
+                                        <option value="lastClick">Last Click</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Date From</label>
+                                    <input type="date" id="dateFromStats" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Date To</label>
+                                    <input type="date" id="dateToStats" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="gameStatsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Game ID</th>
+                                            <th>Game Name</th>
+                                            <th>Platform</th>
+                                            <th>Total Clicks</th>
+                                            <th>First Click</th>
+                                            <th>Last Click</th>
+                                            <th>Today</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gameStatsBody">
+                                        <tr>
+                                            <td colspan="8" class="text-center">
+                                                <div class="spinner-border" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Report Games Section -->
+        <div id="report-games" class="section d-none">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title"><i class="bi bi-flag-fill me-2"></i> User Reports Management</h5>
+                            <div>
+                                <button class="btn btn-refresh" id="refresh-reports">
+                                    <i class="bi bi-arrow-clockwise me-2"></i> Refresh
+                                </button>
+                                <button class="btn btn-success ms-2" onclick="exportToExcel()">
+                                    <i class="bi bi-download me-2"></i> Export
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">Status</label>
+                                    <select id="filterStatus" class="form-select">
+                                        <option value="all">All Status</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="processing">Processing</option>
+                                        <option value="resolved">Resolved</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Platform</label>
+                                    <select id="filterPlatform" class="form-select">
+                                        <option value="all">All Platforms</option>
+                                        <option value="ps2">PS2</option>
+                                        <option value="switch">Switch</option>
+                                        <option value="psp">PSP</option>
+                                        <option value="android">Android</option>
+                                        <option value="psvita">PS Vita</option>
+                                        <option value="pc">PC</option>
+                                        <option value="wii">Wii</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Date From</label>
+                                    <input type="date" id="filterDateFrom" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Date To</label>
+                                    <input type="date" id="filterDateTo" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card text-white bg-warning">
+                                        <div class="card-body text-center py-3">
+                                            <h5 class="card-title" id="pendingCount">0</h5>
+                                            <p class="card-text mb-0">Pending</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-white bg-info">
+                                        <div class="card-body text-center py-3">
+                                            <h5 class="card-title" id="processingCount">0</h5>
+                                            <p class="card-text mb-0">Processing</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-white bg-success">
+                                        <div class="card-body text-center py-3">
+                                            <h5 class="card-title" id="resolvedCount">0</h5>
+                                            <p class="card-text mb-0">Resolved</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-white bg-danger">
+                                        <div class="card-body text-center py-3">
+                                            <h5 class="card-title" id="rejectedCount">0</h5>
+                                            <p class="card-text mb-0">Rejected</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="reportsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Game</th>
+                                            <th>Platform</th>
+                                            <th>Format</th>
+                                            <th>Reporter</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reportsBody">
+                                        <tr>
+                                            <td colspan="8" class="text-center">
+                                                <div class="spinner-border" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Section -->
+        <div id="settings" class="section d-none">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><i class="bi bi-sliders me-2"></i> Dashboard Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Theme Mode</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="themeSwitch" checked>
+                                    <label class="form-check-label" for="themeSwitch">Dark Mode</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Auto Refresh Interval</label>
+                                <select class="form-select" id="autoRefresh">
+                                    <option value="0">Off</option>
+                                    <option value="30">30 seconds</option>
+                                    <option value="60">1 minute</option>
+                                    <option value="300" selected>5 minutes</option>
+                                    <option value="600">10 minutes</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Items Per Page</label>
+                                <select class="form-select" id="itemsPerPage">
+                                    <option value="10">10 items</option>
+                                    <option value="25" selected>25 items</option>
+                                    <option value="50">50 items</option>
+                                    <option value="100">100 items</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Notification Settings</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notifNewReports" checked>
+                                    <label class="form-check-label" for="notifNewReports">New reports</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notifStatusChanges" checked>
+                                    <label class="form-check-label" for="notifStatusChanges">Status changes</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notifStatsUpdates">
+                                    <label class="form-check-label" for="notifStatsUpdates">Stats updates</label>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="saveSettings()">
+                                <i class="bi bi-save me-2"></i> Save Settings
                             </button>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <!-- Filter Section -->
-                        <div class="row mb-4">
-                            <div class="col-md-3">
-                                <label class="form-label">Status</label>
-                                <select id="filterStatus" class="form-select" onchange="filterReports()">
-                                    <option value="all">Semua Status</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="processing">Processing</option>
-                                    <option value="resolved">Resolved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Platform</label>
-                                <select id="filterPlatform" class="form-select" onchange="filterReports()">
-                                    <option value="all">Semua Platform</option>
-                                    <option value="ps2">PS2</option>
-                                    <option value="switch">Switch</option>
-                                    <option value="psp">PSP</option>
-                                    <option value="android">Android</option>
-                                    <option value="psvita">PS Vita</option>
-                                    <option value="pc">PC</option>
-                                    <option value="wii">Wii</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Tanggal Dari</label>
-                                <input type="date" id="filterDateFrom" class="form-control" onchange="filterReports()">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Tanggal Sampai</label>
-                                <input type="date" id="filterDateTo" class="form-control" onchange="filterReports()">
-                            </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><i class="bi bi-info-circle me-2"></i> System Information</h5>
                         </div>
-                        
-                        <!-- Stats Cards -->
-                        <div class="row mb-4">
-                            <div class="col-md-3">
-                                <div class="card text-white bg-warning">
-                                    <div class="card-body">
-                                        <h5 class="card-title" id="pendingCount">0</h5>
-                                        <p class="card-text">Pending</p>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Admin Panel Version</label>
+                                <input type="text" class="form-control" value="v2.1.0" readonly>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Last Updated</label>
+                                <input type="text" class="form-control" id="lastUpdated" readonly>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">API Status</label>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <div class="spinner-grow spinner-grow-sm text-success" role="status" id="apiStatusSpinner">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
                                     </div>
+                                    <span id="apiStatusText">Checking...</span>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="card text-white bg-info">
-                                    <div class="card-body">
-                                        <h5 class="card-title" id="processingCount">0</h5>
-                                        <p class="card-text">Processing</p>
-                                    </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Connected Services</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-success">Google Sheets</span>
+                                    <span class="badge bg-success">Reports API</span>
+                                    <span class="badge bg-success">Pinned Games API</span>
+                                    <span class="badge bg-success">Count Games API</span>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="card text-white bg-success">
-                                    <div class="card-body">
-                                        <h5 class="card-title" id="resolvedCount">0</h5>
-                                        <p class="card-text">Resolved</p>
-                                    </div>
-                                </div>
+                            
+                            <div class="alert alert-info">
+                                <i class="bi bi-lightbulb me-2"></i>
+                                <strong>Tip:</strong> Use the refresh button to manually update data from all services.
                             </div>
-                            <div class="col-md-3">
-                                <div class="card text-white bg-danger">
-                                    <div class="card-body">
-                                        <h5 class="card-title" id="rejectedCount">0</h5>
-                                        <p class="card-text">Rejected</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Reports Table -->
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="reportsTable">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Game</th>
-                                        <th>Platform</th>
-                                        <th>Format</th>
-                                        <th>Reporter</th>
-                                        <th>Status</th>
-                                        <th>Tanggal</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="reportsBody">
-                                    <tr>
-                                        <td colspan="8" class="text-center">
-                                            <div class="spinner-border" role="status">
-                                                <span class="visually-hidden">Loading...</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            
+                            <button class="btn btn-outline-warning" onclick="clearCache()">
+                                <i class="bi bi-trash me-2"></i> Clear Cache
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -182,21 +1168,100 @@
         </div>
     </div>
     
-    <!-- Detail Modal -->
+    <!-- Modals -->
+    
+    <!-- Add Pinned Game Modal -->
+    <div class="modal fade" id="addPinnedModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Pinned Game</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Slot Number</label>
+                        <input type="number" class="form-control" id="pinnedSlot" min="1" max="20" value="1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Platform</label>
+                        <select class="form-select" id="pinnedPlatform">
+                            <option value="ps2">PS2</option>
+                            <option value="switch">Switch</option>
+                            <option value="psp">PSP</option>
+                            <option value="android">Android</option>
+                            <option value="psvita">PS Vita</option>
+                            <option value="pc">PC</option>
+                            <option value="wii">Wii</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Game Name</label>
+                        <input type="text" class="form-control" id="pinnedGameName" placeholder="Enter game name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addPinnedGame()">Add Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Pinned Game Modal -->
+    <div class="modal fade" id="editPinnedModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Pinned Game</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editPinnedId">
+                    <div class="mb-3">
+                        <label class="form-label">Slot Number</label>
+                        <input type="number" class="form-control" id="editPinnedSlot" min="1" max="20">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Platform</label>
+                        <select class="form-select" id="editPinnedPlatform">
+                            <option value="ps2">PS2</option>
+                            <option value="switch">Switch</option>
+                            <option value="psp">PSP</option>
+                            <option value="android">Android</option>
+                            <option value="psvita">PS Vita</option>
+                            <option value="pc">PC</option>
+                            <option value="wii">Wii</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Game Name</label>
+                        <input type="text" class="form-control" id="editPinnedGameName">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updatePinnedGame()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Detail Modal -->
     <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Detail Laporan</h5>
+                    <h5 class="modal-title">Report Details</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="detailModalBody">
-                    <!-- Detail akan diisi dengan JavaScript -->
+                    <!-- Detail will be filled with JavaScript -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <div id="actionButtons">
-                        <!-- Action buttons akan diisi berdasarkan status -->
+                        <!-- Action buttons will be filled based on status -->
                     </div>
                 </div>
             </div>
@@ -208,13 +1273,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title text-white">Update Status Laporan</h5>
+                    <h5 class="modal-title text-white">Update Report Status</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="currentReportId">
                     <div class="mb-3">
-                        <label class="form-label">Status Baru</label>
+                        <label class="form-label">New Status</label>
                         <select id="newStatus" class="form-select">
                             <option value="processing">Processing</option>
                             <option value="resolved">Resolved</option>
@@ -222,33 +1287,815 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Catatan Admin</label>
+                        <label class="form-label">Admin Notes</label>
                         <textarea id="adminNotes" class="form-control" rows="3" 
-                                  placeholder="Tambahkan catatan untuk reporter..."></textarea>
+                                  placeholder="Add notes for reporter..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-warning" onclick="saveStatusUpdate()">Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" onclick="saveStatusUpdate()">Save</button>
                 </div>
             </div>
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Game Stats Modal -->
+    <div class="modal fade" id="gameStatsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">Game Statistics Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="gameStatsModalBody">
+                    <!-- Stats will be filled with JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
-        const REPORT_API_URL = "https://script.google.com/macros/s/AKfycbyeG5Yl-8TPQVJJJRXIng8u6sfgPyM1bsfgcfdhMmw6zUYjpvJIR_mq_rYNMSBkhnJN/exec"; // URL Apps Script Anda
-        let allReports = [];
-        let currentReport = null;
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const CONFIG = {
+            // API URLs
+            REPORT_API_URL: "https://script.google.com/macros/s/AKfycbyeG5Yl-8TPQVJJJRXIng8u6sfgPyM1bsfgcfdhMmw6zUYjpvJIR_mq_rYNMSBkhnJN/exec",
+            PINNED_API_URL: "https://script.google.com/macros/s/AKfycbw1ftGvO0CNdQ6q6BIYH1uBUQFS8VsSzD3IJcK_uTlNBcdEXK2qGmXD8k0HYCWWX2H6/exec",
+            
+            // Admin ID
+            ADMIN_ID: "1172835542",
+            
+            // Local Storage Keys
+            LS_THEME: "admin_theme",
+            LS_SETTINGS: "admin_settings",
+            LS_DATA: "admin_data_cache",
+            LS_NOTIFICATIONS: "admin_notifications"
+        };
         
-        // Fungsi untuk load semua laporan
-        async function loadReports() {
+        // ============================================
+        // GLOBAL VARIABLES
+        // ============================================
+        let allReports = [];
+        let allPinnedGames = [];
+        let allGameStats = [];
+        let topGames = [];
+        let refreshInterval = null;
+        let reportsChart = null;
+        let statusChart = null;
+        let currentSection = "dashboard";
+        let notifications = [];
+        
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set last updated date
+            document.getElementById('lastUpdated').value = new Date().toLocaleString('id-ID');
+            
+            // Load settings
+            loadSettings();
+            
+            // Load notifications
+            loadNotifications();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Load initial data
+            loadDashboardData();
+            
+            // Check API status
+            checkApiStatus();
+            
+            // Setup auto refresh
+            setupAutoRefresh();
+        });
+        
+        // ============================================
+        // SETUP FUNCTIONS
+        // ============================================
+        function setupEventListeners() {
+            // Sidebar navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    switchSection(section);
+                });
+            });
+            
+            // Mobile menu button
+            document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.toggle('active');
+            });
+            
+            // Theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            
+            // Refresh all button with animation
+            document.getElementById('refresh-all').addEventListener('click', function() {
+                animateRefreshButton(this);
+                refreshAllData();
+            });
+            
+            // Refresh individual buttons
+            document.getElementById('refresh-pinned')?.addEventListener('click', function() {
+                animateRefreshButton(this);
+                loadPinnedGames();
+            });
+            
+            document.getElementById('refresh-stats')?.addEventListener('click', function() {
+                animateRefreshButton(this);
+                loadGameStats();
+            });
+            
+            document.getElementById('refresh-reports')?.addEventListener('click', function() {
+                animateRefreshButton(this);
+                loadReports();
+            });
+            
+            // Theme switch
+            document.getElementById('themeSwitch').addEventListener('change', function() {
+                if (this.checked) {
+                    enableDarkMode();
+                } else {
+                    enableLightMode();
+                }
+            });
+            
+            // Filter event listeners
+            document.getElementById('filterPlatformPinned')?.addEventListener('change', filterPinnedGames);
+            document.getElementById('sortPinned')?.addEventListener('change', sortPinnedGames);
+            document.getElementById('searchPinned')?.addEventListener('input', searchPinnedGames);
+            
+            document.getElementById('filterPlatformStats')?.addEventListener('change', filterGameStats);
+            document.getElementById('sortStats')?.addEventListener('change', sortGameStats);
+            document.getElementById('dateFromStats')?.addEventListener('change', filterGameStats);
+            document.getElementById('dateToStats')?.addEventListener('change', filterGameStats);
+            
+            document.getElementById('filterStatus')?.addEventListener('change', filterReports);
+            document.getElementById('filterPlatform')?.addEventListener('change', filterReports);
+            document.getElementById('filterDateFrom')?.addEventListener('change', filterReports);
+            document.getElementById('filterDateTo')?.addEventListener('change', filterReports);
+            
+            // Notification event listeners
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.addEventListener('click', handleNotificationClick);
+            });
+            
+            document.getElementById('mark-all-read')?.addEventListener('click', markAllNotificationsAsRead);
+            
+            // Auto refresh setting
+            document.getElementById('autoRefresh')?.addEventListener('change', setupAutoRefresh);
+        }
+        
+        function setupAutoRefresh() {
+            const interval = parseInt(document.getElementById('autoRefresh').value) * 1000;
+            
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            if (interval > 0) {
+                refreshInterval = setInterval(() => {
+                    refreshCurrentSection();
+                }, interval);
+                
+                console.log(`Auto refresh set to ${interval/1000} seconds`);
+            }
+        }
+        
+        // ============================================
+        // UI FUNCTIONS
+        // ============================================
+        function switchSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.classList.add('d-none');
+                sec.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(section).classList.remove('d-none');
+            document.getElementById(section).classList.add('active');
+            
+            // Activate corresponding nav link
+            document.querySelector(`.nav-link[data-section="${section}"]`).classList.add('active');
+            
+            // Update page title
+            updatePageTitle(section);
+            
+            // Load section data
+            currentSection = section;
+            loadSectionData(section);
+            
+            // Close sidebar on mobile
+            if (window.innerWidth < 992) {
+                document.querySelector('.sidebar').classList.remove('active');
+            }
+        }
+        
+        function updatePageTitle(section) {
+            const titles = {
+                'dashboard': 'Dashboard Overview',
+                'pinned-games': 'Pinned Games Management',
+                'count-games': 'Game Click Statistics',
+                'report-games': 'User Reports Management',
+                'settings': 'System Settings'
+            };
+            
+            document.getElementById('page-title').textContent = titles[section] || 'Dashboard';
+        }
+        
+        function toggleTheme() {
+            if (document.body.classList.contains('dark-mode')) {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+        }
+        
+        function enableDarkMode() {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeSwitch').checked = true;
+            localStorage.setItem(CONFIG.LS_THEME, 'dark');
+        }
+        
+        function enableLightMode() {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+            document.getElementById('themeSwitch').checked = false;
+            localStorage.setItem(CONFIG.LS_THEME, 'light');
+        }
+        
+        // ============================================
+        // ANIMATION FUNCTIONS
+        // ============================================
+        function animateRefreshButton(button) {
+            // Add rotating class
+            button.classList.add('rotating');
+            
+            // Remove class after animation completes
+            setTimeout(() => {
+                button.classList.remove('rotating');
+            }, 600);
+            
+            // Show toast notification
+            showToast('Refreshing data...', 'info');
+        }
+        
+        // ============================================
+        // DATA LOADING FUNCTIONS
+        // ============================================
+        function loadDashboardData() {
+            loadPinnedGames();
+            loadGameStats();
+            loadReports();
+            loadTopGames();
+        }
+        
+        function loadSectionData(section) {
+            switch(section) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'pinned-games':
+                    loadPinnedGames();
+                    break;
+                case 'count-games':
+                    loadGameStats();
+                    break;
+                case 'report-games':
+                    loadReports();
+                    break;
+                // Settings doesn't need data loading
+            }
+        }
+        
+        function refreshAllData() {
+            showToast('Refreshing all data...', 'info');
+            loadDashboardData();
+            
+            if (currentSection !== 'dashboard') {
+                loadSectionData(currentSection);
+            }
+        }
+        
+        function refreshCurrentSection() {
+            loadSectionData(currentSection);
+        }
+        
+        // ============================================
+        // PINNED GAMES FUNCTIONS
+        // ============================================
+        async function loadPinnedGames() {
             try {
-                const response = await fetch(REPORT_API_URL, {
+                const response = await fetch(`${CONFIG.PINNED_API_URL}?action=getPinnedGames`);
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    allPinnedGames = result.data || [];
+                    displayPinnedGames(allPinnedGames);
+                    updatePinnedCount(allPinnedGames.length);
+                    showToast('Pinned games loaded successfully', 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Failed to load pinned games:', error);
+                showToast('Failed to load pinned games', 'error');
+                
+                // Load from cache if available
+                const cached = localStorage.getItem(`${CONFIG.LS_DATA}_pinned`);
+                if (cached) {
+                    allPinnedGames = JSON.parse(cached);
+                    displayPinnedGames(allPinnedGames);
+                }
+            }
+        }
+        
+        function displayPinnedGames(games) {
+            const tbody = document.getElementById('pinnedGamesBody');
+            
+            if (games.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="bi bi-pin-angle display-6 d-block mb-2"></i>
+                            No pinned games found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = games.map(game => {
+                const platformClass = `platform-${game.platform}`;
+                const updatedDate = game.updated_at ? formatDate(game.updated_at) : 'N/A';
+                
+                return `
+                    <tr>
+                        <td><span class="badge bg-primary">${game.slot}</span></td>
+                        <td><strong>${escapeHTML(game.name)}</strong></td>
+                        <td><span class="platform-badge ${platformClass}">${getPlatformName(game.platform)}</span></td>
+                        <td>${updatedDate}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editPinnedGame(${game.slot})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deletePinnedGame(${game.slot})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Cache the data
+            localStorage.setItem(`${CONFIG.LS_DATA}_pinned`, JSON.stringify(games));
+        }
+        
+        async function addPinnedGame() {
+            const slot = document.getElementById('pinnedSlot').value;
+            const platform = document.getElementById('pinnedPlatform').value;
+            const name = document.getElementById('pinnedGameName').value;
+            
+            if (!name.trim()) {
+                showToast('Game name is required', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(CONFIG.PINNED_API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
+                    },
+                    body: `action=updatePinnedGame&telegram_id=${CONFIG.ADMIN_ID}&slot=${slot}&platform=${platform}&name=${encodeURIComponent(name)}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast('Pinned game added successfully', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('addPinnedModal')).hide();
+                    loadPinnedGames();
+                    
+                    // Add notification
+                    addNotification('pinned', `Added pinned game: ${name}`);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showToast('Failed to add pinned game: ' + error.message, 'error');
+            }
+        }
+        
+        function editPinnedGame(slot) {
+            const game = allPinnedGames.find(g => g.slot == slot);
+            
+            if (game) {
+                document.getElementById('editPinnedId').value = game.slot;
+                document.getElementById('editPinnedSlot').value = game.slot;
+                document.getElementById('editPinnedPlatform').value = game.platform;
+                document.getElementById('editPinnedGameName').value = game.name;
+                
+                const modal = new bootstrap.Modal(document.getElementById('editPinnedModal'));
+                modal.show();
+            }
+        }
+        
+        async function updatePinnedGame() {
+            const slot = document.getElementById('editPinnedSlot').value;
+            const platform = document.getElementById('editPinnedPlatform').value;
+            const name = document.getElementById('editPinnedGameName').value;
+            
+            if (!name.trim()) {
+                showToast('Game name is required', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(CONFIG.PINNED_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=updatePinnedGame&telegram_id=${CONFIG.ADMIN_ID}&slot=${slot}&platform=${platform}&name=${encodeURIComponent(name)}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast('Pinned game updated successfully', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('editPinnedModal')).hide();
+                    loadPinnedGames();
+                    
+                    // Add notification
+                    addNotification('pinned', `Updated pinned game: ${name}`);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showToast('Failed to update pinned game: ' + error.message, 'error');
+            }
+        }
+        
+        async function deletePinnedGame(slot) {
+            const game = allPinnedGames.find(g => g.slot == slot);
+            const gameName = game ? game.name : `Slot ${slot}`;
+            
+            if (!confirm(`Are you sure you want to delete pinned game in slot ${slot} (${gameName})?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(CONFIG.PINNED_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=deletePinnedGame&telegram_id=${CONFIG.ADMIN_ID}&slot=${slot}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast('Pinned game deleted successfully', 'success');
+                    loadPinnedGames();
+                    
+                    // Add notification
+                    addNotification('pinned', `Deleted pinned game: ${gameName}`);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showToast('Failed to delete pinned game: ' + error.message, 'error');
+            }
+        }
+        
+        function filterPinnedGames() {
+            const platformFilter = document.getElementById('filterPlatformPinned').value;
+            let filtered = allPinnedGames;
+            
+            if (platformFilter !== 'all') {
+                filtered = filtered.filter(g => g.platform === platformFilter);
+            }
+            
+            const searchTerm = document.getElementById('searchPinned').value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(g => 
+                    g.name.toLowerCase().includes(searchTerm) || 
+                    g.platform.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            displayPinnedGames(filtered);
+        }
+        
+        function searchPinnedGames() {
+            filterPinnedGames();
+        }
+        
+        function sortPinnedGames() {
+            const sortBy = document.getElementById('sortPinned').value;
+            let sorted = [...allPinnedGames];
+            
+            switch(sortBy) {
+                case 'slot':
+                    sorted.sort((a, b) => a.slot - b.slot);
+                    break;
+                case 'name':
+                    sorted.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'platform':
+                    sorted.sort((a, b) => a.platform.localeCompare(b.platform));
+                    break;
+                case 'updated':
+                    sorted.sort((a, b) => {
+                        const dateA = new Date(a.updated_at || 0);
+                        const dateB = new Date(b.updated_at || 0);
+                        return dateB - dateA;
+                    });
+                    break;
+            }
+            
+            displayPinnedGames(sorted);
+        }
+        
+        // ============================================
+        // GAME STATS FUNCTIONS
+        // ============================================
+        async function loadGameStats() {
+            try {
+                // Load top games
+                const response = await fetch(`${CONFIG.PINNED_API_URL}?action=getTopGames&limit=100`);
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    allGameStats = result.data || [];
+                    
+                    // Process game stats to fix First Click data
+                    processGameStats(allGameStats);
+                    
+                    displayGameStats(allGameStats);
+                    updateTotalGames(allGameStats.length);
+                    showToast('Game statistics loaded successfully', 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Failed to load game stats:', error);
+                showToast('Failed to load game statistics', 'error');
+                
+                // Load from cache if available
+                const cached = localStorage.getItem(`${CONFIG.LS_DATA}_stats`);
+                if (cached) {
+                    allGameStats = JSON.parse(cached);
+                    processGameStats(allGameStats);
+                    displayGameStats(allGameStats);
+                }
+            }
+        }
+        
+        function processGameStats(stats) {
+            // Process each game stat to ensure First Click has proper data
+            stats.forEach(stat => {
+                // If first_click is null or has no date, use last_click data
+                if (!stat.first_click || !stat.first_click.date || stat.first_click.date === 'N/A') {
+                    if (stat.last_click && stat.last_click.date) {
+                        stat.first_click = {
+                            date: stat.last_click.date,
+                            time: stat.last_click.time || '00:00:00'
+                        };
+                    } else {
+                        stat.first_click = {
+                            date: formatDate(new Date().toISOString()),
+                            time: '00:00:00'
+                        };
+                    }
+                }
+                
+                // Ensure last_click has data
+                if (!stat.last_click || !stat.last_click.date || stat.last_click.date === 'N/A') {
+                    stat.last_click = {
+                        date: formatDate(new Date().toISOString()),
+                        time: new Date().toLocaleTimeString('id-ID', {hour12: false})
+                    };
+                }
+                
+                // Ensure today_clicks has value
+                if (stat.today_clicks === undefined || stat.today_clicks === null) {
+                    stat.today_clicks = 0;
+                }
+            });
+        }
+        
+        function displayGameStats(stats) {
+            const tbody = document.getElementById('gameStatsBody');
+            
+            if (stats.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="bi bi-bar-chart display-6 d-block mb-2"></i>
+                            No game statistics found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = stats.map(stat => {
+                const platformClass = `platform-${stat.platform}`;
+                const todayClicks = stat.today_clicks || 0;
+                const trendIcon = todayClicks > 5 ? 'bi-graph-up-arrow text-success' : 
+                                 todayClicks > 0 ? 'bi-graph-up text-warning' : 'bi-graph-down text-danger';
+                
+                // Format First Click
+                const firstClickDate = stat.first_click?.date || stat.last_click?.date || 'N/A';
+                const firstClickTime = stat.first_click?.time || '';
+                const firstClickDisplay = firstClickDate !== 'N/A' ? 
+                    `${formatDate(firstClickDate)} ${firstClickTime}` : 'N/A';
+                
+                // Format Last Click
+                const lastClickDate = stat.last_click?.date || 'N/A';
+                const lastClickTime = stat.last_click?.time || '';
+                const lastClickDisplay = lastClickDate !== 'N/A' ? 
+                    `${formatDate(lastClickDate)} ${lastClickTime}` : 'N/A';
+                
+                return `
+                    <tr>
+                        <td><code>${stat.game_id || 'N/A'}</code></td>
+                        <td><strong>${escapeHTML(stat.game_name || 'Unknown')}</strong></td>
+                        <td><span class="platform-badge ${platformClass}">${getPlatformName(stat.platform)}</span></td>
+                        <td><span class="badge bg-primary">${stat.total_clicks || 0}</span></td>
+                        <td>${firstClickDisplay}</td>
+                        <td>${lastClickDisplay}</td>
+                        <td>
+                            <span class="badge ${todayClicks > 0 ? 'bg-success' : 'bg-secondary'}">
+                                ${todayClicks}
+                            </span>
+                            <i class="bi ${trendIcon} ms-1"></i>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-info" onclick="viewGameStats('${stat.game_id}', '${stat.platform}')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Cache the data
+            localStorage.setItem(`${CONFIG.LS_DATA}_stats`, JSON.stringify(stats));
+        }
+        
+        async function viewGameStats(gameId, platform) {
+            try {
+                const response = await fetch(`${CONFIG.PINNED_API_URL}?action=getGameStats&game_id=${gameId}&platform=${platform}`);
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const stats = result.data;
+                    const modalBody = document.getElementById('gameStatsModalBody');
+                    
+                    // Format dates properly
+                    const firstClick = stats.first_click ? 
+                        `${formatDate(stats.first_click.date)} ${stats.first_click.time || ''}` : 
+                        'N/A';
+                    
+                    const lastClick = stats.last_click ? 
+                        `${formatDate(stats.last_click.date)} ${stats.last_click.time || ''}` : 
+                        'N/A';
+                    
+                    modalBody.innerHTML = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Game ID:</strong> ${stats.game_id || 'N/A'}</p>
+                                <p><strong>Platform:</strong> ${getPlatformName(stats.platform)}</p>
+                                <p><strong>Game Name:</strong> ${stats.game_name || 'Unknown'}</p>
+                                <p><strong>Total Clicks:</strong> <span class="badge bg-primary fs-6">${stats.total_clicks || 0}</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>First Click:</strong> ${firstClick}</p>
+                                <p><strong>Last Click:</strong> ${lastClick}</p>
+                                <p><strong>Today's Clicks:</strong> <span class="badge bg-success">${stats.today_clicks || 0}</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>Click Trend (Last 7 Days)</h6>
+                            <div class="chart-container" style="height: 200px;">
+                                <canvas id="gameTrendChart"></canvas>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('gameStatsModal'));
+                    modal.show();
+                    
+                    // Create trend chart
+                    setTimeout(() => {
+                        createGameTrendChart(stats);
+                    }, 100);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showToast('Failed to load game stats details: ' + error.message, 'error');
+            }
+        }
+        
+        function filterGameStats() {
+            const platformFilter = document.getElementById('filterPlatformStats').value;
+            const dateFrom = document.getElementById('dateFromStats').value;
+            const dateTo = document.getElementById('dateToStats').value;
+            
+            let filtered = allGameStats;
+            
+            if (platformFilter !== 'all') {
+                filtered = filtered.filter(g => g.platform === platformFilter);
+            }
+            
+            if (dateFrom) {
+                const fromDate = new Date(dateFrom);
+                filtered = filtered.filter(g => {
+                    const lastClick = g.last_click?.date ? new Date(g.last_click.date) : new Date(0);
+                    return lastClick >= fromDate;
+                });
+            }
+            
+            if (dateTo) {
+                const toDate = new Date(dateTo);
+                toDate.setHours(23, 59, 59, 999);
+                filtered = filtered.filter(g => {
+                    const lastClick = g.last_click?.date ? new Date(g.last_click.date) : new Date(0);
+                    return lastClick <= toDate;
+                });
+            }
+            
+            displayGameStats(filtered);
+        }
+        
+        function sortGameStats() {
+            const sortBy = document.getElementById('sortStats').value;
+            let sorted = [...allGameStats];
+            
+            switch(sortBy) {
+                case 'clicks':
+                    sorted.sort((a, b) => (b.total_clicks || 0) - (a.total_clicks || 0));
+                    break;
+                case 'name':
+                    sorted.sort((a, b) => (a.game_name || '').localeCompare(b.game_name || ''));
+                    break;
+                case 'platform':
+                    sorted.sort((a, b) => (a.platform || '').localeCompare(b.platform || ''));
+                    break;
+                case 'lastClick':
+                    sorted.sort((a, b) => {
+                        const dateA = a.last_click?.date ? new Date(a.last_click.date) : new Date(0);
+                        const dateB = b.last_click?.date ? new Date(b.last_click.date) : new Date(0);
+                        return dateB - dateA;
+                    });
+                    break;
+            }
+            
+            displayGameStats(sorted);
+        }
+        
+        // ============================================
+        // REPORTS FUNCTIONS
+        // ============================================
+        async function loadReports() {
+            try {
+                const response = await fetch(CONFIG.REPORT_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: 'action=getReports'
                 });
@@ -256,127 +2103,482 @@
                 if (!response.ok) throw new Error('HTTP ' + response.status);
                 
                 const result = await response.json();
+                
                 if (result.status === 'success') {
-                    allReports = result.data;
+                    allReports = result.data || [];
                     displayReports(allReports);
-                    updateStats(allReports);
+                    updateReportStats(allReports);
+                    createCharts(allReports);
+                    showToast('Reports loaded successfully', 'success');
+                    
+                    // Check for new reports and add notification
+                    checkForNewReports(allReports);
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
-                alert('Gagal memuat laporan: ' + error.message);
+                console.error('Failed to load reports:', error);
+                showToast('Failed to load reports', 'error');
+                
+                // Load from cache if available
+                const cached = localStorage.getItem(`${CONFIG.LS_DATA}_reports`);
+                if (cached) {
+                    allReports = JSON.parse(cached);
+                    displayReports(allReports);
+                    updateReportStats(allReports);
+                }
             }
         }
         
-        // Fungsi untuk menampilkan laporan di table
-function displayReports(reports) {
-    const tbody = document.getElementById('reportsBody');
-    
-    if (reports.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8" class="text-center text-muted">
-                    Tidak ada laporan ditemukan
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    tbody.innerHTML = reports.map(report => {
-        // FIX: Handle invalid dates
-        let dateString = 'Invalid Date';
-        try {
-            if (report.timestamp) {
-                const dateObj = new Date(report.timestamp);
-                if (!isNaN(dateObj.getTime())) {
-                    dateString = dateObj.toLocaleDateString('id-ID', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                    });
-                } else {
-                    // Fallback: try parsing string format
-                    dateString = formatDateFromString(report.timestamp);
-                }
+        function displayReports(reports) {
+            const tbody = document.getElementById('reportsBody');
+            
+            if (reports.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="bi bi-flag display-6 d-block mb-2"></i>
+                            No reports found
+                        </td>
+                    </tr>
+                `;
+                return;
             }
-        } catch (e) {
-            console.error('Date parsing error:', e);
-            dateString = formatDateFromString(report.timestamp);
+            
+            tbody.innerHTML = reports.map(report => {
+                const platformClass = `platform-${report.platform}`;
+                const statusClass = `status-${report.status}`;
+                
+                return `
+                    <tr>
+                        <td><strong>${report.reportId}</strong></td>
+                        <td>${escapeHTML(report.gameName)}</td>
+                        <td><span class="platform-badge ${platformClass}">${report.platform}</span></td>
+                        <td>${report.format}</td>
+                        <td>${escapeHTML(report.reporterName)}<br>
+                            <small class="text-muted">${report.reporterId}</small>
+                        </td>
+                        <td><span class="status-badge ${statusClass}">${report.status}</span></td>
+                        <td>${formatDate(report.timestamp)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="viewReportDetail('${report.reportId}')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning ms-1" onclick="openUpdateStatusModal('${report.reportId}')"
+                                    ${report.status === 'resolved' || report.status === 'rejected' ? 'disabled' : ''}>
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Update recent reports table on dashboard
+            updateRecentReports(reports.slice(0, 5));
+            
+            // Cache the data
+            localStorage.setItem(`${CONFIG.LS_DATA}_reports`, JSON.stringify(reports));
         }
         
-        const statusClass = getStatusClass(report.status);
-        
-        return `
-            <tr>
-                <td><strong>${report.reportId}</strong></td>
-                <td>${escapeHTML(report.gameName)}</td>
-                <td><span class="platform-badge">${report.platform}</span></td>
-                <td>${report.format}</td>
-                <td>${escapeHTML(report.reporterName)}<br>
-                    <small class="text-muted">${report.reporterId}</small>
-                </td>
-                <td><span class="status-badge ${statusClass}">${report.status}</span></td>
-                <td>${dateString}</td>
-                <td>
-                    <button class="btn btn-sm btn-info" onclick="viewReportDetail('${report.reportId}')">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                    <button class="btn btn-sm btn-warning ms-1" onclick="openUpdateStatusModal('${report.reportId}')"
-                            ${report.status === 'resolved' || report.status === 'rejected' ? 'disabled' : ''}>
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-    }).join('');
-}
-
-// Helper function untuk format tanggal dari string
-function formatDateFromString(dateStr) {
-    if (!dateStr || dateStr.trim() === '') return 'No Date';
-    
-    try {
-        // Coba berbagai format
-        const formats = [
-            // Format ISO
-            () => new Date(dateStr),
-            // Format dengan timestamp
-            () => new Date(parseInt(dateStr)),
-            // Format "DD/MM/YYYY HH:MM:SS"
-            () => {
-                const parts = dateStr.split(/[/ :]/);
-                if (parts.length >= 3) {
-                    return new Date(parts[2], parts[1] - 1, parts[0], 
-                                   parts[3] || 0, parts[4] || 0, parts[5] || 0);
-                }
-                return new Date(dateStr);
+        function updateRecentReports(reports) {
+            const tbody = document.getElementById('recentReportsBody');
+            
+            if (reports.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            No recent reports
+                        </td>
+                    </tr>
+                `;
+                return;
             }
-        ];
+            
+            tbody.innerHTML = reports.map(report => {
+                const platformClass = `platform-${report.platform}`;
+                const statusClass = `status-${report.status}`;
+                
+                return `
+                    <tr>
+                        <td>${escapeHTML(report.gameName)}</td>
+                        <td><span class="platform-badge ${platformClass}">${report.platform}</span></td>
+                        <td><span class="status-badge ${statusClass}">${report.status}</span></td>
+                        <td>${formatDate(report.timestamp)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
         
-        for (const formatFn of formats) {
+        async function loadTopGames() {
             try {
-                const date = formatFn();
-                if (!isNaN(date.getTime())) {
-                    return date.toLocaleDateString('id-ID', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                    });
+                const response = await fetch(`${CONFIG.PINNED_API_URL}?action=getTopGames&limit=5`);
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    topGames = result.data || [];
+                    displayTopGames(topGames);
                 }
-            } catch (e) {
-                continue;
+            } catch (error) {
+                console.error('Failed to load top games:', error);
             }
         }
         
-        // Jika semua gagal, return string asli (dipotong)
-        return dateStr.length > 10 ? dateStr.substring(0, 10) : dateStr;
-    } catch (e) {
-        return 'Invalid Date';
-    }
-}
+        function displayTopGames(games) {
+            const tbody = document.getElementById('topGamesBody');
+            
+            if (games.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            No game data available
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = games.map((game, index) => {
+                const platformClass = `platform-${game.platform}`;
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅';
+                
+                return `
+                    <tr>
+                        <td>
+                            <span class="me-2">${medal}</span>
+                            ${escapeHTML(game.game_name || 'Unknown')}
+                        </td>
+                        <td><span class="platform-badge ${platformClass}">${getPlatformName(game.platform)}</span></td>
+                        <td><span class="badge bg-primary">${game.total_clicks || 0}</span></td>
+                        <td>
+                            <i class="bi ${(game.total_clicks || 0) > 100 ? 'bi-graph-up-arrow text-success' : 'bi-graph-up text-warning'}"></i>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
         
-        // Fungsi untuk filter laporan
+        // ============================================
+        // NOTIFICATION FUNCTIONS
+        // ============================================
+        function loadNotifications() {
+            const savedNotifications = localStorage.getItem(CONFIG.LS_NOTIFICATIONS);
+            if (savedNotifications) {
+                notifications = JSON.parse(savedNotifications);
+            } else {
+                // Default notifications
+                notifications = [
+                    { id: 1, type: 'reports', message: '5 new reports', read: false, timestamp: new Date().toISOString() },
+                    { id: 2, type: 'stats', message: 'Game stats updated', read: false, timestamp: new Date().toISOString() },
+                    { id: 3, type: 'pinned', message: 'Pinned games modified', read: false, timestamp: new Date().toISOString() }
+                ];
+                saveNotifications();
+            }
+            
+            updateNotificationUI();
+        }
+        
+        function saveNotifications() {
+            localStorage.setItem(CONFIG.LS_NOTIFICATIONS, JSON.stringify(notifications));
+        }
+        
+        function updateNotificationUI() {
+            const unreadCount = notifications.filter(n => !n.read).length;
+            const notificationCount = document.getElementById('notification-count');
+            const notificationList = document.getElementById('notification-list');
+            
+            // Update count
+            notificationCount.textContent = unreadCount;
+            notificationCount.style.display = unreadCount > 0 ? 'inline' : 'none';
+            
+            // Update list
+            if (notificationList) {
+                const notificationItems = notifications.map(notification => `
+                    <li>
+                        <a class="dropdown-item notification-item ${notification.read ? 'text-muted' : 'fw-bold'}" 
+                           href="#" 
+                           data-id="${notification.id}"
+                           data-type="${notification.type}">
+                            <i class="bi ${getNotificationIcon(notification.type)} me-2"></i>
+                            <span>${notification.message}</span>
+                            <small class="d-block text-muted">${formatTimeAgo(notification.timestamp)}</small>
+                        </a>
+                    </li>
+                `).join('');
+                
+                notificationList.innerHTML = `
+                    <li><h6 class="dropdown-header">Notifications</h6></li>
+                    ${notificationItems}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-center" href="#" id="mark-all-read">Mark all as read</a></li>
+                    <li><a class="dropdown-item text-center" href="#">View all</a></li>
+                `;
+                
+                // Re-attach event listeners
+                document.querySelectorAll('.notification-item').forEach(item => {
+                    item.addEventListener('click', handleNotificationClick);
+                });
+                document.getElementById('mark-all-read')?.addEventListener('click', markAllNotificationsAsRead);
+            }
+        }
+        
+        function getNotificationIcon(type) {
+            switch(type) {
+                case 'reports': return 'bi-flag text-warning';
+                case 'stats': return 'bi-bar-chart text-success';
+                case 'pinned': return 'bi-pin-angle text-primary';
+                default: return 'bi-bell text-info';
+            }
+        }
+        
+        function handleNotificationClick(event) {
+            event.preventDefault();
+            const notificationId = parseInt(event.currentTarget.getAttribute('data-id'));
+            const notificationType = event.currentTarget.getAttribute('data-type');
+            
+            // Mark as read
+            const notification = notifications.find(n => n.id === notificationId);
+            if (notification && !notification.read) {
+                notification.read = true;
+                saveNotifications();
+                updateNotificationUI();
+            }
+            
+            // Handle based on type
+            switch(notificationType) {
+                case 'reports':
+                    switchSection('report-games');
+                    break;
+                case 'stats':
+                    switchSection('count-games');
+                    break;
+                case 'pinned':
+                    switchSection('pinned-games');
+                    break;
+            }
+            
+            // Close dropdown
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('notificationDropdown'));
+            if (dropdown) dropdown.hide();
+        }
+        
+        function markAllNotificationsAsRead(event) {
+            event.preventDefault();
+            
+            notifications.forEach(notification => {
+                notification.read = true;
+            });
+            
+            saveNotifications();
+            updateNotificationUI();
+            showToast('All notifications marked as read', 'success');
+        }
+        
+        function addNotification(type, message) {
+            const newNotification = {
+                id: notifications.length > 0 ? Math.max(...notifications.map(n => n.id)) + 1 : 1,
+                type: type,
+                message: message,
+                read: false,
+                timestamp: new Date().toISOString()
+            };
+            
+            notifications.unshift(newNotification);
+            
+            // Keep only last 50 notifications
+            if (notifications.length > 50) {
+                notifications = notifications.slice(0, 50);
+            }
+            
+            saveNotifications();
+            updateNotificationUI();
+            
+            // Show desktop notification if supported
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("Game Admin Notification", {
+                    body: message,
+                    icon: "https://ui-avatars.com/api/?name=GA&background=4361ee&color=fff"
+                });
+            }
+        }
+        
+        function checkForNewReports(reports) {
+            const cachedReports = localStorage.getItem(`${CONFIG.LS_DATA}_reports_previous`);
+            if (cachedReports) {
+                const previousReports = JSON.parse(cachedReports);
+                const previousIds = previousReports.map(r => r.reportId);
+                const newReports = reports.filter(r => !previousIds.includes(r.reportId));
+                
+                if (newReports.length > 0) {
+                    addNotification('reports', `${newReports.length} new report(s) received`);
+                }
+            }
+            
+            // Save current reports for next comparison
+            localStorage.setItem(`${CONFIG.LS_DATA}_reports_previous`, JSON.stringify(reports));
+        }
+        
+        // ============================================
+        // REPORT DETAILS & ACTIONS
+        // ============================================
+        function viewReportDetail(reportId) {
+            const report = allReports.find(r => r.reportId === reportId);
+            if (!report) {
+                showToast('Report not found', 'error');
+                return;
+            }
+            
+            const platformClass = `platform-${report.platform}`;
+            const statusClass = `status-${report.status}`;
+            
+            const detailHtml = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Report ID:</strong> ${report.reportId}</p>
+                        <p><strong>Game:</strong> ${escapeHTML(report.gameName)}</p>
+                        <p><strong>Platform:</strong> <span class="platform-badge ${platformClass}">${report.platform}</span></p>
+                        <p><strong>Game ID:</strong> ${report.gameId}</p>
+                        <p><strong>Format:</strong> ${report.format}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Reporter:</strong> ${escapeHTML(report.reporterName)}</p>
+                        <p><strong>Reporter ID:</strong> ${report.reporterId}</p>
+                        <p><strong>Report Date:</strong> ${formatDate(report.timestamp)}</p>
+                        <p><strong>Status:</strong> <span class="status-badge ${statusClass}">${report.status}</span></p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="mb-3">
+                    <h6>Issue Details:</h6>
+                    <div class="alert alert-light border">
+                        <p><strong>Broken Links Count:</strong> ${report.brokenLinksCount}</p>
+                        <p><strong>Broken Clouds:</strong> ${report.brokenClouds}</p>
+                        <p><strong>Description:</strong></p>
+                        <p>${escapeHTML(report.description || 'No description provided').replace(/\n/g, '<br>')}</p>
+                    </div>
+                </div>
+                
+                ${report.screenshotUrl ? `
+                <div class="mb-3">
+                    <h6>Screenshot:</h6>
+                    <div class="border rounded p-2 bg-light">
+                        <a href="${escapeHTML(report.screenshotUrl)}" target="_blank" 
+                           class="d-block text-center text-decoration-none">
+                            <img src="${escapeHTML(report.screenshotUrl)}" 
+                                 alt="Screenshot" 
+                                 class="img-fluid rounded" 
+                                 style="max-height: 200px;"
+                                 onerror="this.src='https://placehold.co/600x400?text=Screenshot+Not+Available'">
+                            <div class="small text-muted mt-1">
+                                Click to view full size
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${report.adminNotes ? `
+                <div class="mb-3">
+                    <h6>Admin Notes:</h6>
+                    <div class="alert alert-info">
+                        ${escapeHTML(report.adminNotes).replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('detailModalBody').innerHTML = detailHtml;
+            
+            // Set action buttons based on status
+            const actionButtons = document.getElementById('actionButtons');
+            if (report.status === 'pending' || report.status === 'processing') {
+                actionButtons.innerHTML = `
+                    <button type="button" class="btn btn-warning" onclick="openUpdateStatusModal('${report.reportId}')">
+                        <i class="bi bi-pencil me-1"></i> Update Status
+                    </button>
+                `;
+            } else {
+                actionButtons.innerHTML = `
+                    <button type="button" class="btn btn-warning" onclick="openUpdateStatusModal('${report.reportId}')">
+                        <i class="bi bi-pencil me-1"></i> Change Status
+                    </button>
+                `;
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+            modal.show();
+        }
+        
+        function openUpdateStatusModal(reportId) {
+            const report = allReports.find(r => r.reportId === reportId);
+            if (!report) return;
+            
+            document.getElementById('currentReportId').value = reportId;
+            
+            // Set current status in dropdown
+            const statusSelect = document.getElementById('newStatus');
+            statusSelect.value = report.status === 'pending' ? 'processing' : 
+                               report.status === 'processing' ? 'resolved' : 'rejected';
+            
+            // Clear notes
+            document.getElementById('adminNotes').value = '';
+            
+            const modal = new bootstrap.Modal(document.getElementById('updateStatusModal'));
+            modal.show();
+        }
+        
+        async function saveStatusUpdate() {
+            const reportId = document.getElementById('currentReportId').value;
+            const newStatus = document.getElementById('newStatus').value;
+            const adminNotes = document.getElementById('adminNotes').value;
+            
+            const report = allReports.find(r => r.reportId === reportId);
+            if (!report) {
+                showToast('Report not found', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(CONFIG.REPORT_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=updateReportStatus&reportId=${encodeURIComponent(reportId)}` +
+                          `&status=${encodeURIComponent(newStatus)}` +
+                          `&adminNotes=${encodeURIComponent(adminNotes)}` +
+                          `&admin_id=${CONFIG.ADMIN_ID}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Refresh reports
+                    await loadReports();
+                    
+                    // Close modals
+                    const updateModal = bootstrap.Modal.getInstance(document.getElementById('updateStatusModal'));
+                    if (updateModal) updateModal.hide();
+                    
+                    const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+                    if (detailModal) detailModal.hide();
+                    
+                    showToast('Status updated successfully', 'success');
+                    
+                    // Add notification
+                    addNotification('reports', `Report ${reportId} status changed to ${newStatus}`);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showToast('Failed to update status: ' + error.message, 'error');
+            }
+        }
+        
         function filterReports() {
             const statusFilter = document.getElementById('filterStatus').value;
             const platformFilter = document.getElementById('filterPlatform').value;
@@ -407,248 +2609,486 @@ function formatDateFromString(dateStr) {
             displayReports(filtered);
         }
         
-        // Fungsi untuk update statistik
-        function updateStats(reports) {
+        function exportToExcel() {
+            if (allReports.length === 0) {
+                showToast('No reports to export', 'warning');
+                return;
+            }
+            
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + "Report ID,Game Name,Platform,Format,Broken Links,Broken Clouds,Description,Reporter,Status,Date\n"
+                + allReports.map(report => 
+                    `"${report.reportId}","${report.gameName}","${report.platform}","${report.format}",` +
+                    `"${report.brokenLinksCount}","${report.brokenClouds}","${report.description || ''}",` +
+                    `"${report.reporterName}","${report.status}","${formatDate(report.timestamp)}"`
+                ).join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `reports_${new Date().getTime()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('Report exported successfully', 'success');
+            
+            // Add notification
+            addNotification('reports', `Exported ${allReports.length} reports to CSV`);
+        }
+        
+        // ============================================
+        // CHART FUNCTIONS
+        // ============================================
+        function createCharts(reports) {
+            createReportsChart(reports);
+            createStatusChart(reports);
+        }
+        
+        function createReportsChart(reports) {
+            const ctx = document.getElementById('reportsChart').getContext('2d');
+            
+            // Group reports by date
+            const reportsByDate = {};
+            const last7Days = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                last7Days.push(dateStr);
+                reportsByDate[dateStr] = 0;
+            }
+            
+            reports.forEach(report => {
+                const date = new Date(report.timestamp);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                if (reportsByDate.hasOwnProperty(dateStr)) {
+                    reportsByDate[dateStr]++;
+                }
+            });
+            
+            const data = last7Days.map(date => reportsByDate[date]);
+            const labels = last7Days.map(date => formatDateShort(date));
+            
+            if (reportsChart) {
+                reportsChart.destroy();
+            }
+            
+            reportsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Reports',
+                        data: data,
+                        borderColor: '#4361ee',
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createStatusChart(reports) {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            const statusCounts = {
+                pending: reports.filter(r => r.status === 'pending').length,
+                processing: reports.filter(r => r.status === 'processing').length,
+                resolved: reports.filter(r => r.status === 'resolved').length,
+                rejected: reports.filter(r => r.status === 'rejected').length
+            };
+            
+            if (statusChart) {
+                statusChart.destroy();
+            }
+            
+            statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'Processing', 'Resolved', 'Rejected'],
+                    datasets: [{
+                        data: [
+                            statusCounts.pending,
+                            statusCounts.processing,
+                            statusCounts.resolved,
+                            statusCounts.rejected
+                        ],
+                        backgroundColor: [
+                            '#f8961e',
+                            '#4361ee',
+                            '#4cc9f0',
+                            '#f72585'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color'),
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createGameTrendChart(stats) {
+            const ctx = document.getElementById('gameTrendChart').getContext('2d');
+            
+            // Mock data for trend (in real app, you would get this from API)
+            const labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Today'];
+            const todayClicks = stats.today_clicks || 0;
+            const baseClicks = Math.max(1, Math.floor((stats.total_clicks || 10) / 7));
+            
+            const data = [
+                Math.floor(baseClicks * 0.8),
+                Math.floor(baseClicks * 0.9),
+                Math.floor(baseClicks * 1.1),
+                Math.floor(baseClicks * 0.7),
+                Math.floor(baseClicks * 1.3),
+                Math.floor(baseClicks * 1.0),
+                todayClicks
+            ];
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Daily Clicks',
+                        data: data,
+                        borderColor: '#4cc9f0',
+                        backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // ============================================
+        // STATS UPDATE FUNCTIONS
+        // ============================================
+        function updatePinnedCount(count) {
+            document.getElementById('pinned-count').textContent = count;
+        }
+        
+        function updateTotalGames(count) {
+            document.getElementById('total-games').textContent = count;
+        }
+        
+        function updateReportStats(reports) {
+            const total = reports.length;
             const pending = reports.filter(r => r.status === 'pending').length;
             const processing = reports.filter(r => r.status === 'processing').length;
             const resolved = reports.filter(r => r.status === 'resolved').length;
             const rejected = reports.filter(r => r.status === 'rejected').length;
             
+            document.getElementById('total-reports').textContent = total;
+            document.getElementById('pending-reports').textContent = pending;
+            
+            // Update report status cards
             document.getElementById('pendingCount').textContent = pending;
             document.getElementById('processingCount').textContent = processing;
             document.getElementById('resolvedCount').textContent = resolved;
             document.getElementById('rejectedCount').textContent = rejected;
         }
         
-        // Fungsi untuk view detail laporan
-function viewReportDetail(reportId) {
-    const report = allReports.find(r => r.reportId === reportId);
-    if (!report) return;
-    
-    currentReport = report;
-    
-    // FIX: Handle date formatting
-    let dateString = 'Invalid Date';
-    try {
-        if (report.timestamp) {
-            const dateObj = new Date(report.timestamp);
-            if (!isNaN(dateObj.getTime())) {
-                dateString = dateObj.toLocaleString('id-ID', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+        // ============================================
+        // SETTINGS FUNCTIONS
+        // ============================================
+        function loadSettings() {
+            // Load theme
+            const savedTheme = localStorage.getItem(CONFIG.LS_THEME);
+            if (savedTheme === 'light') {
+                enableLightMode();
             } else {
-                dateString = formatDateFromString(report.timestamp);
+                enableDarkMode();
             }
-        }
-    } catch (e) {
-        dateString = formatDateFromString(report.timestamp);
-    }
-    
-    // FIX: Handle screenshot URL
-    let screenshotHtml = '';
-    if (report.screenshotUrl && report.screenshotUrl.trim() !== '') {
-        let screenshotUrl = report.screenshotUrl.trim();
-        
-        // Convert Google Drive view link to preview link
-        if (screenshotUrl.includes('drive.google.com/file/d/')) {
-            const match = screenshotUrl.match(/file\/d\/([^/]+)/);
-            if (match && match[1]) {
-                const fileId = match[1];
-                screenshotUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
-            }
-        }
-        
-        screenshotHtml = `
-            <div class="mb-3">
-                <h6>Screenshot:</h6>
-                <div class="border rounded p-2 bg-light">
-                    <a href="${escapeHTML(report.screenshotUrl)}" target="_blank" 
-                       class="d-block text-center text-decoration-none">
-                        <img src="${escapeHTML(screenshotUrl)}" 
-                             alt="Screenshot" 
-                             class="img-fluid rounded" 
-                             style="max-height: 300px; max-width: 100%;"
-                             onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=Screenshot+Tidak+Tersedia';"
-                             loading="lazy">
-                        <div class="small text-muted mt-1">
-                            Klik untuk lihat ukuran asli
-                        </div>
-                    </a>
-                </div>
-            </div>
-        `;
-    }
-    
-    const detailHtml = `
-        <div class="row">
-            <div class="col-md-6">
-                <p><strong>Report ID:</strong> ${report.reportId}</p>
-                <p><strong>Game:</strong> ${escapeHTML(report.gameName)}</p>
-                <p><strong>Platform:</strong> ${report.platform}</p>
-                <p><strong>Game ID:</strong> ${report.gameId}</p>
-                <p><strong>Format:</strong> ${report.format}</p>
-            </div>
-            <div class="col-md-6">
-                <p><strong>Reporter:</strong> ${escapeHTML(report.reporterName)}</p>
-                <p><strong>Reporter ID:</strong> ${report.reporterId}</p>
-                <p><strong>Tanggal Lapor:</strong> ${dateString}</p>
-                <p><strong>Status:</strong> <span class="status-badge ${getStatusClass(report.status)}">${report.status}</span></p>
-            </div>
-        </div>
-        
-        <hr>
-        
-        <div class="mb-3">
-            <h6>Detail Masalah:</h6>
-            <div class="alert alert-light border">
-                <p><strong>Jumlah Link Rusak:</strong> ${report.brokenLinksCount}</p>
-                <p><strong>Cloud yang Rusak:</strong> ${report.brokenClouds}</p>
-                <p><strong>Deskripsi:</strong></p>
-                <p>${escapeHTML(report.description).replace(/\n/g, '<br>')}</p>
-            </div>
-        </div>
-        
-        ${screenshotHtml}
-        
-        ${report.adminNotes ? `
-        <div class="mb-3">
-            <h6>Catatan Admin:</h6>
-            <div class="alert alert-info">
-                ${escapeHTML(report.adminNotes).replace(/\n/g, '<br>')}
-            </div>
-        </div>
-        ` : ''}
-    `;
-    
-    document.getElementById('detailModalBody').innerHTML = detailHtml;
-    
-    // Set action buttons berdasarkan status
-    const actionButtons = document.getElementById('actionButtons');
-    if (report.status === 'pending' || report.status === 'processing') {
-        actionButtons.innerHTML = `
-            <button type="button" class="btn btn-warning" onclick="openUpdateStatusModal('${report.reportId}')">
-                <i class="bi bi-pencil me-1"></i> Update Status
-            </button>
-        `;
-    } else {
-        actionButtons.innerHTML = `
-            <button type="button" class="btn btn-warning" onclick="openUpdateStatusModal('${report.reportId}')">
-                <i class="bi bi-pencil me-1"></i> Ubah Status
-            </button>
-        `;
-    }
-    
-    const modal = new bootstrap.Modal(document.getElementById('detailModal'));
-    modal.show();
-}
-        
-        // Fungsi untuk membuka modal update status
-        function openUpdateStatusModal(reportId) {
-            document.getElementById('currentReportId').value = reportId;
             
-            const modal = new bootstrap.Modal(document.getElementById('updateStatusModal'));
-            modal.show();
+            // Load other settings
+            const savedSettings = localStorage.getItem(CONFIG.LS_SETTINGS);
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                if (settings.autoRefresh) {
+                    document.getElementById('autoRefresh').value = settings.autoRefresh;
+                }
+                
+                if (settings.itemsPerPage) {
+                    document.getElementById('itemsPerPage').value = settings.itemsPerPage;
+                }
+                
+                if (settings.notifications) {
+                    document.getElementById('notifNewReports').checked = settings.notifications.newReports;
+                    document.getElementById('notifStatusChanges').checked = settings.notifications.statusChanges;
+                    document.getElementById('notifStatsUpdates').checked = settings.notifications.statsUpdates;
+                }
+            }
         }
         
-        // Fungsi untuk menyimpan update status
-        async function saveStatusUpdate() {
-            const reportId = document.getElementById('currentReportId').value;
-            const newStatus = document.getElementById('newStatus').value;
-            const adminNotes = document.getElementById('adminNotes').value;
+        function saveSettings() {
+            const settings = {
+                autoRefresh: document.getElementById('autoRefresh').value,
+                itemsPerPage: document.getElementById('itemsPerPage').value,
+                notifications: {
+                    newReports: document.getElementById('notifNewReports').checked,
+                    statusChanges: document.getElementById('notifStatusChanges').checked,
+                    statsUpdates: document.getElementById('notifStatsUpdates').checked
+                }
+            };
+            
+            localStorage.setItem(CONFIG.LS_SETTINGS, JSON.stringify(settings));
+            
+            // Update auto refresh
+            setupAutoRefresh();
+            
+            // Request notification permission if not already granted
+            if (settings.notifications.newReports || settings.notifications.statusChanges || settings.notifications.statsUpdates) {
+                if ("Notification" in window && Notification.permission === "default") {
+                    Notification.requestPermission();
+                }
+            }
+            
+            showToast('Settings saved successfully', 'success');
+            
+            // Add notification
+            addNotification('system', 'Settings updated');
+        }
+        
+        async function checkApiStatus() {
+            const statusSpinner = document.getElementById('apiStatusSpinner');
+            const statusText = document.getElementById('apiStatusText');
             
             try {
-                const response = await fetch(REPORT_API_URL, {
+                // Check reports API
+                const response = await fetch(CONFIG.REPORT_API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
                     },
-                    body: `action=updateReportStatus&reportId=${encodeURIComponent(reportId)}` +
-                          `&status=${encodeURIComponent(newStatus)}` +
-                          `&adminNotes=${encodeURIComponent(adminNotes)}`
+                    body: 'action=getReports'
                 });
                 
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                
-                const result = await response.json();
-                if (result.status === 'success') {
-                    // Refresh laporan
-                    await loadReports();
-                    
-                    // Tutup modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('updateStatusModal'));
-                    if (modal) modal.hide();
-                    
-                    // Tutup detail modal jika terbuka
-                    const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-                    if (detailModal) detailModal.hide();
-                    
-                    alert('Status berhasil diperbarui!');
+                if (response.ok) {
+                    statusSpinner.classList.remove('spinner-grow-sm');
+                    statusSpinner.classList.add('spinner-grow-sm', 'text-success');
+                    statusText.textContent = 'All APIs connected';
                 } else {
-                    throw new Error(result.message);
+                    throw new Error('API error');
                 }
             } catch (error) {
-                alert('Gagal update status: ' + error.message);
+                statusSpinner.classList.remove('text-success');
+                statusSpinner.classList.add('text-danger');
+                statusText.textContent = 'Some APIs disconnected';
             }
         }
         
-        // Fungsi untuk export ke Excel
-        function exportToExcel() {
-            const csvContent = "data:text/csv;charset=utf-8," 
-                + "Report ID,Game Name,Platform,Format,Broken Links,Broken Clouds,Description,Reporter,Status,Date\n"
-                + allReports.map(report => 
-                    `"${report.reportId}","${report.gameName}","${report.platform}","${report.format}",` +
-                    `"${report.brokenLinksCount}","${report.brokenClouds}","${report.description}",` +
-                    `"${report.reporterName}","${report.status}","${new Date(report.timestamp).toLocaleDateString()}"`
-                ).join("\n");
+        function clearCache() {
+            localStorage.removeItem(`${CONFIG.LS_DATA}_pinned`);
+            localStorage.removeItem(`${CONFIG.LS_DATA}_stats`);
+            localStorage.removeItem(`${CONFIG.LS_DATA}_reports`);
+            localStorage.removeItem(`${CONFIG.LS_DATA}_reports_previous`);
             
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `laporan_user_${new Date().getTime()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            showToast('Cache cleared successfully', 'success');
+            
+            // Refresh current section
+            loadSectionData(currentSection);
+            
+            // Add notification
+            addNotification('system', 'Cache cleared');
         }
         
-        // Helper functions
-        function getStatusClass(status) {
-            switch(status) {
-                case 'pending': return 'status-pending';
-                case 'processing': return 'status-processing';
-                case 'resolved': return 'status-resolved';
-                case 'rejected': return 'status-rejected';
-                default: return '';
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString;
+                
+                return date.toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch (e) {
+                return dateString;
             }
+        }
+        
+        function formatDateShort(dateString) {
+            if (!dateString) return '';
+            
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString;
+                
+                return date.toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: 'short'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+        
+        function formatTimeAgo(dateString) {
+            if (!dateString) return '';
+            
+            try {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins} min ago`;
+                if (diffHours < 24) return `${diffHours} hours ago`;
+                if (diffDays < 7) return `${diffDays} days ago`;
+                
+                return formatDate(dateString);
+            } catch (e) {
+                return '';
+            }
+        }
+        
+        function getPlatformName(platform) {
+            const platforms = {
+                'ps2': 'PlayStation 2',
+                'switch': 'Nintendo Switch',
+                'psp': 'PSP',
+                'android': 'Android',
+                'psvita': 'PS Vita',
+                'pc': 'PC',
+                'wii': 'Wii'
+            };
+            
+            return platforms[platform] || platform.toUpperCase();
         }
         
         function escapeHTML(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
         
-        function refreshReports() {
-            loadReports();
+        function showToast(message, type = 'info') {
+            // Create toast container if it doesn't exist
+            let toastContainer = document.querySelector('.toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                document.body.appendChild(toastContainer);
+            }
+            
+            // Create toast
+            const toastId = 'toast-' + Date.now();
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0`;
+            toast.id = toastId;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Show toast
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: true,
+                delay: 3000
+            });
+            bsToast.show();
+            
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.remove();
+            });
         }
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadReports();
-            
-            // Set default dates
-            const today = new Date().toISOString().split('T')[0];
-            const weekAgo = new Date();
-            weekAgo.setDate(weekAgo.getDate() - 7);
-            const weekAgoStr = weekAgo.toISOString().split('T')[0];
-            
-            document.getElementById('filterDateTo').value = today;
-            document.getElementById('filterDateFrom').value = weekAgoStr;
-        });
     </script>
 </body>
 </html>
