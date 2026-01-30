@@ -474,6 +474,8 @@ label {
   border: 2px solid var(--border-color);
   cursor: pointer;
   transition: all 0.3s ease;
+  user-select: none;
+  position: relative;
 }
 
 .format-tag:hover {
@@ -521,6 +523,58 @@ label {
   border-color: var(--nds-color);
   color: var(--text-primary);
 }
+
+/* Urutan Format */
+.order-indicator {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 20px;
+  height: 20px;
+  background: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Preview Format Order */
+.preview-order {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+}
+
+.preview-order-item {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  padding: 4px 8px;
+  background: var(--nds-color);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.preview-order-number {
+  background: white;
+  color: var(--nds-color);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  font-size: 10px;
+  font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -550,6 +604,7 @@ label {
   </div>
 </div>
 
+
 <div class="container-fluid">
 <div class="row">
 <div class="col-md-6 mb-4">
@@ -576,7 +631,7 @@ label {
     <div class="paste-section">
         <h4><i class="fas fa-file-code"></i> 1. Pilih Format Game 3DS</h4>
         <div class="paste-instruction">
-            Pilih format game yang akan dishare (bisa pilih lebih dari satu sesuai yang tersedia):
+            Pilih format game yang akan dishare (urutan centang akan menentukan urutan ukuran):
         </div>
         <div class="format-selector">
             <label class="format-tag">
@@ -599,6 +654,14 @@ label {
                 <input type="checkbox" class="format-check" value="RAR">
                 <span>RAR</span>
             </label>
+        </div>
+        
+        <!-- Preview Urutan Format -->
+        <div id="orderPreview" class="mt-3" style="display: none;">
+            <h6 style="color: var(--nds-color); margin-bottom: 10px;">
+                <i class="fas fa-list-ol"></i> Urutan Format:
+            </h6>
+            <div id="orderList" class="preview-order"></div>
         </div>
     </div>
     
@@ -625,18 +688,16 @@ label {
         <div class="paste-example">
 FORMAT YANG BENAR:
 Baris 1: Nama Game
-Baris 2-6: Ukuran untuk setiap format (sesuai urutan yang dipilih)
+Baris 2-6: Ukuran untuk setiap format SESUAI URUTAN CENTANG
 Baris 7: Kategori
 Baris 8: Language
 Baris 9: Link Game
 
-Contoh untuk format 3DS, CIA, CXI, CCI, RAR:
+Contoh jika urutan centang: CIA, 3DS, RAR:
 The Legend of Zelda: A Link Between Worlds
-1.45 GB    ← Ukuran 3DS
-1.35 GB    ← Ukuran CIA
-1.42 GB    ← Ukuran CXI
-1.30 GB    ← Ukuran CCI
-1.25 GB    ← Ukuran RAR
+1.35 GB    ← Ukuran CIA (format pertama)
+1.45 GB    ← Ukuran 3DS (format kedua)
+1.25 GB    ← Ukuran RAR (format ketiga)
 Action, Adventure
 USA
 https://www.indapk.com/zelda-link-between-worlds-3ds
@@ -689,10 +750,11 @@ https://www.indapk.com/zelda-link-between-worlds-3ds
         <small>
             <i class="fas fa-lightbulb"></i> <strong>Langkah-langkah:</strong><br>
             1. Pilih format yang mau dishare (3DS, CIA, CXI, CCI, RAR)<br>
-            2. Copy data lengkap game dari sumber<br>
-            3. Paste SEMUA data ke textarea (termasuk link di akhir)<br>
-            4. Klik "Generate Code"<br>
-            5. Copy hasil dan share!
+            2. <strong>URUTAN CENTANG</strong> menentukan urutan ukuran dalam hasil<br>
+            3. Copy data lengkap game dari sumber<br>
+            4. Paste SEMUA data ke textarea (termasuk link di akhir)<br>
+            5. Klik "Generate Code"<br>
+            6. Copy hasil dan share!
         </small>
     </div>
 </div>
@@ -705,8 +767,8 @@ https://www.indapk.com/zelda-link-between-worlds-3ds
             🎮SHARE GAME 3DS<br>
             🎮Update Game 3DS:<br>
             Nama Game: [nama]<br>
-            Ukuran 3DS: [ukuran]<br>
-            Ukuran CIA: [ukuran]<br>
+            Ukuran [format pertama]: [ukuran]<br>
+            Ukuran [format kedua]: [ukuran]<br>
             Category: [kategori]<br>
             Language: [bahasa]<br>
             <br>
@@ -725,6 +787,9 @@ https://www.indapk.com/zelda-link-between-worlds-3ds
 
 <!--Scripts-->
 <script>
+// Variabel global untuk menyimpan urutan centang
+let selectedFormatsOrder = [];
+
 // Theme Toggle Function
 function toggleTheme() {
   const body = document.body;
@@ -739,17 +804,72 @@ function toggleTheme() {
   }
 }
 
-// Format selector functionality
+// Format selector functionality dengan tracking urutan
 document.querySelectorAll('.format-check').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
         const tag = this.closest('.format-tag');
+        const format = this.value;
+        
         if (this.checked) {
             tag.classList.add('selected');
+            // Tambahkan format ke urutan jika belum ada
+            if (!selectedFormatsOrder.includes(format)) {
+                selectedFormatsOrder.push(format);
+            }
         } else {
             tag.classList.remove('selected');
+            // Hapus format dari urutan
+            const index = selectedFormatsOrder.indexOf(format);
+            if (index > -1) {
+                selectedFormatsOrder.splice(index, 1);
+            }
         }
+        
+        updateOrderIndicators();
+        updateOrderPreview();
     });
 });
+
+function updateOrderIndicators() {
+    // Hapus semua indikator urutan
+    document.querySelectorAll('.order-indicator').forEach(indicator => {
+        indicator.remove();
+    });
+    
+    // Tambahkan indikator urutan baru
+    selectedFormatsOrder.forEach((format, index) => {
+        const checkbox = document.querySelector(`.format-check[value="${format}"]`);
+        if (checkbox) {
+            const tag = checkbox.closest('.format-tag');
+            const indicator = document.createElement('div');
+            indicator.className = 'order-indicator';
+            indicator.textContent = index + 1;
+            tag.appendChild(indicator);
+        }
+    });
+}
+
+function updateOrderPreview() {
+    const orderPreview = document.getElementById('orderPreview');
+    const orderList = document.getElementById('orderList');
+    
+    if (selectedFormatsOrder.length > 0) {
+        orderPreview.style.display = 'block';
+        orderList.innerHTML = '';
+        
+        selectedFormatsOrder.forEach((format, index) => {
+            const orderItem = document.createElement('div');
+            orderItem.className = 'preview-order-item';
+            orderItem.innerHTML = `
+                <div class="preview-order-number">${index + 1}</div>
+                ${format}
+            `;
+            orderList.appendChild(orderItem);
+        });
+    } else {
+        orderPreview.style.display = 'none';
+    }
+}
 
 function clearCode() {
   const resultDiv = document.getElementById("result");
@@ -769,10 +889,15 @@ function clearCode() {
 
   document.getElementById("gameDataTextarea").value = '';
   
+  // Reset semua checkbox dan urutan
   document.querySelectorAll('.format-check').forEach(checkbox => {
     checkbox.checked = false;
     checkbox.closest('.format-tag').classList.remove('selected');
   });
+  
+  selectedFormatsOrder = [];
+  updateOrderIndicators();
+  updateOrderPreview();
   
   showNotification("Semua input telah dibersihkan!", "success");
 }
@@ -849,9 +974,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const gameData = gameDataTextarea.value.trim();
     
-    if (gameData) {
+    if (gameData && selectedFormatsOrder.length > 0) {
       const lines = gameData.split('\n').map(line => line.trim());
-      const selectedFormats = getSelectedFormats();
       
       let preview = "";
       
@@ -864,24 +988,28 @@ document.addEventListener('DOMContentLoaded', function() {
       
       preview += `🎮Update Game 3DS:\n`;
       
+      // Add game name
       if (lines.length >= 1) preview += `Nama Game: ${lines[0] || ''}\n`;
       
-      selectedFormats.forEach((format, index) => {
+      // Add sizes for selected formats IN ORDER
+      selectedFormatsOrder.forEach((format, index) => {
         if (lines.length >= index + 2) {
           preview += `Ukuran ${format}: ${lines[index + 1] || ''}\n`;
         }
       });
       
-      if (lines.length >= selectedFormats.length + 2) {
-        preview += `Category: ${lines[selectedFormats.length + 1] || ''}\n`;
+      // Add category and language
+      if (lines.length >= selectedFormatsOrder.length + 2) {
+        preview += `Category: ${lines[selectedFormatsOrder.length + 1] || ''}\n`;
       }
       
-      if (lines.length >= selectedFormats.length + 3) {
-        preview += `Language: ${lines[selectedFormats.length + 2] || ''}\n\n`;
+      if (lines.length >= selectedFormatsOrder.length + 3) {
+        preview += `Language: ${lines[selectedFormatsOrder.length + 2] || ''}\n\n`;
       }
       
-      if (lines.length >= selectedFormats.length + 4) {
-        const link = lines[selectedFormats.length + 3];
+      // Add link if available
+      if (lines.length >= selectedFormatsOrder.length + 4) {
+        const link = lines[selectedFormatsOrder.length + 3];
         if (link && link.startsWith('http')) {
           preview += `🌐Link Game:\n${link}\n\n`;
           if (lines[0]) {
@@ -897,15 +1025,23 @@ document.addEventListener('DOMContentLoaded', function() {
       preview += `#INDapk #3DSGames #Game3DS`;
       
       document.getElementById('previewContainer').innerText = preview;
+    } else if (gameData) {
+      document.getElementById('previewContainer').innerHTML = `
+        <p style="color: var(--accent-secondary); text-align: center; margin-top: 150px;">
+            Pilih format terlebih dahulu untuk melihat preview
+        </p>
+      `;
     }
   }
   
   gameDataTextarea.addEventListener('input', updatePreview);
   
+  // Update preview when format selection changes
   document.querySelectorAll('.format-check').forEach(checkbox => {
     checkbox.addEventListener('change', updatePreview);
   });
   
+  // Update preview when post type changes
   document.querySelectorAll('input[name="postType"]').forEach(radio => {
     radio.addEventListener('change', updatePreview);
   });
@@ -923,14 +1059,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-function getSelectedFormats() {
-  const selected = [];
-  document.querySelectorAll('.format-check:checked').forEach(checkbox => {
-    selected.push(checkbox.value);
-  });
-  return selected;
-}
-
 function generateCode() {
     const generateBtn = document.querySelector('.btn-primary-custom');
     const originalText = generateBtn.innerHTML;
@@ -938,8 +1066,7 @@ function generateCode() {
     generateBtn.disabled = true;
     
     setTimeout(() => {
-        const selectedFormats = getSelectedFormats();
-        if (selectedFormats.length === 0) {
+        if (selectedFormatsOrder.length === 0) {
             showNotification("Pilih minimal satu format game 3DS!", "error");
             generateBtn.innerHTML = originalText;
             generateBtn.disabled = false;
@@ -956,16 +1083,16 @@ function generateCode() {
         
         const lines = gameData.split('\n').map(line => line.trim());
         
-        const minLines = selectedFormats.length + 4;
+        const minLines = selectedFormatsOrder.length + 4; // name + sizes + category + language + link
         if (lines.length < minLines) {
-            showNotification(`Data kurang lengkap! Butuh ${minLines} baris untuk ${selectedFormats.length} format`, "error");
+            showNotification(`Data kurang lengkap! Butuh ${minLines} baris untuk ${selectedFormatsOrder.length} format`, "error");
             generateBtn.innerHTML = originalText;
             generateBtn.disabled = false;
             return;
         }
         
         const gameName = lines[0] || '';
-        const link = lines[selectedFormats.length + 3] || '';
+        const link = lines[selectedFormatsOrder.length + 3] || '';
         
         let alternativeLink = '';
         if (gameName) {
@@ -987,18 +1114,19 @@ function generateCode() {
         
         if (gameName) generatedText += `Nama Game: ${gameName}\n`;
         
-        selectedFormats.forEach((format, index) => {
+        // Add sizes IN THE ORDER THEY WERE SELECTED
+        selectedFormatsOrder.forEach((format, index) => {
             if (lines[index + 1]) {
                 generatedText += `Ukuran ${format}: ${lines[index + 1]}\n`;
             }
         });
         
-        if (lines[selectedFormats.length + 1]) {
-            generatedText += `Category: ${lines[selectedFormats.length + 1]}\n`;
+        if (lines[selectedFormatsOrder.length + 1]) {
+            generatedText += `Category: ${lines[selectedFormatsOrder.length + 1]}\n`;
         }
         
-        if (lines[selectedFormats.length + 2]) {
-            generatedText += `Language: ${lines[selectedFormats.length + 2]}\n\n`;
+        if (lines[selectedFormatsOrder.length + 2]) {
+            generatedText += `Language: ${lines[selectedFormatsOrder.length + 2]}\n\n`;
         }
         
         if (link && link.startsWith('http')) {
@@ -1032,8 +1160,8 @@ function generateCode() {
         generateBtn.disabled = false;
         
         const message = document.getElementById('autoCopy').checked 
-            ? `Code untuk ${selectedFormats.length} format berhasil di-generate dan disalin!` 
-            : `Code untuk ${selectedFormats.length} format berhasil di-generate!`;
+            ? `Code untuk ${selectedFormatsOrder.length} format berhasil di-generate dan disalin!` 
+            : `Code untuk ${selectedFormatsOrder.length} format berhasil di-generate!`;
         showNotification(message, "success");
         
     }, 800);
