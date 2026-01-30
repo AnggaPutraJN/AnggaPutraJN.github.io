@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Generator Share Gamecube</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+:root {
+  --primary-bg: #0a0a0a;
+  --secondary-bg: #1a1a1a;
+  --card-bg: #2a2a2a;
+  --text-primary: #E63946;
+  --text-secondary: #A8DADC;
+  --accent-color: #457B9D;
+  --accent-secondary: #1D3557;
+  --accent-green: #2A9D8F;
+  --border-color: #333;
+  --neon-glow: 0 0 20px;
+  --placeholder-color: #888;
+  --gamecube-color: #8B4513;
+  --gamecube-secondary: #D2691E;
+}
+
+[data-theme="light"] {
+  --primary-bg: #f8f9fa;
+  --secondary-bg: #ffffff;
+  --card-bg: #ffffff;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --accent-color: #457B9D;
+  --accent-secondary: #1D3557;
+  --accent-green: #28a745;
+  --border-color: #dee2e6;
+  --neon-glow: 0 0 10px;
+  --placeholder-color: #6c757d;
+  --gamecube-color: #8B4513;
+  --gamecube-secondary: #D2691E;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* Navigation Styles */
+.nav-section {
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--accent-color);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  padding: 12px 24px;
+  border-radius: 25px;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gradient-gamecube {
+  background: linear-gradient(45deg, var(--gamecube-color), var(--gamecube-secondary));
+  box-shadow: var(--neon-glow) var(--gamecube-color);
+}
+
+.btn-gradient-bg5 {
+  background: linear-gradient(45deg, var(--accent-secondary), var(--accent-color));
+  box-shadow: var(--neon-glow) var(--accent-secondary);
+}
+
+.nav-btn:hover {
+  transform: translateY(-3px);
+  color: white;
+  box-shadow: var(--neon-glow) var(--accent-color), 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Theme Switch */
+.theme-switch-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+}
+
+.theme-switch {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background: var(--card-bg);
+  border-radius: 15px;
+  border: 2px solid var(--gamecube-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-switch::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--gamecube-color);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px var(--gamecube-color);
+}
+
+.theme-switch.active::before {
+  transform: translateX(28px);
+}
+
+/* Container Styles */
+.container-fluid {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Card Styles */
+.custom-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.custom-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gamecube-color), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--gamecube-color), var(--gamecube-secondary));
+  color: white;
+  padding: 1.5rem;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+/* Form Styles */
+.form-control, input[type="text"], select, textarea {
+  background: var(--secondary-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary) !important;
+  padding: 12px 16px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.form-control:focus, 
+input[type="text"]:focus, 
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--gamecube-color);
+  box-shadow: 0 0 15px rgba(139, 69, 19, 0.3);
+  background: var(--card-bg);
+  color: var(--text-primary) !important;
+}
+
+.form-control::placeholder,
+input[type="text"]::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 0.8 !important;
+}
+
+.form-control::-webkit-input-placeholder,
+input[type="text"]::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder,
+select::-webkit-input-placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 0.8 !important;
+}
+
+.form-control::-moz-placeholder,
+input[type="text"]::-moz-placeholder,
+textarea::-moz-placeholder,
+select::-moz-placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 0.8 !important;
+}
+
+.form-control:-ms-input-placeholder,
+input[type="text"]:-ms-input-placeholder,
+textarea:-ms-input-placeholder,
+select:-ms-input-placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 0.8 !important;
+}
+
+textarea.form-control {
+  min-height: 200px;
+  resize: vertical;
+  font-family: 'Courier New', monospace;
+  line-height: 1.5;
+}
+
+label {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Button Styles */
+.btn-custom {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-custom:hover::before {
+  left: 100%;
+}
+
+.btn-primary-custom {
+  background: linear-gradient(45deg, var(--gamecube-color), var(--gamecube-secondary));
+  color: white;
+  box-shadow: var(--neon-glow) var(--gamecube-color);
+}
+
+.btn-secondary-custom {
+  background: linear-gradient(45deg, #6c757d, #495057);
+  color: white;
+}
+
+.btn-danger-custom {
+  background: linear-gradient(45deg, var(--accent-secondary), #ff4757);
+  color: white;
+  box-shadow: var(--neon-glow) var(--accent-secondary);
+}
+
+.btn-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Result Section */
+#result {
+  background: var(--card-bg);
+  border: 2px solid var(--gamecube-color);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  color: var(--text-primary);
+  box-shadow: inset 0 0 20px rgba(139, 69, 19, 0.1);
+  min-height: 100px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .container-fluid {
+    padding: 1rem;
+  }
+  
+  .theme-switch-container {
+    top: 10px;
+    right: 10px;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--gamecube-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Success Animation */
+.success-animation {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gamecube-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gamecube-secondary);
+}
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.2em;
+    background-color: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--gamecube-color);
+    border-color: var(--gamecube-color);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(139, 69, 19, 0.25);
+}
+
+.form-check-label {
+    margin-left: 0.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.paste-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
+}
+
+.paste-section h4 {
+  color: var(--gamecube-color);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.paste-instruction {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.paste-instruction:before {
+  content: "💡";
+  position: absolute;
+  left: 0;
+}
+
+.paste-example {
+  font-size: 0.85rem;
+  color: var(--placeholder-color);
+  background: var(--primary-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  font-family: 'Courier New', monospace;
+  border-left: 3px solid var(--accent-green);
+}
+
+/* Format Selector */
+.format-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.format-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--secondary-bg);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.format-tag:hover {
+  border-color: var(--gamecube-color);
+  transform: translateY(-2px);
+}
+
+.format-tag.selected {
+  background: var(--gamecube-color);
+  border-color: var(--gamecube-secondary);
+  color: white;
+}
+
+.format-tag input {
+  margin: 0;
+}
+
+/* Gamecube Badge */
+.gamecube-badge {
+  background: linear-gradient(45deg, var(--gamecube-color), var(--gamecube-secondary));
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+/* Preview Container */
+.preview-container {
+  background: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 15px;
+  min-height: 400px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.alert {
+  background: var(--secondary-bg);
+  border-color: var(--gamecube-color);
+  color: var(--text-primary);
+}
+</style>
+</head>
+<body>
+<!-- Theme Switch -->
+<div class="theme-switch-container">
+  <div class="theme-switch" onclick="toggleTheme()" title="Toggle Theme"></div>
+</div>
+
+<!-- Navigation Section -->
+<div class="nav-section">
+  <div class="nav-buttons">
+    <a href="index.html" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Home
+    </a>
+    <a href="gamecube.html" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Generator Gamecube
+    </a>
+    <a href="shortinggamecube.html" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Shorting Gamecube
+    </a>
+    <a href="#" class="nav-btn btn-gradient-gamecube">
+      <i class="fas fa-gamepad"></i> Generator Share Gamecube
+    </a>
+    <a href="wii.html" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Generator Share WII
+    </a>
+  </div>
+</div>
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-6 mb-4">
+<div class="custom-card">
+<div class="card-header">
+<h2><i class="fas fa-terminal"></i> Generator Share Game Gamecube</h2>
+</div>
+<div class="card-body">
+<div class="mb-3">
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="shareGame" value="share" checked>
+        <label class="form-check-label" for="shareGame">
+            <i class="fas fa-share-alt"></i> SHARE GAME GAMECUBE
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="uploadulang" value="upload">
+        <label class="form-check-label" for="uploadulang">
+            <i class="fas fa-redo"></i> Upload Ulang GAME GAMECUBE
+        </label>
+    </div>
+    
+    <!-- Format Selector -->
+    <div class="paste-section">
+        <h4><i class="fas fa-file-code"></i> 1. Pilih Format Game Gamecube</h4>
+        <div class="paste-instruction">
+            Pilih format game yang akan dishare (bisa pilih lebih dari satu sesuai yang tersedia):
+        </div>
+        <div class="format-selector">
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="ISO">
+                <span>ISO</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="RVZ">
+                <span>RVZ</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="GCM">
+                <span>GCM</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="GCZ">
+                <span>GCZ</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="WBFS">
+                <span>WBFS</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="RAR">
+                <span>RAR</span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="paste-section">
+        <h4><i class="fas fa-clipboard-list"></i> 2. Paste Data Lengkap Game Gamecube</h4>
+        <div class="paste-instruction">
+            Paste SEMUA data game Gamecube dalam 1 kali paste (termasuk link di akhir):
+        </div>
+
+        <label for="gameDataTextarea">Data Lengkap Game Gamecube:</label>
+        <textarea id="gameDataTextarea" class="form-control" placeholder="Contoh:&#10;Super Mario Sunshine&#10;1.45 GB    ← Ukuran ISO&#10;1.35 GB    ← Ukuran RVZ&#10;1.42 GB    ← Ukuran GCM&#10;1.30 GB    ← Ukuran GCZ&#10;1.38 GB    ← Ukuran WBFS&#10;1.25 GB    ← Ukuran RAR&#10;Platform, Adventure&#10;USA&#10;https://www.indapk.com/super-mario-sunshine-gamecube"></textarea>
+        
+<div class="d-flex justify-content-center flex-wrap gap-2">
+<button type="button" onclick="generateCode()" class="btn btn-custom btn-primary-custom">
+<i class="fas fa-cogs"></i> Generate Code
+</button>
+<button type="button" onclick="copyCode()" class="btn btn-custom btn-secondary-custom">
+<i class="fas fa-copy"></i> Copy Code
+</button>
+<button type="button" onclick="clearCode()" class="btn btn-custom btn-danger-custom">
+<i class="fas fa-trash"></i> Clear All
+</button>
+</div>
+        <div class="paste-example">
+FORMAT YANG BENAR:
+Baris 1: Nama Game
+Baris 2-7: Ukuran untuk setiap format (sesuai urutan yang dipilih)
+Baris 8: Kategori
+Baris 9: Language
+Baris 10: Link Game
+
+Contoh untuk format ISO, RVZ, GCM, GCZ, WBFS, RAR:
+Super Mario Sunshine
+1.45 GB    ← Ukuran ISO
+1.35 GB    ← Ukuran RVZ
+1.42 GB    ← Ukuran GCM
+1.30 GB    ← Ukuran GCZ
+1.38 GB    ← Ukuran WBFS
+1.25 GB    ← Ukuran RAR
+Platform, Adventure
+USA
+https://www.indapk.com/super-mario-sunshine-gamecube
+        </div>
+
+    </div>
+
+</div>
+<div id="result"></div>
+</div>
+</div>
+</div>
+
+<div class="col-md-6 mb-4">
+<div class="custom-card">
+<div class="card-header">
+<h2><i class="fas fa-gamepad"></i> Preview & Settings</h2>
+</div>
+<div class="card-body">
+<div class="mb-4">
+    <h4 class="text-center mb-3" style="color: var(--gamecube-color);">
+        <i class="fas fa-eye"></i> Preview Hasil
+    </h4>
+    <div id="previewContainer" class="preview-container">
+    <p style="color: var(--text-secondary); text-align: center; margin-top: 150px;">
+        Hasil akan muncul di sini setelah Generate
+    </p>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h5 style="color: var(--gamecube-color);"><i class="fas fa-cog"></i> Settings</h5>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="autoCopy" checked>
+        <label class="form-check-label" for="autoCopy">
+            Auto-copy setelah generate
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="showPreview" checked>
+        <label class="form-check-label" for="showPreview">
+            Tampilkan preview
+        </label>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h5 style="color: var(--gamecube-color);"><i class="fas fa-info-circle"></i> Cara Penggunaan</h5>
+    <div class="alert">
+        <small>
+            <i class="fas fa-lightbulb"></i> <strong>Langkah-langkah:</strong><br>
+            1. Pilih format yang mau dishare (ISO, RVZ, GCM, GCZ, WBFS, RAR)<br>
+            2. Copy data lengkap game dari sumber<br>
+            3. Paste SEMUA data ke textarea (termasuk link di akhir)<br>
+            4. Klik "Generate Code"<br>
+            5. Copy hasil dan share!
+        </small>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h5 style="color: var(--gamecube-color);"><i class="fas fa-code"></i> Format Output</h5>
+    <div class="alert" style="border-color: var(--gamecube-secondary);">
+        <small>
+            <i class="fas fa-check-circle"></i> Hasil akan dalam format:<br>
+            🎮SHARE GAME GAMECUBE<br>
+            🎮Update Game Gamecube:<br>
+            Nama Game: [nama]<br>
+            Ukuran ISO: [ukuran]<br>
+            Ukuran RVZ: [ukuran]<br>
+            Category: [kategori]<br>
+            Language: [bahasa]<br>
+            <br>
+            🌐Link Game:<br>
+            [link]<br>
+            <br>
+            #INDapk #GamecubeGames #GameGamecube
+        </small>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!--Scripts-->
+<script>
+// Theme Toggle Function
+function toggleTheme() {
+  const body = document.body;
+  const themeSwitch = document.querySelector('.theme-switch');
+  
+  if (body.getAttribute('data-theme') === 'light') {
+    body.removeAttribute('data-theme');
+    themeSwitch.classList.remove('active');
+  } else {
+    body.setAttribute('data-theme', 'light');
+    themeSwitch.classList.add('active');
+  }
+}
+
+// Format selector functionality
+document.querySelectorAll('.format-check').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const tag = this.closest('.format-tag');
+        if (this.checked) {
+            tag.classList.add('selected');
+        } else {
+            tag.classList.remove('selected');
+        }
+    });
+});
+
+function clearCode() {
+  const resultDiv = document.getElementById("result");
+  const previewContainer = document.getElementById("previewContainer");
+  
+  resultDiv.innerText = "";
+  previewContainer.innerHTML = `
+    <p style="color: var(--text-secondary); text-align: center; margin-top: 150px;">
+        Hasil akan muncul di sini setelah Generate
+    </p>
+  `;
+  
+  resultDiv.style.animation = 'pulse 0.3s ease-out';
+  setTimeout(() => {
+    resultDiv.style.animation = '';
+  }, 300);
+
+  document.getElementById("gameDataTextarea").value = '';
+  
+  document.querySelectorAll('.format-check').forEach(checkbox => {
+    checkbox.checked = false;
+    checkbox.closest('.format-tag').classList.remove('selected');
+  });
+  
+  showNotification("Semua input telah dibersihkan!", "success");
+}
+
+function copyCode() {
+  const resultDiv = document.getElementById("result");
+  const generatedText = resultDiv.innerText;
+
+  if (generatedText.trim() === "") {
+    showNotification("Maaf, codingan belum dibuat!", "error");
+    return;
+  }
+
+  const tempTextarea = document.createElement("textarea");
+  tempTextarea.value = generatedText;
+  document.body.appendChild(tempTextarea);
+  tempTextarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempTextarea);
+  
+  showNotification("Codingan berhasil disalin!", "success");
+  
+  resultDiv.classList.add('success-animation');
+  setTimeout(() => {
+    resultDiv.classList.remove('success-animation');
+  }, 500);
+}
+
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+    ${type === 'success' ? 'background: linear-gradient(45deg, var(--accent-green), var(--gamecube-color));' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
+// Add CSS for notification animations
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideDown {
+    from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+  }
+  @keyframes slideUp {
+    from { transform: translateX(-50%) translateY(0); opacity: 1; }
+    to { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+  }
+`;
+document.head.appendChild(style);
+
+// Auto-update preview when typing
+document.addEventListener('DOMContentLoaded', function() {
+  const gameDataTextarea = document.getElementById('gameDataTextarea');
+  const showPreviewCheckbox = document.getElementById('showPreview');
+  
+  function updatePreview() {
+    if (!showPreviewCheckbox.checked) return;
+    
+    const gameData = gameDataTextarea.value.trim();
+    
+    if (gameData) {
+      const lines = gameData.split('\n').map(line => line.trim());
+      const selectedFormats = getSelectedFormats();
+      
+      let preview = "";
+      
+      const postType = document.querySelector('input[name="postType"]:checked').value;
+      if (postType === 'share') {
+        preview += `🎮SHARE GAME GAMECUBE\n`;
+      } else {
+        preview += `🎮Upload Ulang GAME GAMECUBE\n`;
+      }
+      
+      preview += `🎮Update Game Gamecube:\n`;
+      
+      if (lines.length >= 1) preview += `Nama Game: ${lines[0] || ''}\n`;
+      
+      selectedFormats.forEach((format, index) => {
+        if (lines.length >= index + 2) {
+          preview += `Ukuran ${format}: ${lines[index + 1] || ''}\n`;
+        }
+      });
+      
+      if (lines.length >= selectedFormats.length + 2) {
+        preview += `Category: ${lines[selectedFormats.length + 1] || ''}\n`;
+      }
+      
+      if (lines.length >= selectedFormats.length + 3) {
+        preview += `Language: ${lines[selectedFormats.length + 2] || ''}\n\n`;
+      }
+      
+      if (lines.length >= selectedFormats.length + 4) {
+        const link = lines[selectedFormats.length + 3];
+        if (link && link.startsWith('http')) {
+          preview += `🌐Link Game:\n${link}\n\n`;
+          if (lines[0]) {
+            const encodedGameName = encodeURIComponent(lines[0].replace(/:/g, '%3A'));
+            preview += `🌐Link Alternatif: https://indapk.github.io/?q=${encodedGameName}\n`;
+          }
+        }
+      }
+      
+      preview += `\n🌐Join Komunitas INDapk:\nhttps://www.kuysocial.com/pages/INDapk\n\n`;
+      preview += `🌐Request Game:\nhttps://indapk.com/requestgame.html\n\n`;
+      
+      preview += `#INDapk #GamecubeGames #GameGamecube`;
+      
+      document.getElementById('previewContainer').innerText = preview;
+    }
+  }
+  
+  gameDataTextarea.addEventListener('input', updatePreview);
+  
+  document.querySelectorAll('.format-check').forEach(checkbox => {
+    checkbox.addEventListener('change', updatePreview);
+  });
+  
+  document.querySelectorAll('input[name="postType"]').forEach(radio => {
+    radio.addEventListener('change', updatePreview);
+  });
+  
+  showPreviewCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+      updatePreview();
+    } else {
+      document.getElementById('previewContainer').innerHTML = `
+        <p style="color: var(--text-secondary); text-align: center; margin-top: 150px;">
+            Preview dinonaktifkan
+        </p>
+      `;
+    }
+  });
+});
+
+function getSelectedFormats() {
+  const selected = [];
+  document.querySelectorAll('.format-check:checked').forEach(checkbox => {
+    selected.push(checkbox.value);
+  });
+  return selected;
+}
+
+function generateCode() {
+    const generateBtn = document.querySelector('.btn-primary-custom');
+    const originalText = generateBtn.innerHTML;
+    generateBtn.innerHTML = '<span class="loading"></span> Generating...';
+    generateBtn.disabled = true;
+    
+    setTimeout(() => {
+        const selectedFormats = getSelectedFormats();
+        if (selectedFormats.length === 0) {
+            showNotification("Pilih minimal satu format game Gamecube!", "error");
+            generateBtn.innerHTML = originalText;
+            generateBtn.disabled = false;
+            return;
+        }
+        
+        const gameData = document.getElementById("gameDataTextarea").value.trim();
+        if (!gameData) {
+            showNotification("Masukkan data game Gamecube!", "error");
+            generateBtn.innerHTML = originalText;
+            generateBtn.disabled = false;
+            return;
+        }
+        
+        const lines = gameData.split('\n').map(line => line.trim());
+        
+        const minLines = selectedFormats.length + 4;
+        if (lines.length < minLines) {
+            showNotification(`Data kurang lengkap! Butuh ${minLines} baris untuk ${selectedFormats.length} format`, "error");
+            generateBtn.innerHTML = originalText;
+            generateBtn.disabled = false;
+            return;
+        }
+        
+        const gameName = lines[0] || '';
+        const link = lines[selectedFormats.length + 3] || '';
+        
+        let alternativeLink = '';
+        if (gameName) {
+            const encodedGameName = encodeURIComponent(gameName.replace(/:/g, '%3A'));
+            alternativeLink = `https://indapk.github.io/?q=${encodedGameName}`;
+        }
+        
+        const postType = document.querySelector('input[name="postType"]:checked').value;
+
+        let generatedText;
+        
+        if (postType === 'share') {
+            generatedText = `🎮SHARE GAME GAMECUBE\n`;
+            generatedText += `🎮Update Game Gamecube:\n`;
+        } else {
+            generatedText = `🎮Upload Ulang GAME GAMECUBE\n`;
+            generatedText += `🎮Update Game Gamecube:\n`;
+        }
+        
+        if (gameName) generatedText += `Nama Game: ${gameName}\n`;
+        
+        selectedFormats.forEach((format, index) => {
+            if (lines[index + 1]) {
+                generatedText += `Ukuran ${format}: ${lines[index + 1]}\n`;
+            }
+        });
+        
+        if (lines[selectedFormats.length + 1]) {
+            generatedText += `Category: ${lines[selectedFormats.length + 1]}\n`;
+        }
+        
+        if (lines[selectedFormats.length + 2]) {
+            generatedText += `Language: ${lines[selectedFormats.length + 2]}\n\n`;
+        }
+        
+        if (link && link.startsWith('http')) {
+            generatedText += `🌐Link Game:\n${link}\n\n`;
+            generatedText += `🌐Link Alternatif: ${alternativeLink}\n`;
+        } else {
+            generatedText += `🌐Link Game:\n[Link akan tersedia setelah generate]\n`;
+        }
+        generatedText += `\n🌐Join Komunitas INDapk:\nhttps://www.kuysocial.com/pages/INDapk\n\n`;
+        generatedText += `🌐Request Game:\nhttps://indapk.com/requestgame.html\n\n`;
+        
+        
+        generatedText += `#INDapk #GamecubeGames #GameGamecube`;
+        
+        document.getElementById("result").innerText = generatedText;
+        
+        if (document.getElementById('showPreview').checked) {
+            document.getElementById('previewContainer').innerText = generatedText;
+        }
+        
+        if (document.getElementById('autoCopy').checked) {
+            const tempTextarea = document.createElement("textarea");
+            tempTextarea.value = generatedText;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextarea);
+        }
+        
+        generateBtn.innerHTML = originalText;
+        generateBtn.disabled = false;
+        
+        const message = document.getElementById('autoCopy').checked 
+            ? `Code untuk ${selectedFormats.length} format berhasil di-generate dan disalin!` 
+            : `Code untuk ${selectedFormats.length} format berhasil di-generate!`;
+        showNotification(message, "success");
+        
+    }, 800);
+}
+</script>
+
+</body>
+</html>
