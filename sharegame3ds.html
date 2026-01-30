@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Generator Kode Share Game Nintendo 3DS</title>
+<title>Generator Share 3DS</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
@@ -9,14 +9,16 @@
   --primary-bg: #0a0a0a;
   --secondary-bg: #1a1a1a;
   --card-bg: #2a2a2a;
-  --text-primary: #7CC6ED;
-  --text-secondary: #7CC6ED;
-  --accent-color: #00d4ff;
-  --accent-secondary: #ff006e;
-  --accent-green: #00ff88;
+  --text-primary: #FF9E00;
+  --text-secondary: #FFD166;
+  --accent-color: #EF476F;
+  --accent-secondary: #06D6A0;
+  --accent-green: #118AB2;
   --border-color: #333;
   --neon-glow: 0 0 20px;
   --placeholder-color: #888;
+  --nds-color: #FF6B6B;
+  --nds-secondary: #4ECDC4;
 }
 
 [data-theme="light"] {
@@ -25,12 +27,14 @@
   --card-bg: #ffffff;
   --text-primary: #212529;
   --text-secondary: #6c757d;
-  --accent-color: #0066cc;
-  --accent-secondary: #dc3545;
-  --accent-green: #28a745;
+  --accent-color: #EF476F;
+  --accent-secondary: #06D6A0;
+  --accent-green: #118AB2;
   --border-color: #dee2e6;
   --neon-glow: 0 0 10px;
   --placeholder-color: #6c757d;
+  --nds-color: #FF6B6B;
+  --nds-secondary: #4ECDC4;
 }
 
 * {
@@ -75,9 +79,9 @@ body {
   overflow: hidden;
 }
 
-.btn-gradient-bg3 {
-  background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
-  box-shadow: var(--neon-glow) var(--accent-color);
+.btn-gradient-3ds {
+  background: linear-gradient(45deg, var(--nds-color), var(--nds-secondary));
+  box-shadow: var(--neon-glow) var(--nds-color);
 }
 
 .btn-gradient-bg5 {
@@ -105,7 +109,7 @@ body {
   height: 30px;
   background: var(--card-bg);
   border-radius: 15px;
-  border: 2px solid var(--accent-color);
+  border: 2px solid var(--nds-color);
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -117,10 +121,10 @@ body {
   left: 2px;
   width: 22px;
   height: 22px;
-  background: var(--accent-color);
+  background: var(--nds-color);
   border-radius: 50%;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px var(--accent-color);
+  box-shadow: 0 0 10px var(--nds-color);
 }
 
 .theme-switch.active::before {
@@ -152,7 +156,7 @@ body {
   left: -100%;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  background: linear-gradient(90deg, transparent, var(--nds-color), transparent);
   animation: shimmer 3s infinite;
 }
 
@@ -167,7 +171,7 @@ body {
 }
 
 .card-header {
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+  background: linear-gradient(135deg, var(--nds-color), var(--nds-secondary));
   color: white;
   padding: 1.5rem;
   border-radius: 20px 20px 0 0;
@@ -186,11 +190,11 @@ body {
 }
 
 /* Form Styles */
-.form-control, input[type="text"] {
+.form-control, input[type="text"], select, textarea {
   background: var(--secondary-bg);
   border: 2px solid var(--border-color);
   border-radius: 12px;
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   padding: 12px 16px;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -198,51 +202,54 @@ body {
   width: 100%;
 }
 
-.form-control:focus, input[type="text"]:focus {
+.form-control:focus, 
+input[type="text"]:focus, 
+select:focus,
+textarea:focus {
   outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  border-color: var(--nds-color);
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
   background: var(--card-bg);
+  color: var(--text-primary) !important;
 }
 
-/* Placeholder Styles - Fixed */
-.form-control::placeholder, 
+.form-control::placeholder,
 input[type="text"]::placeholder,
-textarea::placeholder {
+textarea::placeholder,
+select::placeholder {
   color: var(--placeholder-color) !important;
-  opacity: 1;
+  opacity: 0.8 !important;
 }
 
 .form-control::-webkit-input-placeholder,
 input[type="text"]::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
+textarea::-webkit-input-placeholder,
+select::-webkit-input-placeholder {
   color: var(--placeholder-color) !important;
+  opacity: 0.8 !important;
 }
 
 .form-control::-moz-placeholder,
 input[type="text"]::-moz-placeholder,
-textarea::-moz-placeholder {
+textarea::-moz-placeholder,
+select::-moz-placeholder {
   color: var(--placeholder-color) !important;
-  opacity: 1;
+  opacity: 0.8 !important;
 }
 
 .form-control:-ms-input-placeholder,
 input[type="text"]:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
+textarea:-ms-input-placeholder,
+select:-ms-input-placeholder {
   color: var(--placeholder-color) !important;
-}
-
-.form-control:-moz-placeholder,
-input[type="text"]:-moz-placeholder,
-textarea:-moz-placeholder {
-  color: var(--placeholder-color) !important;
-  opacity: 1;
+  opacity: 0.8 !important;
 }
 
 textarea.form-control {
   min-height: 200px;
   resize: vertical;
   font-family: 'Courier New', monospace;
+  line-height: 1.5;
 }
 
 label {
@@ -282,9 +289,9 @@ label {
 }
 
 .btn-primary-custom {
-  background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+  background: linear-gradient(45deg, var(--nds-color), var(--nds-secondary));
   color: white;
-  box-shadow: var(--neon-glow) var(--accent-color);
+  box-shadow: var(--neon-glow) var(--nds-color);
 }
 
 .btn-secondary-custom {
@@ -306,14 +313,14 @@ label {
 /* Result Section */
 #result {
   background: var(--card-bg);
-  border: 2px solid var(--accent-color);
+  border: 2px solid var(--nds-color);
   border-radius: 15px;
   padding: 20px;
   margin-top: 20px;
   font-family: 'Courier New', monospace;
   white-space: pre-wrap;
   color: var(--text-primary);
-  box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(255, 107, 107, 0.1);
   min-height: 100px;
 }
 
@@ -346,7 +353,7 @@ label {
   height: 20px;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top-color: var(--accent-color);
+  border-top-color: var(--nds-color);
   animation: spin 1s ease-in-out infinite;
 }
 
@@ -375,12 +382,12 @@ label {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-color);
+  background: var(--nds-color);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-secondary);
+  background: var(--nds-secondary);
 }
 
 .form-check {
@@ -396,12 +403,12 @@ label {
 }
 
 .form-check-input:checked {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
+    background-color: var(--nds-color);
+    border-color: var(--nds-color);
 }
 
 .form-check-input:focus {
-    box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(255, 107, 107, 0.25);
 }
 
 .form-check-label {
@@ -409,23 +416,136 @@ label {
     color: var(--text-primary);
     cursor: pointer;
 }
+
+.paste-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
+}
+
+.paste-section h4 {
+  color: var(--nds-color);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.paste-instruction {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.paste-instruction:before {
+  content: "💡";
+  position: absolute;
+  left: 0;
+}
+
+.paste-example {
+  font-size: 0.85rem;
+  color: var(--placeholder-color);
+  background: var(--primary-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  font-family: 'Courier New', monospace;
+  border-left: 3px solid var(--accent-green);
+}
+
+/* Format Selector */
+.format-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.format-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--secondary-bg);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.format-tag:hover {
+  border-color: var(--nds-color);
+  transform: translateY(-2px);
+}
+
+.format-tag.selected {
+  background: var(--nds-color);
+  border-color: var(--nds-secondary);
+  color: white;
+}
+
+.format-tag input {
+  margin: 0;
+}
+
+/* 3DS Badge */
+.nds-badge {
+  background: linear-gradient(45deg, var(--nds-color), var(--nds-secondary));
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+/* Preview Container */
+.preview-container {
+  background: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 15px;
+  min-height: 400px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.alert {
+  background: var(--secondary-bg);
+  border-color: var(--nds-color);
+  color: var(--text-primary);
+}
 </style>
 </head>
 <body>
-<!-- Theme 3DS -->
+<!-- Theme Switch -->
 <div class="theme-switch-container">
-  <div class="theme-switch" onclick="toggleTheme()" title="Toggle Theme">
-  </div>
+  <div class="theme-switch" onclick="toggleTheme()" title="Toggle Theme"></div>
 </div>
 
 <!-- Navigation Section -->
 <div class="nav-section">
   <div class="nav-buttons">
-    <a href="index" class="nav-btn btn-gradient-bg3">
-      <i class="fas fa-code"></i> HOME
+    <a href="index.html" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Home
     </a>
-    <a href="3ds" class="nav-btn btn-gradient-bg5">
-      <i class="fas fa-gamepad"></i> Generator HTML Nintendo 3DS
+    <a href="3ds.html" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Generator 3ds
+    </a>
+    <a href="shorting3ds.html" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Generator Shorting 3ds
+    </a>
+    <a href="#" class="nav-btn btn-gradient-3ds">
+      <i class="fas fa-gamepad"></i> Generator Share 3DS
+    </a>
+    <a href="gamecube.html" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Generator Share Gamecube
     </a>
   </div>
 </div>
@@ -435,31 +555,62 @@ label {
 <div class="col-md-6 mb-4">
 <div class="custom-card">
 <div class="card-header">
-<h2><i class="fas fa-terminal"></i> Input Area</h2>
+<h2><i class="fas fa-terminal"></i> Generator Share Game 3DS</h2>
 </div>
 <div class="card-body">
 <div class="mb-3">
     <div class="form-check">
-        <input class="form-check-input" type="radio" name="postType" id="updateRequest" value="update" checked>
-        <label class="form-check-label" for="updateRequest">
-            UPDATE REQUEST GAME Nintendo 3DS
-        </label>
-    </div>
-    <div class="form-check">
-        <input class="form-check-input" type="radio" name="postType" id="shareGame" value="share">
+        <input class="form-check-input" type="radio" name="postType" id="shareGame" value="share" checked>
         <label class="form-check-label" for="shareGame">
-            SHARE GAME Nintendo 3DS
+            <i class="fas fa-share-alt"></i> SHARE GAME 3DS
         </label>
     </div>
     <div class="form-check">
         <input class="form-check-input" type="radio" name="postType" id="uploadulang" value="upload">
         <label class="form-check-label" for="uploadulang">
-            Upload Ulang GAME Nintendo 3DS
+            <i class="fas fa-redo"></i> Upload Ulang GAME 3DS
         </label>
     </div>
-<label for="myTextarea">Masukkan Detail Game Nintendo 3DS (satu per baris):</label>
-<textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game...&#10;Contoh:&#10;God of War&#10;2.5 GB&#10;4.2 GB&#10;Action&#10;NTSC-U&#10;https://example.com/download"></textarea>
-</div>
+    
+    <!-- Format Selector -->
+    <div class="paste-section">
+        <h4><i class="fas fa-file-code"></i> 1. Pilih Format Game 3DS</h4>
+        <div class="paste-instruction">
+            Pilih format game yang akan dishare (bisa pilih lebih dari satu sesuai yang tersedia):
+        </div>
+        <div class="format-selector">
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="3DS">
+                <span>3DS</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="CIA">
+                <span>CIA</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="CXI">
+                <span>CXI</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="CCI">
+                <span>CCI</span>
+            </label>
+            <label class="format-tag">
+                <input type="checkbox" class="format-check" value="RAR">
+                <span>RAR</span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="paste-section">
+        <h4><i class="fas fa-clipboard-list"></i> 2. Paste Data Lengkap Game 3DS</h4>
+        <div class="paste-instruction">
+            Paste SEMUA data game 3DS dalam 1 kali paste (termasuk link di akhir):
+        </div>
+
+        <label for="gameDataTextarea">Data Lengkap Game 3DS:</label>
+        <textarea id="gameDataTextarea" class="form-control" placeholder="Contoh:&#10;The Legend of Zelda: A Link Between Worlds&#10;1.45 GB    ← Ukuran 3DS&#10;1.35 GB    ← Ukuran CIA&#10;1.42 GB    ← Ukuran CXI&#10;1.30 GB    ← Ukuran CCI&#10;1.25 GB    ← Ukuran RAR&#10;Action, Adventure&#10;USA&#10;https://www.indapk.com/zelda-link-between-worlds-3ds"></textarea>
+        
 <div class="d-flex justify-content-center flex-wrap gap-2">
 <button type="button" onclick="generateCode()" class="btn btn-custom btn-primary-custom">
 <i class="fas fa-cogs"></i> Generate Code
@@ -471,39 +622,101 @@ label {
 <i class="fas fa-trash"></i> Clear All
 </button>
 </div>
+        <div class="paste-example">
+FORMAT YANG BENAR:
+Baris 1: Nama Game
+Baris 2-6: Ukuran untuk setiap format (sesuai urutan yang dipilih)
+Baris 7: Kategori
+Baris 8: Language
+Baris 9: Link Game
+
+Contoh untuk format 3DS, CIA, CXI, CCI, RAR:
+The Legend of Zelda: A Link Between Worlds
+1.45 GB    ← Ukuran 3DS
+1.35 GB    ← Ukuran CIA
+1.42 GB    ← Ukuran CXI
+1.30 GB    ← Ukuran CCI
+1.25 GB    ← Ukuran RAR
+Action, Adventure
+USA
+https://www.indapk.com/zelda-link-between-worlds-3ds
+        </div>
+
+    </div>
+
+</div>
 <div id="result"></div>
 </div>
 </div>
 </div>
 
-
-
 <div class="col-md-6 mb-4">
 <div class="custom-card">
 <div class="card-header">
-<h2><i class="fas fa-gamepad"></i> Detail Game Nintendo 3DS</h2>
+<h2><i class="fas fa-gamepad"></i> Preview & Settings</h2>
 </div>
 <div class="card-body">
-<form id="myForm">
-<label for="inputName"><i class="fas fa-tag"></i> Nama Game:</label>
-<input type="text" id="inputName" name="inputName" placeholder="Masukkan nama game...">
+<div class="mb-4">
+    <h4 class="text-center mb-3" style="color: var(--nds-color);">
+        <i class="fas fa-eye"></i> Preview Hasil
+    </h4>
+    <div id="previewContainer" class="preview-container">
+    <p style="color: var(--text-secondary); text-align: center; margin-top: 150px;">
+        Hasil akan muncul di sini setelah Generate
+    </p>
+    </div>
+</div>
 
-<label for="inputSingleSizeCIA"><i class="fas fa-hdd"></i> Ukuran CIA Game:</label>
-<input type="text" id="inputSingleSizeCIA" name="inputSingleSizeCIA" placeholder="Contoh: 2.5 GB">
+<div class="mt-4">
+    <h5 style="color: var(--nds-color);"><i class="fas fa-cog"></i> Settings</h5>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="autoCopy" checked>
+        <label class="form-check-label" for="autoCopy">
+            Auto-copy setelah generate
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="showPreview" checked>
+        <label class="form-check-label" for="showPreview">
+            Tampilkan preview
+        </label>
+    </div>
+</div>
 
-<label for="inputSingleSize3DS"><i class="fas fa-compact-disc"></i> Ukuran 3DS Game:</label>
-<input type="text" id="inputSingleSize3DS" name="inputSingleSize3DS" placeholder="Contoh: 4.2 GB">
+<div class="mt-4">
+    <h5 style="color: var(--nds-color);"><i class="fas fa-info-circle"></i> Cara Penggunaan</h5>
+    <div class="alert">
+        <small>
+            <i class="fas fa-lightbulb"></i> <strong>Langkah-langkah:</strong><br>
+            1. Pilih format yang mau dishare (3DS, CIA, CXI, CCI, RAR)<br>
+            2. Copy data lengkap game dari sumber<br>
+            3. Paste SEMUA data ke textarea (termasuk link di akhir)<br>
+            4. Klik "Generate Code"<br>
+            5. Copy hasil dan share!
+        </small>
+    </div>
+</div>
 
-<label for="inputCategory"><i class="fas fa-list"></i> Category:</label>
-<input type="text" id="inputCategory" name="inputCategory" placeholder="Contoh: Action, RPG, Sports">
-
-<label for="inputRegion"><i class="fas fa-globe"></i> Region:</label>
-<input type="text" id="inputRegion" name="inputRegion" placeholder="Contoh: NTSC-U, PAL">
-
-<label for="inputLink"><i class="fas fa-link"></i> Link Game:</label>
-<input type="text" id="inputLink" name="inputLink" placeholder="https://example.com/download">
-
-</form>
+<div class="mt-4">
+    <h5 style="color: var(--nds-color);"><i class="fas fa-code"></i> Format Output</h5>
+    <div class="alert" style="border-color: var(--nds-secondary);">
+        <small>
+            <i class="fas fa-check-circle"></i> Hasil akan dalam format:<br>
+            🎮SHARE GAME 3DS<br>
+            🎮Update Game 3DS:<br>
+            Nama Game: [nama]<br>
+            Ukuran 3DS: [ukuran]<br>
+            Ukuran CIA: [ukuran]<br>
+            Category: [kategori]<br>
+            Language: [bahasa]<br>
+            <br>
+            🌐Link Game:<br>
+            [link]<br>
+            <br>
+            #INDapk #3DSGames #Game3DS
+        </small>
+    </div>
+</div>
 </div>
 </div>
 </div>
@@ -520,53 +733,61 @@ function toggleTheme() {
   if (body.getAttribute('data-theme') === 'light') {
     body.removeAttribute('data-theme');
     themeSwitch.classList.remove('active');
-    localStorage.setItem('theme', 'dark');
   } else {
     body.setAttribute('data-theme', 'light');
     themeSwitch.classList.add('active');
-    localStorage.setItem('theme', 'light');
   }
 }
 
-// Load saved theme
-document.addEventListener('DOMContentLoaded', function() {
-  const savedTheme = localStorage.getItem('theme');
-  const themeSwitch = document.querySelector('.theme-switch');
-  
-  if (savedTheme === 'light') {
-    document.body.setAttribute('data-theme', 'light');
-    themeSwitch.classList.add('active');
-  }
+// Format selector functionality
+document.querySelectorAll('.format-check').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const tag = this.closest('.format-tag');
+        if (this.checked) {
+            tag.classList.add('selected');
+        } else {
+            tag.classList.remove('selected');
+        }
+    });
 });
 
 function clearCode() {
   const resultDiv = document.getElementById("result");
-  resultDiv.innerText = "";
+  const previewContainer = document.getElementById("previewContainer");
   
-  // Add animation
+  resultDiv.innerText = "";
+  previewContainer.innerHTML = `
+    <p style="color: var(--text-secondary); text-align: center; margin-top: 150px;">
+        Hasil akan muncul di sini setelah Generate
+    </p>
+  `;
+  
   resultDiv.style.animation = 'pulse 0.3s ease-out';
   setTimeout(() => {
     resultDiv.style.animation = '';
   }, 300);
 
-  // Clear all inputs and textarea
-  const allInputs = document.querySelectorAll('input, textarea');
-  allInputs.forEach(input => {
-    input.value = '';
+  document.getElementById("gameDataTextarea").value = '';
+  
+  document.querySelectorAll('.format-check').forEach(checkbox => {
+    checkbox.checked = false;
+    checkbox.closest('.format-tag').classList.remove('selected');
   });
+  
+  showNotification("Semua input telah dibersihkan!", "success");
 }
 
 function copyCode() {
   const resultDiv = document.getElementById("result");
-  const generatedHtml = resultDiv.innerText;
+  const generatedText = resultDiv.innerText;
 
-  if (generatedHtml.trim() === "") {
+  if (generatedText.trim() === "") {
     showNotification("Maaf, codingan belum dibuat!", "error");
     return;
   }
 
   const tempTextarea = document.createElement("textarea");
-  tempTextarea.value = generatedHtml;
+  tempTextarea.value = generatedText;
   document.body.appendChild(tempTextarea);
   tempTextarea.select();
   document.execCommand("copy");
@@ -574,14 +795,12 @@ function copyCode() {
   
   showNotification("Codingan berhasil disalin!", "success");
   
-  // Add success animation
   resultDiv.classList.add('success-animation');
   setTimeout(() => {
     resultDiv.classList.remove('success-animation');
   }, 500);
 }
 
-// Notification function
 function showNotification(message, type) {
   const notification = document.createElement('div');
   notification.style.cssText = `
@@ -595,7 +814,7 @@ function showNotification(message, type) {
     font-weight: 600;
     z-index: 10000;
     animation: slideDown 0.3s ease-out;
-    ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+    ${type === 'success' ? 'background: linear-gradient(45deg, var(--accent-green), var(--nds-color));' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
   `;
   notification.textContent = message;
   document.body.appendChild(notification);
@@ -620,142 +839,204 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-const textarea = document.getElementById('myTextarea');
-const form = document.getElementById('myForm');
-const inputs = form.querySelectorAll('input');
-
-textarea.addEventListener('input', () => {
-  const text = textarea.value.trim();
-  const values = text.split('\n');
-
-  inputs.forEach((input, index) => {
-    if (values[index]) {
-      input.value = values[index];
+// Auto-update preview when typing
+document.addEventListener('DOMContentLoaded', function() {
+  const gameDataTextarea = document.getElementById('gameDataTextarea');
+  const showPreviewCheckbox = document.getElementById('showPreview');
+  
+  function updatePreview() {
+    if (!showPreviewCheckbox.checked) return;
+    
+    const gameData = gameDataTextarea.value.trim();
+    
+    if (gameData) {
+      const lines = gameData.split('\n').map(line => line.trim());
+      const selectedFormats = getSelectedFormats();
+      
+      let preview = "";
+      
+      const postType = document.querySelector('input[name="postType"]:checked').value;
+      if (postType === 'share') {
+        preview += `🎮SHARE GAME 3DS\n`;
+      } else {
+        preview += `🎮Upload Ulang GAME 3DS\n`;
+      }
+      
+      preview += `🎮Update Game 3DS:\n`;
+      
+      if (lines.length >= 1) preview += `Nama Game: ${lines[0] || ''}\n`;
+      
+      selectedFormats.forEach((format, index) => {
+        if (lines.length >= index + 2) {
+          preview += `Ukuran ${format}: ${lines[index + 1] || ''}\n`;
+        }
+      });
+      
+      if (lines.length >= selectedFormats.length + 2) {
+        preview += `Category: ${lines[selectedFormats.length + 1] || ''}\n`;
+      }
+      
+      if (lines.length >= selectedFormats.length + 3) {
+        preview += `Language: ${lines[selectedFormats.length + 2] || ''}\n\n`;
+      }
+      
+      if (lines.length >= selectedFormats.length + 4) {
+        const link = lines[selectedFormats.length + 3];
+        if (link && link.startsWith('http')) {
+          preview += `🌐Link Game:\n${link}\n\n`;
+          if (lines[0]) {
+            const encodedGameName = encodeURIComponent(lines[0].replace(/:/g, '%3A'));
+            preview += `🌐Link Alternatif: https://indapk.github.io/?q=${encodedGameName}\n`;
+          }
+        }
+      }
+      
+      preview += `\n🌐Join Komunitas INDapk:\nhttps://www.kuysocial.com/pages/INDapk\n\n`;
+      preview += `🌐Request Game:\nhttps://indapk.com/requestgame.html\n\n`;
+      
+      preview += `#INDapk #3DSGames #Game3DS`;
+      
+      document.getElementById('previewContainer').innerText = preview;
+    }
+  }
+  
+  gameDataTextarea.addEventListener('input', updatePreview);
+  
+  document.querySelectorAll('.format-check').forEach(checkbox => {
+    checkbox.addEventListener('change', updatePreview);
+  });
+  
+  document.querySelectorAll('input[name="postType"]').forEach(radio => {
+    radio.addEventListener('change', updatePreview);
+  });
+  
+  showPreviewCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+      updatePreview();
     } else {
-      input.value = '';
+      document.getElementById('previewContainer').innerHTML = `
+        <p style="color: var(--text-secondary); text-align: center; margin-top: 150px;">
+            Preview dinonaktifkan
+        </p>
+      `;
     }
   });
 });
 
-textarea.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-
-    const currentIndex = Array.from(inputs).findIndex((input) => input === document.activeElement);
-
-    if (currentIndex === -1) {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-
-      textarea.value = textarea.value.substring(0, start) + '\n' + textarea.value.substring(end);
-      textarea.selectionStart = textarea.selectionEnd = start + 1;
-    } else {
-      const nextIndex = currentIndex + 1;
-
-      if (nextIndex < inputs.length) {
-        inputs[nextIndex].focus();
-      }
-    }
-  }
-});
+function getSelectedFormats() {
+  const selected = [];
+  document.querySelectorAll('.format-check:checked').forEach(checkbox => {
+    selected.push(checkbox.value);
+  });
+  return selected;
+}
 
 function generateCode() {
-    // Show loading state
     const generateBtn = document.querySelector('.btn-primary-custom');
     const originalText = generateBtn.innerHTML;
     generateBtn.innerHTML = '<span class="loading"></span> Generating...';
     generateBtn.disabled = true;
     
     setTimeout(() => {
-        // Get values from game form
-        const inputName = document.getElementById("inputName").value;
-        const inputSingleSizeCIA = document.getElementById("inputSingleSizeCIA").value;
-        const inputSingleSize3DS = document.getElementById("inputSingleSize3DS").value;
-        const inputCategory = document.getElementById("inputCategory").value;
-        const inputRegion = document.getElementById("inputRegion").value;
-        const inputLink = document.getElementById("inputLink").value;
+        const selectedFormats = getSelectedFormats();
+        if (selectedFormats.length === 0) {
+            showNotification("Pilih minimal satu format game 3DS!", "error");
+            generateBtn.innerHTML = originalText;
+            generateBtn.disabled = false;
+            return;
+        }
         
-        // Get selected post type
+        const gameData = document.getElementById("gameDataTextarea").value.trim();
+        if (!gameData) {
+            showNotification("Masukkan data game 3DS!", "error");
+            generateBtn.innerHTML = originalText;
+            generateBtn.disabled = false;
+            return;
+        }
+        
+        const lines = gameData.split('\n').map(line => line.trim());
+        
+        const minLines = selectedFormats.length + 4;
+        if (lines.length < minLines) {
+            showNotification(`Data kurang lengkap! Butuh ${minLines} baris untuk ${selectedFormats.length} format`, "error");
+            generateBtn.innerHTML = originalText;
+            generateBtn.disabled = false;
+            return;
+        }
+        
+        const gameName = lines[0] || '';
+        const link = lines[selectedFormats.length + 3] || '';
+        
+        let alternativeLink = '';
+        if (gameName) {
+            const encodedGameName = encodeURIComponent(gameName.replace(/:/g, '%3A'));
+            alternativeLink = `https://indapk.github.io/?q=${encodedGameName}`;
+        }
+        
         const postType = document.querySelector('input[name="postType"]:checked').value;
 
-        let generatedHtml;
+        let generatedText;
         
         if (postType === 'share') {
-            generatedHtml = `🎮SHARE GAME Nintendo 3DS
-🎮Update Game Nintendo 3DS:
-Nama Game: ${inputName}
-Ukuran Game CIA: ${inputSingleSizeCIA}
-Ukuran Game 3DS: ${inputSingleSize3DS}
-Category: ${inputCategory}
-Region: ${inputRegion}
-Emulator: Citra & Limon
-Connection: Offline
-Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: CIA dan 3DS
-
-🌐Link Game:
-${inputLink}
-
-🌐Link Alternative:
-https://t.me/INDapkBot
-
-NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD
-
-`;
+            generatedText = `🎮SHARE GAME 3DS\n`;
+            generatedText += `🎮Update Game 3DS:\n`;
         } else {
-            generatedHtml = `🎮UPDATE REQUEST GAME Nintendo 3DS
-🎮Update Game Nintendo 3DS:
-Nama Game: ${inputName}
-Ukuran Game CIA: ${inputSingleSizeCIA}
-Ukuran Game 3DS: ${inputSingleSize3DS}
-Category: ${inputCategory}
-Region: ${inputRegion}
-Emulator: Citra & Limon
-Connection: Offline
-Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: CIA dan 3DS
-
-🌐Link Game:
-${inputLink}
-
-================
-⚠️ DOWNLOAD APLIKASI INDapk:
-🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing
-🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file
-🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet
-DOWNLOAD TANPA IKLAN TERSEDIA DIBAWAH VIA INDAPK`;
-        } if (postType === 'upload') {
-            generatedHtml = `🎮Upload Ulang GAME Nintendo 3DS
-🎮Update Game Nintendo 3DS:
-Nama Game: ${inputName}
-Ukuran Game CIA: ${inputSingleSizeCIA}
-Ukuran Game 3DS: ${inputSingleSize3DS}
-Category: ${inputCategory}
-Region: ${inputRegion}
-Emulator: Citra & Limon
-Connection: Offline
-Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
-Format: CIA dan 3DS
-
-🌐Link Game:
-${inputLink}
-
-🌐Link Alternative:
-https://t.me/INDapkBot
-
-NOTE: DOWNLOAD ALTERNATIVE BISA MELALUI BOT TELEGRAM, TERSEDIA FREE DOWNLOAD`;
+            generatedText = `🎮Upload Ulang GAME 3DS\n`;
+            generatedText += `🎮Update Game 3DS:\n`;
         }
-
-        // Display the generated HTML
-        document.getElementById("result").innerText = generatedHtml;
         
-        // Reset button
+        if (gameName) generatedText += `Nama Game: ${gameName}\n`;
+        
+        selectedFormats.forEach((format, index) => {
+            if (lines[index + 1]) {
+                generatedText += `Ukuran ${format}: ${lines[index + 1]}\n`;
+            }
+        });
+        
+        if (lines[selectedFormats.length + 1]) {
+            generatedText += `Category: ${lines[selectedFormats.length + 1]}\n`;
+        }
+        
+        if (lines[selectedFormats.length + 2]) {
+            generatedText += `Language: ${lines[selectedFormats.length + 2]}\n\n`;
+        }
+        
+        if (link && link.startsWith('http')) {
+            generatedText += `🌐Link Game:\n${alternativeLink}\n\n`;
+            generatedText += `🌐Link Alternatif: ${link}\n`;
+        } else {
+            generatedText += `🌐Link Game:\n[Link akan tersedia setelah generate]\n`;
+        }
+        generatedText += `\n🌐Join Komunitas INDapk:\nhttps://www.kuysocial.com/pages/INDapk\n\n`;
+        generatedText += `🌐Request Game:\nhttps://indapk.com/requestgame.html\n\n`;
+        
+        
+        generatedText += `#INDapk #3DSGames #Game3DS`;
+        
+        document.getElementById("result").innerText = generatedText;
+        
+        if (document.getElementById('showPreview').checked) {
+            document.getElementById('previewContainer').innerText = generatedText;
+        }
+        
+        if (document.getElementById('autoCopy').checked) {
+            const tempTextarea = document.createElement("textarea");
+            tempTextarea.value = generatedText;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextarea);
+        }
+        
         generateBtn.innerHTML = originalText;
         generateBtn.disabled = false;
         
-        // Show success notification
-        showNotification("Code berhasil di-generate!", "success");
-    }, 1000);
+        const message = document.getElementById('autoCopy').checked 
+            ? `Code untuk ${selectedFormats.length} format berhasil di-generate dan disalin!` 
+            : `Code untuk ${selectedFormats.length} format berhasil di-generate!`;
+        showNotification(message, "success");
+        
+    }, 800);
 }
 </script>
 
