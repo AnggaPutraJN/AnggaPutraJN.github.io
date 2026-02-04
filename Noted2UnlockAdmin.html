@@ -940,19 +940,25 @@ https://multiup.io/download/8eaf27c89836286b141f894e749820ac/%5BINDapk.com%5D%20
                   <i class="bi bi-camera-video text-primary me-2"></i>
                   Paste konten video bulk di sini (Format: Adelia sarah artis sound horeg<br>https://d-s.io/e/eolqd1dw0x68)
                 </label>
-                <textarea class="form-control bulk-textarea" id="videoNoteTextarea" placeholder="Contoh format:
-Adelia sarah artis sound horeg
-https://d-s.io/e/eolqd1dw0x68
-Tobrut Brutal
-https://d-s.io/e/d3zgjx1tzfom
+<textarea class="form-control bulk-textarea" id="videoNoteTextarea" placeholder="Contoh format:
+Sarah Artis Sound Horeg
+Indonesia
+00:11:20
+https://img.lulucdn.com/gzst0n47s6jf_xt.jpg
+https://lulu.st/e/gzst0n47s6jf
 
-atau format dengan multiple videos:
-Video 1 Title
-https://link1.com
-Video 2 Title
-https://link2.com
-Video 3 Title
-https://link3.com"></textarea>
+Ameena Putri Lingerie
+Indonesia
+00:09:45
+https://img.lulucdn.com/abc123def456_xt.jpg
+https://lulu.st/e/abc123def456
+
+Format:
+Nama Video
+Category
+Durasi Video
+Thumbnail Video
+Link Video"></textarea>
               </div>
               
               <div class="d-flex gap-2 mb-3">
@@ -1414,65 +1420,82 @@ https://link3.com"></textarea>
     }
 
     // Function to parse video content (Format: Title\nURL)
-    function parseVideoContent(content) {
-      const lines = content.split('\n');
-      const notes = [];
-      let currentTitle = '';
-      let currentUrl = '';
-      
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        
-        if (!line) continue; // Skip empty lines
-        
-        if (!line.match(/^https?:\/\//i)) {
-          // This is a title line
-          if (currentTitle && currentUrl) {
-            // Create note from previous title and URL
-            const note = createVideoNote(currentTitle, currentUrl);
-            notes.push(note);
-            currentTitle = '';
-            currentUrl = '';
+function parseVideoContent(content) {
+  const lines = content.split('\n');
+  const notes = [];
+  
+  let currentVideo = {};
+  let lineCount = 0;
+  let videoData = {};
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    // Skip baris kosong jika belum mulai mengumpulkan data video
+    if (!line && lineCount === 0) continue;
+    
+    // Mulai video baru jika baris tidak kosong dan lineCount = 0
+    if (line && lineCount === 0) {
+      videoData = {
+        name: line
+      };
+      lineCount++;
+    } else if (lineCount > 0) {
+      switch(lineCount) {
+        case 1:
+          videoData.category = line;
+          break;
+        case 2:
+          videoData.duration = line;
+          break;
+        case 3:
+          videoData.thumbnail = line;
+          break;
+        case 4:
+          if (line.match(/^https?:\/\//i)) {
+            videoData.url = line;
+            
+            // Buat note jika semua data lengkap
+            if (videoData.name && videoData.category && 
+                videoData.duration && videoData.thumbnail && 
+                videoData.url) {
+              const note = createVideoNote(videoData);
+              notes.push(note);
+            }
           }
-          currentTitle = line;
-        } else if (line.match(/^https?:\/\//i)) {
-          // This is a URL line
-          currentUrl = line;
-          
-          // If we have a title, create note
-          if (currentTitle) {
-            const note = createVideoNote(currentTitle, currentUrl);
-            notes.push(note);
-            currentTitle = '';
-            currentUrl = '';
-          }
-        }
+          // Reset untuk video berikutnya
+          videoData = {};
+          lineCount = -1;
+          break;
       }
-      
-      // Create note for the last pair if exists
-      if (currentTitle && currentUrl) {
-        const note = createVideoNote(currentTitle, currentUrl);
-        notes.push(note);
-      }
-      
-      return notes;
+      lineCount++;
     }
+  }
+  
+  return notes;
+}
 
     // Helper function to create video note content
-    function createVideoNote(title, url) {
-      const noteContent = `📹 ${title}\n\n` +
-        `🎬 Video Link:\n` +
-        `${url}\n\n` +
-        `⚠️ DOWNLOAD APLIKASI INDapk:\n` +
-        `🌐 Google Drive: https://drive.google.com/file/d/1ZQ22wQZJEmiHovWGFC5J-ZuEhqJkY2x1/view?usp=sharing\n` +
-        `🌐 Mediafire: https://www.mediafire.com/file/t5r8dn3frcb7j3s/INDapk+v1.0+[BETA].apk/file\n` +
-        `🌐 SafeFileku: https://safefileku.com/download/74pHNEV7d9DUawet`;
-      
-      return {
-        name: `Video: ${title}`,
-        content: noteContent
-      };
-    }
+function createVideoNote(videoData) {
+  // Pastikan semua data ada
+  const noteContent = `🎬 ${videoData.name || 'Video tanpa judul'}\n\n` +
+    `📁 Category: ${videoData.category || 'Tidak ada kategori'}\n` +
+    `⏱️ Duration: ${videoData.duration || '00:00:00'}\n\n` +
+    `🖼️ Thumbnail:\n` +
+    `${videoData.thumbnail || 'https://via.placeholder.com/300x200?text=No+Thumbnail'}\n\n` +
+    `🎬 Video Link:\n` +
+    `${videoData.url || 'Tidak ada link'}\n\n` +
+    `⚠️ DOWNLOAD APLIKASI INDapk:\n` +
+    `🌐 Download di web: https://indapk.github.io\n` +
+    `🌐 Link INDapk: https://indapk.com/\n` +
+    `🌐 Link Web Alternatif: https://indapk.github.io`;
+  
+  return {
+    name: `Video: ${videoData.name || `Video_${Date.now()}`}`,
+    content: noteContent,
+    videoData: videoData // Simpan data asli untuk referensi
+  };
+}
 
     // Helper function to group URLs by domain for a single note
     function groupUrlsByDomain(baseName, sizeInfo, urls, domainMap) {
@@ -1567,45 +1590,100 @@ https://link3.com"></textarea>
     }
 
     // Function to display video parse result
-    function displayVideoParseResult(notes) {
-      const resultContainer = document.getElementById('videoParseResultContent');
-      resultContainer.innerHTML = '';
-      
-      if (notes.length === 0) {
-        resultContainer.innerHTML = `
-          <div class="alert alert-warning">
-            <i class="bi bi-exclamation-triangle me-2"></i>
-            Tidak dapat menemukan format video yang valid
-          </div>
-        `;
-        return;
+function displayVideoParseResult(notes) {
+  const resultContainer = document.getElementById('videoParseResultContent');
+  resultContainer.innerHTML = '';
+  
+  if (notes.length === 0) {
+    resultContainer.innerHTML = `
+      <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Tidak dapat menemukan format video yang valid. Pastikan format:<br>
+        Nama Video<br>
+        Category<br>
+        Durasi Video<br>
+        Thumbnail Video<br>
+        Link Video
+      </div>
+    `;
+    return;
+  }
+  
+  notes.forEach((note, index) => {
+    // Extract video data from content
+    const lines = note.content.split('\n');
+    const videoName = note.name.replace('Video: ', '');
+    
+    // Cari data dari konten
+    let category = '';
+    let duration = '';
+    let thumbnail = '';
+    let videoUrl = '';
+    
+    // Cari setiap bagian dari konten
+    for (const line of lines) {
+      if (line.includes('Category:')) {
+        category = line.replace('📁 Category: ', '').trim();
+      } else if (line.includes('Duration:')) {
+        duration = line.replace('⏱️ Duration: ', '').trim();
+      } else if (line.includes('Thumbnail:')) {
+        // Cari baris setelah "Thumbnail:"
+        const thumbnailIndex = lines.indexOf(line);
+        if (thumbnailIndex + 1 < lines.length) {
+          thumbnail = lines[thumbnailIndex + 1].trim();
+        }
+      } else if (line.includes('Video Link:')) {
+        // Cari baris setelah "Video Link:"
+        const videoLinkIndex = lines.indexOf(line);
+        if (videoLinkIndex + 1 < lines.length) {
+          videoUrl = lines[videoLinkIndex + 1].trim();
+        }
       }
-      
-      notes.forEach((note, index) => {
-        const item = document.createElement('div');
-        item.className = 'parse-result-item mb-3 p-3 border rounded';
-        
-        item.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="parse-result-name">
-              <i class="bi bi-camera-video me-2"></i>
-              <strong>${note.name}</strong>
-            </div>
-            <div class="badge bg-primary">
-              Video ${index + 1}
-            </div>
-          </div>
-          <div class="mt-2">
-            <small class="text-muted">${note.content.split('\n')[0]}</small>
-          </div>
-        `;
-        
-        resultContainer.appendChild(item);
-      });
-      
-      // Update note count
-      document.getElementById('noteCount').textContent = notes.length;
     }
+    
+    const item = document.createElement('div');
+    item.className = 'parse-result-item mb-3 p-3 border rounded';
+    
+    item.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="parse-result-name">
+          <i class="bi bi-camera-video me-2"></i>
+          <strong>${videoName}</strong>
+        </div>
+        <div class="d-flex gap-2">
+          <div class="badge bg-primary">
+            Video ${index + 1}
+          </div>
+          <div class="badge bg-info">
+            <i class="bi bi-clock"></i> ${duration}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <small class="text-muted d-block">
+            <i class="bi bi-tag"></i> <strong>Category:</strong> ${category}
+          </small>
+        </div>
+        <div class="col-md-6 mb-2">
+          <small class="text-muted d-block">
+            <i class="bi bi-link"></i> <strong>URL:</strong> ${videoUrl ? videoUrl.substring(0, 30) + '...' : 'Tidak ada'}
+          </small>
+        </div>
+        <div class="col-12">
+          <small class="text-muted d-block">
+            <i class="bi bi-image"></i> <strong>Thumbnail:</strong> ${thumbnail ? thumbnail.substring(0, 40) + '...' : 'Tidak ada'}
+          </small>
+        </div>
+      </div>
+    `;
+    
+    resultContainer.appendChild(item);
+  });
+  
+  // Update note count
+  document.getElementById('noteCount').textContent = notes.length;
+}
     
     // Add new note form
     document.getElementById('addNoteBtn').addEventListener('click', function() {
@@ -2348,3 +2426,4 @@ https://link3.com"></textarea>
   </script>
 </body>
 </html>
+
