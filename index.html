@@ -1214,6 +1214,14 @@ code {
                      placeholder="Masukkan URL gambar thumbnail (opsional), boleh dikosongkan" />
               <div class="form-text">Boleh kosong. Jika diisi, akan disimpan ke spreadsheet dan bisa dipakai saat generate HTML.</div>
             </div>
+          <div class="mt-4">
+            <h5><i class="bi bi-images"></i> Screenshot URLs (Opsional)</h5>
+            <div class="mb-3">
+              <textarea id="screenshotUrls" class="form-control" rows="3" 
+                        placeholder="Masukkan URL screenshot gameplay, dipisahkan dengan koma atau baris baru. Contoh:&#10;https://example.com/screen1.jpg&#10;https://example.com/screen2.jpg&#10;https://example.com/screen3.jpg"></textarea>
+              <div class="form-text">Boleh kosong. Jika diisi, screenshot akan ditampilkan setelah thumbnail di HTML output.</div>
+            </div>
+          </div>
           </div>
 
 
@@ -1377,6 +1385,7 @@ code {
         // HAPUS "https://" di depan karena sudah ada di URL
         const GAME_API_URL = "https://script.google.com/macros/s/AKfycbytk1iwBYb2xGF2j3fjTmTFBNzQ_ifXsxrddlDWuPPNdMjWbHvyiRppEcoq0V1BGjn-/exec";
         const USER_API_URL = "https://script.google.com/macros/s/AKfycbweRCcVmuWrz2gpvIanBqeIsyubAUgOjSssHhnXBW3WUiOu9QbNeUq-y4-9Ps6BuQ8L/exec";
+        const SCREENSHOOT_API_URL = "https://script.google.com/macros/s/AKfycbwjF-qp6zHQGiBchoReCX3xLpWSLJysoUsRDDiXbm3nZ51RdaLWrpCh5jqno5A-Rmn4/exec";
         
 
 
@@ -1781,28 +1790,33 @@ function setupPasteFunctionality() {
 }
 
 // Fungsi untuk parse data dari textarea
+// Fungsi untuk parse data dari textarea - DIPERBAIKI
 function parsePasteData(text) {
   const lines = text
     .split('\n')
     .map(l => l.trim())
     .filter(l => l !== '');
 
+  console.log('Lines to parse:', lines); // Debug log
+
   const { hasNSP, hasXCI } = getGameTypeFlags();
   const sizeLineCount = (hasNSP ? 1 : 0) + (hasXCI ? 1 : 0);
-
   const minLines = 1 + sizeLineCount + 4; // nama + ukuran + (category, gameId, region, language)
+
   if (lines.length < minLines) {
     throw new Error(`Data terlalu pendek. Minimal ${minLines} baris (menyesuaikan tipe NSP/XCI).`);
   }
 
   let idx = 0;
 
+  // 1. Nama Game
   const gameName = lines[idx++] || '';
+  console.log('Game Name:', gameName); // Debug
 
+  // 2. Ukuran NSP dan XCI (dinamis)
   let nspSize = '';
   let xciSize = '';
 
-  // ukuran dinamis
   if (hasNSP && hasXCI) {
     nspSize = lines[idx++] || '';
     xciSize = lines[idx++] || '';
@@ -1812,10 +1826,15 @@ function parsePasteData(text) {
     xciSize = lines[idx++] || '';
   }
 
+  console.log('Sizes - NSP:', nspSize, 'XCI:', xciSize); // Debug
+
+  // 3. Metadata Game
   const category = lines[idx++] || '';
   const gameId = lines[idx++] || '';
   const region = lines[idx++] || '';
   const language = lines[idx++] || '';
+
+  console.log('Metadata:', { category, gameId, region, language }); // Debug
 
   // Isi form dasar
   document.getElementById('gameName').value = gameName;
@@ -1826,13 +1845,10 @@ function parsePasteData(text) {
   document.getElementById('region').value = region;
   document.getElementById('language').value = language;
 
-  // Pastikan field ukuran yang tidak dipakai disembunyikan + dikosongkan
+  // Pastikan field ukuran yang tidak dipakai disembunyikan
   updateSizeFieldsVisibility();
 
-  // Link parsing
-let remainingLines = lines.slice(idx);
-
-
+  // Hitung total link yang diharapkan
   const totalExpectedLinks =
     (gameData.nspCount || 0) +
     (gameData.xciCount || 0) +
@@ -1840,11 +1856,58 @@ let remainingLines = lines.slice(idx);
     (gameData.xciPartCount || 0);
 
   const totalExpectedOriginalLinks = totalExpectedLinks;
-  const totalExpectedAdLinks1 = totalExpectedLinks; // Link Iklan 1
-  const totalExpectedAdLinks2 = totalExpectedLinks; // Link Iklan 2
+  const totalExpectedAdLinks1 = totalExpectedLinks;
+  const totalExpectedAdLinks2 = totalExpectedLinks;
 
   const totalExpectedAllLinks =
     totalExpectedOriginalLinks + totalExpectedAdLinks1 + totalExpectedAdLinks2;
+
+  // Ambil sisa baris untuk link
+  let remainingLines = lines.slice(idx);
+
+  console.log('Remaining lines for links:', remainingLines.length, 'Expected:', totalExpectedAllLinks); // Debug
+
+  // === PERBAIKAN DETEKSI GAMBAR ===
+  const imagePattern = /\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i;
+  const isImageUrl = (url) => {
+    return url && url.match(/^https?:\/\//i) && imagePattern.test(url);
+  };
+
+  let thumbnailUrl = '';
+  let screenshotUrls = [];
+
+  // Cari semua URL gambar dalam remainingLines
+  const allImageUrls = remainingLines.filter(line => isImageUrl(line));
+  console.log('All image URLs found:', allImageUrls); // Debug
+
+  if (allImageUrls.length > 0) {
+    // LOGIKA BARU: Bedakan thumbnail dan screenshot berdasarkan pola URL
+    for (const url of allImageUrls) {
+      // Pattern untuk thumbnail: biasanya mengandung "1.png" atau "thumbnail" atau "wp-content/uploads"
+      if (url.includes('1.png') || 
+          url.includes('thumbnail') || 
+          url.includes('-1.') ||
+          url.match(/\/\d+\.(png|jpg|jpeg)$/) && !url.includes('screenshot')) {
+        if (!thumbnailUrl) {
+          thumbnailUrl = url;
+          console.log('Detected as THUMBNAIL:', url);
+        } else {
+          screenshotUrls.push(url);
+        }
+      } else {
+        screenshotUrls.push(url);
+      }
+    }
+  }
+
+  console.log('Thumbnail:', thumbnailUrl);
+  console.log('Screenshots:', screenshotUrls);
+
+  // Filter out image URLs dari remainingLines untuk link
+  remainingLines = remainingLines.filter(line => !isImageUrl(line));
+  
+  // Potong remainingLines hanya untuk link sesuai kebutuhan
+  remainingLines = remainingLines.slice(0, totalExpectedAllLinks);
 
   // Warning kalau kurang
   if (remainingLines.length < totalExpectedAllLinks) {
@@ -1853,34 +1916,8 @@ let remainingLines = lines.slice(idx);
       `(${totalExpectedAdLinks1} iklan 1 + ${totalExpectedAdLinks2} iklan 2 + ${totalExpectedOriginalLinks} asli).`;
     showWarningModal(warning);
   }
-// Warning kalau lebih (overflow)
-if (remainingLines.length > totalExpectedAllLinks) {
-  const thumbCandidate = remainingLines[totalExpectedAllLinks] || "";
-  const thumb = String(thumbCandidate).trim();
 
-  if (thumb) {
-    gameData.thumbnailUrl = thumb;
-
-    const thumbInput = document.getElementById('thumbnailUrl');
-    if (thumbInput) thumbInput.value = thumb;
-  }
-
-  const extraBeyondThumb = remainingLines.length - (totalExpectedAllLinks + 1);
-  if (extraBeyondThumb > 0) {
-    const warning =
-      `Peringatan: Ada ${extraBeyondThumb} baris setelah Thumbnail. Baris tambahan akan diabaikan.`;
-    showWarningModal(warning);
-  }
-
-  // Potong supaya mapping link tidak geser
-  remainingLines.splice(totalExpectedAllLinks);
-}
-
-
-
-
-
-  // Ambil Original
+  // Ambil Original Links
   const originalLinks = remainingLines.slice(0, totalExpectedOriginalLinks);
 
   // Ambil Iklan 1
@@ -1888,12 +1925,18 @@ if (remainingLines.length > totalExpectedAllLinks) {
   const adLinks1End = adLinks1Start + totalExpectedAdLinks1;
   const adLinks = remainingLines.slice(adLinks1Start, adLinks1End);
 
-  // Ambil Iklan 2 (opsional, kalau tidak ada akan jadi array kosong)
+  // Ambil Iklan 2
   const adLinks2Start = adLinks1End;
   const adLinks2End = adLinks2Start + totalExpectedAdLinks2;
   const adLinks2 = remainingLines.slice(adLinks2Start, adLinks2End);
 
-  // Pastikan array Link Iklan 2 ada, biar aman walau belum diinisialisasi
+  console.log('Links distribution:', {
+    original: originalLinks.length,
+    ad1: adLinks.length,
+    ad2: adLinks2.length
+  });
+
+  // Pastikan array Link Iklan 2 ada
   if (!Array.isArray(gameData.adLinks2NSP)) gameData.adLinks2NSP = new Array(gameData.nspCount || 0).fill('');
   if (!Array.isArray(gameData.adLinks2XCI)) gameData.adLinks2XCI = new Array(gameData.xciCount || 0).fill('');
   if (!Array.isArray(gameData.adLinks2NSPPart)) gameData.adLinks2NSPPart = new Array(gameData.nspPartCount || 0).fill('');
@@ -1901,7 +1944,6 @@ if (remainingLines.length > totalExpectedAllLinks) {
 
   // Isi link iklan 1
   let linkIndex = 0;
-
   for (let i = 0; i < (gameData.nspCount || 0); i++) gameData.adLinksNSP[i] = adLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.xciCount || 0); i++) gameData.adLinksXCI[i] = adLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.nspPartCount || 0); i++) gameData.adLinksNSPPart[i] = adLinks[linkIndex++] || '';
@@ -1909,7 +1951,6 @@ if (remainingLines.length > totalExpectedAllLinks) {
 
   // Isi link iklan 2
   linkIndex = 0;
-
   for (let i = 0; i < (gameData.nspCount || 0); i++) gameData.adLinks2NSP[i] = adLinks2[linkIndex++] || '';
   for (let i = 0; i < (gameData.xciCount || 0); i++) gameData.adLinks2XCI[i] = adLinks2[linkIndex++] || '';
   for (let i = 0; i < (gameData.nspPartCount || 0); i++) gameData.adLinks2NSPPart[i] = adLinks2[linkIndex++] || '';
@@ -1917,17 +1958,45 @@ if (remainingLines.length > totalExpectedAllLinks) {
 
   // Isi link asli
   linkIndex = 0;
-
   for (let i = 0; i < (gameData.nspCount || 0); i++) gameData.originalLinksNSP[i] = originalLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.xciCount || 0); i++) gameData.originalLinksXCI[i] = originalLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.nspPartCount || 0); i++) gameData.originalLinksNSPPart[i] = originalLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.xciPartCount || 0); i++) gameData.originalLinksXCIPart[i] = originalLinks[linkIndex++] || '';
 
+  // === UPDATE THUMBNAIL DAN SCREENSHOT ===
+  // Isi thumbnail jika ditemukan
+  if (thumbnailUrl) {
+    gameData.thumbnailUrl = thumbnailUrl;
+    const thumbInput = document.getElementById('thumbnailUrl');
+    if (thumbInput) thumbInput.value = thumbnailUrl;
+  }
+
+  // Isi screenshot URLs jika ditemukan
+  if (screenshotUrls.length > 0) {
+    // Filter out thumbnail dari screenshot jika ada
+    const filteredScreenshots = screenshotUrls.filter(url => url !== thumbnailUrl);
+    gameData.screenshotUrls = filteredScreenshots;
+    const screenshotInput = document.getElementById('screenshotUrls');
+    if (screenshotInput) {
+      screenshotInput.value = filteredScreenshots.join('\n');
+    }
+  }
+
+  // Update UI
   updateLinkInputsUI();
+
+  // Tampilkan info jika ada screenshot
+  if (screenshotUrls.length > 0) {
+    showToast('info', `Ditemukan thumbnail dan ${screenshotUrls.filter(url => url !== thumbnailUrl).length} screenshot gameplay.`);
+  }
 }
-
-
-
+// Fungsi untuk debug parsing
+function debugParseData(text) {
+  console.log('=== DEBUG PARSING DATA ===');
+  const lines = text.split('\n').map((l, i) => `${i + 1}: "${l.trim()}"`).join('\n');
+  console.log(lines);
+  console.log('=== END DEBUG ===');
+}
 // Fungsi untuk update UI input link
 function updateLinkInputsUI() {
   // Update link iklan 1
@@ -2576,230 +2645,446 @@ function createLinkSection(title, count, arrayName, clouds) {
         
         // ============= PERBAIKAN FUNGSI saveGameData =============
 async function saveGameData() {
-    // Collect game info
-    const gameName = document.getElementById('gameName').value.trim();
-    const category = document.getElementById('category').value.trim();
-    const gameId = document.getElementById('gameId').value.trim();
-    const region = document.getElementById('region').value.trim();
-    const language = document.getElementById('language').value.trim();
+  // Collect game info
+  const gameName = document.getElementById('gameName').value.trim();
+  const category = document.getElementById('category').value.trim();
+  const gameId = document.getElementById('gameId').value.trim();
+  const region = document.getElementById('region').value.trim();
+  const language = document.getElementById('language').value.trim();
+  
+  // Collect thumbnail URL
+  const thumbnailUrl = document.getElementById('thumbnailUrl')?.value.trim() || '';
+  
+  // Collect screenshot URLs
+  const screenshotInput = document.getElementById('screenshotUrls');
+  const screenshotUrls = screenshotInput ? 
+    screenshotInput.value
+      .split(/[\n,]/)
+      .map(url => url.trim())
+      .filter(url => {
+        // Filter hanya URL gambar yang valid
+        if (!url || !url.match(/^https?:\/\//i)) return false;
+        // Validasi ekstensi gambar
+        return /\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i.test(url);
+      }) : [];
+  
+  if (!gameName || !category || !gameId || !region || !language) {
+    showToast('error', 'Harap isi semua field yang wajib!');
+    return;
+  }
+  
+  // Validate all links are filled
+  const allLinks = [
+    ...(gameData.adLinksNSP || []),
+    ...(gameData.adLinksXCI || []),
+    ...(gameData.adLinksNSPPart || []),
+    ...(gameData.adLinksXCIPart || []),
+    ...(gameData.adLinks2NSP || []),
+    ...(gameData.adLinks2XCI || []),
+    ...(gameData.adLinks2NSPPart || []),
+    ...(gameData.adLinks2XCIPart || []),
+    ...(gameData.originalLinksNSP || []),
+    ...(gameData.originalLinksXCI || []),
+    ...(gameData.originalLinksNSPPart || []),
+    ...(gameData.originalLinksXCIPart || [])
+  ];
+
+  if (allLinks.some(link => !link.trim())) {
+    showToast('error', 'Harap isi semua link!');
+    return;
+  }
+
+  // Update gameData dengan info terbaru
+  gameData.gameInfo = {
+    nama_game: gameName,
+    ukuran_nsp: document.getElementById('nspSize').value.trim(),
+    ukuran_xci: document.getElementById('xciSize').value.trim(),
+    category: category,
+    game_id: gameId,
+    region: region,
+    language: language,
+    thumbnail_url: thumbnailUrl
+  };
+
+  // Simpan screenshot URLs ke gameData
+  gameData.screenshotUrls = screenshotUrls;
+
+  try {
+    // TAMPILKAN LOADING
+    const saveBtn = document.getElementById('btnSaveGame');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+    saveBtn.disabled = true;
+
+    // ===== 1. SIMPAN DATA GAME KE API UTAMA =====
+    console.log('1. Menyimpan data game ke API utama...');
     
-    if (!gameName || !category || !gameId || !region || !language) {
-        showToast('error', 'Harap isi semua field yang wajib!');
-        return;
+    const params = new URLSearchParams();
+    params.append('action', 'saveGame');
+    params.append('nama_game', gameData.gameInfo.nama_game);
+    params.append('ukuran_nsp', gameData.gameInfo.ukuran_nsp);
+    params.append('ukuran_xci', gameData.gameInfo.ukuran_xci);
+    params.append('category', gameData.gameInfo.category);
+    params.append('game_id', gameData.gameInfo.game_id);
+    params.append('region', gameData.gameInfo.region);
+    params.append('language', gameData.gameInfo.language);
+    params.append('link_asli_nsp', JSON.stringify(gameData.originalLinksNSP));
+    params.append('link_asli_xci', JSON.stringify(gameData.originalLinksXCI));
+    params.append('link_asli_nsp_part', JSON.stringify(gameData.originalLinksNSPPart));
+    params.append('link_asli_xci_part', JSON.stringify(gameData.originalLinksXCIPart));
+    params.append('link_iklan_nsp', JSON.stringify(gameData.adLinksNSP));
+    params.append('link_iklan_xci', JSON.stringify(gameData.adLinksXCI));
+    params.append('link_iklan_nsp_part', JSON.stringify(gameData.adLinksNSPPart));
+    params.append('link_iklan_xci_part', JSON.stringify(gameData.adLinksXCIPart));
+    params.append('link_iklan2_nsp', JSON.stringify(gameData.adLinks2NSP || []));
+    params.append('link_iklan2_xci', JSON.stringify(gameData.adLinks2XCI || []));
+    params.append('link_iklan2_nsp_part', JSON.stringify(gameData.adLinks2NSPPart || []));
+    params.append('link_iklan2_xci_part', JSON.stringify(gameData.adLinks2XCIPart || []));
+    params.append('cloud_nsp', JSON.stringify(gameData.cloudNSP));
+    params.append('cloud_xci', JSON.stringify(gameData.cloudXCI));
+    params.append('cloud_nsp_part', JSON.stringify(gameData.cloudNSPPart));
+    params.append('cloud_xci_part', JSON.stringify(gameData.cloudXCIPart));
+    params.append('thumbnail_url', thumbnailUrl);
+    params.append('screenshot_urls', JSON.stringify(screenshotUrls));
+
+    const gameResponse = await fetch(GAME_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString()
+    });
+
+    if (!gameResponse.ok) {
+      throw new Error(`HTTP error! status: ${gameResponse.status}`);
+    }
+
+    const gameResult = await gameResponse.json();
+    console.log('Game API response:', gameResult);
+
+    if (gameResult.status !== 'success') {
+      throw new Error(gameResult.message || 'Gagal menyimpan data game');
+    }
+
+    // Simpan download ID
+    gameData.downloadId = gameResult.data.download_id;
+    
+    // ===== 2. SIMPAN SCREENSHOT KE API SCREENSHOT =====
+    let screenshotSaved = false;
+    let screenshotResult = null;
+    
+    if (screenshotUrls.length > 0 && gameData.downloadId) {
+      console.log(`2. Menyimpan ${screenshotUrls.length} screenshot ke API screenshot...`);
+      
+      try {
+        const screenshotParams = new URLSearchParams();
+        screenshotParams.append('action', 'saveScreenshots');
+        screenshotParams.append('platform', 'switch');
+        screenshotParams.append('download_id', gameData.downloadId);
+        screenshotParams.append('game_name', gameName);
+        screenshotParams.append('thumbnail_url', thumbnailUrl);
+        screenshotParams.append('screenshots', JSON.stringify(screenshotUrls));
+        
+        const screenshotResponse = await fetch(SCREENSHOOT_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: screenshotParams.toString()
+        });
+        
+        if (screenshotResponse.ok) {
+          screenshotResult = await screenshotResponse.json();
+          if (screenshotResult.status === 'success') {
+            screenshotSaved = true;
+            console.log('Screenshot API response:', screenshotResult);
+          }
+        }
+      } catch (screenshotError) {
+        console.warn('Gagal menyimpan screenshot (tapi game tetap tersimpan):', screenshotError);
+      }
+    }
+
+    // ===== 3. TAMPILKAN MODAL SUKSES =====
+    const screenshotCount = screenshotUrls.length;
+    const successTitle = screenshotCount > 0 
+      ? `✅ Game Berhasil Disimpan (${screenshotCount} Screenshot)`
+      : '✅ Game Berhasil Disimpan';
+    
+    showSuccessModal(
+      successTitle,
+      gameData.gameInfo.nama_game,
+      gameResult.data.download_id,
+      screenshotCount,
+      screenshotSaved
+    );
+    
+    // ===== 4. SIMPAN KE LOCALSTORAGE =====
+    if (gameData.downloadId && gameData.gameInfo.nama_game) {
+      saveGameToLocalStorage({
+        downloadId: gameData.downloadId,
+        name: gameData.gameInfo.nama_game,
+        region: gameData.gameInfo.region,
+        gameId: gameData.gameInfo.game_id,
+        thumbnailUrl: thumbnailUrl,
+        screenshotCount: screenshotCount,
+        screenshotSaved: screenshotSaved,
+        updatedAt: new Date().toISOString()
+      });
     }
     
-    // Validate all links are filled
-    const allLinks = [
-      // Iklan 1
-      ...(gameData.adLinksNSP || []),
-      ...(gameData.adLinksXCI || []),
-      ...(gameData.adLinksNSPPart || []),
-      ...(gameData.adLinksXCIPart || []),
+  } catch (error) {
+    console.error('Save error:', error);
+    
+    // ===== FALLBACK: SIMPAN KE LOCALSTORAGE =====
+    const fallbackId = 'LOCAL_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 8).toUpperCase();
+    gameData.downloadId = fallbackId;
+    
+    const screenshotCount = screenshotUrls.length;
+    const fallbackTitle = screenshotCount > 0
+      ? `⚠️ Disimpan Secara Lokal (${screenshotCount} Screenshot)`
+      : '⚠️ Disimpan Secara Lokal';
+    
+    showFallbackModal(
+      fallbackTitle,
+      gameData.gameInfo.nama_game,
+      fallbackId,
+      screenshotCount
+    );
+    
+    // Simpan ke localStorage
+    saveGameToLocalStorage({
+      downloadId: fallbackId,
+      name: gameData.gameInfo.nama_game,
+      region: gameData.gameInfo.region,
+      gameId: gameData.gameInfo.game_id,
+      thumbnailUrl: thumbnailUrl,
+      screenshotCount: screenshotCount,
+      screenshotSaved: false,
+      updatedAt: new Date().toISOString()
+    });
 
-      // Iklan 2
-      ...(gameData.adLinks2NSP || []),
-      ...(gameData.adLinks2XCI || []),
-      ...(gameData.adLinks2NSPPart || []),
-      ...(gameData.adLinks2XCIPart || []),
-
-      // Asli
-      ...(gameData.originalLinksNSP || []),
-      ...(gameData.originalLinksXCI || []),
-      ...(gameData.originalLinksNSPPart || []),
-      ...(gameData.originalLinksXCIPart || [])
-    ];
-
-    if (allLinks.some(link => !link.trim())) {
-        showToast('error', 'Harap isi semua link!');
-        return;
+  } finally {
+    // Kembalikan tombol ke normal
+    const saveBtn = document.getElementById('btnSaveGame');
+    if (saveBtn) {
+      saveBtn.innerHTML = '<i class="bi bi-save-fill"></i> Simpan Data Game';
+      saveBtn.disabled = false;
     }
-
-    // Update gameData dengan info terbaru
-    gameData.gameInfo = {
-        nama_game: gameName,
-        ukuran_nsp: document.getElementById('nspSize').value.trim(),
-        ukuran_xci: document.getElementById('xciSize').value.trim(),
-        category: category,
-        game_id: gameId,
-        region: region,
-        language: language,
-        thumbnail_url: (document.getElementById('thumbnailUrl')?.value || '').trim() // ✅ NEW
-    };
-
-    try {
-        // TAMPILKAN LOADING
-        const saveBtn = document.getElementById('btnSaveGame');
-        const originalText = saveBtn.innerHTML;
-        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
-        saveBtn.disabled = true;
-
-        // Prepare form data
-        const params = new URLSearchParams();
-        params.append('action', 'saveGame');
-        params.append('nama_game', gameData.gameInfo.nama_game);
-        params.append('ukuran_nsp', gameData.gameInfo.ukuran_nsp);
-        params.append('ukuran_xci', gameData.gameInfo.ukuran_xci);
-        params.append('category', gameData.gameInfo.category);
-        params.append('game_id', gameData.gameInfo.game_id);
-        params.append('region', gameData.gameInfo.region);
-        params.append('language', gameData.gameInfo.language);
-        params.append('link_asli_nsp', JSON.stringify(gameData.originalLinksNSP));
-        params.append('link_asli_xci', JSON.stringify(gameData.originalLinksXCI));
-        params.append('link_asli_nsp_part', JSON.stringify(gameData.originalLinksNSPPart));
-        params.append('link_asli_xci_part', JSON.stringify(gameData.originalLinksXCIPart));
-        params.append('link_iklan_nsp', JSON.stringify(gameData.adLinksNSP));
-        params.append('link_iklan_xci', JSON.stringify(gameData.adLinksXCI));
-        params.append('link_iklan_nsp_part', JSON.stringify(gameData.adLinksNSPPart));
-        params.append('link_iklan_xci_part', JSON.stringify(gameData.adLinksXCIPart));
-        params.append('link_iklan2_nsp', JSON.stringify(gameData.adLinks2NSP || []));
-        params.append('link_iklan2_xci', JSON.stringify(gameData.adLinks2XCI || []));
-        params.append('link_iklan2_nsp_part', JSON.stringify(gameData.adLinks2NSPPart || []));
-        params.append('link_iklan2_xci_part', JSON.stringify(gameData.adLinks2XCIPart || []));
-        params.append('cloud_nsp', JSON.stringify(gameData.cloudNSP));
-        params.append('cloud_xci', JSON.stringify(gameData.cloudXCI));
-        params.append('cloud_nsp_part', JSON.stringify(gameData.cloudNSPPart));
-        params.append('cloud_xci_part', JSON.stringify(gameData.cloudXCIPart));
-        params.append('thumbnail_url', gameData.gameInfo.thumbnail_url || '');
-
-
-        console.log('Sending data to server...');
-
-        // Kirim ke server
-        const response = await fetch(GAME_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: params.toString()
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('Server response:', result);
-
-        if (result.status === 'success') {
-            // Simpan download ID
-            gameData.downloadId = result.data.download_id;
-            
-            // Tampilkan modal sukses dengan ID
-            showSuccessModal(
-                '✅ Game Berhasil Disimpan!',
-                gameData.gameInfo.nama_game,
-                result.data.download_id
-            );
-            
-            // Simpan ke localStorage juga
-            if (gameData.downloadId && gameData.gameInfo.nama_game) {
-                saveGameToLocalStorage({
-                    downloadId: gameData.downloadId,
-                    name: gameData.gameInfo.nama_game,
-                    region: gameData.gameInfo.region,
-                    gameId: gameData.gameInfo.game_id,
-                    updatedAt: new Date().toISOString()
-                });
-            }
-            
-        } else {
-            throw new Error(result.message || 'Gagal menyimpan');
-        }
-
-    } catch (error) {
-        console.error('Save error:', error);
-        
-        // Fallback: coba simpan ke localStorage dengan ID fleksibel
-        const fallbackId = 'LOCAL_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 8).toUpperCase();
-        gameData.downloadId = fallbackId;
-        
-        showFallbackModal(
-            '⚠️ Disimpan Secara Lokal',
-            gameData.gameInfo.nama_game,
-            fallbackId
-        );
-        
-        // Simpan ke localStorage
-        saveGameToLocalStorage({
-            downloadId: fallbackId,
-            name: gameData.gameInfo.nama_game,
-            region: gameData.gameInfo.region,
-            gameId: gameData.gameInfo.game_id,
-            updatedAt: new Date().toISOString()
-        });
-
-    } finally {
-        // Kembalikan tombol ke normal
-        const saveBtn = document.getElementById('btnSaveGame');
-        saveBtn.innerHTML = '<i class="bi bi-save-fill"></i> Simpan Data Game';
-        saveBtn.disabled = false;
-    }
+  }
 }
         
 // ============================================
 // SUCCESS MODAL FUNCTION
 // ============================================
 
-function showSuccessModal(title, gameName, downloadId) {
-    const modalHtml = `
-        <div class="modal fade" id="saveSuccessModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title">
-                            <i class="bi bi-check-circle-fill"></i> ${title}
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="text-center">
-                            <div class="mb-3">
-                                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                            </div>
-                            <h4 class="text-success">${gameName}</h4>
-                            <div class="alert alert-success mt-3">
-                                <strong>Download ID (Unik):</strong>
-                                <div class="mt-2">
-                                    <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.2rem;">
-                                        ${downloadId}
-                                    </code>
-                                </div>
-                                <small class="d-block mt-2">
-                                    <i class="bi bi-shield-check"></i>
-                                    ID ini <strong>100% UNIK</strong> dan tidak akan pernah duplikat
-                                </small>
-                            </div>
-                            <p class="text-muted mt-3">
-                                ID digenerate otomatis dengan sistem anti-duplikat
-                            </p>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                            <i class="bi bi-check"></i> OK
-                        </button>
-                        <button type="button" class="btn btn-outline-success" onclick="copyToClipboard('${downloadId}')">
-                            <i class="bi bi-clipboard"></i> Copy ID
-                        </button>
-                    </div>
+function showSuccessModal(title, gameName, downloadId, screenshotCount = 0, screenshotSaved = false) {
+  const modalHtml = `
+    <div class="modal fade" id="saveSuccessModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title">
+              <i class="bi bi-check-circle-fill"></i> ${title}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center">
+              <div class="mb-3">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+              </div>
+              <h4 class="text-success">${gameName}</h4>
+              
+              ${screenshotCount > 0 ? `
+              <div class="alert ${screenshotSaved ? 'alert-success' : 'alert-warning'}">
+                <i class="bi bi-images"></i>
+                <strong>${screenshotCount} Screenshot Gameplay</strong>
+                ${screenshotSaved ? 'berhasil disimpan ke database screenshot.' : 'disimpan hanya di data game utama.'}
+              </div>
+              ` : ''}
+              
+              <div class="alert alert-success mt-3">
+                <strong>Download ID (Unik):</strong>
+                <div class="mt-2">
+                  <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.2rem;">
+                    ${downloadId}
+                  </code>
                 </div>
+                <small class="d-block mt-2">
+                  <i class="bi bi-shield-check"></i>
+                  ID ini <strong>100% UNIK</strong> dan tidak akan pernah duplikat
+                </small>
+              </div>
+              <p class="text-muted mt-3">
+                ID digenerate otomatis dengan sistem anti-duplikat
+              </p>
             </div>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+              <i class="bi bi-check"></i> OK
+            </button>
+            <button type="button" class="btn btn-outline-success" onclick="copyToClipboard('${downloadId}')">
+              <i class="bi bi-clipboard"></i> Copy ID
+            </button>
+            ${screenshotCount > 0 ? `
+            <button type="button" class="btn btn-outline-info" onclick="previewGameScreenshots('${downloadId}')">
+              <i class="bi bi-eye"></i> Preview Screenshot
+            </button>
+            ` : ''}
+          </div>
         </div>
-    `;
-    
-    // Tambahkan modal
-    let modalContainer = document.getElementById('saveSuccessModalContainer');
-    if (!modalContainer) {
-        modalContainer = document.createElement('div');
-        modalContainer.id = 'saveSuccessModalContainer';
-        document.body.appendChild(modalContainer);
-    }
-    modalContainer.innerHTML = modalHtml;
-    
-    // Tampilkan modal
-    const successModal = new bootstrap.Modal(document.getElementById('saveSuccessModal'));
-    successModal.show();
+      </div>
+    </div>
+  `;
+  
+  // Tambahkan modal
+  let modalContainer = document.getElementById('saveSuccessModalContainer');
+  if (!modalContainer) {
+    modalContainer = document.createElement('div');
+    modalContainer.id = 'saveSuccessModalContainer';
+    document.body.appendChild(modalContainer);
+  }
+  modalContainer.innerHTML = modalHtml;
+  
+  // Tampilkan modal
+  const successModal = new bootstrap.Modal(document.getElementById('saveSuccessModal'));
+  successModal.show();
 }
+// Fungsi untuk mengambil screenshot dari API screenshot
+async function getGameScreenshotsFromAPI(downloadId) {
+  try {
+    const response = await fetch(SCREENSHOOT_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `action=getScreenshots&platform=switch&download_id=${downloadId}`
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    
+    if (result.status === 'success') {
+      return {
+        success: true,
+        screenshots: result.data.screenshots || [],
+        thumbnail: result.data.thumbnail_url || '',
+        total: result.data.total_screenshots || 0
+      };
+    } else {
+      return {
+        success: false,
+        message: result.message || 'Screenshot tidak ditemukan'
+      };
+    }
+    
+  } catch (error) {
+    console.error('Error fetching screenshots:', error);
+    return {
+      success: false,
+      message: 'Gagal mengambil screenshot: ' + error.message
+    };
+  }
+}
+
+// Fungsi untuk preview screenshot
+async function previewGameScreenshots(downloadId) {
+  try {
+    showToast('info', 'Mengambil screenshot...');
+    
+    const result = await getGameScreenshotsFromAPI(downloadId);
+    
+    if (result.success && result.screenshots.length > 0) {
+      showScreenshotModal(result.screenshots, downloadId);
+    } else {
+      // Fallback: coba ambil dari data game yang sudah di-generate
+      if (gameData.screenshotUrls && gameData.screenshotUrls.length > 0) {
+        showScreenshotModal(gameData.screenshotUrls, downloadId);
+      } else {
+        showToast('warning', 'Screenshot tidak tersedia untuk game ini.');
+      }
+    }
+    
+  } catch (error) {
+    console.error('Error previewing screenshots:', error);
+    showToast('error', 'Gagal memuat screenshot.');
+  }
+}
+
+// Fungsi untuk menampilkan modal screenshot
+function showScreenshotModal(screenshots, downloadId) {
+  const modalHtml = `
+    <div class="modal fade" id="screenshotModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title">
+              <i class="bi bi-images"></i> Screenshot Gameplay
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center mb-3">
+              <p class="text-muted">${screenshots.length} screenshot untuk game ini</p>
+            </div>
+            
+            <div class="row g-3">
+              ${screenshots.map((url, index) => `
+                <div class="col-md-6 col-lg-4">
+                  <div class="card border-0 shadow-sm">
+                    <a href="${url}" data-fancybox="preview-gallery" data-caption="Screenshot ${index + 1}">
+                      <img src="${url}" 
+                           class="card-img-top" 
+                           alt="Screenshot ${index + 1}"
+                           style="height: 200px; object-fit: cover; cursor: pointer;"
+                           loading="lazy"
+                           onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200/0f172a/ffffff?text=Screenshot+${index + 1}'">
+                    </a>
+                    <div class="card-body text-center py-2">
+                      <small class="text-muted">Screenshot ${index + 1}</small>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x"></i> Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Tambahkan modal
+  let modalContainer = document.getElementById('screenshotModalContainer');
+  if (!modalContainer) {
+    modalContainer = document.createElement('div');
+    modalContainer.id = 'screenshotModalContainer';
+    document.body.appendChild(modalContainer);
+  }
+  modalContainer.innerHTML = modalHtml;
+  
+  // Tampilkan modal
+  const screenshotModal = new bootstrap.Modal(document.getElementById('screenshotModal'));
+  screenshotModal.show();
+  
+  // Initialize fancybox setelah modal ditampilkan
+  setTimeout(() => {
+    if (typeof Fancybox !== 'undefined') {
+      Fancybox.bind("[data-fancybox='preview-gallery']");
+    }
+  }, 500);
+}
+
+
 
 // ============================================
 // FALLBACK MODAL FUNCTION
@@ -3167,7 +3452,7 @@ function createHTMLTemplate() {
   const gi = gameData?.gameInfo || {};
   const namaGame = gi.nama_game || "Nintendo Switch Game";
 
-  // ===== sizeRows (FIX ERROR sizeRows is not defined) =====
+  // ===== sizeRows =====
   const sizeRows = [
     gi.ukuran_nsp ? `<tr><th>Ukuran NSP:</th><td>${escapeHTML(gi.ukuran_nsp)}</td></tr>` : "",
     gi.ukuran_xci ? `<tr><th>Ukuran XCI:</th><td>${escapeHTML(gi.ukuran_xci)}</td></tr>` : "",
@@ -3262,6 +3547,153 @@ function createHTMLTemplate() {
     buildSection("NSP Part", buildOriginalButtons(gameData.originalLinksNSPPart, gameData.cloudNSPPart, "nsp_part")),
     buildSection("XCI Part", buildOriginalButtons(gameData.originalLinksXCIPart, gameData.cloudXCIPart, "xci_part")),
   ].filter(Boolean).join("\n");
+
+  // ===== Screenshot URLs =====
+  const screenshotUrls = gameData.screenshotUrls || [];
+  const hasScreenshots = screenshotUrls.length > 0;
+  
+  // Buat HTML untuk screenshot gallery
+  let screenshotsHTML = '';
+  if (hasScreenshots) {
+    screenshotsHTML = `
+      <!-- Screenshot Gameplay Section -->
+      <div class="mt-5 pt-4 border-top">
+        <h3 class="mb-3">
+          <i class="bi bi-images text-primary"></i> Screenshot Gameplay
+        </h3>
+        
+        <div class="alert alert-info mb-4">
+          <i class="bi bi-info-circle-fill"></i>
+          <strong>Preview Gameplay:</strong> Berikut adalah screenshot gameplay dari <strong>${escapeHTML(gi.nama_game)}</strong>.
+          Klik gambar untuk memperbesar.
+        </div>
+        
+        <div class="row g-3" id="screenshotGallery">
+          ${screenshotUrls.map((url, index) => {
+            const escapedUrl = escapeHTML(url);
+            return `
+              <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                  <a href="${escapedUrl}" 
+                     class="screenshot-link" 
+                     data-fancybox="gameplay-gallery" 
+                     data-caption="${escapeHTML(gi.nama_game)} - Screenshot ${index + 1}">
+                    <img src="${escapedUrl}" 
+                         class="card-img-top screenshot-img" 
+                         alt="Screenshot ${index + 1} - ${escapeHTML(gi.nama_game)}" 
+                         style="height: 200px; object-fit: cover; cursor: pointer;"
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/400x200/6c757d/ffffff?text=Gambar+Tidak+Tersedia'">
+                  </a>
+                  <div class="card-body text-center py-2">
+                    <small class="text-muted">Screenshot ${index + 1}</small>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+        
+        ${screenshotUrls.length > 4 ? `
+          <div class="text-center mt-3">
+            <button class="btn btn-outline-primary btn-sm" onclick="showAllScreenshots()">
+              <i class="bi bi-arrows-angle-expand"></i> Lihat Semua Screenshot (${screenshotUrls.length})
+            </button>
+          </div>
+        ` : ''}
+      </div>
+      
+      <style>
+        .screenshot-img {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .screenshot-img:hover {
+          transform: scale(1.03);
+          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .screenshot-link {
+          text-decoration: none;
+          color: inherit;
+          display: block;
+        }
+      </style>
+      
+      <script>
+        // Simple lightbox functionality
+        document.addEventListener('DOMContentLoaded', function() {
+          const screenshotLinks = document.querySelectorAll('.screenshot-link');
+          screenshotLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+              if (!window.Fancybox) {
+                e.preventDefault();
+                const imgUrl = this.getAttribute('href');
+                const modal = document.createElement('div');
+                modal.className = 'modal fade';
+                modal.innerHTML = \`
+                  <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">\${this.dataset.caption || 'Screenshot'}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body text-center">
+                        <img src="\${imgUrl}" class="img-fluid" style="max-height: 70vh;">
+                      </div>
+                    </div>
+                  </div>
+                \`;
+                document.body.appendChild(modal);
+                new bootstrap.Modal(modal).show();
+              }
+            });
+          });
+        });
+        
+        function showAllScreenshots() {
+          const modal = document.createElement('div');
+          modal.className = 'modal fade';
+          const screenshots = ${JSON.stringify(screenshotUrls)};
+          const gameName = "${escapeHTML(gi.nama_game)}";
+          
+          modal.innerHTML = \`
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title">
+                    <i class="bi bi-images"></i> Semua Screenshot \${gameName}
+                  </h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row g-3">
+                    \${screenshots.map((url, index) => \`
+                      <div class="col-md-4 col-lg-3">
+                        <a href="\${url}" data-fancybox="all-screenshots" data-caption="\${gameName} - Screenshot \${index + 1}">
+                          <img src="\${url}" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" 
+                               alt="Screenshot \${index + 1}">
+                        </a>
+                        <div class="text-center mt-1">
+                          <small class="text-muted">#\${index + 1}</small>
+                        </div>
+                      </div>
+                    \`).join('')}
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <small class="text-muted">
+                    Total: \${screenshots.length} screenshot • Klik gambar untuk memperbesar
+                  </small>
+                </div>
+              </div>
+            </div>
+          \`;
+          
+          document.body.appendChild(modal);
+          new bootstrap.Modal(modal).show();
+        }
+      </script\>
+    `;
+  }
 
   return `
 <!DOCTYPE html>
