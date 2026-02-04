@@ -551,6 +551,9 @@
         .toast-container {
             z-index: 9999;
         }
+        .stat-card .stat-icon.large {
+            font-size: 3rem;
+        }
     </style>
 </head>
 <body class="dark-mode">
@@ -584,6 +587,12 @@
                     <span>Count Games</span>
                 </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#apksgi-count" data-section="apksgi-count">
+                  <i class="bi bi-phone-fill"></i>
+                  <span>APKsgi Count</span>
+              </a>
+          </li>
             <li class="nav-item">
                 <a class="nav-link" href="#report-games" data-section="report-games">
                     <i class="bi bi-flag-fill"></i>
@@ -688,6 +697,15 @@
                         </div>
                         <div class="stat-value" id="pending-reports">0</div>
                         <div class="stat-label">Pending Reports</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #7209b7, #9d4edd);">
+                        <div class="stat-icon">
+                            <i class="bi bi-eye-fill"></i>
+                        </div>
+                        <div class="stat-value" id="apksgi-total-views-dashboard">0</div> 
+                        <div class="stat-label">APKsgi Total Views</div>
                     </div>
                 </div>
             </div>
@@ -937,6 +955,151 @@
             </div>
         </div>
         
+
+        <!-- APKsgi Count Section -->
+<div id="apksgi-count" class="section d-none">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title"><i class="bi bi-phone-fill me-2"></i> APKsgi View Statistics</h5>
+                    <div>
+                        <button class="btn btn-primary" onclick="exportAPKsgiStats()">
+                            <i class="bi bi-download me-2"></i> Export CSV
+                        </button>
+                        <button class="btn btn-refresh ms-2" id="refresh-apksgi">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card stat-card stat-card-primary">
+                                <div class="stat-icon">
+                                    <i class="bi bi-play-btn"></i>
+                                </div>
+                                <div class="stat-value" id="apksgi-videos-count">0</div>
+                                <div class="stat-label">Videos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stat-card stat-card-success">
+                                <div class="stat-icon">
+                                    <i class="bi bi-controller"></i>
+                                </div>
+                                <div class="stat-value" id="apksgi-games-count">0</div>
+                                <div class="stat-label">Games</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stat-card stat-card-warning">
+                                <div class="stat-icon">
+                                    <i class="bi bi-tv"></i>
+                                </div>
+                                <div class="stat-value" id="apksgi-streaming-count">0</div>
+                                <div class="stat-label">Streaming</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stat-card stat-card-danger">
+                                <div class="stat-icon">
+                                    <i class="bi bi-eye"></i>
+                                </div>
+                                <div class="stat-value" id="apksgi-total-views">0</div>
+                                <div class="stat-label">Total Views</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Filter by Type</label>
+                            <select id="filterAPKsgiType" class="form-select">
+                                <option value="all">All Types</option>
+                                <option value="videos">Videos</option>
+                                <option value="games">Games</option>
+                                <option value="streaming">Streaming</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Sort By</label>
+                            <select id="sortAPKsgi" class="form-select">
+                                <option value="total">Total Views</option>
+                                <option value="daily">Daily Views</option>
+                                <option value="weekly">Weekly Views</option>
+                                <option value="monthly">Monthly Views</option>
+                                <option value="name">Item Name</option>
+                                <option value="last">Last Viewed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Search</label>
+                            <input type="text" id="searchAPKsgi" class="form-control" placeholder="Search item...">
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="apksgiStatsTable">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Item ID</th>
+                                    <th>Item Name</th>
+                                    <th>Total Views</th>
+                                    <th>Today</th>
+                                    <th>This Week</th>
+                                    <th>This Month</th>
+                                    <th>First View</th>
+                                    <th>Last View</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="apksgiStatsBody">
+                                <tr>
+                                    <td colspan="10" class="text-center">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Chart Section -->
+                    <div class="row mt-4">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0"><i class="bi bi-bar-chart-line me-2"></i> APKsgi View Trends</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" style="height: 250px;">
+                                        <canvas id="apksgiTrendChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0"><i class="bi bi-pie-chart-fill me-2"></i> Views by Type</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" style="height: 250px;">
+                                        <canvas id="apksgiTypeChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
         <!-- Report Games Section -->
         <div id="report-games" class="section d-none">
             <div class="row">
@@ -1317,7 +1480,23 @@
             </div>
         </div>
     </div>
-    
+    <!-- APKsgi Item Detail Modal -->
+<div class="modal fade" id="apksgiDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">APKsgi Item Statistics</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="apksgiDetailBody">
+                <!-- Detail will be filled with JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -1325,20 +1504,23 @@
         // ============================================
         // CONFIGURATION
         // ============================================
-        const CONFIG = {
-            // API URLs
-            REPORT_API_URL: "https://script.google.com/macros/s/AKfycbyeG5Yl-8TPQVJJJRXIng8u6sfgPyM1bsfgcfdhMmw6zUYjpvJIR_mq_rYNMSBkhnJN/exec",
-            PINNED_API_URL: "https://script.google.com/macros/s/AKfycbw1ftGvO0CNdQ6q6BIYH1uBUQFS8VsSzD3IJcK_uTlNBcdEXK2qGmXD8k0HYCWWX2H6/exec",
-            
-            // Admin ID
-            ADMIN_ID: "1172835542",
-            
-            // Local Storage Keys
-            LS_THEME: "admin_theme",
-            LS_SETTINGS: "admin_settings",
-            LS_DATA: "admin_data_cache",
-            LS_NOTIFICATIONS: "admin_notifications"
-        };
+const CONFIG = {
+    // API URLs
+    REPORT_API_URL: "https://script.google.com/macros/s/AKfycbyeG5Yl-8TPQVJJJRXIng8u6sfgPyM1bsfgcfdhMmw6zUYjpvJIR_mq_rYNMSBkhnJN/exec",
+    PINNED_API_URL: "https://script.google.com/macros/s/AKfycbw1ftGvO0CNdQ6q6BIYH1uBUQFS8VsSzD3IJcK_uTlNBcdEXK2qGmXD8k0HYCWWX2H6/exec",
+    
+    // APKsgi Count API
+    APKSGI_COUNT_API_URL: "https://script.google.com/macros/s/AKfycbw7us6zDMnAYj_hLv1UwmCpIIHuwcX2avN5Nlf94tQ4mPIlX7I8s_tJh-2rkb6z9kY/exec",
+    
+    // Admin ID
+    ADMIN_ID: "1172835542",
+    
+    // Local Storage Keys
+    LS_THEME: "admin_theme",
+    LS_SETTINGS: "admin_settings",
+    LS_DATA: "admin_data_cache",
+    LS_NOTIFICATIONS: "admin_notifications"
+};
         
         // ============================================
         // GLOBAL VARIABLES
@@ -1352,6 +1534,9 @@
         let statusChart = null;
         let currentSection = "dashboard";
         let notifications = [];
+        let apksgiStats = [];
+        let apksgiTrendChart = null;
+        let apksgiTypeChart = null;
         
         // ============================================
         // INITIALIZATION
@@ -1430,8 +1615,17 @@
                     enableLightMode();
                 }
             });
+            document.getElementById('refresh-apksgi')?.addEventListener('click', function() {
+                animateRefreshButton(this);
+                loadAPKsgiStats();
+            });
+
+            document.getElementById('filterAPKsgiType')?.addEventListener('change', filterAPKsgiStats);
+            document.getElementById('sortAPKsgi')?.addEventListener('change', sortAPKsgiStats);
+            document.getElementById('searchAPKsgi')?.addEventListener('input', searchAPKsgiStats);
             
             // Filter event listeners
+
             document.getElementById('filterPlatformPinned')?.addEventListener('change', filterPinnedGames);
             document.getElementById('sortPinned')?.addEventListener('change', sortPinnedGames);
             document.getElementById('searchPinned')?.addEventListener('input', searchPinnedGames);
@@ -1473,6 +1667,625 @@
             }
         }
         
+
+// ============================================
+// APKsgi STATS FUNCTIONS
+// ============================================
+async function loadAPKsgiStats() {
+    try {
+        showToast('Loading APKsgi statistics...', 'info');
+        
+        const response = await fetch(`${CONFIG.APKSGI_COUNT_API_URL}?action=getAllCounts`);
+        
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            apksgiStats = result.data || [];
+            processAPKsgiStats(apksgiStats);
+            displayAPKsgiStats(apksgiStats);
+            updateAPKsgiSummary(apksgiStats);
+            createAPKsgiCharts(apksgiStats);
+            
+            // UPDATE DASHBOARD DENGAN TOTAL VIEWS
+            updateDashboardAPKsgiStats(apksgiStats);
+            
+            showToast('APKsgi statistics loaded successfully', 'success');
+            
+            // Cache the data
+            localStorage.setItem(`${CONFIG.LS_DATA}_apksgi`, JSON.stringify(apksgiStats));
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Failed to load APKsgi stats:', error);
+        showToast('Failed to load APKsgi statistics', 'error');
+        
+        // Load from cache if available
+        const cached = localStorage.getItem(`${CONFIG.LS_DATA}_apksgi`);
+        if (cached) {
+            apksgiStats = JSON.parse(cached);
+            processAPKsgiStats(apksgiStats);
+            displayAPKsgiStats(apksgiStats);
+            updateAPKsgiSummary(apksgiStats);
+            updateDashboardAPKsgiStats(apksgiStats); // Update dari cache juga
+        }
+    }
+}
+function updateDashboardAPKsgiStats(stats) {
+    const element = document.getElementById('apksgi-total-views-dashboard');
+    if (!element) return;
+    
+    if (!stats || stats.length === 0) {
+        element.textContent = '0';
+        return;
+    }
+    
+    // Hitung TOTAL VIEWS dari semua item
+    const totalViews = stats.reduce((sum, stat) => {
+        return sum + (parseInt(stat.TotalCount) || 0);
+    }, 0);
+    
+    // Hitung views hari ini
+    const todayViews = stats.reduce((sum, stat) => {
+        return sum + (parseInt(stat.DailyCount) || 0);
+    }, 0);
+    
+    // Format dengan trend indicator
+    let trendIcon = '';
+    let trendClass = '';
+    
+    // Cek trend berdasarkan persentase views hari ini vs rata-rata harian
+    const avgDaily = totalViews / Math.max(stats.length, 1);
+    const todayPercent = (todayViews / avgDaily) * 100;
+    
+    if (todayPercent > 150) {
+        trendIcon = ' ↗';
+        trendClass = 'text-success';
+    } else if (todayPercent > 80) {
+        trendIcon = ' →';
+        trendClass = 'text-warning';
+    } else {
+        trendIcon = ' ↘';
+        trendClass = 'text-danger';
+    }
+    
+    element.innerHTML = `${formatLargeNumber(totalViews)}<span class="${trendClass}" style="font-size: 0.7em">${trendIcon}</span>`;
+    
+    // Tambahkan tooltip info
+    element.title = `Total: ${totalViews.toLocaleString()} views\nToday: ${todayViews} views`;
+}
+
+function formatLargeNumber(num) {
+    if (!num && num !== 0) return '0';
+    
+    // Format: 1K, 1M, 1B
+    if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1) + 'B';
+    }
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    
+    return num.toLocaleString();
+}
+function processAPKsgiStats(stats) {
+    // Process each stat to ensure proper formatting
+    stats.forEach(stat => {
+        // Ensure all count fields have values
+        stat.TotalCount = parseInt(stat.TotalCount) || 0;
+        stat.DailyCount = parseInt(stat.DailyCount) || 0;
+        stat.WeeklyCount = parseInt(stat.WeeklyCount) || 0;
+        stat.MonthlyCount = parseInt(stat.MonthlyCount) || 0;
+        
+        // Format dates
+        if (stat.LastClicked) {
+            if (typeof stat.LastClicked === 'string' && stat.LastClicked.includes('display')) {
+                // Already formatted
+            } else if (stat.LastClicked.date) {
+                stat.LastClicked = {
+                    display: `${formatDate(stat.LastClicked.date)} ${stat.LastClicked.time || ''}`.trim(),
+                    date: stat.LastClicked.date
+                };
+            } else {
+                stat.LastClicked = {
+                    display: formatDate(stat.LastClicked),
+                    date: stat.LastClicked
+                };
+            }
+        }
+        
+        if (stat.FirstClicked) {
+            if (typeof stat.FirstClicked === 'string' && stat.FirstClicked.includes('display')) {
+                // Already formatted
+            } else if (stat.FirstClicked.date) {
+                stat.FirstClicked = {
+                    display: `${formatDate(stat.FirstClicked.date)} ${stat.FirstClicked.time || ''}`.trim(),
+                    date: stat.FirstClicked.date
+                };
+            } else {
+                stat.FirstClicked = {
+                    display: formatDate(stat.FirstClicked),
+                    date: stat.FirstClicked
+                };
+            }
+        }
+    });
+}
+
+function displayAPKsgiStats(stats) {
+    const tbody = document.getElementById('apksgiStatsBody');
+    
+    if (stats.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10" class="text-center text-muted py-4">
+                    <i class="bi bi-phone display-6 d-block mb-2"></i>
+                    No APKsgi statistics found
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = stats.map(stat => {
+        const type = stat.Type || 'unknown';
+        const typeClass = getAPKsgiTypeClass(type);
+        const trendIcon = getTrendIcon(stat.DailyCount);
+        
+        return `
+            <tr>
+                <td><span class="badge ${typeClass}">${type.toUpperCase()}</span></td>
+                <td><code>${stat.ItemID || 'N/A'}</code></td>
+                <td><strong>${escapeHTML(stat.ItemName || stat.ItemID || 'Unknown')}</strong></td>
+                <td><span class="badge bg-primary">${stat.TotalCount || 0}</span></td>
+                <td><span class="badge ${stat.DailyCount > 0 ? 'bg-success' : 'bg-secondary'}">${stat.DailyCount || 0}</span></td>
+                <td><span class="badge ${stat.WeeklyCount > 0 ? 'bg-warning' : 'bg-secondary'}">${stat.WeeklyCount || 0}</span></td>
+                <td><span class="badge ${stat.MonthlyCount > 0 ? 'bg-danger' : 'bg-secondary'}">${stat.MonthlyCount || 0}</span></td>
+                <td>${stat.FirstClicked?.display || 'N/A'}</td>
+                <td>${stat.LastClicked?.display || 'N/A'}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-info" onclick="viewAPKsgiDetail('${stat.Type}', '${stat.ItemID}')">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function getAPKsgiTypeClass(type) {
+    switch(type.toLowerCase()) {
+        case 'videos': return 'bg-primary';
+        case 'games': return 'bg-success';
+        case 'streaming': return 'bg-warning';
+        default: return 'bg-secondary';
+    }
+}
+
+function getTrendIcon(count) {
+    if (count > 20) return 'bi-graph-up-arrow text-success';
+    if (count > 10) return 'bi-graph-up text-warning';
+    if (count > 0) return 'bi-graph-up text-info';
+    return 'bi-graph-down text-danger';
+}
+
+function updateAPKsgiSummary(stats) {
+    // Calculate totals by type
+    const videos = stats.filter(s => s.Type.toLowerCase() === 'videos');
+    const games = stats.filter(s => s.Type.toLowerCase() === 'games');
+    const streaming = stats.filter(s => s.Type.toLowerCase() === 'streaming');
+    
+    // Update cards
+    document.getElementById('apksgi-videos-count').textContent = videos.length;
+    document.getElementById('apksgi-games-count').textContent = games.length;
+    document.getElementById('apksgi-streaming-count').textContent = streaming.length;
+    
+    // Calculate total views
+    const totalViews = stats.reduce((sum, stat) => sum + (stat.TotalCount || 0), 0);
+    document.getElementById('apksgi-total-views').textContent = totalViews.toLocaleString();
+}
+
+async function viewAPKsgiDetail(type, itemId) {
+    try {
+        const response = await fetch(`${CONFIG.APKSGI_COUNT_API_URL}?action=getItemCount&type=${type}&itemId=${itemId}`);
+        
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            const stat = result.data;
+            const modalBody = document.getElementById('apksgiDetailBody');
+            
+            // Format dates
+            const firstClicked = stat.FirstClicked ? 
+                `${formatDate(stat.FirstClicked.date)} ${stat.FirstClicked.time || ''}` : 
+                'N/A';
+            
+            const lastClicked = stat.LastClicked ? 
+                `${formatDate(stat.LastClicked.date)} ${stat.LastClicked.time || ''}` : 
+                'N/A';
+            
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Type:</strong> <span class="badge ${getAPKsgiTypeClass(type)}">${type.toUpperCase()}</span></p>
+                        <p><strong>Item ID:</strong> <code>${itemId}</code></p>
+                        <p><strong>Item Name:</strong> ${escapeHTML(stat.ItemName || itemId)}</p>
+                        <p><strong>Platform:</strong> ${stat.Platform || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Total Views:</strong> <span class="badge bg-primary fs-5">${stat.TotalCount || 0}</span></p>
+                        <p><strong>Today:</strong> <span class="badge bg-success">${stat.DailyCount || 0}</span></p>
+                        <p><strong>This Week:</strong> <span class="badge bg-warning">${stat.WeeklyCount || 0}</span></p>
+                        <p><strong>This Month:</strong> <span class="badge bg-danger">${stat.MonthlyCount || 0}</span></p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>First View:</strong> ${firstClicked}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Last View:</strong> ${lastClicked}</p>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h6>View Trend (Last 7 Days)</h6>
+                    <div class="chart-container" style="height: 200px;">
+                        <canvas id="apksgiItemTrendChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="resetAPKsgiItem('${type}', '${itemId}')">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Counts
+                    </button>
+                    <small class="text-muted ms-2">Resets daily/weekly/monthly counts only</small>
+                </div>
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('apksgiDetailModal'));
+            modal.show();
+            
+            // Create trend chart
+            setTimeout(() => {
+                createAPKsgiItemTrendChart(stat);
+            }, 100);
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        showToast('Failed to load APKsgi item details: ' + error.message, 'error');
+    }
+}
+
+function filterAPKsgiStats() {
+    const typeFilter = document.getElementById('filterAPKsgiType').value;
+    const searchTerm = document.getElementById('searchAPKsgi').value.toLowerCase();
+    
+    let filtered = apksgiStats;
+    
+    if (typeFilter !== 'all') {
+        filtered = filtered.filter(s => s.Type.toLowerCase() === typeFilter);
+    }
+    
+    if (searchTerm) {
+        filtered = filtered.filter(s => 
+            (s.ItemName && s.ItemName.toLowerCase().includes(searchTerm)) ||
+            (s.ItemID && s.ItemID.toLowerCase().includes(searchTerm)) ||
+            (s.Type && s.Type.toLowerCase().includes(searchTerm))
+        );
+    }
+    
+    displayAPKsgiStats(filtered);
+}
+
+function searchAPKsgiStats() {
+    filterAPKsgiStats();
+}
+
+function sortAPKsgiStats() {
+    const sortBy = document.getElementById('sortAPKsgi').value;
+    let sorted = [...apksgiStats];
+    
+    switch(sortBy) {
+        case 'total':
+            sorted.sort((a, b) => (b.TotalCount || 0) - (a.TotalCount || 0));
+            break;
+        case 'daily':
+            sorted.sort((a, b) => (b.DailyCount || 0) - (a.DailyCount || 0));
+            break;
+        case 'weekly':
+            sorted.sort((a, b) => (b.WeeklyCount || 0) - (a.WeeklyCount || 0));
+            break;
+        case 'monthly':
+            sorted.sort((a, b) => (b.MonthlyCount || 0) - (a.MonthlyCount || 0));
+            break;
+        case 'name':
+            sorted.sort((a, b) => (a.ItemName || a.ItemID || '').localeCompare(b.ItemName || b.ItemID || ''));
+            break;
+        case 'last':
+            sorted.sort((a, b) => {
+                const dateA = a.LastClicked?.date ? new Date(a.LastClicked.date) : new Date(0);
+                const dateB = b.LastClicked?.date ? new Date(b.LastClicked.date) : new Date(0);
+                return dateB - dateA;
+            });
+            break;
+    }
+    
+    displayAPKsgiStats(sorted);
+}
+
+function createAPKsgiCharts(stats) {
+    createAPKsgiTrendChart(stats);
+    createAPKsgiTypeChart(stats);
+}
+
+function createAPKsgiTrendChart(stats) {
+    const ctx = document.getElementById('apksgiTrendChart').getContext('2d');
+    
+    // Group by last 7 days
+    const last7Days = [];
+    const dailyData = [];
+    
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        last7Days.push(dateStr);
+        
+        // Count total daily views for this day (simulated - in real app you'd get this from API)
+        const dayCount = Math.floor(Math.random() * (stats.length * 0.5)) + stats.length * 0.2;
+        dailyData.push(dayCount);
+    }
+    
+    const labels = last7Days.map(date => formatDateShort(date));
+    
+    if (apksgiTrendChart) {
+        apksgiTrendChart.destroy();
+    }
+    
+    apksgiTrendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Views',
+                data: dailyData,
+                borderColor: '#4361ee',
+                backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createAPKsgiTypeChart(stats) {
+    const ctx = document.getElementById('apksgiTypeChart').getContext('2d');
+    
+    const typeCounts = {
+        videos: stats.filter(s => s.Type.toLowerCase() === 'videos').length,
+        games: stats.filter(s => s.Type.toLowerCase() === 'games').length,
+        streaming: stats.filter(s => s.Type.toLowerCase() === 'streaming').length,
+        other: stats.filter(s => !['videos', 'games', 'streaming'].includes(s.Type.toLowerCase())).length
+    };
+    
+    const viewCounts = {
+        videos: stats.filter(s => s.Type.toLowerCase() === 'videos')
+                    .reduce((sum, stat) => sum + (stat.TotalCount || 0), 0),
+        games: stats.filter(s => s.Type.toLowerCase() === 'games')
+                   .reduce((sum, stat) => sum + (stat.TotalCount || 0), 0),
+        streaming: stats.filter(s => s.Type.toLowerCase() === 'streaming')
+                       .reduce((sum, stat) => sum + (stat.TotalCount || 0), 0)
+    };
+    
+    if (apksgiTypeChart) {
+        apksgiTypeChart.destroy();
+    }
+    
+    apksgiTypeChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Videos', 'Games', 'Streaming', 'Other'],
+            datasets: [{
+                data: [
+                    typeCounts.videos,
+                    typeCounts.games,
+                    typeCounts.streaming,
+                    typeCounts.other
+                ],
+                backgroundColor: [
+                    '#4361ee',
+                    '#4cc9f0',
+                    '#f8961e',
+                    '#7209b7'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-color'),
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = Math.round((value / total) * 100);
+                            return `${label}: ${value} items (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createAPKsgiItemTrendChart(stat) {
+    const ctx = document.getElementById('apksgiItemTrendChart').getContext('2d');
+    
+    // Mock data for trend
+    const labels = ['6 days ago', '5 days ago', '4 days ago', '3 days ago', '2 days ago', 'Yesterday', 'Today'];
+    const baseClicks = Math.max(1, Math.floor((stat.TotalCount || 10) / 7));
+    
+    const data = [
+        Math.floor(baseClicks * 0.7),
+        Math.floor(baseClicks * 0.9),
+        Math.floor(baseClicks * 1.2),
+        Math.floor(baseClicks * 0.8),
+        Math.floor(baseClicks * 1.5),
+        Math.floor(baseClicks * 1.1),
+        stat.DailyCount || 0
+    ];
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Daily Views',
+                data: data,
+                backgroundColor: '#4361ee',
+                borderColor: '#2f4fdb',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                    }
+                }
+            }
+        }
+    });
+}
+
+async function resetAPKsgiItem(type, itemId) {
+    if (!confirm(`Reset counts for ${type} item ${itemId}? This will reset daily/weekly/monthly counts to zero.`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(CONFIG.APKSGI_COUNT_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `action=resetCounts&type=${type}&itemId=${itemId}`
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            showToast('Item counts reset successfully', 'success');
+            loadAPKsgiStats();
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('apksgiDetailModal'));
+            if (modal) modal.hide();
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        showToast('Failed to reset item counts: ' + error.message, 'error');
+    }
+}
+
+function exportAPKsgiStats() {
+    if (apksgiStats.length === 0) {
+        showToast('No APKsgi statistics to export', 'warning');
+        return;
+    }
+    
+    const csvContent = "data:text/csv;charset=utf-8," 
+        + "Type,Item ID,Item Name,Platform,Total Views,Daily Views,Weekly Views,Monthly Views,First View,Last View\n"
+        + apksgiStats.map(stat => 
+            `"${stat.Type}","${stat.ItemID}","${stat.ItemName || ''}","${stat.Platform || ''}",` +
+            `"${stat.TotalCount || 0}","${stat.DailyCount || 0}","${stat.WeeklyCount || 0}","${stat.MonthlyCount || 0}",` +
+            `"${stat.FirstClicked?.display || ''}","${stat.LastClicked?.display || ''}"`
+        ).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `apksgi_stats_${new Date().getTime()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast(`Exported ${apksgiStats.length} APKsgi items`, 'success');
+}
         // ============================================
         // UI FUNCTIONS
         // ============================================
@@ -1513,6 +2326,7 @@
                 'dashboard': 'Dashboard Overview',
                 'pinned-games': 'Pinned Games Management',
                 'count-games': 'Game Click Statistics',
+                'apksgi-count': 'APKsgi View Statistics',
                 'report-games': 'User Reports Management',
                 'settings': 'System Settings'
             };
@@ -1566,22 +2380,26 @@
             loadGameStats();
             loadReports();
             loadTopGames();
+            loadAPKsgiStats(); // Tambahkan ini
         }
         
         function loadSectionData(section) {
             switch(section) {
-                case 'dashboard':
-                    loadDashboardData();
-                    break;
-                case 'pinned-games':
-                    loadPinnedGames();
-                    break;
-                case 'count-games':
-                    loadGameStats();
-                    break;
-                case 'report-games':
-                    loadReports();
-                    break;
+        case 'dashboard':
+            loadDashboardData();
+            break;
+        case 'pinned-games':
+            loadPinnedGames();
+            break;
+        case 'count-games':
+            loadGameStats();
+            break;
+        case 'apksgi-count':
+            loadAPKsgiStats();
+            break;
+        case 'report-games':
+            loadReports();
+            break;
                 // Settings doesn't need data loading
             }
         }
