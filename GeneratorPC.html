@@ -923,6 +923,47 @@
             max-height: 200px;
         }
     }
+
+    /* Screenshots Grid */
+    .screenshots-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .screenshot-card {
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .screenshot-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .screenshot-card .card {
+        height: 100%;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .screenshot-card img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+    }
+
+    .screenshot-card .card-body {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .screenshot-card small {
+        font-size: 0.8rem;
+        color: #64748b;
+    }
+
   </style>
 </head>
 
@@ -1323,6 +1364,22 @@
                   <div id="thumbnailError" class="thumb-error"></div>
                 </div>
               </div>
+            <h5><i class="bi bi-images"></i> Screenshots Gameplay (Optional)</h5>
+            <div class="mb-3">
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle-fill"></i>
+                Screenshots akan otomatis terdeteksi dari paste data. Gambar pertama adalah thumbnail, sisanya adalah screenshot gameplay.
+              </div>
+              
+              <!-- Preview Screenshots -->
+              <div id="screenshotsPreviewContainer" class="screenshots-container mt-3" style="display:none;">
+                <!-- Preview screenshots akan ditampilkan di sini -->
+              </div>
+
+              <!-- Hidden field untuk menyimpan screenshots -->
+              <input type="hidden" id="screenshotsField" value="[]" />
+            </div>
+          </div>
             </div>
 
             <div class="mt-4 d-flex gap-2 flex-wrap">
@@ -1422,6 +1479,7 @@
     // ============= KONFIGURASI UNTUK PC =============
     const PC_API_URL = "https://script.google.com/macros/s/AKfycbxKEqdp8W2YOvP-s11-Py8mmt-qBStCFr6pdnV2kjTCX3tDI04xBtlfH5XDE3ldx2Kd3Q/exec";
     const USER_API_URL = "https://script.google.com/macros/s/AKfycbweRCcVmuWrz2gpvIanBqeIsyubAUgOjSssHhnXBW3WUiOu9QbNeUq-y4-9Ps6BuQ8L/exec";
+    const SCREENSHOOT_API_URL = "https://script.google.com/macros/s/AKfycbwjF-qp6zHQGiBchoReCX3xLpWSLJysoUsRDDiXbm3nZ51RdaLWrpCh5jqno5A-Rmn4/exec";
     
     // Data state untuk PC
     let currentStep = 1;
@@ -1434,7 +1492,8 @@
         gameInfo: {},
         systemRequirements: "",
         downloadId: null,
-        thumbnailUrl: ""
+        thumbnailUrl: "",
+    screenshots: [] 
     };
     
     let currentUser = null;
@@ -1520,14 +1579,69 @@ const CLOUD_OPTIONS = [
         document.getElementById('btnClearCacheReview')?.addEventListener('click', clearCacheReview);
     }
 
-    function isValidHttpUrl(str) {
-      try {
-        const u = new URL(String(str || '').trim());
-        return u.protocol === 'http:' || u.protocol === 'https:';
-      } catch {
+function isValidHttpUrl(string) {
+    try {
+        const url = new URL(string);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (_) {
         return false;
-      }
     }
+}
+
+function updateScreenshotsInputPreview() {
+    const textarea = document.getElementById('screenshotsInput');
+    const previewContainer = document.getElementById('screenshotsPreviewContainer');
+    
+    if (!textarea || !previewContainer) return;
+    
+    const urls = textarea.value
+        .split('\n')
+        .map(url => url.trim())
+        .filter(url => url && isValidHttpUrl(url));
+    
+    if (urls.length === 0) {
+        previewContainer.style.display = 'none';
+        return;
+    }
+    
+    let html = `
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="bi bi-images"></i> Screenshots Preview (${urls.length})</h6>
+            </div>
+            <div class="card-body">
+                <div class="screenshots-grid">
+    `;
+    
+    urls.forEach((url, index) => {
+        html += `
+            <div class="screenshot-card">
+                <div class="card">
+                    <img src="${url}" 
+                         class="card-img-top" 
+                         style="height: 100px; object-fit: cover;"
+                         alt="Screenshot ${index + 1}"
+                         onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/6c757d/ffffff?text=Error+Loading'">
+                    <div class="card-body p-2 text-center">
+                        <small class="text-muted">#${index + 1}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted"><i class="bi bi-info-circle"></i> ${urls.length} screenshot(s) ditemukan</small>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    previewContainer.innerHTML = html;
+    previewContainer.style.display = 'block';
+}
 
     function updateThumbnailPreview(url) {
       const wrap = document.getElementById('thumbnailPreview');
@@ -2137,68 +2251,191 @@ function generateLinkInputFields() {
         });
     }
 
-    function parseGameData(text) {
-      const lines = text
+
+
+function parseGameData(text) {
+    const lines = text
         .split('\n')
         .map(line => line.trim())
         .filter(line => line !== '');
 
-      if (lines.length < 4) {
+    if (lines.length < 4) {
         throw new Error('Data terlalu pendek. Minimal 4 baris untuk data dasar.');
-      }
+    }
 
-      // Data dasar game PC
-      const basicData = {
+    // Data dasar game PC
+    const basicData = {
         gameName: lines[0] || '',
         gameSize: lines[1] || '',
         category: lines[2] || '',
         developer: lines[3] || ''
-      };
+    };
 
-      // Isi form dengan data dasar
-      document.getElementById('gameName').value = basicData.gameName;
-      document.getElementById('gameSize').value = basicData.gameSize;
-      document.getElementById('category').value = basicData.category;
-      document.getElementById('developer').value = basicData.developer;
+    // Isi form dengan data dasar
+    document.getElementById('gameName').value = basicData.gameName;
+    document.getElementById('gameSize').value = basicData.gameSize;
+    document.getElementById('category').value = basicData.category;
+    document.getElementById('developer').value = basicData.developer;
 
-      // Update gameData
-      gameData.gameInfo = {
+    // Update gameData
+    gameData.gameInfo = {
         nama_game: basicData.gameName,
         ukuran_game: basicData.gameSize,
         category: basicData.category,
         developer: basicData.developer
-      };
+    };
 
-      // Proses link (baris 4 dan seterusnya)
-      const linkLines = lines.slice(4);
-      const totalExpectedLinks = gameData.linkCount;
+    // Proses link (baris 4 dan seterusnya)
+    const linkLines = lines.slice(4);
+    const totalExpectedLinks = gameData.linkCount;
 
-      // Asumsi linkLines berisi link asli, iklan1, iklan2 secara berurutan
-      for (let i = 0; i < totalExpectedLinks; i++) {
+    // Asumsi linkLines berisi link asli, iklan1, iklan2 secara berurutan
+    for (let i = 0; i < totalExpectedLinks; i++) {
         if (linkLines[i]) gameData.originalLinks[i] = linkLines[i];
-      }
-
-      for (let i = 0; i < totalExpectedLinks; i++) {
-        if (linkLines[totalExpectedLinks + i]) gameData.adLinks[i] = linkLines[totalExpectedLinks + i];
-      }
-
-      for (let i = 0; i < totalExpectedLinks; i++) {
-        if (linkLines[totalExpectedLinks * 2 + i]) gameData.adLinks2[i] = linkLines[totalExpectedLinks * 2 + i];
-      }
-
-      updateLinkInputsUI();
-
-      // Cek apakah ada thumbnail di akhir
-      const totalParsedLines = totalExpectedLinks * 3 + 4;
-      if (lines.length > totalParsedLines) {
-        const thumbnailCandidate = lines[totalParsedLines];
-        if (thumbnailCandidate && thumbnailCandidate.startsWith('http')) {
-          document.getElementById('thumbnailUrl').value = thumbnailCandidate;
-          gameData.thumbnailUrl = thumbnailCandidate;
-          updateThumbnailPreview(thumbnailCandidate);
-        }
-      }
     }
+
+    for (let i = 0; i < totalExpectedLinks; i++) {
+        if (linkLines[totalExpectedLinks + i]) gameData.adLinks[i] = linkLines[totalExpectedLinks + i];
+    }
+
+    for (let i = 0; i < totalExpectedLinks; i++) {
+        if (linkLines[totalExpectedLinks * 2 + i]) gameData.adLinks2[i] = linkLines[totalExpectedLinks * 2 + i];
+    }
+
+    updateLinkInputsUI();
+
+    // Deteksi thumbnail dan screenshots di akhir
+    const totalParsedLines = totalExpectedLinks * 3 + 4;
+    const remainingLines = lines.slice(totalParsedLines);
+    
+    // Filter hanya URL gambar dari sisa baris
+    const imageUrls = [];
+    remainingLines.forEach(line => {
+        if (line.startsWith('http') && 
+            (line.match(/\.(jpg|jpeg|png|webp|gif|bmp)(\?.*)?$/i) || 
+             line.includes('/uploads/'))) {
+            imageUrls.push(line);
+        }
+    });
+
+    // Set thumbnail (gambar pertama)
+    if (imageUrls.length > 0) {
+        document.getElementById('thumbnailUrl').value = imageUrls[0];
+        gameData.thumbnailUrl = imageUrls[0];
+        updateThumbnailPreview(imageUrls[0]);
+    }
+
+    // Set screenshots (gambar kedua dan seterusnya)
+    const screenshotUrls = imageUrls.length > 1 ? imageUrls.slice(1) : [];
+    
+    if (screenshotUrls.length > 0) {
+        // Update screenshots textarea
+        const screenshotsTextarea = document.getElementById('screenshotsInput');
+        if (screenshotsTextarea) {
+            // Ambil URL yang sudah ada di textarea
+            const existingUrls = screenshotsTextarea.value
+                .split('\n')
+                .map(url => url.trim())
+                .filter(url => url && isValidHttpUrl(url));
+            
+            // Gabungkan dengan yang baru, hilangkan duplikat
+            const allUrls = [...new Set([...existingUrls, ...screenshotUrls])];
+            screenshotsTextarea.value = allUrls.join('\n');
+            
+            // Trigger update preview
+            setTimeout(() => {
+                updateScreenshotsInputPreview();
+            }, 100);
+        }
+        
+        // Simpan ke gameData
+        gameData.screenshots = screenshotUrls;
+        
+        // Update screenshots field hidden
+        const screenshotsField = document.getElementById('screenshotsField');
+        if (screenshotsField) {
+            screenshotsField.value = JSON.stringify(screenshotUrls);
+        }
+        
+        // Update screenshots preview
+        updateScreenshotsPreview(screenshotUrls);
+        
+        showToast('info', `Deteksi otomatis: ${screenshotUrls.length} screenshot gameplay ditemukan.`);
+    }
+}
+
+function updateScreenshotsPreview(screenshots) {
+  const container = document.getElementById('screenshotsPreviewContainer');
+  if (!container) return;
+
+  if (!screenshots || screenshots.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+
+  let html = `
+    <div class="screenshots-section">
+      <h6><i class="bi bi-images"></i> Screenshots Gameplay (${screenshots.length})</h6>
+      <div class="screenshots-grid">
+  `;
+
+  screenshots.forEach((url, index) => {
+    html += `
+      <div class="screenshot-card">
+        <div class="card">
+          <img src="${url}" 
+               class="card-img-top screenshot-image"
+               alt="Screenshot ${index + 1}"
+               loading="lazy"
+               onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmaWxsPSIjNjQ3NDhiIj5TY3JlZW5zaG90ICR7aW5kZXggKyAxfTwvdGV4dD48L3N2Zz4='">
+          <div class="card-body">
+            <small class="text-muted">Screenshot ${index + 1}</small>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+      </div>
+      <div class="mt-2">
+        <small class="text-muted">
+          <i class="bi bi-info-circle"></i> 
+          ${screenshots.length} screenshot gameplay ditemukan. Klik untuk preview lebih besar.
+        </small>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+  container.style.display = 'block';
+
+  // Tambahkan event listener untuk preview besar
+  setTimeout(() => {
+    document.querySelectorAll('.screenshot-image').forEach(img => {
+      img.addEventListener('click', function() {
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Preview Screenshot Gameplay</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body text-center">
+                <img src="${this.src}" class="img-fluid" style="max-height: 70vh;">
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        new bootstrap.Modal(modal).show();
+        modal.addEventListener('hidden.bs.modal', () => modal.remove());
+      });
+    });
+  }, 100);
+}
 
     function updateLinkInputsUI() {
       const adLinksContainer = document.getElementById('adLinksInput');
@@ -2291,6 +2528,28 @@ async function saveGameData() {
     const systemRequirements = document.getElementById('systemRequirements').value.trim();
     const thumbnailUrl = document.getElementById('thumbnailUrl').value.trim();
     
+    // DAPATKAN SCREENSHOTS DARI TEXTAREA INPUT
+    const screenshotsTextarea = document.getElementById('screenshotsInput');
+    let screenshotUrls = [];
+    
+    if (screenshotsTextarea && screenshotsTextarea.value.trim()) {
+        screenshotUrls = screenshotsTextarea.value
+            .split('\n')
+            .map(url => url.trim())
+            .filter(url => url && isValidHttpUrl(url));
+    }
+    
+    // Gabungkan dengan screenshots yang sudah ada di gameData (dari parsing)
+    if (gameData.screenshots && gameData.screenshots.length > 0) {
+        screenshotUrls = [...new Set([...screenshotUrls, ...gameData.screenshots])];
+    }
+    
+    // Update screenshots field hidden
+    const screenshotsField = document.getElementById('screenshotsField');
+    if (screenshotsField) {
+        screenshotsField.value = JSON.stringify(screenshotUrls);
+    }
+    
     if (!gameName || !gameSize || !category || !developer) {
         alert('Harap isi semua field yang wajib!');
         return;
@@ -2350,6 +2609,7 @@ async function saveGameData() {
     
     gameData.systemRequirements = systemRequirements;
     gameData.thumbnailUrl = thumbnailUrl;
+    gameData.screenshots = screenshotUrls; // Simpan screenshot URLs ke gameData
     
     try {
         const saveBtn = document.getElementById('btnSaveGame');
@@ -2364,10 +2624,12 @@ async function saveGameData() {
             cloudTypes: gameData.cloudTypes,
             originalLinksCount: gameData.originalLinks.length,
             adLinksCount: gameData.adLinks.length,
-            adLinks2Count: gameData.adLinks2.length
+            adLinks2Count: gameData.adLinks2.length,
+            screenshotCount: screenshotUrls.length,
+            screenshots: screenshotUrls
         });
         
-        // Prepare form data
+        // Prepare form data untuk API PC
         const params = new URLSearchParams();
         params.append('action', 'saveGame');
         params.append('nama_game', gameData.gameInfo.nama_game);
@@ -2380,7 +2642,8 @@ async function saveGameData() {
         params.append('link_iklan2', JSON.stringify(gameData.adLinks2));
         params.append('cloud_types', JSON.stringify(gameData.cloudTypes));
         params.append('thumbnail_url', gameData.thumbnailUrl);
-        params.append('link_count', gameData.linkCount); // Tambahkan link_count
+        params.append('screenshot_urls', JSON.stringify(screenshotUrls)); // Kirim screenshots
+        params.append('link_count', gameData.linkCount); 
         
         console.log('Saving PC game data...');
         
@@ -2400,10 +2663,55 @@ async function saveGameData() {
             
             if (result.status === 'success') {
                 gameData.downloadId = result.data.download_id;
-                showSuccessModal(
-                    '✅ Game PC Berhasil Disimpan!',
+                
+                // ===== 2. SIMPAN SCREENSHOT KE API SCREENSHOT =====
+                let screenshotSaved = false;
+                let screenshotResult = null;
+                
+                if (screenshotUrls.length > 0 && gameData.downloadId && SCREENSHOOT_API_URL) {
+                    console.log(`2. Menyimpan ${screenshotUrls.length} screenshot ke API screenshot...`);
+                    
+                    try {
+                        const screenshotParams = new URLSearchParams();
+                        screenshotParams.append('action', 'saveScreenshots');
+                        screenshotParams.append('platform', 'pc'); // Platform: 'pc'
+                        screenshotParams.append('download_id', gameData.downloadId);
+                        screenshotParams.append('game_name', gameName);
+                        screenshotParams.append('thumbnail_url', thumbnailUrl);
+                        screenshotParams.append('screenshots', JSON.stringify(screenshotUrls));
+                        
+                        const screenshotResponse = await fetch(SCREENSHOOT_API_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: screenshotParams.toString()
+                        });
+                        
+                        if (screenshotResponse.ok) {
+                            screenshotResult = await screenshotResponse.json();
+                            if (screenshotResult.status === 'success') {
+                                screenshotSaved = true;
+                                console.log('Screenshot API response:', screenshotResult);
+                            }
+                        }
+                    } catch (screenshotError) {
+                        console.warn('Gagal menyimpan screenshot (tapi game tetap tersimpan):', screenshotError);
+                    }
+                }
+                
+                // ===== 3. TAMPILKAN MODAL SUKSES =====
+                const screenshotCount = screenshotUrls.length;
+                const successTitle = screenshotCount > 0 
+                    ? `✅ Game PC Berhasil Disimpan (${screenshotCount} Screenshot)`
+                    : '✅ Game PC Berhasil Disimpan';
+                
+                showSuccessModalPC(
+                    successTitle,
                     gameData.gameInfo.nama_game,
-                    result.data.download_id
+                    result.data.download_id,
+                    screenshotCount,
+                    screenshotSaved
                 );
                 
                 // Simpan ke localStorage
@@ -2411,6 +2719,9 @@ async function saveGameData() {
                     downloadId: gameData.downloadId,
                     name: gameData.gameInfo.nama_game,
                     developer: gameData.gameInfo.developer,
+                    thumbnailUrl: thumbnailUrl,
+                    screenshotCount: screenshotCount,
+                    screenshotSaved: screenshotSaved,
                     updatedAt: new Date().toISOString()
                 });
             } else {
@@ -2427,15 +2738,22 @@ async function saveGameData() {
         try {
             const gameDataToSave = {
                 ...gameData,
+                screenshots: screenshotUrls, // Simpan screenshots juga
                 savedAt: new Date().toISOString()
             };
             localStorage.setItem('pcGameData', JSON.stringify(gameDataToSave));
             gameData.downloadId = 'LOCAL_' + Date.now().toString().slice(-8);
             
-            showFallbackModal(
-                '⚠️ Disimpan Secara Lokal',
+            const screenshotCount = screenshotUrls.length;
+            const fallbackTitle = screenshotCount > 0
+                ? `⚠️ Disimpan Secara Lokal (${screenshotCount} Screenshot)`
+                : '⚠️ Disimpan Secara Lokal';
+            
+            showFallbackModalPC(
+                fallbackTitle,
                 gameData.gameInfo.nama_game,
-                gameData.downloadId
+                gameData.downloadId,
+                screenshotCount
             );
         } catch (localError) {
             alert('❌ Gagal menyimpan game: ' + error.message);
@@ -2484,126 +2802,286 @@ function ensureArrayLength(arr, length) {
             return game;
         }
         
-        function showSuccessModal(title, gameName, downloadId) {
-            const modalHtml = `
-                <div class="modal fade" id="saveSuccessModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-success text-white">
-                                <h5 class="modal-title">
-                                    <i class="bi bi-check-circle-fill"></i> ${title}
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+function showSuccessModalPC(title, gameName, downloadId, screenshotCount = 0, screenshotSaved = false) {
+    const modalHtml = `
+        <div class="modal fade" id="saveSuccessModalPC" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-check-circle-fill"></i> ${title}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
                             </div>
-                            <div class="modal-body">
-                                <div class="text-center">
-                                    <div class="mb-3">
-                                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <h4 class="text-success">${gameName}</h4>
-                                    <div class="alert alert-success mt-3">
-                                        <strong>Download ID (Unik):</strong>
-                                        <div class="mt-2">
-                                            <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.2rem;">
-                                                ${downloadId}
-                                            </code>
-                                        </div>
-                                        <small class="d-block mt-2">
-                                            <i class="bi bi-shield-check"></i>
-                                            ID ini <strong>100% UNIK</strong> dan tidak akan pernah duplikat
-                                        </small>
-                                    </div>
-                                    <p class="text-muted mt-3">
-                                        ID digenerate otomatis dengan sistem anti-duplikat
-                                    </p>
+                            <h4 class="text-success">${gameName}</h4>
+                            
+                            ${screenshotCount > 0 ? `
+                            <div class="alert ${screenshotSaved ? 'alert-success' : 'alert-warning'}">
+                                <i class="bi bi-images"></i>
+                                <strong>${screenshotCount} Screenshot Gameplay</strong>
+                                ${screenshotSaved ? 'berhasil disimpan ke database screenshot.' : 'disimpan hanya di data game utama.'}
+                            </div>
+                            ` : ''}
+                            
+                            <div class="alert alert-success mt-3">
+                                <strong>Download ID (Unik):</strong>
+                                <div class="mt-2">
+                                    <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.2rem;">
+                                        ${downloadId}
+                                    </code>
                                 </div>
+                                <small class="d-block mt-2">
+                                    <i class="bi bi-shield-check"></i>
+                                    ID ini <strong>100% UNIK</strong> dan tidak akan pernah duplikat
+                                </small>
                             </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                                    <i class="bi bi-check"></i> OK
-                                </button>
-                                <button type="button" class="btn btn-outline-success" onclick="copyToClipboard('${downloadId}')">
-                                    <i class="bi bi-clipboard"></i> Copy ID
-                                </button>
-                            </div>
+                            <p class="text-muted mt-3">
+                                ID digenerate otomatis dengan sistem anti-duplikat
+                            </p>
                         </div>
                     </div>
-                </div>
-            `;
-            
-            let modalContainer = document.getElementById('saveSuccessModalContainer');
-            if (!modalContainer) {
-                modalContainer = document.createElement('div');
-                modalContainer.id = 'saveSuccessModalContainer';
-                document.body.appendChild(modalContainer);
-            }
-            modalContainer.innerHTML = modalHtml;
-            
-            const successModal = new bootstrap.Modal(document.getElementById('saveSuccessModal'));
-            successModal.show();
-        }
-        
-        function showFallbackModal(title, gameName, downloadId) {
-            const modalHtml = `
-                <div class="modal fade" id="fallbackModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-warning text-white">
-                                <h5 class="modal-title">
-                                    <i class="bi bi-exclamation-triangle-fill"></i> ${title}
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="text-center">
-                                    <div class="mb-3">
-                                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <h4 class="text-warning">${gameName}</h4>
-                                    <div class="alert alert-warning mt-3">
-                                        <p><strong>Server tidak dapat diakses</strong></p>
-                                        <p>Data disimpan secara lokal di browser Anda</p>
-                                        <strong>Download ID (Sementara):</strong>
-                                        <div class="mt-2">
-                                            <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.1rem;">
-                                                ${downloadId}
-                                            </code>
-                                        </div>
-                                        <small class="d-block mt-2">
-                                            <i class="bi bi-info-circle"></i>
-                                            Data akan hilang jika cache browser dibersihkan
-                                        </small>
-                                    </div>
-                                    <p class="text-muted mt-3">
-                                        Coba simpan lagi nanti untuk mendapatkan ID permanen
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                                    <i class="bi bi-check"></i> OK
-                                </button>
-                                <button type="button" class="btn btn-outline-warning" onclick="copyToClipboard('${downloadId}')">
-                                    <i class="bi bi-clipboard"></i> Copy ID
-                                </button>
-                            </div>
-                        </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <i class="bi bi-check"></i> OK
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="copyToClipboard('${downloadId}')">
+                            <i class="bi bi-clipboard"></i> Copy ID
+                        </button>
+                        ${screenshotCount > 0 ? `
+                        <button type="button" class="btn btn-outline-info" onclick="previewGameScreenshotsPC('${downloadId}')">
+                            <i class="bi bi-eye"></i> Preview Screenshot
+                        </button>
+                        ` : ''}
                     </div>
                 </div>
-            `;
-            
-            let modalContainer = document.getElementById('fallbackModalContainer');
-            if (!modalContainer) {
-                modalContainer = document.createElement('div');
-                modalContainer.id = 'fallbackModalContainer';
-                document.body.appendChild(modalContainer);
-            }
-            modalContainer.innerHTML = modalHtml;
-            
-            const fallbackModal = new bootstrap.Modal(document.getElementById('fallbackModal'));
-            fallbackModal.show();
+            </div>
+        </div>
+    `;
+    
+    // Tambahkan modal
+    let modalContainer = document.getElementById('saveSuccessModalContainerPC');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'saveSuccessModalContainerPC';
+        document.body.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = modalHtml;
+    
+    // Tampilkan modal
+    const successModal = new bootstrap.Modal(document.getElementById('saveSuccessModalPC'));
+    successModal.show();
+}
+function showFallbackModalPC(title, gameName, downloadId, screenshotCount = 0) {
+    const modalHtml = `
+        <div class="modal fade" id="fallbackModalPC" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle-fill"></i> ${title}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h4 class="text-warning">${gameName}</h4>
+                            
+                            ${screenshotCount > 0 ? `
+                            <div class="alert alert-warning">
+                                <i class="bi bi-images"></i>
+                                <strong>${screenshotCount} Screenshot Gameplay</strong> disimpan secara lokal.
+                            </div>
+                            ` : ''}
+                            
+                            <div class="alert alert-warning mt-3">
+                                <p><strong>Server tidak dapat diakses</strong></p>
+                                <p>Data disimpan secara lokal di browser Anda</p>
+                                <strong>Download ID (Sementara):</strong>
+                                <div class="mt-2">
+                                    <code class="bg-dark text-light p-2 rounded d-inline-block" style="font-size: 1.1rem;">
+                                        ${downloadId}
+                                    </code>
+                                </div>
+                                <small class="d-block mt-2">
+                                    <i class="bi bi-info-circle"></i>
+                                    Data akan hilang jika cache browser dibersihkan
+                                </small>
+                            </div>
+                            <p class="text-muted mt-3">
+                                Coba simpan lagi nanti untuk mendapatkan ID permanen
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <i class="bi bi-check"></i> OK
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" onclick="copyToClipboard('${downloadId}')">
+                            <i class="bi bi-clipboard"></i> Copy ID
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    let modalContainer = document.getElementById('fallbackModalContainerPC');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'fallbackModalContainerPC';
+        document.body.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = modalHtml;
+    
+    const fallbackModal = new bootstrap.Modal(document.getElementById('fallbackModalPC'));
+    fallbackModal.show();
+}
+async function getGameScreenshotsFromAPIPC(downloadId) {
+    try {
+        const response = await fetch(SCREENSHOOT_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `action=getScreenshots&platform=pc&download_id=${downloadId}`
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            return {
+                success: true,
+                screenshots: result.data.screenshots || [],
+                thumbnail: result.data.thumbnail_url || '',
+                total: result.data.total_screenshots || 0
+            };
+        } else {
+            return {
+                success: false,
+                message: result.message || 'Screenshot tidak ditemukan'
+            };
+        }
+        
+    } catch (error) {
+        console.error('Error fetching screenshots:', error);
+        return {
+            success: false,
+            message: 'Gagal mengambil screenshot: ' + error.message
+        };
+    }
+}
+
+// Fungsi untuk preview screenshot PC
+async function previewGameScreenshotsPC(downloadId) {
+    try {
+        showToast('info', 'Mengambil screenshot...');
+        
+        // Coba ambil dari API screenshot dulu
+        const result = await getGameScreenshotsFromAPIPC(downloadId);
+        
+        if (result.success && result.screenshots.length > 0) {
+            // Ambil nama game dari API utama PC untuk caption
+            let gameName = 'Game PC';
+            try {
+                const gameData = await fetchGameByDownloadId(downloadId);
+                gameName = gameData.nama_game || 'Game PC';
+            } catch (e) {
+                // Jika gagal, gunakan default
+            }
+            
+            showScreenshotModalPC(result.screenshots, downloadId, gameName);
+        } else {
+            // Fallback: coba ambil dari data game yang sudah di-generate
+            if (gameData.screenshots && gameData.screenshots.length > 0) {
+                showScreenshotModalPC(gameData.screenshots, downloadId, gameData.gameInfo.nama_game);
+            } else {
+                showToast('warning', 'Screenshot tidak tersedia untuk game ini.');
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error previewing screenshots:', error);
+        showToast('error', 'Gagal memuat screenshot.');
+    }
+}
+
+
+
+// Modal untuk menampilkan screenshot PC
+function showScreenshotModalPC(screenshots, downloadId, gameName) {
+    const modalHtml = `
+        <div class="modal fade" id="screenshotModalPC" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-images"></i> Screenshot Gameplay ${gameName}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            Total: <strong>${screenshots.length}</strong> screenshot • Klik gambar untuk memperbesar
+                        </div>
+                        
+                        <div class="row g-3">
+                            ${screenshots.map((url, index) => `
+                                <div class="col-md-4 col-lg-3">
+                                    <div class="card">
+                                        <a href="${url}" data-fancybox="pc-screenshots" 
+                                           data-caption="${gameName} - Screenshot ${index + 1}">
+                                            <img src="${url}" 
+                                                 class="card-img-top" 
+                                                 style="height: 150px; object-fit: cover; cursor: pointer;"
+                                                 alt="Screenshot ${index + 1}"
+                                                 onerror="this.src='https://via.placeholder.com/300x150/6c757d/ffffff?text=Gambar+Tidak+Tersedia'">
+                                        </a>
+                                        <div class="card-body text-center py-2">
+                                            <small class="text-muted">Screenshot ${index + 1}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Tutup
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="downloadAllScreenshotsPC('${downloadId}', '${gameName}')">
+                            <i class="bi bi-download"></i> Download Semua Screenshot
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    let modalContainer = document.getElementById('screenshotModalContainerPC');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'screenshotModalContainerPC';
+        document.body.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = modalHtml;
+    
+    const screenshotModal = new bootstrap.Modal(document.getElementById('screenshotModalPC'));
+    screenshotModal.show();
+}
+
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast('success', '✅ Berhasil disalin ke clipboard!');
@@ -3974,12 +4452,20 @@ function getCloudColorClass(cloud) {
         URL.revokeObjectURL(url);
         showToast('success', 'HTML berhasil didownload.');
     }
-    
-    function newGame() {
-        if (confirm('Buat game baru? Semua data yang belum disimpan akan hilang.')) {
-            location.reload();
-        }
+
+
+
+function newGame() {
+    if (confirm('Buat game baru? Semua data yang belum disimpan akan hilang.')) {
+        gameData.screenshots = [];
+        const screenshotsField = document.getElementById('screenshotsField');
+        if (screenshotsField) screenshotsField.value = '[]';
+        const previewContainer = document.getElementById('screenshotsPreviewContainer');
+        if (previewContainer) previewContainer.style.display = 'none';
+        
+        location.reload();
     }
+}
     
     // ===================== CLOUD CACHE =====================
     const CLOUD_CACHE_KEY = 'pcCloudCaches';
@@ -4322,29 +4808,73 @@ function loadCloudCacheFromStep1() {
         return result.data;
     }
     
-    function applyServerGameToGameData(serverGame) {
-        gameData.cloudTypes = serverGame.cloud_types || [];
-        gameData.linkCount = gameData.cloudTypes.length;
-        
-        gameData.adLinks = serverGame.link_iklan || [];
-        gameData.adLinks2 = serverGame.link_iklan2 || [];
-        gameData.originalLinks = serverGame.link_asli || [];
-        
-        gameData.gameInfo = {
-            nama_game: serverGame.nama_game || '',
-            ukuran_game: serverGame.ukuran_game || '',
-            category: serverGame.category || '',
-            developer: serverGame.developer || ''
-        };
-        
-        gameData.systemRequirements = serverGame.system_requirements || '';
-        gameData.thumbnailUrl = serverGame.thumbnail_url || '';
-        const thumbInput = document.getElementById('thumbnailUrl');
-        if (thumbInput) thumbInput.value = gameData.thumbnailUrl || '';
-        updateThumbnailPreview(gameData.thumbnailUrl || '');
-
-        gameData.downloadId = serverGame.download_id || '';
+function applyServerGameToGameData(serverGame) {
+    gameData.cloudTypes = serverGame.cloud_types || [];
+    gameData.linkCount = gameData.cloudTypes.length;
+    
+    gameData.adLinks = serverGame.link_iklan || [];
+    gameData.adLinks2 = serverGame.link_iklan2 || [];
+    gameData.originalLinks = serverGame.link_asli || [];
+    
+    gameData.gameInfo = {
+        nama_game: serverGame.nama_game || '',
+        ukuran_game: serverGame.ukuran_game || '',
+        category: serverGame.category || '',
+        developer: serverGame.developer || ''
+    };
+    
+    gameData.systemRequirements = serverGame.system_requirements || '';
+    gameData.thumbnailUrl = serverGame.thumbnail_url || '';
+    
+    // DAPATKAN SCREENSHOTS DARI SERVER
+    // Coba dari beberapa kemungkinan field
+    let screenshotUrls = [];
+    
+    if (Array.isArray(serverGame.screenshots) && serverGame.screenshots.length > 0) {
+        screenshotUrls = serverGame.screenshots;
+    } else if (serverGame.screenshot_urls) {
+        // Coba parse dari JSON string
+        try {
+            screenshotUrls = JSON.parse(serverGame.screenshot_urls);
+        } catch (e) {
+            console.warn('Gagal parse screenshot_urls:', e);
+        }
+    } else if (typeof serverGame.screenshot_urls === 'string' && serverGame.screenshot_urls.trim()) {
+        // Jika string biasa, coba split
+        screenshotUrls = serverGame.screenshot_urls.split('\n').filter(url => url.trim());
     }
+    
+    gameData.screenshots = screenshotUrls;
+    
+    // Update UI Thumbnail
+    const thumbInput = document.getElementById('thumbnailUrl');
+    if (thumbInput) thumbInput.value = gameData.thumbnailUrl || '';
+    updateThumbnailPreview(gameData.thumbnailUrl || '');
+    
+    // Update UI Screenshots Textarea
+    const screenshotsTextarea = document.getElementById('screenshotsInput');
+    if (screenshotsTextarea) {
+        if (screenshotUrls.length > 0) {
+            screenshotsTextarea.value = screenshotUrls.join('\n');
+        } else {
+            screenshotsTextarea.value = '';
+        }
+        
+        // Trigger preview update
+        updateScreenshotsInputPreview();
+    }
+    
+    // Update Screenshots Field Hidden
+    const screenshotsField = document.getElementById('screenshotsField');
+    if (screenshotsField) {
+        screenshotsField.value = JSON.stringify(screenshotUrls);
+    }
+    
+    // Update Screenshots Preview
+    updateScreenshotsPreview(screenshotUrls);
+
+    gameData.downloadId = serverGame.download_id || '';
+}
     
     async function previewSavedHtml(downloadId) {
       try {
