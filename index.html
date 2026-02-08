@@ -895,7 +895,117 @@ code {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+.cloud-order {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 2;
+    animation: pulseOrder 2s infinite;
+}
 
+@keyframes pulseOrder {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.cloud-tile.selected {
+    border: 2px solid #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.05));
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+/* Style untuk preview cache */
+#cachePreviewStep1 .card,
+#cachePreviewStep2 .card {
+    border: 2px solid #0dcaf0;
+    animation: pulsePreview 2s infinite;
+}
+
+@keyframes pulsePreview {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(13, 202, 240, 0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(13, 202, 240, 0); }
+}
+
+/* Badge untuk urutan cloud */
+.cache-cloud-badge {
+    position: relative;
+    padding-right: 25px;
+    margin: 2px;
+}
+
+.cache-order-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #198754;
+    color: white;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Responsive untuk preview */
+@media (max-width: 768px) {
+    .cache-cloud-badge {
+        font-size: 0.8rem;
+    }
+    
+    #cachePreviewContent,
+    #cachePreviewContentStep2 {
+        font-size: 0.9rem;
+    }
+}
+
+/* Animasi untuk load cache button */
+.btn-cache-load {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-cache-load::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.btn-cache-load:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(20, 20);
+        opacity: 0;
+    }
+}
 </style>
 </head>
 
@@ -1029,28 +1139,43 @@ code {
               <i class="bi bi-arrow-right-circle-fill"></i> Lanjutkan
             </button>
 
-            <div class="mt-4">
-              <hr />
-              <h5><i class="bi bi-cloud-arrow-down"></i> Cloud Cache</h5>
-              <div class="row g-2 align-items-center">
-                <div class="col-md-8">
-                  <select id="cacheListStep1" class="form-select">
-                    <option value="">Tidak ada cache</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
-                    <i class="bi bi-cloud-download-fill"></i> Load Cache (Ke Step 3)
-                  </button>
-                </div>
-              <div class="col-md-4 d-grid">
-                <button id="btnDeleteCache" class="btn btn-outline-danger">
-                  <i class="bi bi-trash-fill"></i> Hapus Cache Terpilih
-                </button>
-              </div>
-              </div>
-              <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis.</small>
-            </div>
+<div class="mt-4">
+  <hr />
+  <h5><i class="bi bi-cloud-arrow-down"></i> Cloud Cache</h5>
+  <div class="row g-2 align-items-center">
+    <div class="col-md-8">
+      <select id="cacheListStep1" class="form-select">
+        <option value="">Tidak ada cache</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <button id="btnLoadCacheStep1" class="btn btn-outline-primary w-100">
+        <i class="bi bi-cloud-download-fill"></i> Load Cache (Ke Step 3)
+      </button>
+    </div>
+    <div class="col-md-4 d-grid">
+      <button id="btnDeleteCache" class="btn btn-outline-danger">
+        <i class="bi bi-trash-fill"></i> Hapus Cache Terpilih
+      </button>
+    </div>
+  </div>
+  
+  <!-- TAMBAHKAN PREVIEW CACHE DISINI -->
+  <div id="cachePreviewStep1" class="mt-3" style="display: none;">
+    <div class="card border-info">
+      <div class="card-header bg-info text-white py-2">
+        <h6 class="mb-0">
+          <i class="bi bi-eye-fill"></i> Preview Urutan Cache
+        </h6>
+      </div>
+      <div class="card-body p-3">
+        <div id="cachePreviewContent"></div>
+      </div>
+    </div>
+  </div>
+  
+  <small class="text-muted">Load cache akan mengisi Step 1 dan Step 2 otomatis. Klik cache untuk melihat preview urutan.</small>
+</div>
           </div>
         </div>
       </div>
@@ -1065,26 +1190,41 @@ code {
             <div id="cloudSelection"></div>
 
             <!-- Cache Controls -->
-            <div class="row g-2 mb-3 align-items-center mt-3">
-              <div class="col-md-5">
-                <input type="text" id="cacheName" class="form-control" placeholder="Nama cache, contoh: CloudA-NSP-XCI" />
-              </div>
-              <div class="col-md-3 d-grid">
-                <button id="btnSaveCache" class="btn btn-outline-success">
-                  <i class="bi bi-cloud-plus-fill"></i> Simpan Cache
-                </button>
-              </div>
-              <div class="col-md-4 d-grid">
-                <button id="btnDeleteCache" class="btn btn-outline-danger">
-                  <i class="bi bi-trash-fill"></i> Hapus Cache Terpilih
-                </button>
-              </div>
-              <div class="col-12">
-                <div class="small-note">
-                  <i class="bi bi-info-circle-fill"></i> Cache menyimpan pilihan cloud untuk NSP, XCI, NSP Part, XCI Part.
-                </div>
-              </div>
-            </div>
+         <div class="row g-2 mb-3 align-items-center mt-3">
+  <div class="col-md-5">
+    <input type="text" id="cacheName" class="form-control" placeholder="Nama cache, contoh: CloudA-NSP-XCI" />
+  </div>
+  <div class="col-md-3 d-grid">
+    <button id="btnSaveCache" class="btn btn-outline-success">
+      <i class="bi bi-cloud-plus-fill"></i> Simpan Cache
+    </button>
+  </div>
+  <div class="col-md-4 d-grid">
+    <button id="btnDeleteCache" class="btn btn-outline-danger">
+      <i class="bi bi-trash-fill"></i> Hapus Cache Terpilih
+    </button>
+  </div>
+</div>
+
+<!-- TAMBAHKAN PREVIEW CACHE DISINI (Step 2) -->
+<div id="cachePreviewStep2" class="mt-3" style="display: none;">
+  <div class="card border-info">
+    <div class="card-header bg-info text-white py-2">
+      <h6 class="mb-0">
+        <i class="bi bi-eye-fill"></i> Preview Urutan Cache
+      </h6>
+    </div>
+    <div class="card-body p-3">
+      <div id="cachePreviewContentStep2"></div>
+    </div>
+  </div>
+</div>
+
+<div class="col-12">
+  <div class="small-note">
+    <i class="bi bi-info-circle-fill"></i> Cache menyimpan pilihan cloud untuk NSP, XCI, NSP Part, XCI Part.
+  </div>
+</div>
 
             <div class="mt-3 d-flex gap-2">
               <button id="btnPrev2" class="btn btn-secondary">
@@ -1428,6 +1568,7 @@ code {
         let _mainTabsInited = false;
         let _savedGamesCache = [];
         let _generatedHtml = '';
+            let cloudSelectionOrder = {};
         let _generatedFilename = 'game.html';
 
         
@@ -1449,6 +1590,7 @@ document.addEventListener('DOMContentLoaded', function() {
   checkUserLogin();
   initMainTabs();
   wireSavedTabControls();
+  setupCachePreviewListeners();
 });
 
 
@@ -1501,12 +1643,42 @@ function showToast(type, message) {
 }
 function getCloudCaches() {
     try {
-        return JSON.parse(localStorage.getItem(CLOUD_CACHE_KEY) || '[]');
+        const caches = JSON.parse(localStorage.getItem(CLOUD_CACHE_KEY) || '[]');
+        
+        // Migrasi: jika cache lama tidak punya cloudSelectionOrder, tambahkan
+        caches.forEach(cache => {
+            if (!cache.cloudSelectionOrder) {
+                cache.cloudSelectionOrder = {
+                    cloudNSP: cache.cloudNSP || [],
+                    cloudXCI: cache.cloudXCI || [],
+                    cloudNSPPart: cache.cloudNSPPart || [],
+                    cloudXCIPart: cache.cloudXCIPart || []
+                };
+            }
+        });
+        
+        return caches;
     } catch {
         return [];
     }
 }
 
+function setCloudCaches(list) {
+    // Pastikan setiap cache memiliki cloudSelectionOrder
+    const processedList = list.map(cache => {
+        return {
+            ...cache,
+            cloudSelectionOrder: cache.cloudSelectionOrder || {
+                cloudNSP: cache.cloudNSP || [],
+                cloudXCI: cache.cloudXCI || [],
+                cloudNSPPart: cache.cloudNSPPart || [],
+                cloudXCIPart: cache.cloudXCIPart || []
+            }
+        };
+    });
+    
+    localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(processedList));
+}
 function saveGameToLocalStorage(game) {
     const KEY = "switch_saved_games_v1";
     const list = JSON.parse(localStorage.getItem(KEY) || "[]");
@@ -1523,9 +1695,6 @@ function saveGameToLocalStorage(game) {
 }
 
 
-function setCloudCaches(list) {
-    localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(list));
-}
 
 function refreshCloudCacheUI() {
     const caches = getCloudCaches();
@@ -1546,14 +1715,223 @@ function refreshCloudCacheUI() {
             const opt = document.createElement('option');
             opt.value = c.name;
             opt.textContent = `${c.name} (saved ${new Date(c.savedAt).toLocaleString()})`;
+            opt.dataset.cacheName = c.name;
             selectEl.appendChild(opt);
         });
     };
 
     buildOptions(step1Select, caches.length ? 'Pilih cache' : 'Tidak ada cache');
     buildOptions(step2Select, caches.length ? 'Pilih cache untuk load' : 'Tidak ada cache');
+    
+    // Tambahkan event listener untuk preview
+    setupCachePreviewListeners();
+}
+function setupCachePreviewListeners() {
+    const step1Select = document.getElementById('cacheListStep1');
+    const step2Select = document.getElementById('cacheListStep2');
+    
+    if (step1Select) {
+        step1Select.removeEventListener('change', handleCacheSelectChange);
+        step1Select.addEventListener('change', handleCacheSelectChange);
+    }
+    
+    if (step2Select) {
+        step2Select.removeEventListener('change', handleCacheSelectChange);
+        step2Select.addEventListener('change', handleCacheSelectChange);
+    }
+    
+    // Trigger perubahan awal jika ada value
+    if (step1Select && step1Select.value) {
+        handleCacheSelectChange.call(step1Select);
+    }
+    if (step2Select && step2Select.value) {
+        handleCacheSelectChange.call(step2Select);
+    }
 }
 
+function handleCacheSelectChange() {
+    const cacheName = this.value;
+    const isStep1 = this.id === 'cacheListStep1';
+    const previewId = isStep1 ? 'cachePreviewStep1' : 'cachePreviewStep2';
+    const contentId = isStep1 ? 'cachePreviewContent' : 'cachePreviewContentStep2';
+    
+    if (!cacheName) {
+        // Sembunyikan preview jika tidak ada cache dipilih
+        document.getElementById(previewId).style.display = 'none';
+        return;
+    }
+    
+    const caches = getCloudCaches();
+    const cache = caches.find(c => c.name === cacheName);
+    
+    if (!cache) {
+        document.getElementById(previewId).style.display = 'none';
+        return;
+    }
+    
+    // Tampilkan preview
+    showCachePreview(cache, contentId, previewId);
+}
+function showCachePreview(cache, contentId, previewId) {
+    const previewContent = document.getElementById(contentId);
+    const previewContainer = document.getElementById(previewId);
+    
+    if (!previewContent || !previewContainer) return;
+    
+    // Format tanggal
+    const savedDate = new Date(cache.savedAt);
+    const formattedDate = savedDate.toLocaleString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    // Buat HTML preview
+    let previewHTML = `
+        <div class="mb-2">
+            <small class="text-muted">
+                <i class="bi bi-calendar"></i> Disimpan: ${formattedDate}
+            </small>
+        </div>
+    `;
+    
+    // Tampilkan jumlah link
+    previewHTML += `
+        <div class="row mb-3">
+            <div class="col-3">
+                <div class="text-center p-2 bg-light rounded">
+                    <div class="fw-bold text-primary">${cache.nspCount || 0}</div>
+                    <small>NSP</small>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="text-center p-2 bg-light rounded">
+                    <div class="fw-bold text-primary">${cache.xciCount || 0}</div>
+                    <small>XCI</small>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="text-center p-2 bg-light rounded">
+                    <div class="fw-bold text-primary">${cache.nspPartCount || 0}</div>
+                    <small>NSP Part</small>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="text-center p-2 bg-light rounded">
+                    <div class="fw-bold text-primary">${cache.xciPartCount || 0}</div>
+                    <small>XCI Part</small>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Tampilkan urutan cloud untuk setiap tipe
+    const cloudSections = [];
+    
+    if (cache.cloudNSP && cache.cloudNSP.length > 0) {
+        cloudSections.push({
+            title: 'NSP',
+            clouds: cache.cloudSelectionOrder?.cloudNSP || cache.cloudNSP || []
+        });
+    }
+    
+    if (cache.cloudXCI && cache.cloudXCI.length > 0) {
+        cloudSections.push({
+            title: 'XCI',
+            clouds: cache.cloudSelectionOrder?.cloudXCI || cache.cloudXCI || []
+        });
+    }
+    
+    if (cache.cloudNSPPart && cache.cloudNSPPart.length > 0) {
+        cloudSections.push({
+            title: 'NSP Part',
+            clouds: cache.cloudSelectionOrder?.cloudNSPPart || cache.cloudNSPPart || []
+        });
+    }
+    
+    if (cache.cloudXCIPart && cache.cloudXCIPart.length > 0) {
+        cloudSections.push({
+            title: 'XCI Part',
+            clouds: cache.cloudSelectionOrder?.cloudXCIPart || cache.cloudXCIPart || []
+        });
+    }
+    
+    if (cloudSections.length > 0) {
+        previewHTML += `<h6 class="mb-2">Urutan Cloud:</h6>`;
+        
+        cloudSections.forEach((section, index) => {
+            previewHTML += `
+                <div class="mb-2">
+                    <small class="fw-bold text-dark">${section.title}:</small>
+                    <div class="d-flex flex-wrap gap-1 mt-1">
+                        ${section.clouds.map((cloud, cloudIndex) => `
+                            <span class="badge bg-primary" style="position: relative;">
+                                ${cloud}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success" style="font-size: 0.6em;">
+                                    ${cloudIndex + 1}
+                                </span>
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+    } else {
+        previewHTML += `
+            <div class="alert alert-warning py-2 mb-0">
+                <i class="bi bi-exclamation-triangle"></i> Tidak ada cloud yang tersimpan
+            </div>
+        `;
+    }
+    
+    // Tombol aksi
+    previewHTML += `
+        <div class="mt-3 d-flex gap-2">
+            <button class="btn btn-sm btn-primary flex-fill" onclick="loadSelectedCache('${cache.name}')">
+                <i class="bi bi-cloud-download"></i> Load Cache Ini
+            </button>
+            <button class="btn btn-sm btn-outline-danger flex-fill" onclick="deleteSelectedCacheConfirm('${cache.name}')">
+                <i class="bi bi-trash"></i> Hapus
+            </button>
+        </div>
+    `;
+    
+    previewContent.innerHTML = previewHTML;
+    previewContainer.style.display = 'block';
+    
+    // Scroll ke preview jika perlu
+    previewContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function loadSelectedCache(cacheName) {
+    const caches = getCloudCaches();
+    const cache = caches.find(c => c.name === cacheName);
+    
+    if (!cache) {
+        showToast('error', 'Cache tidak ditemukan!');
+        return;
+    }
+    
+    applyCloudCache(cache);
+    showToast('success', `Cache "${cacheName}" berhasil dimuat!`);
+}
+
+function deleteSelectedCacheConfirm(cacheName) {
+    if (!confirm(`Yakin ingin menghapus cache "${cacheName}"?`)) {
+        return;
+    }
+    
+    const caches = getCloudCaches().filter(c => c.name !== cacheName);
+    setCloudCaches(caches);
+    refreshCloudCacheUI();
+    
+    // Sembunyikan preview
+    document.getElementById('cachePreviewStep1').style.display = 'none';
+    document.getElementById('cachePreviewStep2').style.display = 'none';
+    
+    showToast('warning', `Cache "${cacheName}" telah dihapus.`);
+}
 function collectCloudSelectionsOrThrow() {
     const sections = document.querySelectorAll('.cloud-section');
     const selections = {};
@@ -1592,10 +1970,24 @@ function saveCloudCache() {
             return;
         }
 
-        const selections = collectCloudSelectionsOrThrow();
+        // Kumpulkan pilihan dengan urutan yang benar dari cloudSelectionOrder
+        // Jika cloudSelectionOrder kosong, gunakan dari gameData
+        const cloudNSP = cloudSelectionOrder.cloudNSP || gameData.cloudNSP || [];
+        const cloudXCI = cloudSelectionOrder.cloudXCI || gameData.cloudXCI || [];
+        const cloudNSPPart = cloudSelectionOrder.cloudNSPPart || gameData.cloudNSPPart || [];
+        const cloudXCIPart = cloudSelectionOrder.cloudXCIPart || gameData.cloudXCIPart || [];
 
-        // Simpan juga ke gameData biar konsisten
-        Object.keys(selections).forEach(k => gameData[k] = selections[k]);
+        console.log('DEBUG saveCache - Urutan yang disimpan:', {
+            cloudNSP: cloudNSP,
+            cloudXCI: cloudXCI,
+            cloudSelectionOrder: cloudSelectionOrder
+        });
+
+        // Update gameData dengan urutan terbaru
+        gameData.cloudNSP = [...cloudNSP];
+        gameData.cloudXCI = [...cloudXCI];
+        gameData.cloudNSPPart = [...cloudNSPPart];
+        gameData.cloudXCIPart = [...cloudXCIPart];
 
         const caches = getCloudCaches();
         const existingIndex = caches.findIndex(c => c.name === cacheName);
@@ -1607,10 +1999,17 @@ function saveCloudCache() {
             xciCount: gameData.xciCount,
             nspPartCount: gameData.nspPartCount,
             xciPartCount: gameData.xciPartCount,
-            cloudNSP: gameData.cloudNSP || [],
-            cloudXCI: gameData.cloudXCI || [],
-            cloudNSPPart: gameData.cloudNSPPart || [],
-            cloudXCIPart: gameData.cloudXCIPart || []
+            cloudNSP: cloudNSP, // Simpan urutan dari cloudSelectionOrder
+            cloudXCI: cloudXCI,
+            cloudNSPPart: cloudNSPPart,
+            cloudXCIPart: cloudXCIPart,
+            // Simpan juga cloudSelectionOrder untuk memastikan urutan
+            cloudSelectionOrder: {
+                cloudNSP: cloudNSP,
+                cloudXCI: cloudXCI,
+                cloudNSPPart: cloudNSPPart,
+                cloudXCIPart: cloudXCIPart
+            }
         };
 
         if (existingIndex >= 0) {
@@ -1624,7 +2023,11 @@ function saveCloudCache() {
         setCloudCaches(caches);
         refreshCloudCacheUI();
 
-        showToast?.('success', `Cache "${cacheName}" tersimpan.`);
+        showToast?.('success', `Cache "${cacheName}" tersimpan dengan urutan yang benar.`);
+        
+        // Debug: tampilkan urutan yang disimpan
+        console.log('Cache disimpan dengan urutan:', payload.cloudNSP);
+        
     } catch (err) {
         showToast?.('error', err.message || 'Gagal simpan cache.');
         alert(err.message || 'Gagal simpan cache.');
@@ -1632,54 +2035,77 @@ function saveCloudCache() {
 }
 
 function applyCloudCache(cache) {
-  // Isi gameData
-  gameData.nspCount = cache.nspCount || 0;
-  gameData.xciCount = cache.xciCount || 0;
-  gameData.nspPartCount = cache.nspPartCount || 0;
-  gameData.xciPartCount = cache.xciPartCount || 0;
-  updateSizeFieldsVisibility();
+    console.log('DEBUG applyCloudCache - Cache yang diload:', cache);
+    
+    // Isi gameData
+    gameData.nspCount = cache.nspCount || 0;
+    gameData.xciCount = cache.xciCount || 0;
+    gameData.nspPartCount = cache.nspPartCount || 0;
+    gameData.xciPartCount = cache.xciPartCount || 0;
+    updateSizeFieldsVisibility();
 
-  gameData.cloudNSP = cache.cloudNSP || [];
-  gameData.cloudXCI = cache.cloudXCI || [];
-  gameData.cloudNSPPart = cache.cloudNSPPart || [];
-  gameData.cloudXCIPart = cache.cloudXCIPart || [];
+    // Gunakan urutan dari cache.cloudSelectionOrder jika ada, jika tidak gunakan dari cache biasa
+    const cloudNSP = cache.cloudSelectionOrder?.cloudNSP || cache.cloudNSP || [];
+    const cloudXCI = cache.cloudSelectionOrder?.cloudXCI || cache.cloudXCI || [];
+    const cloudNSPPart = cache.cloudSelectionOrder?.cloudNSPPart || cache.cloudNSPPart || [];
+    const cloudXCIPart = cache.cloudSelectionOrder?.cloudXCIPart || cache.cloudXCIPart || [];
 
-  // Isi input Step 1
-  const nspEl = document.getElementById('nspCount');
-  const xciEl = document.getElementById('xciCount');
-  const nspPartEl = document.getElementById('nspPartCount');
-  const xciPartEl = document.getElementById('xciPartCount');
+    // Simpan ke gameData
+    gameData.cloudNSP = [...cloudNSP];
+    gameData.cloudXCI = [...cloudXCI];
+    gameData.cloudNSPPart = [...cloudNSPPart];
+    gameData.cloudXCIPart = [...cloudXCIPart];
 
-  if (nspEl) nspEl.value = gameData.nspCount;
-  if (xciEl) xciEl.value = gameData.xciCount;
-  if (nspPartEl) nspPartEl.value = gameData.nspPartCount;
-  if (xciPartEl) xciPartEl.value = gameData.xciPartCount;
+    // Simpan ke cloudSelectionOrder untuk UI
+    cloudSelectionOrder.cloudNSP = [...cloudNSP];
+    cloudSelectionOrder.cloudXCI = [...cloudXCI];
+    cloudSelectionOrder.cloudNSPPart = [...cloudNSPPart];
+    cloudSelectionOrder.cloudXCIPart = [...cloudXCIPart];
 
-  // Render Step 2 (biar state cloud tetap konsisten)
-  generateCloudSelection();
+    console.log('DEBUG applyCloudCache - Urutan yang diterapkan:', {
+        cloudNSP: cloudNSP,
+        cloudXCI: cloudXCI,
+        cloudSelectionOrder: cloudSelectionOrder
+    });
 
-  // Set nama cache di input Step 2
-  const nameEl = document.getElementById('cacheName');
-  if (nameEl) nameEl.value = cache.name;
+    // Isi input Step 1
+    const nspEl = document.getElementById('nspCount');
+    const xciEl = document.getElementById('xciCount');
+    const nspPartEl = document.getElementById('nspPartCount');
+    const xciPartEl = document.getElementById('xciPartCount');
 
-  // Validasi cepat: kalau cache cloud tidak lengkap, tetap arahkan ke Step 2
-  const ok =
-    (gameData.nspCount === 0 || (gameData.cloudNSP || []).length === gameData.nspCount) &&
-    (gameData.xciCount === 0 || (gameData.cloudXCI || []).length === gameData.xciCount) &&
-    (gameData.nspPartCount === 0 || (gameData.cloudNSPPart || []).length === gameData.nspPartCount) &&
-    (gameData.xciPartCount === 0 || (gameData.cloudXCIPart || []).length === gameData.xciPartCount);
+    if (nspEl) nspEl.value = gameData.nspCount;
+    if (xciEl) xciEl.value = gameData.xciCount;
+    if (nspPartEl) nspPartEl.value = gameData.nspPartCount;
+    if (xciPartEl) xciPartEl.value = gameData.xciPartCount;
 
-  if (!ok) {
-    showToast?.('warning', 'Cache cloud tidak lengkap. Periksa pilihan cloud di Step 2.');
-    showStep(2);
-    return;
-  }
+    // Render Step 2 dengan urutan yang benar
+    generateCloudSelection();
 
-  // Langsung siapkan Step 3 seperti tombol "Lanjutkan" di Step 2
-  generateLinkInputFields();
-  setupPasteFunctionality();
-  updateSizeFieldsVisibility();
-  showStep(3);
+    // Set nama cache di input Step 2
+    const nameEl = document.getElementById('cacheName');
+    if (nameEl) nameEl.value = cache.name;
+
+    // Validasi cepat: kalau cache cloud tidak lengkap, tetap arahkan ke Step 2
+    const ok =
+        (gameData.nspCount === 0 || (gameData.cloudNSP || []).length === gameData.nspCount) &&
+        (gameData.xciCount === 0 || (gameData.cloudXCI || []).length === gameData.xciCount) &&
+        (gameData.nspPartCount === 0 || (gameData.cloudNSPPart || []).length === gameData.nspPartCount) &&
+        (gameData.xciPartCount === 0 || (gameData.cloudXCIPart || []).length === gameData.xciPartCount);
+
+    if (!ok) {
+        showToast?.('warning', 'Cache cloud tidak lengkap. Periksa pilihan cloud di Step 2.');
+        showStep(2);
+        return;
+    }
+
+    // Langsung siapkan Step 3 seperti tombol "Lanjutkan" di Step 2
+    generateLinkInputFields();
+    setupPasteFunctionality();
+    updateSizeFieldsVisibility();
+    showStep(3);
+    
+    showToast?.('info', `Cache "${cache.name}" dimuat dengan urutan yang benar.`);
 }
 
 
@@ -1690,9 +2116,24 @@ function loadCloudCacheByName(name) {
         alert('Cache tidak ditemukan.');
         return;
     }
+    
+    console.log('DEBUG loadCloudCacheByName - Memuat cache:', cache.name);
     applyCloudCache(cache);
     showToast?.('info', `Cache "${name}" dimuat. Kamu sudah di Step 3.`);
 
+    // Tambahkan debug untuk memastikan urutan benar
+    setTimeout(() => {
+        console.log('DEBUG setelah load cache - Urutan di gameData:', {
+            cloudNSP: gameData.cloudNSP,
+            cloudXCI: gameData.cloudXCI
+        });
+        
+        // Cek input pertama di Step 3 untuk verifikasi
+        const firstInputLabel = document.querySelector('#originalLinksInput .input-group-text');
+        if (firstInputLabel) {
+            console.log('DEBUG - Label input pertama:', firstInputLabel.textContent);
+        }
+    }, 1000);
 }
 
 function loadCloudCacheFromStep1() {
@@ -1702,7 +2143,7 @@ function loadCloudCacheFromStep1() {
         alert('Pilih cache dulu.');
         return;
     }
-    loadCloudCacheByName(name);
+    loadSelectedCache(name);
 }
 
 function loadCloudCacheFromStep2() {
@@ -1712,7 +2153,7 @@ function loadCloudCacheFromStep2() {
         alert('Pilih cache dulu.');
         return;
     }
-    loadCloudCacheByName(name);
+    loadSelectedCache(name);
 }
 
 function deleteSelectedCloudCache() {
@@ -1732,6 +2173,10 @@ function deleteSelectedCloudCache() {
 
     const nameEl = document.getElementById('cacheName');
     if (nameEl && nameEl.value.trim() === name) nameEl.value = '';
+
+    // Sembunyikan preview
+    document.getElementById('cachePreviewStep1').style.display = 'none';
+    document.getElementById('cachePreviewStep2').style.display = 'none';
 
     showToast?.('warning', `Cache "${name}" dihapus.`);
 }
@@ -2384,76 +2829,194 @@ function updateSizeFieldsVisibility() {
             showStep(2);
         }
         
-        function generateCloudSelection() {
-            const container = document.getElementById('cloudSelection');
-            container.innerHTML = '';
-            
-            if (gameData.nspCount > 0) {
-                container.appendChild(createCloudSection('NSP', gameData.nspCount, 'cloudNSP'));
-            }
-            if (gameData.xciCount > 0) {
-                container.appendChild(createCloudSection('XCI', gameData.xciCount, 'cloudXCI'));
-            }
-            if (gameData.nspPartCount > 0) {
-                container.appendChild(createCloudSection('NSP Part', gameData.nspPartCount, 'cloudNSPPart'));
-            }
-            if (gameData.xciPartCount > 0) {
-                container.appendChild(createCloudSection('XCI Part', gameData.xciPartCount, 'cloudXCIPart'));
-            }
-        }
-        
+function generateCloudSelection() {
+    const container = document.getElementById('cloudSelection');
+    container.innerHTML = '';
+    
+    // Reset urutan seleksi
+    cloudSelectionOrder = {};
+    
+    if (gameData.nspCount > 0) {
+        container.appendChild(createCloudSection('NSP', gameData.nspCount, 'cloudNSP'));
+    }
+    if (gameData.xciCount > 0) {
+        container.appendChild(createCloudSection('XCI', gameData.xciCount, 'cloudXCI'));
+    }
+    if (gameData.nspPartCount > 0) {
+        container.appendChild(createCloudSection('NSP Part', gameData.nspPartCount, 'cloudNSPPart'));
+    }
+    if (gameData.xciPartCount > 0) {
+        container.appendChild(createCloudSection('XCI Part', gameData.xciPartCount, 'cloudXCIPart'));
+    }
+}
+
 function createCloudSection(title, count, arrayName) {
     const section = document.createElement('div');
     section.className = 'mb-4 cloud-section';
     section.dataset.array = arrayName;
     section.dataset.limit = String(count);
 
-    const preselected = new Set(gameData[arrayName] || []);
+    // Inisialisasi array jika belum ada
+    if (!gameData[arrayName]) {
+        gameData[arrayName] = [];
+    }
+    
+    // Gunakan urutan dari cloudSelectionOrder jika ada, jika tidak dari gameData
+    const currentOrder = cloudSelectionOrder[arrayName] || [...gameData[arrayName]] || [];
+    
+    console.log(`DEBUG createCloudSection ${arrayName}:`, {
+        currentOrder: currentOrder,
+        gameData: gameData[arrayName],
+        cloudSelectionOrder: cloudSelectionOrder[arrayName]
+    });
 
     section.innerHTML = `
         <div class="cloud-section-title mb-2">
             <h5 class="mb-0">${title} (${count} Link)</h5>
             <small class="text-muted">
-                Dipilih: <span id="${arrayName}_selected">0</span> / ${count}
+                Dipilih: <span id="${arrayName}_selected">${currentOrder.length}</span> / ${count}
             </small>
         </div>
-
-        <div class="cloud-grid">
+        <div class="cloud-grid" data-array="${arrayName}">
             ${CLOUD_OPTIONS.map(cloud => {
-                const checked = preselected.has(cloud.id) ? 'checked' : '';
+                // Cek apakah cloud ini ada di urutan yang sudah dipilih
+                const orderIndex = currentOrder.indexOf(cloud.id);
+                const isChecked = orderIndex !== -1;
+                const orderNumber = isChecked ? `<span class="cloud-order">${orderIndex + 1}</span>` : '';
+                
                 return `
-                    <label class="cloud-tile ${checked ? 'selected' : ''}">
+                    <label class="cloud-tile ${isChecked ? 'selected' : ''}">
                         <input
                             type="checkbox"
                             class="cloud-check"
                             value="${cloud.id}"
                             data-array="${arrayName}"
-                            ${checked}
+                            ${isChecked ? 'checked' : ''}
                         />
                         <span class="cloud-name">${cloud.name}</span>
+                        ${orderNumber}
                     </label>
                 `;
             }).join('')}
         </div>
     `;
 
-    // Event listeners untuk update counter + limit selection
+    // Inisialisasi cloudSelectionOrder dari currentOrder
+    if (!cloudSelectionOrder[arrayName] && currentOrder.length > 0) {
+        cloudSelectionOrder[arrayName] = [...currentOrder];
+    }
+
+    // Event listeners
     const checkboxes = section.querySelectorAll('input.cloud-check');
     checkboxes.forEach(cb => {
         cb.addEventListener('change', function () {
             const tile = this.closest('.cloud-tile');
             if (tile) tile.classList.toggle('selected', this.checked);
+            
+            const arrayName = this.dataset.array;
+            
+            if (this.checked) {
+                // Tambahkan ke urutan jika belum ada
+                if (!cloudSelectionOrder[arrayName]) {
+                    cloudSelectionOrder[arrayName] = [];
+                }
+                if (!cloudSelectionOrder[arrayName].includes(this.value)) {
+                    cloudSelectionOrder[arrayName].push(this.value);
+                }
+            } else {
+                // Hapus dari urutan
+                if (cloudSelectionOrder[arrayName]) {
+                    const index = cloudSelectionOrder[arrayName].indexOf(this.value);
+                    if (index !== -1) {
+                        cloudSelectionOrder[arrayName].splice(index, 1);
+                    }
+                }
+            }
+            
             updateCloudSectionState(section);
+            updateOrderNumbers(section);
+            
+            // Update gameData juga
+            gameData[arrayName] = [...(cloudSelectionOrder[arrayName] || [])];
         });
     });
 
     // Inisialisasi state awal
     updateCloudSectionState(section);
+    updateOrderNumbers(section);
 
     return section;
 }
+function updateOrderNumbers(section) {
+    const arrayName = section.dataset.array;
+    const orderArray = cloudSelectionOrder[arrayName] || [];
+    
+    // Hapus semua nomor urutan yang ada
+    section.querySelectorAll('.cloud-order').forEach(el => el.remove());
+    
+    // Tambahkan nomor urutan sesuai dengan urutan dalam array
+    orderArray.forEach((cloudId, index) => {
+        const checkbox = section.querySelector(`input.cloud-check[value="${cloudId}"]`);
+        if (checkbox) {
+            const tile = checkbox.closest('.cloud-tile');
+            if (tile) {
+                const orderSpan = document.createElement('span');
+                orderSpan.className = 'cloud-order';
+                orderSpan.textContent = index + 1;
+                tile.appendChild(orderSpan);
+            }
+        }
+    });
+    
+    // Update counter
+    const counter = section.querySelector(`#${arrayName}_selected`);
+    if (counter) counter.textContent = String(orderArray.length);
+}
+// Fungsi untuk menyimpan urutan centangan
+function setupCloudOrderListeners() {
+    const cloudSections = document.querySelectorAll('.cloud-section');
+    cloudSections.forEach(section => {
+        const arrayName = section.dataset.array;
+        const checkboxes = section.querySelectorAll(`input.cloud-check[data-array="${arrayName}"]`);
+        
+        checkboxes.forEach((checkbox, index) => {
+            checkbox.addEventListener('change', function() {
+                updateCloudOrder(arrayName);
+            });
+        });
+    });
+}
 
-
+// Fungsi untuk memperbarui urutan cloud
+function updateCloudOrder(arrayName) {
+    const section = document.querySelector(`.cloud-section[data-array="${arrayName}"]`);
+    if (!section) return;
+    
+    const checkedBoxes = Array.from(section.querySelectorAll('input.cloud-check:checked'));
+    
+    // Reset semua nomor urutan
+    section.querySelectorAll('.cloud-order').forEach(el => el.remove());
+    
+    // Beri nomor urutan berdasarkan urutan centangan
+    checkedBoxes.forEach((checkbox, index) => {
+        const tile = checkbox.closest('.cloud-tile');
+        if (tile) {
+            const orderSpan = document.createElement('span');
+            orderSpan.className = 'cloud-order';
+            orderSpan.textContent = index + 1;
+            tile.appendChild(orderSpan);
+            
+            // Simpan ke gameData dengan urutan yang benar
+            gameData[arrayName][index] = checkbox.value;
+        }
+    });
+    
+    // Kosongkan sisa array jika ada
+    const limit = parseInt(section.dataset.limit, 10);
+    for (let i = checkedBoxes.length; i < limit; i++) {
+        gameData[arrayName][i] = '';
+    }
+}
 
 function updateCloudSectionState(section) {
     const arrayName = section.dataset.array;
@@ -2468,11 +3031,20 @@ function updateCloudSectionState(section) {
 
     // Kalau lebih dari limit, batalkan centang terakhir
     if (checked.length > limit) {
-        const last = checked[checked.length - 1];
-        last.checked = false;
-        const tile = last.closest('.cloud-tile');
+        const lastChecked = checked[checked.length - 1];
+        lastChecked.checked = false;
+        
+        // Hapus dari urutan
+        const index = cloudSelectionOrder[arrayName].indexOf(lastChecked.value);
+        if (index !== -1) {
+            cloudSelectionOrder[arrayName].splice(index, 1);
+        }
+        
+        const tile = lastChecked.closest('.cloud-tile');
         if (tile) tile.classList.remove('selected');
+        
         alert(`Maksimal pilih ${limit} cloud untuk ${arrayName}.`);
+        updateOrderNumbers(section);
         return updateCloudSectionState(section);
     }
 
@@ -2486,7 +3058,8 @@ function updateCloudSectionState(section) {
         if (tile) tile.classList.toggle('disabled', shouldDisable);
     });
 }
-        
+
+
 function nextStep2() {
     const sections = document.querySelectorAll('.cloud-section');
     let allSelected = true;
@@ -2495,9 +3068,14 @@ function nextStep2() {
         const arrayName = section.dataset.array;
         const limit = parseInt(section.dataset.limit, 10) || 0;
 
-        const selected = Array
-            .from(section.querySelectorAll('input.cloud-check:checked'))
-            .map(cb => cb.value);
+        // Gunakan urutan dari cloudSelectionOrder
+        const selected = cloudSelectionOrder[arrayName] || [];
+
+        console.log(`DEBUG ${arrayName}:`, {
+            selected: selected,
+            limit: limit,
+            cloudSelectionOrder: cloudSelectionOrder[arrayName]
+        });
 
         if (selected.length !== limit) {
             allSelected = false;
@@ -2505,20 +3083,38 @@ function nextStep2() {
             return;
         }
 
+        // Simpan dengan urutan yang benar ke gameData
         gameData[arrayName] = selected;
     });
 
     if (!allSelected) return;
 
+    // Debug sebelum generate
+    console.log('DEBUG sebelum generateLinkInputFields:', {
+        cloudNSP: gameData.cloudNSP,
+        cloudXCI: gameData.cloudXCI,
+        cloudNSPPart: gameData.cloudNSPPart,
+        cloudXCIPart: gameData.cloudXCIPart
+    });
+
     generateLinkInputFields();
     setupPasteFunctionality();
     updateSizeFieldsVisibility();
     showStep(3);
+    
+    // Tambahkan alert untuk debug
+    setTimeout(() => {
+        const firstInput = document.querySelector('#originalLinksInput .input-group-text');
+        if (firstInput) {
+            console.log('DEBUG first input label:', firstInput.textContent);
+        }
+    }, 500);
 }
-        
+
+
 function generateLinkInputFields() {
   const adLinksContainer = document.getElementById('adLinksInput');
-  const adLinks2Container = document.getElementById('adLinks2Input'); // ✅ FIX: didefinisikan
+  const adLinks2Container = document.getElementById('adLinks2Input');
   const originalLinksContainer = document.getElementById('originalLinksInput');
 
   if (!adLinksContainer || !originalLinksContainer) return;
@@ -2528,20 +3124,31 @@ function generateLinkInputFields() {
   originalLinksContainer.innerHTML = '';
 
   // Reset arrays (biar input dan state sinkron)
-  gameData.adLinksNSP = new Array(gameData.nspCount || 0).fill('');
-  gameData.adLinksXCI = new Array(gameData.xciCount || 0).fill('');
-  gameData.adLinksNSPPart = new Array(gameData.nspPartCount || 0).fill('');
-  gameData.adLinksXCIPart = new Array(gameData.xciPartCount || 0).fill('');
+  // Inisialisasi array dengan panjang yang benar
+  const initArray = (length) => new Array(length).fill('');
+  
+  gameData.adLinksNSP = initArray(gameData.nspCount || 0);
+  gameData.adLinksXCI = initArray(gameData.xciCount || 0);
+  gameData.adLinksNSPPart = initArray(gameData.nspPartCount || 0);
+  gameData.adLinksXCIPart = initArray(gameData.xciPartCount || 0);
 
-  gameData.adLinks2NSP = new Array(gameData.nspCount || 0).fill('');
-  gameData.adLinks2XCI = new Array(gameData.xciCount || 0).fill('');
-  gameData.adLinks2NSPPart = new Array(gameData.nspPartCount || 0).fill('');
-  gameData.adLinks2XCIPart = new Array(gameData.xciPartCount || 0).fill('');
+  gameData.adLinks2NSP = initArray(gameData.nspCount || 0);
+  gameData.adLinks2XCI = initArray(gameData.xciCount || 0);
+  gameData.adLinks2NSPPart = initArray(gameData.nspPartCount || 0);
+  gameData.adLinks2XCIPart = initArray(gameData.xciPartCount || 0);
 
-  gameData.originalLinksNSP = new Array(gameData.nspCount || 0).fill('');
-  gameData.originalLinksXCI = new Array(gameData.xciCount || 0).fill('');
-  gameData.originalLinksNSPPart = new Array(gameData.nspPartCount || 0).fill('');
-  gameData.originalLinksXCIPart = new Array(gameData.xciPartCount || 0).fill('');
+  gameData.originalLinksNSP = initArray(gameData.nspCount || 0);
+  gameData.originalLinksXCI = initArray(gameData.xciCount || 0);
+  gameData.originalLinksNSPPart = initArray(gameData.nspPartCount || 0);
+  gameData.originalLinksXCIPart = initArray(gameData.xciPartCount || 0);
+
+  // Debug: Cek apa isi gameData.cloudNSP
+  console.log('DEBUG - Cloud Arrays:', {
+    cloudNSP: gameData.cloudNSP,
+    cloudXCI: gameData.cloudXCI,
+    cloudNSPPart: gameData.cloudNSPPart,
+    cloudXCIPart: gameData.cloudXCIPart
+  });
 
   // NSP
   if ((gameData.nspCount || 0) > 0) {
@@ -2608,24 +3215,53 @@ function generateLinkInputFields() {
   }
 }
 
-        
+
 function createLinkSection(title, count, arrayName, clouds) {
     const section = document.createElement('div');
     section.className = 'link-group mb-3';
     section.setAttribute('data-type', arrayName);
+    
+    // Pastikan clouds tidak undefined dan memiliki panjang yang cukup
+    let cloudArray = clouds;
+    if (!cloudArray || !Array.isArray(cloudArray) || cloudArray.length < count) {
+        console.warn(`Cloud array for ${arrayName} is invalid:`, cloudArray);
+        // Buat array fallback
+        cloudArray = [];
+        for (let i = 0; i < count; i++) {
+            cloudArray[i] = gameData[`cloud${arrayName.replace('adLinks', '').replace('originalLinks', '').replace('adLinks2', '')}`]?.[i] 
+                || `Cloud ${i + 1}`;
+        }
+    }
+    
+    console.log(`DEBUG createLinkSection ${arrayName}:`, {
+        count: count,
+        clouds: cloudArray,
+        gameDataCloud: gameData.cloudNSP // contoh
+    });
+    
     section.innerHTML = `
-        <h6>${title}</h6>
-        ${Array(count).fill().map((_, i) => `
-            <div class="input-group mb-2">
-                <span class="input-group-text" style="min-width: 150px;">${clouds[i]} - Link ${i + 1}</span>
-                <input type="text" class="form-control" 
-                       data-array="${arrayName}" 
-                       data-index="${i}" 
-                       placeholder="Masukkan link ${clouds[i]}"
-                       value="${gameData[arrayName][i] || ''}"
-                       required>
-            </div>
-        `).join('')}
+        <h6 class="mb-2"><i class="bi bi-link-45deg"></i> ${title}</h6>
+        ${Array(count).fill().map((_, i) => {
+            const cloudName = cloudArray[i] || `Cloud ${i + 1}`;
+            const currentValue = gameData[arrayName]?.[i] || '';
+            
+            return `
+                <div class="input-group mb-2">
+                    <span class="input-group-text" style="min-width: 160px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <i class="bi bi-cloud-upload me-1"></i> ${cloudName} - Link ${i + 1}
+                    </span>
+                    <input type="text" class="form-control" 
+                           data-array="${arrayName}" 
+                           data-index="${i}" 
+                           placeholder="Masukkan link untuk ${cloudName}"
+                           value="${currentValue}"
+                           required>
+                    <button type="button" class="btn btn-outline-secondary" onclick="copyLinkValue(this)">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                </div>
+            `;
+        }).join('')}
     `;
     
     // Add event listeners
@@ -2633,13 +3269,15 @@ function createLinkSection(title, count, arrayName, clouds) {
         input.addEventListener('input', function() {
             const arrayName = this.dataset.array;
             const index = parseInt(this.dataset.index);
+            if (!gameData[arrayName]) {
+                gameData[arrayName] = [];
+            }
             gameData[arrayName][index] = this.value;
         });
     });
     
     return section;
 }
-        
         function prevStep() {
             showStep(currentStep - 1);
         }
