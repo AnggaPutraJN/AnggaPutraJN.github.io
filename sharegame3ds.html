@@ -1011,10 +1011,10 @@ document.addEventListener('DOMContentLoaded', function() {
       if (lines.length >= selectedFormatsOrder.length + 4) {
         const link = lines[selectedFormatsOrder.length + 3];
         if (link && link.startsWith('http')) {
-          preview += `🌐Link Game:\n${link}\n\n`;
+          preview += `🌐Link Game:\nhttps://indapk.github.io/?q=${encodedGameName}\n\n`;
           if (lines[0]) {
             const encodedGameName = encodeURIComponent(lines[0].replace(/:/g, '%3A'));
-            preview += `🌐Link Alternatif: https://indapk.github.io/?q=${encodedGameName}\n`;
+            preview += `🌐Link Alternatif: ${link}\n`;
           }
         }
       }
