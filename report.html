@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel Dashboard | Game Management</title>
     
+    <!-- jQuery (Harus di-load SEBELUM DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -16,6 +19,7 @@
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     
     <style>
         :root {
@@ -449,39 +453,110 @@
             margin: 0.1rem;
         }
         
+        /* Platform-specific badge colors - COMPLETE SET */
+        .platform-ps1 {
+            background-color: rgba(0, 48, 135, 0.15);
+            color: #003087;
+            border: 1px solid #003087;
+        }
+
         .platform-ps2 {
-            background-color: rgba(52, 152, 219, 0.15);
-            color: #3498db;
+            background-color: rgba(0, 51, 153, 0.15);
+            color: #003399;
+            border: 1px solid #003399;
         }
-        
-        .platform-switch {
-            background-color: rgba(231, 76, 60, 0.15);
-            color: #e74c3c;
+
+        .platform-ps3 {
+            background-color: rgba(0, 0, 0, 0.15);
+            color: #000000;
+            border: 1px solid #666666;
         }
-        
-        .platform-psp {
-            background-color: rgba(155, 89, 182, 0.15);
-            color: #9b59b6;
+
+        .platform-ps4 {
+            background-color: rgba(0, 112, 204, 0.15);
+            color: #0070CC;
+            border: 1px solid #0070CC;
         }
-        
-        .platform-android {
-            background-color: rgba(46, 204, 113, 0.15);
-            color: #2ecc71;
+
+        .platform-ps5 {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+            border: 1px solid #0066CC;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,102,204,0.1));
         }
-        
+
         .platform-psvita {
-            background-color: rgba(241, 196, 15, 0.15);
-            color: #f1c40f;
+            background-color: rgba(128, 0, 128, 0.15);
+            color: #800080;
+            border: 1px solid #800080;
         }
-        
-        .platform-pc {
-            background-color: rgba(52, 73, 94, 0.15);
-            color: #34495e;
+
+        .platform-psp {
+            background-color: rgba(255, 0, 0, 0.15);
+            color: #FF0000;
+            border: 1px solid #FF0000;
         }
-        
+
+        .platform-switch {
+            background-color: rgba(255, 0, 0, 0.15);
+            color: #FF0000;
+            border: 1px solid #0033FF;
+            background: linear-gradient(135deg, rgba(255,0,0,0.1), rgba(0,51,255,0.1));
+        }
+
+        .platform-3ds {
+            background-color: rgba(0, 153, 255, 0.15);
+            color: #0099FF;
+            border: 1px solid #0099FF;
+        }
+
         .platform-wii {
-            background-color: rgba(230, 126, 34, 0.15);
-            color: #e67e22;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+            border: 1px solid #CCCCCC;
+        }
+
+        .platform-wiiu {
+            background-color: rgba(0, 0, 0, 0.15);
+            color: #000000;
+            border: 1px solid #0066FF;
+        }
+
+        .platform-gamecube {
+            background-color: rgba(102, 51, 153, 0.15);
+            color: #663399;
+            border: 1px solid #663399;
+        }
+
+        .platform-java {
+            background-color: rgba(255, 128, 0, 0.15);
+            color: #FF8000;
+            border: 1px solid #FF8000;
+        }
+
+        .platform-ios {
+            background-color: rgba(242, 242, 247, 0.15);
+            color: #F2F2F7;
+            border: 1px solid #8E8E93;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+        }
+
+        .platform-android {
+            background-color: rgba(61, 220, 132, 0.15);
+            color: #3DDC84;
+            border: 1px solid #3DDC84;
+        }
+
+        .platform-pc {
+            background-color: rgba(0, 120, 215, 0.15);
+            color: #0078D7;
+            border: 1px solid #0078D7;
+        }
+
+        .platform-apksgi {
+            background-color: rgba(255, 110, 199, 0.15);
+            color: #FF6EC7;
+            border: 1px solid #FF6EC7;
         }
         
         /* Chart Container */
@@ -490,6 +565,8 @@
             height: 300px;
             width: 100%;
         }
+        
+
         
         /* Responsive */
         @media (max-width: 992px) {
@@ -551,8 +628,96 @@
         .toast-container {
             z-index: 9999;
         }
+        
         .stat-card .stat-icon.large {
             font-size: 3rem;
+        }
+        
+        /* Click Trend Indicators */
+        .trend-up {
+            color: #2ecc71;
+        }
+        
+        .trend-down {
+            color: #e74c3c;
+        }
+        
+        .trend-neutral {
+            color: #f39c12;
+        }
+        
+        /* Heatmap Badge */
+        .heatmap-high {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        .heatmap-medium {
+            background-color: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+        
+        .heatmap-low {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+        
+        /* Count Games Specific */
+        .click-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-tile {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .stat-tile .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-tile .label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .platform-distribution {
+            margin-top: 1rem;
+        }
+        
+        .platform-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .platform-item:last-child {
+            border-bottom: none;
+        }
+        /* Tambahkan di bagian CSS */
+        .sort-indicator {
+            font-size: 0.8em;
+            color: var(--primary-color);
+        }
+
+        th[data-sortable="true"] {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+
+        th[data-sortable="true"]:hover {
+            background-color: rgba(67, 97, 238, 0.1);
         }
     </style>
 </head>
@@ -588,11 +753,11 @@
                 </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#apksgi-count" data-section="apksgi-count">
-                  <i class="bi bi-phone-fill"></i>
-                  <span>APKsgi Count</span>
-              </a>
-          </li>
+                <a class="nav-link" href="#apksgi-count" data-section="apksgi-count">
+                    <i class="bi bi-phone-fill"></i>
+                    <span>APKsgi Count</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="#report-games" data-section="report-games">
                     <i class="bi bi-flag-fill"></i>
@@ -697,15 +862,6 @@
                         </div>
                         <div class="stat-value" id="pending-reports">0</div>
                         <div class="stat-label">Pending Reports</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #7209b7, #9d4edd);">
-                        <div class="stat-icon">
-                            <i class="bi bi-eye-fill"></i>
-                        </div>
-                        <div class="stat-value" id="apksgi-total-views-dashboard">0</div> 
-                        <div class="stat-label">APKsgi Total Views</div>
                     </div>
                 </div>
             </div>
@@ -825,13 +981,23 @@
                                     <label class="form-label">Filter by Platform</label>
                                     <select id="filterPlatformPinned" class="form-select">
                                         <option value="all">All Platforms</option>
+                                        <option value="ps1">PS1</option>
                                         <option value="ps2">PS2</option>
-                                        <option value="switch">Switch</option>
-                                        <option value="psp">PSP</option>
-                                        <option value="android">Android</option>
+                                        <option value="ps3">PS3</option>
+                                        <option value="ps4">PS4</option>
+                                        <option value="ps5">PS5</option>
                                         <option value="psvita">PS Vita</option>
+                                        <option value="psp">PSP</option>
+                                        <option value="switch">Nintendo Switch</option>
+                                        <option value="3ds">Nintendo 3DS</option>
+                                        <option value="wii">Nintendo Wii</option>
+                                        <option value="wiiu">Nintendo Wii U</option>
+                                        <option value="gamecube">Nintendo Gamecube</option>
+                                        <option value="java">Java</option>
+                                        <option value="ios">iOS</option>
+                                        <option value="android">Android</option>
                                         <option value="pc">PC</option>
-                                        <option value="wii">Wii</option>
+                                        <option value="apksgi">APKsgi</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -877,70 +1043,312 @@
             </div>
         </div>
         
-        <!-- Count Games Section -->
+        <!-- Count Games Section - IMPROVED -->
         <div id="count-games" class="section d-none">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title"><i class="bi bi-bar-chart-fill me-2"></i> Game Click Statistics</h5>
+                            <h5 class="card-title"><i class="bi bi-bar-chart-fill me-2"></i> Game Statistics Dashboard</h5>
                             <div>
-                                <button class="btn btn-refresh" id="refresh-stats">
-                                    <i class="bi bi-arrow-clockwise me-2"></i> Refresh
+                                <button class="btn btn-primary" onclick="exportGameStats()">
+                                    <i class="bi bi-download me-2"></i> Export
+                                </button>
+                                <button class="btn btn-refresh ms-2" id="refresh-stats">
+                                    <i class="bi bi-arrow-clockwise"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="card-body">
+                            <!-- Summary Stats Cards -->
                             <div class="row mb-4">
                                 <div class="col-md-3">
-                                    <label class="form-label">Platform</label>
-                                    <select id="filterPlatformStats" class="form-select">
-                                        <option value="all">All Platforms</option>
-                                        <option value="ps2">PS2</option>
-                                        <option value="switch">Switch</option>
-                                        <option value="psp">PSP</option>
-                                        <option value="android">Android</option>
-                                        <option value="psvita">PS Vita</option>
-                                        <option value="pc">PC</option>
-                                        <option value="wii">Wii</option>
-                                    </select>
+                                    <div class="card stat-card stat-card-primary">
+                                        <div class="stat-icon">
+                                            <i class="bi bi-mouse"></i>
+                                        </div>
+                                        <div class="stat-value" id="total-clicks-summary">0</div>
+                                        <div class="stat-label">Total Clicks</div>
+                                    </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <div class="card stat-card stat-card-success">
+                                        <div class="stat-icon">
+                                            <i class="bi bi-controller"></i>
+                                        </div>
+                                        <div class="stat-value" id="unique-games-summary">0</div>
+                                        <div class="stat-label">Unique Games</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card stat-card stat-card-warning">
+                                        <div class="stat-icon">
+                                            <i class="bi bi-calendar-day"></i>
+                                        </div>
+                                        <div class="stat-value" id="today-clicks-summary">0</div>
+                                        <div class="stat-label">Today's Clicks</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card stat-card stat-card-danger">
+                                        <div class="stat-icon">
+                                            <i class="bi bi-trending-up"></i>
+                                        </div>
+                                        <div class="stat-value" id="avg-clicks-summary">0</div>
+                                        <div class="stat-label">Avg Clicks/Game</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Platform Distribution -->
+                            <div class="row mb-4">
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="card-title mb-0"><i class="bi bi-pie-chart me-2"></i> Clicks by Platform</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="height: 250px;">
+                                                <canvas id="platformDistributionChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="card-title mb-0"><i class="bi bi-bar-chart me-2"></i> Top Platforms</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="platformList" class="platform-distribution">
+                                                <!-- Platform list will be populated here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Filters and Search -->
+                            <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Platform</label>
+                                        <select id="filterPlatformStats" class="form-select">
+                                            <option value="all">All Platforms</option>
+                                            <option value="ps1">PS1</option>
+                                            <option value="ps2">PS2</option>
+                                            <option value="ps3">PS3</option>
+                                            <option value="ps4">PS4</option>
+                                            <option value="ps5">PS5</option>
+                                            <option value="psvita">PS Vita</option>
+                                            <option value="psp">PSP</option>
+                                            <option value="switch">Nintendo Switch</option>
+                                            <option value="3ds">Nintendo 3DS</option>
+                                            <option value="wii">Nintendo Wii</option>
+                                            <option value="wiiu">Nintendo Wii U</option>
+                                            <option value="gamecube">Nintendo Gamecube</option>
+                                            <option value="java">Java</option>
+                                            <option value="ios">iOS</option>
+                                            <option value="android">Android</option>
+                                            <option value="pc">PC</option>
+                                            <option value="apksgi">APKsgi</option>
+                                        </select>
+                                    </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Sort By</label>
                                     <select id="sortStats" class="form-select">
                                         <option value="clicks">Total Clicks</option>
+                                        <option value="today">Today's Clicks</option>
                                         <option value="name">Game Name</option>
                                         <option value="platform">Platform</option>
                                         <option value="lastClick">Last Click</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Date From</label>
-                                    <input type="date" id="dateFromStats" class="form-control">
+                                    <label class="form-label">Date Range</label>
+                                    <select id="dateRangeStats" class="form-select">
+                                        <option value="all">All Time</option>
+                                        <option value="today">Today</option>
+                                        <option value="week">This Week</option>
+                                        <option value="month">This Month</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Date To</label>
-                                    <input type="date" id="dateToStats" class="form-control">
+                                    <label class="form-label">Search</label>
+                                    <div class="input-group">
+                                        <input type="text" id="searchStats" class="form-control" placeholder="Search games...">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Enhanced Data Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="gameStatsTable">
+                            <!-- GANTI <thead> YANG LAMA DENGAN YANG BARU -->
+                            <thead>
+                                <tr>
+                                    <th width="50px">#</th>
+                                    <th data-sortable="true" data-sort="name">Game Name</th>
+                                    <th width="120px" data-sortable="true" data-sort="platform">Platform</th>
+                                    <th width="120px" data-sortable="true" data-sort="clicks">Total Clicks</th>
+                                    <th width="80px" data-sortable="true" data-sort="today">Today</th>
+                                    <th width="100px">Avg/Day</th>
+                                    <th width="80px">Trend</th>
+                                    <th width="120px" data-sortable="true" data-sort="lastClick">First Click</th>
+                                    <th width="120px">Last Click</th>
+                                    <th width="80px">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gameStatsBody">
+                                <!-- Data akan diisi oleh JavaScript -->
+                                <tr>
+                                    <td colspan="10" class="text-center">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination Controls -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">Show</span>
+                                <select id="pageSizeStats" class="form-select form-select-sm w-auto">
+                                    <option value="10">10</option>
+                                    <option value="25" selected>25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <span class="ms-2">entries</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-end">
+                                <nav id="paginationStats">
+                                    <ul class="pagination pagination-sm mb-0">
+                                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- APKsgi Count Section -->
+        <div id="apksgi-count" class="section d-none">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title"><i class="bi bi-phone-fill me-2"></i> APKsgi View Statistics</h5>
+                            <div>
+                                <button class="btn btn-primary" onclick="exportAPKsgiStats()">
+                                    <i class="bi bi-download me-2"></i> Export CSV
+                                </button>
+                                <button class="btn btn-refresh ms-2" id="refresh-apksgi">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Stats Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card stat-card stat-card-primary">
+                                        <div class="stat-icon">
+                                            <i class="bi bi-play-btn"></i>
+                                        </div>
+                                        <div class="stat-value" id="apksgi-videos-count">0</div>
+                                        <div class="stat-label">Videos</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card stat-card stat-card-success">
+                                        <div class="stat-icon">
+                                            <i class="bi bi-controller"></i>
+                                        </div>
+                                        <div class="stat-value" id="apksgi-games-count">0</div>
+                                        <div class="stat-label">Games</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card stat-card stat-card-warning">
+                                        <div class="stat-icon">
+                                            <i class="bi bi-tv"></i>
+                                        </div>
+                                        <div class="stat-value" id="apksgi-streaming-count">0</div>
+                                        <div class="stat-label">Streaming</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card stat-card stat-card-danger">
+                                        <div class="stat-icon">
+                                            <i class="bi bi-eye"></i>
+                                        </div>
+                                        <div class="stat-value" id="apksgi-total-views">0</div>
+                                        <div class="stat-label">Total Views</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label">Filter by Type</label>
+                                    <select id="filterAPKsgiType" class="form-select">
+                                        <option value="all">All Types</option>
+                                        <option value="videos">Videos</option>
+                                        <option value="games">Games</option>
+                                        <option value="streaming">Streaming</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Sort By</label>
+                                    <select id="sortAPKsgi" class="form-select">
+                                        <option value="total">Total Views</option>
+                                        <option value="daily">Daily Views</option>
+                                        <option value="weekly">Weekly Views</option>
+                                        <option value="monthly">Monthly Views</option>
+                                        <option value="name">Item Name</option>
+                                        <option value="last">Last Viewed</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Search</label>
+                                    <input type="text" id="searchAPKsgi" class="form-control" placeholder="Search item...">
                                 </div>
                             </div>
                             
                             <div class="table-responsive">
-                                <table class="table table-hover" id="gameStatsTable">
+                                <table class="table table-hover" id="apksgiStatsTable">
                                     <thead>
                                         <tr>
-                                            <th>Game ID</th>
-                                            <th>Game Name</th>
-                                            <th>Platform</th>
-                                            <th>Total Clicks</th>
-                                            <th>First Click</th>
-                                            <th>Last Click</th>
+                                            <th>Type</th>
+                                            <th>Item ID</th>
+                                            <th>Item Name</th>
+                                            <th>Total Views</th>
                                             <th>Today</th>
+                                            <th>This Week</th>
+                                            <th>This Month</th>
+                                            <th>First View</th>
+                                            <th>Last View</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="gameStatsBody">
+                                    <tbody id="apksgiStatsBody">
                                         <tr>
-                                            <td colspan="8" class="text-center">
+                                            <td colspan="10" class="text-center">
                                                 <div class="spinner-border" role="status">
                                                     <span class="visually-hidden">Loading...</span>
                                                 </div>
@@ -955,151 +1363,6 @@
             </div>
         </div>
         
-
-        <!-- APKsgi Count Section -->
-<div id="apksgi-count" class="section d-none">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title"><i class="bi bi-phone-fill me-2"></i> APKsgi View Statistics</h5>
-                    <div>
-                        <button class="btn btn-primary" onclick="exportAPKsgiStats()">
-                            <i class="bi bi-download me-2"></i> Export CSV
-                        </button>
-                        <button class="btn btn-refresh ms-2" id="refresh-apksgi">
-                            <i class="bi bi-arrow-clockwise"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <!-- Stats Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card stat-card stat-card-primary">
-                                <div class="stat-icon">
-                                    <i class="bi bi-play-btn"></i>
-                                </div>
-                                <div class="stat-value" id="apksgi-videos-count">0</div>
-                                <div class="stat-label">Videos</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card stat-card stat-card-success">
-                                <div class="stat-icon">
-                                    <i class="bi bi-controller"></i>
-                                </div>
-                                <div class="stat-value" id="apksgi-games-count">0</div>
-                                <div class="stat-label">Games</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card stat-card stat-card-warning">
-                                <div class="stat-icon">
-                                    <i class="bi bi-tv"></i>
-                                </div>
-                                <div class="stat-value" id="apksgi-streaming-count">0</div>
-                                <div class="stat-label">Streaming</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card stat-card stat-card-danger">
-                                <div class="stat-icon">
-                                    <i class="bi bi-eye"></i>
-                                </div>
-                                <div class="stat-value" id="apksgi-total-views">0</div>
-                                <div class="stat-label">Total Views</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <label class="form-label">Filter by Type</label>
-                            <select id="filterAPKsgiType" class="form-select">
-                                <option value="all">All Types</option>
-                                <option value="videos">Videos</option>
-                                <option value="games">Games</option>
-                                <option value="streaming">Streaming</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Sort By</label>
-                            <select id="sortAPKsgi" class="form-select">
-                                <option value="total">Total Views</option>
-                                <option value="daily">Daily Views</option>
-                                <option value="weekly">Weekly Views</option>
-                                <option value="monthly">Monthly Views</option>
-                                <option value="name">Item Name</option>
-                                <option value="last">Last Viewed</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Search</label>
-                            <input type="text" id="searchAPKsgi" class="form-control" placeholder="Search item...">
-                        </div>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="apksgiStatsTable">
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Item ID</th>
-                                    <th>Item Name</th>
-                                    <th>Total Views</th>
-                                    <th>Today</th>
-                                    <th>This Week</th>
-                                    <th>This Month</th>
-                                    <th>First View</th>
-                                    <th>Last View</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="apksgiStatsBody">
-                                <tr>
-                                    <td colspan="10" class="text-center">
-                                        <div class="spinner-border" role="status">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Chart Section -->
-                    <div class="row mt-4">
-                        <div class="col-lg-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="card-title mb-0"><i class="bi bi-bar-chart-line me-2"></i> APKsgi View Trends</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container" style="height: 250px;">
-                                        <canvas id="apksgiTrendChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="card-title mb-0"><i class="bi bi-pie-chart-fill me-2"></i> Views by Type</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container" style="height: 250px;">
-                                        <canvas id="apksgiTypeChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
         <!-- Report Games Section -->
         <div id="report-games" class="section d-none">
             <div class="row">
@@ -1132,13 +1395,23 @@
                                     <label class="form-label">Platform</label>
                                     <select id="filterPlatform" class="form-select">
                                         <option value="all">All Platforms</option>
+                                        <option value="ps1">PS1</option>
                                         <option value="ps2">PS2</option>
-                                        <option value="switch">Switch</option>
-                                        <option value="psp">PSP</option>
-                                        <option value="android">Android</option>
+                                        <option value="ps3">PS3</option>
+                                        <option value="ps4">PS4</option>
+                                        <option value="ps5">PS5</option>
                                         <option value="psvita">PS Vita</option>
+                                        <option value="psp">PSP</option>
+                                        <option value="switch">Nintendo Switch</option>
+                                        <option value="3ds">Nintendo 3DS</option>
+                                        <option value="wii">Nintendo Wii</option>
+                                        <option value="wiiu">Nintendo Wii U</option>
+                                        <option value="gamecube">Nintendo Gamecube</option>
+                                        <option value="java">Java</option>
+                                        <option value="ios">iOS</option>
+                                        <option value="android">Android</option>
                                         <option value="pc">PC</option>
-                                        <option value="wii">Wii</option>
+                                        <option value="apksgi">APKsgi</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
@@ -1286,7 +1559,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Admin Panel Version</label>
-                                <input type="text" class="form-control" value="v2.1.0" readonly>
+                                <input type="text" class="form-control" value="v2.2.0" readonly>
                             </div>
                             
                             <div class="mb-3">
@@ -1346,18 +1619,28 @@
                         <label class="form-label">Slot Number</label>
                         <input type="number" class="form-control" id="pinnedSlot" min="1" max="20" value="1">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Platform</label>
-                        <select class="form-select" id="pinnedPlatform">
-                            <option value="ps2">PS2</option>
-                            <option value="switch">Switch</option>
-                            <option value="psp">PSP</option>
-                            <option value="android">Android</option>
-                            <option value="psvita">PS Vita</option>
-                            <option value="pc">PC</option>
-                            <option value="wii">Wii</option>
-                        </select>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Platform</label>
+                            <select class="form-select" id="pinnedPlatform">
+                                <option value="ps1">PS1</option>
+                                <option value="ps2">PS2</option>
+                                <option value="ps3">PS3</option>
+                                <option value="ps4">PS4</option>
+                                <option value="ps5">PS5</option>
+                                <option value="psvita">PS Vita</option>
+                                <option value="psp">PSP</option>
+                                <option value="switch">Nintendo Switch</option>
+                                <option value="3ds">Nintendo 3DS</option>
+                                <option value="wii">Nintendo Wii</option>
+                                <option value="wiiu">Nintendo Wii U</option>
+                                <option value="gamecube">Nintendo Gamecube</option>
+                                <option value="java">Java</option>
+                                <option value="ios">iOS</option>
+                                <option value="android">Android</option>
+                                <option value="pc">PC</option>
+                                <option value="apksgi">APKsgi</option>
+                            </select>
+                        </div>
                     <div class="mb-3">
                         <label class="form-label">Game Name</label>
                         <input type="text" class="form-control" id="pinnedGameName" placeholder="Enter game name">
@@ -1372,43 +1655,53 @@
     </div>
     
     <!-- Edit Pinned Game Modal -->
-    <div class="modal fade" id="editPinnedModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Pinned Game</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="editPinnedModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Pinned Game</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editPinnedId">
+                <div class="mb-3">
+                    <label class="form-label">Slot Number</label>
+                    <input type="number" class="form-control" id="editPinnedSlot" min="1" max="20">
                 </div>
-                <div class="modal-body">
-                    <input type="hidden" id="editPinnedId">
-                    <div class="mb-3">
-                        <label class="form-label">Slot Number</label>
-                        <input type="number" class="form-control" id="editPinnedSlot" min="1" max="20">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Platform</label>
-                        <select class="form-select" id="editPinnedPlatform">
-                            <option value="ps2">PS2</option>
-                            <option value="switch">Switch</option>
-                            <option value="psp">PSP</option>
-                            <option value="android">Android</option>
-                            <option value="psvita">PS Vita</option>
-                            <option value="pc">PC</option>
-                            <option value="wii">Wii</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Game Name</label>
-                        <input type="text" class="form-control" id="editPinnedGameName">
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label">Platform</label>
+                    <select class="form-select" id="editPinnedPlatform">
+                        <option value="ps1">PS1</option>
+                        <option value="ps2">PS2</option>
+                        <option value="ps3">PS3</option>
+                        <option value="ps4">PS4</option>
+                        <option value="ps5">PS5</option>
+                        <option value="psvita">PS Vita</option>
+                        <option value="psp">PSP</option>
+                        <option value="switch">Nintendo Switch</option>
+                        <option value="3ds">Nintendo 3DS</option>
+                        <option value="wii">Nintendo Wii</option>
+                        <option value="wiiu">Nintendo Wii U</option>
+                        <option value="gamecube">Nintendo Gamecube</option>
+                        <option value="java">Java</option>
+                        <option value="ios">iOS</option>
+                        <option value="android">Android</option>
+                        <option value="pc">PC</option>
+                        <option value="apksgi">APKsgi</option>
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="updatePinnedGame()">Save Changes</button>
+                <div class="mb-3">
+                    <label class="form-label">Game Name</label>
+                    <input type="text" class="form-control" id="editPinnedGameName">
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updatePinnedGame()">Save Changes</button>
             </div>
         </div>
     </div>
+</div>
     
     <!-- Report Detail Modal -->
     <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
@@ -1463,7 +1756,7 @@
         </div>
     </div>
     
-    <!-- Game Stats Modal -->
+    <!-- Game Stats Detail Modal -->
     <div class="modal fade" id="gameStatsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -1480,23 +1773,25 @@
             </div>
         </div>
     </div>
-    <!-- APKsgi Item Detail Modal -->
-<div class="modal fade" id="apksgiDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">APKsgi Item Statistics</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="apksgiDetailBody">
-                <!-- Detail will be filled with JavaScript -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+    <!-- APKsgi Detail Modal -->
+    <div class="modal fade" id="apksgiDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">APKsgi Item Statistics</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="apksgiDetailBody">
+                    <!-- Detail will be filled with JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -1504,23 +1799,16 @@
         // ============================================
         // CONFIGURATION
         // ============================================
-const CONFIG = {
-    // API URLs
-    REPORT_API_URL: "https://script.google.com/macros/s/AKfycbyeG5Yl-8TPQVJJJRXIng8u6sfgPyM1bsfgcfdhMmw6zUYjpvJIR_mq_rYNMSBkhnJN/exec",
-    PINNED_API_URL: "https://script.google.com/macros/s/AKfycbw1ftGvO0CNdQ6q6BIYH1uBUQFS8VsSzD3IJcK_uTlNBcdEXK2qGmXD8k0HYCWWX2H6/exec",
-    
-    // APKsgi Count API
-    APKSGI_COUNT_API_URL: "https://script.google.com/macros/s/AKfycbw7us6zDMnAYj_hLv1UwmCpIIHuwcX2avN5Nlf94tQ4mPIlX7I8s_tJh-2rkb6z9kY/exec",
-    
-    // Admin ID
-    ADMIN_ID: "1172835542",
-    
-    // Local Storage Keys
-    LS_THEME: "admin_theme",
-    LS_SETTINGS: "admin_settings",
-    LS_DATA: "admin_data_cache",
-    LS_NOTIFICATIONS: "admin_notifications"
-};
+        const CONFIG = {
+            REPORT_API_URL: "https://script.google.com/macros/s/AKfycbyeG5Yl-8TPQVJJJRXIng8u6sfgPyM1bsfgcfdhMmw6zUYjpvJIR_mq_rYNMSBkhnJN/exec",
+            PINNED_API_URL: "https://script.google.com/macros/s/AKfycbw1ftGvO0CNdQ6q6BIYH1uBUQFS8VsSzD3IJcK_uTlNBcdEXK2qGmXD8k0HYCWWX2H6/exec",
+            APKSGI_COUNT_API_URL: "https://script.google.com/macros/s/AKfycbw7us6zDMnAYj_hLv1UwmCpIIHuwcX2avN5Nlf94tQ4mPIlX7I8s_tJh-2rkb6z9kY/exec",
+            ADMIN_ID: "1172835542",
+            LS_THEME: "admin_theme",
+            LS_SETTINGS: "admin_settings",
+            LS_DATA: "admin_data_cache",
+            LS_NOTIFICATIONS: "admin_notifications"
+        };
         
         // ============================================
         // GLOBAL VARIABLES
@@ -1532,37 +1820,103 @@ const CONFIG = {
         let refreshInterval = null;
         let reportsChart = null;
         let statusChart = null;
+        let platformDistributionChart = null;
         let currentSection = "dashboard";
         let notifications = [];
         let apksgiStats = [];
-        let apksgiTrendChart = null;
-        let apksgiTypeChart = null;
+        let currentPage = 1;
+        let pageSize = 25;
+        let totalStatsPages = 1;
         
         // ============================================
         // INITIALIZATION
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Set last updated date
             document.getElementById('lastUpdated').value = new Date().toLocaleString('id-ID');
-            
-            // Load settings
             loadSettings();
-            
-            // Load notifications
             loadNotifications();
-            
-            // Setup event listeners
             setupEventListeners();
-            
-            // Load initial data
             loadDashboardData();
-            
-            // Check API status
             checkApiStatus();
-            
-            // Setup auto refresh
             setupAutoRefresh();
         });
+        
+        // ============================================
+        // SETTINGS FUNCTIONS
+        // ============================================
+        function loadSettings() {
+            // Load theme
+            const savedTheme = localStorage.getItem(CONFIG.LS_THEME);
+            if (savedTheme === 'light') {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+            
+            // Load other settings
+            const savedSettings = localStorage.getItem(CONFIG.LS_SETTINGS);
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                if (settings.autoRefresh) {
+                    document.getElementById('autoRefresh').value = settings.autoRefresh;
+                }
+                
+                if (settings.itemsPerPage) {
+                    document.getElementById('itemsPerPage').value = settings.itemsPerPage;
+                }
+                
+                if (settings.notifications) {
+                    document.getElementById('notifNewReports').checked = settings.notifications.newReports;
+                    document.getElementById('notifStatusChanges').checked = settings.notifications.statusChanges;
+                    document.getElementById('notifStatsUpdates').checked = settings.notifications.statsUpdates;
+                }
+            }
+        }
+        
+        function saveSettings() {
+            const settings = {
+                autoRefresh: document.getElementById('autoRefresh').value,
+                itemsPerPage: document.getElementById('itemsPerPage').value,
+                notifications: {
+                    newReports: document.getElementById('notifNewReports').checked,
+                    statusChanges: document.getElementById('notifStatusChanges').checked,
+                    statsUpdates: document.getElementById('notifStatsUpdates').checked
+                }
+            };
+            
+            localStorage.setItem(CONFIG.LS_SETTINGS, JSON.stringify(settings));
+            
+            // Update auto refresh
+            setupAutoRefresh();
+            
+            // Request notification permission if not already granted
+            if (settings.notifications.newReports || settings.notifications.statusChanges || settings.notifications.statsUpdates) {
+                if ("Notification" in window && Notification.permission === "default") {
+                    Notification.requestPermission();
+                }
+            }
+            
+            showToast('Settings saved successfully', 'success');
+            
+            // Add notification
+            addNotification('system', 'Settings updated');
+        }
+        
+        function clearCache() {
+            localStorage.removeItem(`${CONFIG.LS_DATA}_pinned`);
+            localStorage.removeItem(`${CONFIG.LS_DATA}_stats`);
+            localStorage.removeItem(`${CONFIG.LS_DATA}_reports`);
+            localStorage.removeItem(`${CONFIG.LS_DATA}_reports_previous`);
+            
+            showToast('Cache cleared successfully', 'success');
+            
+            // Refresh current section
+            loadSectionData(currentSection);
+            
+            // Add notification
+            addNotification('system', 'Cache cleared');
+        }
         
         // ============================================
         // SETUP FUNCTIONS
@@ -1585,13 +1939,12 @@ const CONFIG = {
             // Theme toggle
             document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
             
-            // Refresh all button with animation
+            // Refresh buttons
             document.getElementById('refresh-all').addEventListener('click', function() {
                 animateRefreshButton(this);
                 refreshAllData();
             });
             
-            // Refresh individual buttons
             document.getElementById('refresh-pinned')?.addEventListener('click', function() {
                 animateRefreshButton(this);
                 loadPinnedGames();
@@ -1607,6 +1960,11 @@ const CONFIG = {
                 loadReports();
             });
             
+            document.getElementById('refresh-apksgi')?.addEventListener('click', function() {
+                animateRefreshButton(this);
+                loadAPKsgiStats();
+            });
+            
             // Theme switch
             document.getElementById('themeSwitch').addEventListener('change', function() {
                 if (this.checked) {
@@ -1615,26 +1973,29 @@ const CONFIG = {
                     enableLightMode();
                 }
             });
-            document.getElementById('refresh-apksgi')?.addEventListener('click', function() {
-                animateRefreshButton(this);
-                loadAPKsgiStats();
+            
+            // Count Games filters
+            document.getElementById('filterPlatformStats')?.addEventListener('change', filterGameStats);
+            document.getElementById('sortStats')?.addEventListener('change', sortGameStats);
+            document.getElementById('dateRangeStats')?.addEventListener('change', filterGameStats);
+            document.getElementById('searchStats')?.addEventListener('input', filterGameStats);
+            document.getElementById('pageSizeStats')?.addEventListener('change', function() {
+                pageSize = parseInt(this.value);
+                currentPage = 1;
+                displayGameStats(allGameStats);
             });
-
+            
+            // APKsgi filters
             document.getElementById('filterAPKsgiType')?.addEventListener('change', filterAPKsgiStats);
             document.getElementById('sortAPKsgi')?.addEventListener('change', sortAPKsgiStats);
             document.getElementById('searchAPKsgi')?.addEventListener('input', searchAPKsgiStats);
             
-            // Filter event listeners
-
+            // Pinned Games filters
             document.getElementById('filterPlatformPinned')?.addEventListener('change', filterPinnedGames);
             document.getElementById('sortPinned')?.addEventListener('change', sortPinnedGames);
             document.getElementById('searchPinned')?.addEventListener('input', searchPinnedGames);
             
-            document.getElementById('filterPlatformStats')?.addEventListener('change', filterGameStats);
-            document.getElementById('sortStats')?.addEventListener('change', sortGameStats);
-            document.getElementById('dateFromStats')?.addEventListener('change', filterGameStats);
-            document.getElementById('dateToStats')?.addEventListener('change', filterGameStats);
-            
+            // Reports filters
             document.getElementById('filterStatus')?.addEventListener('change', filterReports);
             document.getElementById('filterPlatform')?.addEventListener('change', filterReports);
             document.getElementById('filterDateFrom')?.addEventListener('change', filterReports);
@@ -1662,660 +2023,29 @@ const CONFIG = {
                 refreshInterval = setInterval(() => {
                     refreshCurrentSection();
                 }, interval);
-                
-                console.log(`Auto refresh set to ${interval/1000} seconds`);
             }
         }
         
-
-// ============================================
-// APKsgi STATS FUNCTIONS
-// ============================================
-async function loadAPKsgiStats() {
-    try {
-        showToast('Loading APKsgi statistics...', 'info');
-        
-        const response = await fetch(`${CONFIG.APKSGI_COUNT_API_URL}?action=getAllCounts`);
-        
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        
-        const result = await response.json();
-        
-        if (result.status === 'success') {
-            apksgiStats = result.data || [];
-            processAPKsgiStats(apksgiStats);
-            displayAPKsgiStats(apksgiStats);
-            updateAPKsgiSummary(apksgiStats);
-            createAPKsgiCharts(apksgiStats);
-            
-            // UPDATE DASHBOARD DENGAN TOTAL VIEWS
-            updateDashboardAPKsgiStats(apksgiStats);
-            
-            showToast('APKsgi statistics loaded successfully', 'success');
-            
-            // Cache the data
-            localStorage.setItem(`${CONFIG.LS_DATA}_apksgi`, JSON.stringify(apksgiStats));
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        console.error('Failed to load APKsgi stats:', error);
-        showToast('Failed to load APKsgi statistics', 'error');
-        
-        // Load from cache if available
-        const cached = localStorage.getItem(`${CONFIG.LS_DATA}_apksgi`);
-        if (cached) {
-            apksgiStats = JSON.parse(cached);
-            processAPKsgiStats(apksgiStats);
-            displayAPKsgiStats(apksgiStats);
-            updateAPKsgiSummary(apksgiStats);
-            updateDashboardAPKsgiStats(apksgiStats); // Update dari cache juga
-        }
-    }
-}
-function updateDashboardAPKsgiStats(stats) {
-    const element = document.getElementById('apksgi-total-views-dashboard');
-    if (!element) return;
-    
-    if (!stats || stats.length === 0) {
-        element.textContent = '0';
-        return;
-    }
-    
-    // Hitung TOTAL VIEWS dari semua item
-    const totalViews = stats.reduce((sum, stat) => {
-        return sum + (parseInt(stat.TotalCount) || 0);
-    }, 0);
-    
-    // Hitung views hari ini
-    const todayViews = stats.reduce((sum, stat) => {
-        return sum + (parseInt(stat.DailyCount) || 0);
-    }, 0);
-    
-    // Format dengan trend indicator
-    let trendIcon = '';
-    let trendClass = '';
-    
-    // Cek trend berdasarkan persentase views hari ini vs rata-rata harian
-    const avgDaily = totalViews / Math.max(stats.length, 1);
-    const todayPercent = (todayViews / avgDaily) * 100;
-    
-    if (todayPercent > 150) {
-        trendIcon = ' ↗';
-        trendClass = 'text-success';
-    } else if (todayPercent > 80) {
-        trendIcon = ' →';
-        trendClass = 'text-warning';
-    } else {
-        trendIcon = ' ↘';
-        trendClass = 'text-danger';
-    }
-    
-    element.innerHTML = `${formatLargeNumber(totalViews)}<span class="${trendClass}" style="font-size: 0.7em">${trendIcon}</span>`;
-    
-    // Tambahkan tooltip info
-    element.title = `Total: ${totalViews.toLocaleString()} views\nToday: ${todayViews} views`;
-}
-
-function formatLargeNumber(num) {
-    if (!num && num !== 0) return '0';
-    
-    // Format: 1K, 1M, 1B
-    if (num >= 1000000000) {
-        return (num / 1000000000).toFixed(1) + 'B';
-    }
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M';
-    }
-    if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'K';
-    }
-    
-    return num.toLocaleString();
-}
-function processAPKsgiStats(stats) {
-    // Process each stat to ensure proper formatting
-    stats.forEach(stat => {
-        // Ensure all count fields have values
-        stat.TotalCount = parseInt(stat.TotalCount) || 0;
-        stat.DailyCount = parseInt(stat.DailyCount) || 0;
-        stat.WeeklyCount = parseInt(stat.WeeklyCount) || 0;
-        stat.MonthlyCount = parseInt(stat.MonthlyCount) || 0;
-        
-        // Format dates
-        if (stat.LastClicked) {
-            if (typeof stat.LastClicked === 'string' && stat.LastClicked.includes('display')) {
-                // Already formatted
-            } else if (stat.LastClicked.date) {
-                stat.LastClicked = {
-                    display: `${formatDate(stat.LastClicked.date)} ${stat.LastClicked.time || ''}`.trim(),
-                    date: stat.LastClicked.date
-                };
-            } else {
-                stat.LastClicked = {
-                    display: formatDate(stat.LastClicked),
-                    date: stat.LastClicked
-                };
-            }
-        }
-        
-        if (stat.FirstClicked) {
-            if (typeof stat.FirstClicked === 'string' && stat.FirstClicked.includes('display')) {
-                // Already formatted
-            } else if (stat.FirstClicked.date) {
-                stat.FirstClicked = {
-                    display: `${formatDate(stat.FirstClicked.date)} ${stat.FirstClicked.time || ''}`.trim(),
-                    date: stat.FirstClicked.date
-                };
-            } else {
-                stat.FirstClicked = {
-                    display: formatDate(stat.FirstClicked),
-                    date: stat.FirstClicked
-                };
-            }
-        }
-    });
-}
-
-function displayAPKsgiStats(stats) {
-    const tbody = document.getElementById('apksgiStatsBody');
-    
-    if (stats.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="10" class="text-center text-muted py-4">
-                    <i class="bi bi-phone display-6 d-block mb-2"></i>
-                    No APKsgi statistics found
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    tbody.innerHTML = stats.map(stat => {
-        const type = stat.Type || 'unknown';
-        const typeClass = getAPKsgiTypeClass(type);
-        const trendIcon = getTrendIcon(stat.DailyCount);
-        
-        return `
-            <tr>
-                <td><span class="badge ${typeClass}">${type.toUpperCase()}</span></td>
-                <td><code>${stat.ItemID || 'N/A'}</code></td>
-                <td><strong>${escapeHTML(stat.ItemName || stat.ItemID || 'Unknown')}</strong></td>
-                <td><span class="badge bg-primary">${stat.TotalCount || 0}</span></td>
-                <td><span class="badge ${stat.DailyCount > 0 ? 'bg-success' : 'bg-secondary'}">${stat.DailyCount || 0}</span></td>
-                <td><span class="badge ${stat.WeeklyCount > 0 ? 'bg-warning' : 'bg-secondary'}">${stat.WeeklyCount || 0}</span></td>
-                <td><span class="badge ${stat.MonthlyCount > 0 ? 'bg-danger' : 'bg-secondary'}">${stat.MonthlyCount || 0}</span></td>
-                <td>${stat.FirstClicked?.display || 'N/A'}</td>
-                <td>${stat.LastClicked?.display || 'N/A'}</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-info" onclick="viewAPKsgiDetail('${stat.Type}', '${stat.ItemID}')">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-    }).join('');
-}
-
-function getAPKsgiTypeClass(type) {
-    switch(type.toLowerCase()) {
-        case 'videos': return 'bg-primary';
-        case 'games': return 'bg-success';
-        case 'streaming': return 'bg-warning';
-        default: return 'bg-secondary';
-    }
-}
-
-function getTrendIcon(count) {
-    if (count > 20) return 'bi-graph-up-arrow text-success';
-    if (count > 10) return 'bi-graph-up text-warning';
-    if (count > 0) return 'bi-graph-up text-info';
-    return 'bi-graph-down text-danger';
-}
-
-function updateAPKsgiSummary(stats) {
-    // Calculate totals by type
-    const videos = stats.filter(s => s.Type.toLowerCase() === 'videos');
-    const games = stats.filter(s => s.Type.toLowerCase() === 'games');
-    const streaming = stats.filter(s => s.Type.toLowerCase() === 'streaming');
-    
-    // Update cards
-    document.getElementById('apksgi-videos-count').textContent = videos.length;
-    document.getElementById('apksgi-games-count').textContent = games.length;
-    document.getElementById('apksgi-streaming-count').textContent = streaming.length;
-    
-    // Calculate total views
-    const totalViews = stats.reduce((sum, stat) => sum + (stat.TotalCount || 0), 0);
-    document.getElementById('apksgi-total-views').textContent = totalViews.toLocaleString();
-}
-
-async function viewAPKsgiDetail(type, itemId) {
-    try {
-        const response = await fetch(`${CONFIG.APKSGI_COUNT_API_URL}?action=getItemCount&type=${type}&itemId=${itemId}`);
-        
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        
-        const result = await response.json();
-        
-        if (result.status === 'success') {
-            const stat = result.data;
-            const modalBody = document.getElementById('apksgiDetailBody');
-            
-            // Format dates
-            const firstClicked = stat.FirstClicked ? 
-                `${formatDate(stat.FirstClicked.date)} ${stat.FirstClicked.time || ''}` : 
-                'N/A';
-            
-            const lastClicked = stat.LastClicked ? 
-                `${formatDate(stat.LastClicked.date)} ${stat.LastClicked.time || ''}` : 
-                'N/A';
-            
-            modalBody.innerHTML = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Type:</strong> <span class="badge ${getAPKsgiTypeClass(type)}">${type.toUpperCase()}</span></p>
-                        <p><strong>Item ID:</strong> <code>${itemId}</code></p>
-                        <p><strong>Item Name:</strong> ${escapeHTML(stat.ItemName || itemId)}</p>
-                        <p><strong>Platform:</strong> ${stat.Platform || 'N/A'}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Total Views:</strong> <span class="badge bg-primary fs-5">${stat.TotalCount || 0}</span></p>
-                        <p><strong>Today:</strong> <span class="badge bg-success">${stat.DailyCount || 0}</span></p>
-                        <p><strong>This Week:</strong> <span class="badge bg-warning">${stat.WeeklyCount || 0}</span></p>
-                        <p><strong>This Month:</strong> <span class="badge bg-danger">${stat.MonthlyCount || 0}</span></p>
-                    </div>
-                </div>
-                
-                <hr>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>First View:</strong> ${firstClicked}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Last View:</strong> ${lastClicked}</p>
-                    </div>
-                </div>
-                
-                <div class="mt-4">
-                    <h6>View Trend (Last 7 Days)</h6>
-                    <div class="chart-container" style="height: 200px;">
-                        <canvas id="apksgiItemTrendChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="mt-3">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="resetAPKsgiItem('${type}', '${itemId}')">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Counts
-                    </button>
-                    <small class="text-muted ms-2">Resets daily/weekly/monthly counts only</small>
-                </div>
-            `;
-            
-            const modal = new bootstrap.Modal(document.getElementById('apksgiDetailModal'));
-            modal.show();
-            
-            // Create trend chart
-            setTimeout(() => {
-                createAPKsgiItemTrendChart(stat);
-            }, 100);
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        showToast('Failed to load APKsgi item details: ' + error.message, 'error');
-    }
-}
-
-function filterAPKsgiStats() {
-    const typeFilter = document.getElementById('filterAPKsgiType').value;
-    const searchTerm = document.getElementById('searchAPKsgi').value.toLowerCase();
-    
-    let filtered = apksgiStats;
-    
-    if (typeFilter !== 'all') {
-        filtered = filtered.filter(s => s.Type.toLowerCase() === typeFilter);
-    }
-    
-    if (searchTerm) {
-        filtered = filtered.filter(s => 
-            (s.ItemName && s.ItemName.toLowerCase().includes(searchTerm)) ||
-            (s.ItemID && s.ItemID.toLowerCase().includes(searchTerm)) ||
-            (s.Type && s.Type.toLowerCase().includes(searchTerm))
-        );
-    }
-    
-    displayAPKsgiStats(filtered);
-}
-
-function searchAPKsgiStats() {
-    filterAPKsgiStats();
-}
-
-function sortAPKsgiStats() {
-    const sortBy = document.getElementById('sortAPKsgi').value;
-    let sorted = [...apksgiStats];
-    
-    switch(sortBy) {
-        case 'total':
-            sorted.sort((a, b) => (b.TotalCount || 0) - (a.TotalCount || 0));
-            break;
-        case 'daily':
-            sorted.sort((a, b) => (b.DailyCount || 0) - (a.DailyCount || 0));
-            break;
-        case 'weekly':
-            sorted.sort((a, b) => (b.WeeklyCount || 0) - (a.WeeklyCount || 0));
-            break;
-        case 'monthly':
-            sorted.sort((a, b) => (b.MonthlyCount || 0) - (a.MonthlyCount || 0));
-            break;
-        case 'name':
-            sorted.sort((a, b) => (a.ItemName || a.ItemID || '').localeCompare(b.ItemName || b.ItemID || ''));
-            break;
-        case 'last':
-            sorted.sort((a, b) => {
-                const dateA = a.LastClicked?.date ? new Date(a.LastClicked.date) : new Date(0);
-                const dateB = b.LastClicked?.date ? new Date(b.LastClicked.date) : new Date(0);
-                return dateB - dateA;
-            });
-            break;
-    }
-    
-    displayAPKsgiStats(sorted);
-}
-
-function createAPKsgiCharts(stats) {
-    createAPKsgiTrendChart(stats);
-    createAPKsgiTypeChart(stats);
-}
-
-function createAPKsgiTrendChart(stats) {
-    const ctx = document.getElementById('apksgiTrendChart').getContext('2d');
-    
-    // Group by last 7 days
-    const last7Days = [];
-    const dailyData = [];
-    
-    for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const dateStr = date.toISOString().split('T')[0];
-        last7Days.push(dateStr);
-        
-        // Count total daily views for this day (simulated - in real app you'd get this from API)
-        const dayCount = Math.floor(Math.random() * (stats.length * 0.5)) + stats.length * 0.2;
-        dailyData.push(dayCount);
-    }
-    
-    const labels = last7Days.map(date => formatDateShort(date));
-    
-    if (apksgiTrendChart) {
-        apksgiTrendChart.destroy();
-    }
-    
-    apksgiTrendChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Total Views',
-                data: dailyData,
-                borderColor: '#4361ee',
-                backgroundColor: 'rgba(67, 97, 238, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                    }
-                }
-            }
-        }
-    });
-}
-
-function createAPKsgiTypeChart(stats) {
-    const ctx = document.getElementById('apksgiTypeChart').getContext('2d');
-    
-    const typeCounts = {
-        videos: stats.filter(s => s.Type.toLowerCase() === 'videos').length,
-        games: stats.filter(s => s.Type.toLowerCase() === 'games').length,
-        streaming: stats.filter(s => s.Type.toLowerCase() === 'streaming').length,
-        other: stats.filter(s => !['videos', 'games', 'streaming'].includes(s.Type.toLowerCase())).length
-    };
-    
-    const viewCounts = {
-        videos: stats.filter(s => s.Type.toLowerCase() === 'videos')
-                    .reduce((sum, stat) => sum + (stat.TotalCount || 0), 0),
-        games: stats.filter(s => s.Type.toLowerCase() === 'games')
-                   .reduce((sum, stat) => sum + (stat.TotalCount || 0), 0),
-        streaming: stats.filter(s => s.Type.toLowerCase() === 'streaming')
-                       .reduce((sum, stat) => sum + (stat.TotalCount || 0), 0)
-    };
-    
-    if (apksgiTypeChart) {
-        apksgiTypeChart.destroy();
-    }
-    
-    apksgiTypeChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Videos', 'Games', 'Streaming', 'Other'],
-            datasets: [{
-                data: [
-                    typeCounts.videos,
-                    typeCounts.games,
-                    typeCounts.streaming,
-                    typeCounts.other
-                ],
-                backgroundColor: [
-                    '#4361ee',
-                    '#4cc9f0',
-                    '#f8961e',
-                    '#7209b7'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: getComputedStyle(document.body).getPropertyValue('--text-color'),
-                        padding: 15
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.raw || 0;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = Math.round((value / total) * 100);
-                            return `${label}: ${value} items (${percentage}%)`;
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-
-function createAPKsgiItemTrendChart(stat) {
-    const ctx = document.getElementById('apksgiItemTrendChart').getContext('2d');
-    
-    // Mock data for trend
-    const labels = ['6 days ago', '5 days ago', '4 days ago', '3 days ago', '2 days ago', 'Yesterday', 'Today'];
-    const baseClicks = Math.max(1, Math.floor((stat.TotalCount || 10) / 7));
-    
-    const data = [
-        Math.floor(baseClicks * 0.7),
-        Math.floor(baseClicks * 0.9),
-        Math.floor(baseClicks * 1.2),
-        Math.floor(baseClicks * 0.8),
-        Math.floor(baseClicks * 1.5),
-        Math.floor(baseClicks * 1.1),
-        stat.DailyCount || 0
-    ];
-    
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Daily Views',
-                data: data,
-                backgroundColor: '#4361ee',
-                borderColor: '#2f4fdb',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                    }
-                }
-            }
-        }
-    });
-}
-
-async function resetAPKsgiItem(type, itemId) {
-    if (!confirm(`Reset counts for ${type} item ${itemId}? This will reset daily/weekly/monthly counts to zero.`)) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(CONFIG.APKSGI_COUNT_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `action=resetCounts&type=${type}&itemId=${itemId}`
-        });
-        
-        const result = await response.json();
-        
-        if (result.status === 'success') {
-            showToast('Item counts reset successfully', 'success');
-            loadAPKsgiStats();
-            
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('apksgiDetailModal'));
-            if (modal) modal.hide();
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        showToast('Failed to reset item counts: ' + error.message, 'error');
-    }
-}
-
-function exportAPKsgiStats() {
-    if (apksgiStats.length === 0) {
-        showToast('No APKsgi statistics to export', 'warning');
-        return;
-    }
-    
-    const csvContent = "data:text/csv;charset=utf-8," 
-        + "Type,Item ID,Item Name,Platform,Total Views,Daily Views,Weekly Views,Monthly Views,First View,Last View\n"
-        + apksgiStats.map(stat => 
-            `"${stat.Type}","${stat.ItemID}","${stat.ItemName || ''}","${stat.Platform || ''}",` +
-            `"${stat.TotalCount || 0}","${stat.DailyCount || 0}","${stat.WeeklyCount || 0}","${stat.MonthlyCount || 0}",` +
-            `"${stat.FirstClicked?.display || ''}","${stat.LastClicked?.display || ''}"`
-        ).join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `apksgi_stats_${new Date().getTime()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    showToast(`Exported ${apksgiStats.length} APKsgi items`, 'success');
-}
         // ============================================
         // UI FUNCTIONS
         // ============================================
         function switchSection(section) {
-            // Hide all sections
             document.querySelectorAll('.section').forEach(sec => {
                 sec.classList.add('d-none');
                 sec.classList.remove('active');
             });
             
-            // Remove active class from all nav links
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
             });
             
-            // Show selected section
             document.getElementById(section).classList.remove('d-none');
             document.getElementById(section).classList.add('active');
-            
-            // Activate corresponding nav link
             document.querySelector(`.nav-link[data-section="${section}"]`).classList.add('active');
-            
-            // Update page title
             updatePageTitle(section);
-            
-            // Load section data
             currentSection = section;
             loadSectionData(section);
             
-            // Close sidebar on mobile
             if (window.innerWidth < 992) {
                 document.querySelector('.sidebar').classList.remove('active');
             }
@@ -2325,7 +2055,7 @@ function exportAPKsgiStats() {
             const titles = {
                 'dashboard': 'Dashboard Overview',
                 'pinned-games': 'Pinned Games Management',
-                'count-games': 'Game Click Statistics',
+                'count-games': 'Game Statistics Dashboard',
                 'apksgi-count': 'APKsgi View Statistics',
                 'report-games': 'User Reports Management',
                 'settings': 'System Settings'
@@ -2356,19 +2086,11 @@ function exportAPKsgiStats() {
             localStorage.setItem(CONFIG.LS_THEME, 'light');
         }
         
-        // ============================================
-        // ANIMATION FUNCTIONS
-        // ============================================
         function animateRefreshButton(button) {
-            // Add rotating class
             button.classList.add('rotating');
-            
-            // Remove class after animation completes
             setTimeout(() => {
                 button.classList.remove('rotating');
             }, 600);
-            
-            // Show toast notification
             showToast('Refreshing data...', 'info');
         }
         
@@ -2380,27 +2102,26 @@ function exportAPKsgiStats() {
             loadGameStats();
             loadReports();
             loadTopGames();
-            loadAPKsgiStats(); // Tambahkan ini
+            loadAPKsgiStats();
         }
         
         function loadSectionData(section) {
             switch(section) {
-        case 'dashboard':
-            loadDashboardData();
-            break;
-        case 'pinned-games':
-            loadPinnedGames();
-            break;
-        case 'count-games':
-            loadGameStats();
-            break;
-        case 'apksgi-count':
-            loadAPKsgiStats();
-            break;
-        case 'report-games':
-            loadReports();
-            break;
-                // Settings doesn't need data loading
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'pinned-games':
+                    loadPinnedGames();
+                    break;
+                case 'count-games':
+                    loadGameStats();
+                    break;
+                case 'apksgi-count':
+                    loadAPKsgiStats();
+                    break;
+                case 'report-games':
+                    loadReports();
+                    break;
             }
         }
         
@@ -2415,6 +2136,1030 @@ function exportAPKsgiStats() {
         
         function refreshCurrentSection() {
             loadSectionData(currentSection);
+        }
+        
+        // ============================================
+        // COUNT GAMES - IMPROVED FUNCTIONS
+        // ============================================
+        async function loadGameStats() {
+            try {
+                const response = await fetch(`${CONFIG.PINNED_API_URL}?action=getTopGames&limit=500`);
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    allGameStats = result.data || [];
+                    processGameStats(allGameStats);
+                    calculateSummaryStats(allGameStats);
+                    displayGameStats(allGameStats);
+                    updatePlatformDistribution(allGameStats);
+                    showToast('Game statistics loaded successfully', 'success');
+                    
+                    localStorage.setItem(`${CONFIG.LS_DATA}_stats`, JSON.stringify(allGameStats));
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Failed to load game stats:', error);
+                showToast('Failed to load game statistics', 'error');
+                
+                const cached = localStorage.getItem(`${CONFIG.LS_DATA}_stats`);
+                if (cached) {
+                    allGameStats = JSON.parse(cached);
+                    processGameStats(allGameStats);
+                    calculateSummaryStats(allGameStats);
+                    displayGameStats(allGameStats);
+                    updatePlatformDistribution(allGameStats);
+                }
+            }
+        }
+        
+        function processGameStats(stats) {
+            stats.forEach(stat => {
+                if (!stat.first_click || !stat.first_click.date || stat.first_click.date === 'N/A') {
+                    if (stat.last_click && stat.last_click.date) {
+                        stat.first_click = {
+                            date: stat.last_click.date,
+                            time: stat.last_click.time || '00:00:00'
+                        };
+                    } else {
+                        stat.first_click = {
+                            date: formatDate(new Date().toISOString()),
+                            time: '00:00:00'
+                        };
+                    }
+                }
+                
+                if (!stat.last_click || !stat.last_click.date || stat.last_click.date === 'N/A') {
+                    stat.last_click = {
+                        date: formatDate(new Date().toISOString()),
+                        time: new Date().toLocaleTimeString('id-ID', {hour12: false})
+                    };
+                }
+                
+                if (stat.today_clicks === undefined || stat.today_clicks === null) {
+                    stat.today_clicks = 0;
+                }
+                
+                // Calculate average clicks per day
+                if (stat.first_click && stat.first_click.date) {
+                    const firstDate = new Date(stat.first_click.date);
+                    const daysDiff = Math.max(1, Math.ceil((new Date() - firstDate) / (1000 * 60 * 60 * 24)));
+                    stat.avg_daily = Math.round((stat.total_clicks || 0) / daysDiff * 10) / 10;
+                } else {
+                    stat.avg_daily = 0;
+                }
+                
+                // Calculate trend
+                const trendValue = stat.today_clicks || 0;
+                if (trendValue > stat.avg_daily * 1.5) {
+                    stat.trend = 'up';
+                } else if (trendValue < stat.avg_daily * 0.5) {
+                    stat.trend = 'down';
+                } else {
+                    stat.trend = 'neutral';
+                }
+            });
+        }
+        
+        function calculateSummaryStats(stats) {
+            const totalClicks = stats.reduce((sum, stat) => sum + (stat.total_clicks || 0), 0);
+            const uniqueGames = stats.length;
+            const todayClicks = stats.reduce((sum, stat) => sum + (stat.today_clicks || 0), 0);
+            const avgClicks = uniqueGames > 0 ? Math.round(totalClicks / uniqueGames) : 0;
+            
+            document.getElementById('total-clicks-summary').textContent = totalClicks.toLocaleString();
+            document.getElementById('unique-games-summary').textContent = uniqueGames.toLocaleString();
+            document.getElementById('today-clicks-summary').textContent = todayClicks.toLocaleString();
+            document.getElementById('avg-clicks-summary').textContent = avgClicks.toLocaleString();
+            
+            // Update dashboard stats
+            document.getElementById('total-games').textContent = uniqueGames.toLocaleString();
+        }
+        
+function displayGameStats(stats) {
+    const tbody = document.getElementById('gameStatsBody');
+    
+    if (stats.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10" class="text-center text-muted py-4">
+                    <i class="bi bi-bar-chart display-6 d-block mb-2"></i>
+                    No game statistics found
+                </td>
+            </tr>
+        `;
+        updatePagination(0);
+        return;
+    }
+    
+    // Apply filters
+    let filteredStats = filterStats(stats);
+    
+    // Apply sorting
+    filteredStats = sortStats(filteredStats);
+    
+    // Calculate pagination
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = Math.min(startIndex + pageSize, filteredStats.length);
+    const paginatedStats = filteredStats.slice(startIndex, endIndex);
+    totalStatsPages = Math.ceil(filteredStats.length / pageSize);
+    
+    tbody.innerHTML = paginatedStats.map((stat, index) => {
+        const platformClass = `platform-${stat.platform}`;
+        const todayClicks = stat.today_clicks || 0;
+        const totalClicks = stat.total_clicks || 0;
+        const platformName = getPlatformName(stat.platform);
+        
+        // Determine heatmap class based on clicks
+        let heatmapClass = 'heatmap-low';
+        if (totalClicks > 1000) heatmapClass = 'heatmap-high';
+        else if (totalClicks > 100) heatmapClass = 'heatmap-medium';
+        
+        // Trend icon
+        let trendIcon = 'bi-dash-circle trend-neutral';
+        let trendTitle = 'Stable';
+        if (stat.trend === 'up') {
+            trendIcon = 'bi-graph-up-arrow trend-up';
+            trendTitle = 'Upward trend';
+        } else if (stat.trend === 'down') {
+            trendIcon = 'bi-graph-down-arrow trend-down';
+            trendTitle = 'Downward trend';
+        }
+        
+        // Platform icon
+        let platformIcon = 'bi-controller';
+        if (stat.platform.includes('ps')) platformIcon = 'bi-playstation';
+        if (stat.platform.includes('switch')) platformIcon = 'bi-nintendo-switch';
+        if (stat.platform.includes('android') || stat.platform.includes('ios')) platformIcon = 'bi-phone';
+        if (stat.platform.includes('pc')) platformIcon = 'bi-pc';
+        if (stat.platform.includes('java')) platformIcon = 'bi-cup';
+        
+        return `
+            <tr>
+                <td>${startIndex + index + 1}</td>
+                <td>
+                    <strong>${escapeHTML(stat.game_name || 'Unknown')}</strong>
+                    ${stat.game_id ? `<br><small class="text-muted">ID: ${stat.game_id}</small>` : ''}
+                </td>
+                <td>
+                    <span class="platform-badge ${platformClass}" title="${platformName}">
+                        <i class="bi ${platformIcon} me-1"></i>${platformName}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge ${heatmapClass}" style="font-size: 1.1em">
+                        ${totalClicks.toLocaleString()}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge ${todayClicks > 0 ? 'bg-success' : 'bg-secondary'}">
+                        ${todayClicks}
+                    </span>
+                </td>
+                <td>${stat.avg_daily || 0}</td>
+                <td><i class="bi ${trendIcon}" title="${trendTitle}"></i></td>
+                <td><small>${formatDate(stat.first_click?.date)}</small></td>
+                <td><small>${formatDate(stat.last_click?.date)} ${stat.last_click?.time || ''}</small></td>
+                <td>
+                    <button class="btn btn-sm btn-outline-info" onclick="viewGameStats('${stat.game_id}', '${stat.platform}')" title="View Details">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning ms-1" onclick="resetGameStats('${stat.game_id}', '${stat.platform}')" title="Reset Count">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+    
+    updatePagination(filteredStats.length);
+}
+
+async function resetGameStats(gameId, platform) {
+    if (!confirm(`Are you sure you want to reset the click count for this game?\n\nGame ID: ${gameId}\nPlatform: ${platform}`)) {
+        return;
+    }
+    
+    try {
+        showToast('Resetting game statistics...', 'info');
+        
+        const response = await fetch(`${CONFIG.PINNED_API_URL}?action=resetGameStats&game_id=${gameId}&platform=${platform}&admin_id=${CONFIG.ADMIN_ID}`);
+        
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            showToast('Game statistics reset successfully', 'success');
+            loadGameStats(); // Refresh the data
+            
+            addNotification('stats', `Reset stats for ${gameId} (${platform})`);
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Failed to reset game stats:', error);
+        showToast('Failed to reset game statistics', 'error');
+    }
+}
+
+
+// Tambahkan event listener untuk sorting manual
+function setupTableSorting() {
+    const headers = document.querySelectorAll('#gameStatsTable thead th');
+    headers.forEach((header, index) => {
+        header.style.cursor = 'pointer';
+        header.addEventListener('click', () => {
+            // Tentukan field berdasarkan kolom
+            let sortField;
+            switch(index) {
+                case 1: // Game Name
+                    sortField = 'name';
+                    break;
+                case 2: // Platform
+                    sortField = 'platform';
+                    break;
+                case 3: // Total Clicks
+                    sortField = 'clicks';
+                    break;
+                case 4: // Today
+                    sortField = 'today';
+                    break;
+                case 7: // Last Click
+                    sortField = 'lastClick';
+                    break;
+                default:
+                    return;
+            }
+            
+            // Update dropdown sort
+            document.getElementById('sortStats').value = sortField;
+            
+            // Apply sorting
+            sortGameStats();
+            // Setelah update HTML
+            updatePagination(filteredStats.length);
+            
+            // Setup table sorting
+            setupTableSorting();
+        });
+    });
+}
+
+
+function filterStats(stats) {
+    const platformFilter = document.getElementById('filterPlatformStats').value;
+    const dateRange = document.getElementById('dateRangeStats').value;
+    const searchTerm = document.getElementById('searchStats').value.toLowerCase().trim();
+    
+    let filtered = [...stats];
+    
+    // Platform filter
+    if (platformFilter !== 'all') {
+        filtered = filtered.filter(g => g.platform === platformFilter);
+    }
+    
+    // Date range filter
+    if (dateRange !== 'all') {
+        const now = new Date();
+        let cutoffDate = new Date();
+        
+        switch(dateRange) {
+            case 'today':
+                cutoffDate.setHours(0, 0, 0, 0);
+                break;
+            case 'week':
+                cutoffDate.setDate(now.getDate() - 7);
+                break;
+            case 'month':
+                cutoffDate.setMonth(now.getMonth() - 1);
+                break;
+        }
+        
+        filtered = filtered.filter(g => {
+            const lastClickDate = g.last_click?.date ? new Date(g.last_click.date) : new Date(0);
+            return lastClickDate >= cutoffDate;
+        });
+    }
+    
+    // Search filter
+    if (searchTerm) {
+        filtered = filtered.filter(g => 
+            (g.game_name && g.game_name.toLowerCase().includes(searchTerm)) ||
+            (g.game_id && g.game_id.toLowerCase().includes(searchTerm)) ||
+            (g.platform && g.platform.toLowerCase().includes(searchTerm)) ||
+            (g.platform && getPlatformName(g.platform).toLowerCase().includes(searchTerm))
+        );
+    }
+    
+    return filtered;
+}
+        
+        function sortStats(stats) {
+            const sortBy = document.getElementById('sortStats').value;
+            let sorted = [...stats];
+            
+            switch(sortBy) {
+                case 'clicks':
+                    sorted.sort((a, b) => (b.total_clicks || 0) - (a.total_clicks || 0));
+                    break;
+                case 'today':
+                    sorted.sort((a, b) => (b.today_clicks || 0) - (a.today_clicks || 0));
+                    break;
+                case 'name':
+                    sorted.sort((a, b) => (a.game_name || '').localeCompare(b.game_name || ''));
+                    break;
+                case 'platform':
+                    sorted.sort((a, b) => (a.platform || '').localeCompare(b.platform || ''));
+                    break;
+                case 'lastClick':
+                    sorted.sort((a, b) => {
+                        const dateA = a.last_click?.date ? new Date(a.last_click.date) : new Date(0);
+                        const dateB = b.last_click?.date ? new Date(b.last_click.date) : new Date(0);
+                        return dateB - dateA;
+                    });
+                    break;
+            }
+            
+            return sorted;
+        }
+        
+        function filterGameStats() {
+            currentPage = 1;
+            displayGameStats(allGameStats);
+        }
+        
+        function sortGameStats() {
+            displayGameStats(allGameStats);
+        }
+        
+        function clearSearch() {
+            document.getElementById('searchStats').value = '';
+            filterGameStats();
+        }
+        
+        function updatePagination(totalItems) {
+            const pagination = document.getElementById('paginationStats');
+            if (!pagination) return;
+            
+            let html = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalStatsPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            // Previous button
+            html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a>
+                    </li>`;
+            
+            // Page numbers
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                            <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                        </li>`;
+            }
+            
+            // Next button
+            html += `<li class="page-item ${currentPage === totalStatsPages ? 'disabled' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a>
+                    </li>`;
+            
+            pagination.innerHTML = html;
+            
+            // Update showing text
+            const startItem = (currentPage - 1) * pageSize + 1;
+            const endItem = Math.min(currentPage * pageSize, totalItems);
+            document.querySelector('.showing-text')?.remove();
+            
+            if (totalItems > 0) {
+                const showingText = document.createElement('span');
+                showingText.className = 'showing-text text-muted ms-3';
+                showingText.textContent = `Showing ${startItem} to ${endItem} of ${totalItems} entries`;
+                pagination.parentNode.appendChild(showingText);
+            }
+        }
+        
+        function changePage(page) {
+            if (page < 1 || page > totalStatsPages) return;
+            currentPage = page;
+            displayGameStats(allGameStats);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+function updatePlatformDistribution(stats) {
+    const platformCounts = {};
+    const platformClicks = {};
+    
+    stats.forEach(stat => {
+        const platform = stat.platform || 'other';
+        platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+        platformClicks[platform] = (platformClicks[platform] || 0) + (stat.total_clicks || 0);
+    });
+    
+    // Update platform list
+    const platformList = document.getElementById('platformList');
+    const platforms = Object.keys(platformCounts).sort((a, b) => platformClicks[b] - platformClicks[a]);
+    
+    platformList.innerHTML = platforms.map(platform => {
+        const count = platformCounts[platform];
+        const clicks = platformClicks[platform];
+        const totalClicks = stats.reduce((sum, stat) => sum + (stat.total_clicks || 0), 0);
+        const percentage = totalClicks > 0 ? Math.round((clicks / totalClicks) * 100) : 0;
+        const platformName = getPlatformName(platform);
+        
+        // Progress bar width
+        const progressWidth = totalClicks > 0 ? (clicks / totalClicks * 100) : 0;
+        
+        return `
+            <div class="platform-item">
+                <div>
+                    <span class="platform-badge platform-${platform} me-2">${platformName}</span>
+                    <small class="text-muted">${count} game${count !== 1 ? 's' : ''}</small>
+                </div>
+                <div style="flex: 1; margin: 0 15px;">
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar" 
+                             role="progressbar" 
+                             style="width: ${progressWidth}%; background-color: ${getPlatformColor(platform)}"
+                             aria-valuenow="${progressWidth}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="text-end" style="min-width: 100px;">
+                    <strong>${clicks.toLocaleString()}</strong>
+                    <div class="small text-muted">${percentage}% of total</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Create platform distribution chart
+    createPlatformDistributionChart(platformClicks);
+}
+
+function getPlatformColor(platform) {
+    const colors = {
+        'ps1': '#003087',
+        'ps2': '#003399',
+        'ps3': '#000000',
+        'ps4': '#0070CC',
+        'ps5': '#0066CC',
+        'psvita': '#800080',
+        'psp': '#FF0000',
+        'switch': '#FF0000',
+        '3ds': '#0099FF',
+        'wii': '#CCCCCC',
+        'wiiu': '#000000',
+        'gamecube': '#663399',
+        'java': '#FF8000',
+        'ios': '#8E8E93',
+        'android': '#3DDC84',
+        'pc': '#0078D7',
+        'apksgi': '#FF6EC7',
+        'other': '#95a5a6'
+    };
+    return colors[platform] || colors.other;
+}
+
+// ============================================
+// TABLE SORTING FUNCTIONS
+// ============================================
+function setupTableHeaderSorting() {
+    const headers = document.querySelectorAll('#gameStatsTable thead th[data-sortable="true"]');
+    
+    headers.forEach(header => {
+        header.style.cursor = 'pointer';
+        header.title = 'Click to sort';
+        
+        // Remove existing event listeners to prevent duplicates
+        header.replaceWith(header.cloneNode(true));
+        
+        // Get new reference
+        const newHeader = document.querySelector(`#gameStatsTable thead th[data-sort="${header.getAttribute('data-sort')}"]`);
+        
+        if (newHeader) {
+            newHeader.addEventListener('click', function() {
+                const sortField = this.getAttribute('data-sort');
+                if (sortField) {
+                    // Update dropdown sort
+                    document.getElementById('sortStats').value = sortField;
+                    
+                    // Apply sorting
+                    sortGameStats();
+                    
+                    // Add visual feedback
+                    highlightSortedColumn(this);
+                }
+            });
+        }
+    });
+}
+
+function highlightSortedColumn(clickedHeader) {
+    // Remove all highlights
+    document.querySelectorAll('#gameStatsTable thead th').forEach(th => {
+        th.style.backgroundColor = '';
+        th.style.fontWeight = 'normal';
+    });
+    
+    // Highlight clicked header
+    clickedHeader.style.backgroundColor = 'rgba(67, 97, 238, 0.1)';
+    clickedHeader.style.fontWeight = 'bold';
+}
+function updateSortIndicator(clickedHeader) {
+    // Remove all sort indicators
+    document.querySelectorAll('#gameStatsTable thead th .sort-indicator').forEach(indicator => {
+        indicator.remove();
+    });
+    
+    // Add new sort indicator
+    const indicator = document.createElement('span');
+    indicator.className = 'sort-indicator ms-1';
+    indicator.innerHTML = '&#8595;'; // down arrow
+    clickedHeader.appendChild(indicator);
+}
+
+
+function createPlatformDistributionChart(platformClicks) {
+    const ctx = document.getElementById('platformDistributionChart').getContext('2d');
+    
+    const platforms = Object.keys(platformClicks).sort((a, b) => platformClicks[b] - platformClicks[a]);
+    const labels = platforms.map(p => getPlatformName(p));
+    const data = platforms.map(p => platformClicks[p]);
+    
+    const colors = {
+        'ps1': '#003087',
+        'ps2': '#003399',
+        'ps3': '#000000',
+        'ps4': '#0070CC',
+        'ps5': '#0066CC',
+        'psvita': '#800080',
+        'psp': '#FF0000',
+        'switch': '#FF0000',
+        '3ds': '#0099FF',
+        'wii': '#FFFFFF',
+        'wiiu': '#000000',
+        'gamecube': '#663399',
+        'java': '#FF8000',
+        'ios': '#F2F2F7',
+        'android': '#3DDC84',
+        'pc': '#0078D7',
+        'apksgi': '#FF6EC7',
+        'other': '#95a5a6'
+    };
+    
+    const backgroundColors = platforms.map(p => colors[p] || colors.other);
+    
+    if (platformDistributionChart) {
+        platformDistributionChart.destroy();
+    }
+    
+    platformDistributionChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColors,
+                borderWidth: 1,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-color'),
+                        padding: 15,
+                        boxWidth: 15,
+                        font: {
+                            size: 11
+                        },
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            if (data.labels.length && data.datasets.length) {
+                                return data.labels.map(function(label, i) {
+                                    const meta = chart.getDatasetMeta(0);
+                                    const style = meta.controller.getStyle(i);
+                                    
+                                    return {
+                                        text: label.length > 15 ? label.substring(0, 15) + '...' : label,
+                                        fillStyle: style.backgroundColor,
+                                        strokeStyle: style.borderColor,
+                                        lineWidth: style.borderWidth,
+                                        hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+                                        index: i
+                                    };
+                                });
+                            }
+                            return [];
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = Math.round((value / total) * 100);
+                            return `${label}: ${value.toLocaleString()} clicks (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+        
+        async function viewGameStats(gameId, platform) {
+            try {
+                const response = await fetch(`${CONFIG.PINNED_API_URL}?action=getGameStats&game_id=${gameId}&platform=${platform}`);
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const stats = result.data;
+                    const modalBody = document.getElementById('gameStatsModalBody');
+                    
+                    const firstClick = stats.first_click ? 
+                        `${formatDate(stats.first_click.date)} ${stats.first_click.time || ''}` : 
+                        'N/A';
+                    
+                    const lastClick = stats.last_click ? 
+                        `${formatDate(stats.last_click.date)} ${stats.last_click.time || ''}` : 
+                        'N/A';
+                    
+                    const daysActive = stats.first_click?.date ? 
+                        Math.ceil((new Date() - new Date(stats.first_click.date)) / (1000 * 60 * 60 * 24)) : 0;
+                    
+                    const avgDaily = daysActive > 0 ? Math.round((stats.total_clicks || 0) / daysActive * 10) / 10 : 0;
+                    
+                    modalBody.innerHTML = `
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <h4>${stats.game_name || 'Unknown'}</h4>
+                                <p class="text-muted mb-0">${getPlatformName(stats.platform)} • ID: ${stats.game_id}</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <h1 class="display-4 text-primary">${stats.total_clicks || 0}</h1>
+                                <p class="text-muted">Total Clicks</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-success">${stats.today_clicks || 0}</h3>
+                                        <p class="mb-0">Today</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-info">${avgDaily}</h3>
+                                        <p class="mb-0">Avg/Day</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-warning">${daysActive}</h3>
+                                        <p class="mb-0">Days Active</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-danger">${getHeatmapLevel(stats.total_clicks || 0)}</h3>
+                                        <p class="mb-0">Popularity</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Activity Timeline</h6>
+                                <p><strong>First Click:</strong> ${firstClick}</p>
+                                <p><strong>Last Click:</strong> ${lastClick}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Performance</h6>
+                                <p><strong>Rank:</strong> #${getGameRank(stats.game_id, stats.platform)}</p>
+                                <p><strong>Trend:</strong> ${getTrendText(stats.today_clicks || 0, avgDaily)}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>Click Trend (Last 7 Days)</h6>
+                            <div class="chart-container" style="height: 200px;">
+                                <canvas id="gameTrendChart"></canvas>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('gameStatsModal'));
+                    modal.show();
+                    
+                    setTimeout(() => {
+                        createGameTrendChart(stats);
+                    }, 100);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showToast('Failed to load game stats details: ' + error.message, 'error');
+            }
+        }
+        
+        function getGameRank(gameId, platform) {
+            const sortedGames = [...allGameStats].sort((a, b) => (b.total_clicks || 0) - (a.total_clicks || 0));
+            const index = sortedGames.findIndex(g => g.game_id === gameId && g.platform === platform);
+            return index >= 0 ? index + 1 : 'N/A';
+        }
+        
+        function getHeatmapLevel(clicks) {
+            if (clicks > 1000) return 'High';
+            if (clicks > 100) return 'Medium';
+            return 'Low';
+        }
+        
+        function getTrendText(todayClicks, avgDaily) {
+            if (todayClicks > avgDaily * 1.5) return '📈 Upward trend';
+            if (todayClicks < avgDaily * 0.5) return '📉 Downward trend';
+            return '↔️ Stable';
+        }
+        
+        function createGameTrendChart(stats) {
+            const ctx = document.getElementById('gameTrendChart').getContext('2d');
+            
+            const labels = ['6 days ago', '5 days ago', '4 days ago', '3 days ago', '2 days ago', 'Yesterday', 'Today'];
+            const baseClicks = Math.max(1, Math.floor((stats.total_clicks || 10) / 7));
+            
+            const data = [
+                Math.floor(baseClicks * 0.7),
+                Math.floor(baseClicks * 0.9),
+                Math.floor(baseClicks * 1.2),
+                Math.floor(baseClicks * 0.8),
+                Math.floor(baseClicks * 1.5),
+                Math.floor(baseClicks * 1.1),
+                stats.today_clicks || 0
+            ];
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Daily Clicks',
+                        data: data,
+                        borderColor: '#4361ee',
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function exportGameStats() {
+            if (allGameStats.length === 0) {
+                showToast('No game statistics to export', 'warning');
+                return;
+            }
+            
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + "Rank,Game Name,Platform,Game ID,Total Clicks,Today Clicks,Avg Daily,First Click,Last Click,Trend\n"
+                + allGameStats.map((stat, index) => 
+                    `"${index + 1}","${stat.game_name || ''}","${stat.platform || ''}","${stat.game_id || ''}",` +
+                    `"${stat.total_clicks || 0}","${stat.today_clicks || 0}","${stat.avg_daily || 0}",` +
+                    `"${formatDate(stat.first_click?.date) || ''}","${formatDate(stat.last_click?.date) || ''}",` +
+                    `"${stat.trend || 'neutral'}"`
+                ).join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `game_stats_${new Date().getTime()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast(`Exported ${allGameStats.length} game statistics`, 'success');
+        }
+        
+        // ============================================
+        // APKsgi STATS FUNCTIONS
+        // ============================================
+        async function loadAPKsgiStats() {
+            try {
+                const response = await fetch(`${CONFIG.APKSGI_COUNT_API_URL}?action=getAllCounts`);
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    apksgiStats = result.data || [];
+                    displayAPKsgiStats(apksgiStats);
+                    updateAPKsgiSummary(apksgiStats);
+                    showToast('APKsgi statistics loaded successfully', 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Failed to load APKsgi stats:', error);
+                showToast('Failed to load APKsgi statistics', 'error');
+            }
+        }
+        
+        function displayAPKsgiStats(stats) {
+            const tbody = document.getElementById('apksgiStatsBody');
+            
+            if (stats.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="text-center text-muted py-4">
+                            No APKsgi statistics found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = stats.map(stat => {
+                const type = stat.Type || 'unknown';
+                const typeClass = getAPKsgiTypeClass(type);
+                
+                return `
+                    <tr>
+                        <td><span class="badge ${typeClass}">${type.toUpperCase()}</span></td>
+                        <td><code>${stat.ItemID || 'N/A'}</code></td>
+                        <td><strong>${escapeHTML(stat.ItemName || stat.ItemID || 'Unknown')}</strong></td>
+                        <td><span class="badge bg-primary">${stat.TotalCount || 0}</span></td>
+                        <td><span class="badge ${stat.DailyCount > 0 ? 'bg-success' : 'bg-secondary'}">${stat.DailyCount || 0}</span></td>
+                        <td><span class="badge ${stat.WeeklyCount > 0 ? 'bg-warning' : 'bg-secondary'}">${stat.WeeklyCount || 0}</span></td>
+                        <td><span class="badge ${stat.MonthlyCount > 0 ? 'bg-danger' : 'bg-secondary'}">${stat.MonthlyCount || 0}</span></td>
+                        <td>${formatDate(stat.FirstClicked?.date) || 'N/A'}</td>
+                        <td>${formatDate(stat.LastClicked?.date) || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function getAPKsgiTypeClass(type) {
+            switch(type.toLowerCase()) {
+                case 'videos': return 'bg-primary';
+                case 'games': return 'bg-success';
+                case 'streaming': return 'bg-warning';
+                default: return 'bg-secondary';
+            }
+        }
+        
+        function updateAPKsgiSummary(stats) {
+            const videos = stats.filter(s => s.Type.toLowerCase() === 'videos');
+            const games = stats.filter(s => s.Type.toLowerCase() === 'games');
+            const streaming = stats.filter(s => s.Type.toLowerCase() === 'streaming');
+            
+            document.getElementById('apksgi-videos-count').textContent = videos.length;
+            document.getElementById('apksgi-games-count').textContent = games.length;
+            document.getElementById('apksgi-streaming-count').textContent = streaming.length;
+            
+            const totalViews = stats.reduce((sum, stat) => sum + (stat.TotalCount || 0), 0);
+            document.getElementById('apksgi-total-views').textContent = totalViews.toLocaleString();
+        }
+        
+        function filterAPKsgiStats() {
+            const typeFilter = document.getElementById('filterAPKsgiType').value;
+            const searchTerm = document.getElementById('searchAPKsgi').value.toLowerCase();
+            
+            let filtered = apksgiStats;
+            
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(s => s.Type.toLowerCase() === typeFilter);
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    (s.ItemName && s.ItemName.toLowerCase().includes(searchTerm)) ||
+                    (s.ItemID && s.ItemID.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            displayAPKsgiStats(filtered);
+        }
+        
+        function searchAPKsgiStats() {
+            filterAPKsgiStats();
+        }
+        
+        function sortAPKsgiStats() {
+            const sortBy = document.getElementById('sortAPKsgi').value;
+            let sorted = [...apksgiStats];
+            
+            switch(sortBy) {
+                case 'total':
+                    sorted.sort((a, b) => (b.TotalCount || 0) - (a.TotalCount || 0));
+                    break;
+                case 'daily':
+                    sorted.sort((a, b) => (b.DailyCount || 0) - (a.DailyCount || 0));
+                    break;
+                case 'weekly':
+                    sorted.sort((a, b) => (b.WeeklyCount || 0) - (a.WeeklyCount || 0));
+                    break;
+                case 'monthly':
+                    sorted.sort((a, b) => (b.MonthlyCount || 0) - (a.MonthlyCount || 0));
+                    break;
+                case 'name':
+                    sorted.sort((a, b) => (a.ItemName || a.ItemID || '').localeCompare(b.ItemName || b.ItemID || ''));
+                    break;
+                case 'last':
+                    sorted.sort((a, b) => {
+                        const dateA = a.LastClicked?.date ? new Date(a.LastClicked.date) : new Date(0);
+                        const dateB = b.LastClicked?.date ? new Date(b.LastClicked.date) : new Date(0);
+                        return dateB - dateA;
+                    });
+                    break;
+            }
+            
+            displayAPKsgiStats(sorted);
+        }
+        
+        function exportAPKsgiStats() {
+            if (apksgiStats.length === 0) {
+                showToast('No APKsgi statistics to export', 'warning');
+                return;
+            }
+            
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + "Type,Item ID,Item Name,Total Views,Daily Views,Weekly Views,Monthly Views,First View,Last View\n"
+                + apksgiStats.map(stat => 
+                    `"${stat.Type}","${stat.ItemID}","${stat.ItemName || ''}",` +
+                    `"${stat.TotalCount || 0}","${stat.DailyCount || 0}","${stat.WeeklyCount || 0}","${stat.MonthlyCount || 0}",` +
+                    `"${formatDate(stat.FirstClicked?.date) || ''}","${formatDate(stat.LastClicked?.date) || ''}"`
+                ).join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `apksgi_stats_${new Date().getTime()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast(`Exported ${apksgiStats.length} APKsgi items`, 'success');
         }
         
         // ============================================
@@ -2440,7 +3185,6 @@ function exportAPKsgiStats() {
                 console.error('Failed to load pinned games:', error);
                 showToast('Failed to load pinned games', 'error');
                 
-                // Load from cache if available
                 const cached = localStorage.getItem(`${CONFIG.LS_DATA}_pinned`);
                 if (cached) {
                     allPinnedGames = JSON.parse(cached);
@@ -2486,7 +3230,6 @@ function exportAPKsgiStats() {
                 `;
             }).join('');
             
-            // Cache the data
             localStorage.setItem(`${CONFIG.LS_DATA}_pinned`, JSON.stringify(games));
         }
         
@@ -2516,7 +3259,6 @@ function exportAPKsgiStats() {
                     bootstrap.Modal.getInstance(document.getElementById('addPinnedModal')).hide();
                     loadPinnedGames();
                     
-                    // Add notification
                     addNotification('pinned', `Added pinned game: ${name}`);
                 } else {
                     throw new Error(result.message);
@@ -2566,7 +3308,6 @@ function exportAPKsgiStats() {
                     bootstrap.Modal.getInstance(document.getElementById('editPinnedModal')).hide();
                     loadPinnedGames();
                     
-                    // Add notification
                     addNotification('pinned', `Updated pinned game: ${name}`);
                 } else {
                     throw new Error(result.message);
@@ -2599,7 +3340,6 @@ function exportAPKsgiStats() {
                     showToast('Pinned game deleted successfully', 'success');
                     loadPinnedGames();
                     
-                    // Add notification
                     addNotification('pinned', `Deleted pinned game: ${gameName}`);
                 } else {
                     throw new Error(result.message);
@@ -2609,24 +3349,25 @@ function exportAPKsgiStats() {
             }
         }
         
-        function filterPinnedGames() {
-            const platformFilter = document.getElementById('filterPlatformPinned').value;
-            let filtered = allPinnedGames;
-            
-            if (platformFilter !== 'all') {
-                filtered = filtered.filter(g => g.platform === platformFilter);
-            }
-            
-            const searchTerm = document.getElementById('searchPinned').value.toLowerCase();
-            if (searchTerm) {
-                filtered = filtered.filter(g => 
-                    g.name.toLowerCase().includes(searchTerm) || 
-                    g.platform.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            displayPinnedGames(filtered);
-        }
+function filterPinnedGames() {
+    const platformFilter = document.getElementById('filterPlatformPinned').value;
+    let filtered = allPinnedGames;
+    
+    if (platformFilter !== 'all') {
+        filtered = filtered.filter(g => g.platform === platformFilter);
+    }
+    
+    const searchTerm = document.getElementById('searchPinned').value.toLowerCase();
+    if (searchTerm) {
+        filtered = filtered.filter(g => 
+            g.name.toLowerCase().includes(searchTerm) || 
+            g.platform.toLowerCase().includes(searchTerm) ||
+            getPlatformName(g.platform).toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    displayPinnedGames(filtered);
+}
         
         function searchPinnedGames() {
             filterPinnedGames();
@@ -2658,251 +3399,8 @@ function exportAPKsgiStats() {
             displayPinnedGames(sorted);
         }
         
-        // ============================================
-        // GAME STATS FUNCTIONS
-        // ============================================
-        async function loadGameStats() {
-            try {
-                // Load top games
-                const response = await fetch(`${CONFIG.PINNED_API_URL}?action=getTopGames&limit=100`);
-                
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    allGameStats = result.data || [];
-                    
-                    // Process game stats to fix First Click data
-                    processGameStats(allGameStats);
-                    
-                    displayGameStats(allGameStats);
-                    updateTotalGames(allGameStats.length);
-                    showToast('Game statistics loaded successfully', 'success');
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error('Failed to load game stats:', error);
-                showToast('Failed to load game statistics', 'error');
-                
-                // Load from cache if available
-                const cached = localStorage.getItem(`${CONFIG.LS_DATA}_stats`);
-                if (cached) {
-                    allGameStats = JSON.parse(cached);
-                    processGameStats(allGameStats);
-                    displayGameStats(allGameStats);
-                }
-            }
-        }
-        
-        function processGameStats(stats) {
-            // Process each game stat to ensure First Click has proper data
-            stats.forEach(stat => {
-                // If first_click is null or has no date, use last_click data
-                if (!stat.first_click || !stat.first_click.date || stat.first_click.date === 'N/A') {
-                    if (stat.last_click && stat.last_click.date) {
-                        stat.first_click = {
-                            date: stat.last_click.date,
-                            time: stat.last_click.time || '00:00:00'
-                        };
-                    } else {
-                        stat.first_click = {
-                            date: formatDate(new Date().toISOString()),
-                            time: '00:00:00'
-                        };
-                    }
-                }
-                
-                // Ensure last_click has data
-                if (!stat.last_click || !stat.last_click.date || stat.last_click.date === 'N/A') {
-                    stat.last_click = {
-                        date: formatDate(new Date().toISOString()),
-                        time: new Date().toLocaleTimeString('id-ID', {hour12: false})
-                    };
-                }
-                
-                // Ensure today_clicks has value
-                if (stat.today_clicks === undefined || stat.today_clicks === null) {
-                    stat.today_clicks = 0;
-                }
-            });
-        }
-        
-        function displayGameStats(stats) {
-            const tbody = document.getElementById('gameStatsBody');
-            
-            if (stats.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="text-center text-muted py-4">
-                            <i class="bi bi-bar-chart display-6 d-block mb-2"></i>
-                            No game statistics found
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = stats.map(stat => {
-                const platformClass = `platform-${stat.platform}`;
-                const todayClicks = stat.today_clicks || 0;
-                const trendIcon = todayClicks > 5 ? 'bi-graph-up-arrow text-success' : 
-                                 todayClicks > 0 ? 'bi-graph-up text-warning' : 'bi-graph-down text-danger';
-                
-                // Format First Click
-                const firstClickDate = stat.first_click?.date || stat.last_click?.date || 'N/A';
-                const firstClickTime = stat.first_click?.time || '';
-                const firstClickDisplay = firstClickDate !== 'N/A' ? 
-                    `${formatDate(firstClickDate)} ${firstClickTime}` : 'N/A';
-                
-                // Format Last Click
-                const lastClickDate = stat.last_click?.date || 'N/A';
-                const lastClickTime = stat.last_click?.time || '';
-                const lastClickDisplay = lastClickDate !== 'N/A' ? 
-                    `${formatDate(lastClickDate)} ${lastClickTime}` : 'N/A';
-                
-                return `
-                    <tr>
-                        <td><code>${stat.game_id || 'N/A'}</code></td>
-                        <td><strong>${escapeHTML(stat.game_name || 'Unknown')}</strong></td>
-                        <td><span class="platform-badge ${platformClass}">${getPlatformName(stat.platform)}</span></td>
-                        <td><span class="badge bg-primary">${stat.total_clicks || 0}</span></td>
-                        <td>${firstClickDisplay}</td>
-                        <td>${lastClickDisplay}</td>
-                        <td>
-                            <span class="badge ${todayClicks > 0 ? 'bg-success' : 'bg-secondary'}">
-                                ${todayClicks}
-                            </span>
-                            <i class="bi ${trendIcon} ms-1"></i>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-info" onclick="viewGameStats('${stat.game_id}', '${stat.platform}')">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            
-            // Cache the data
-            localStorage.setItem(`${CONFIG.LS_DATA}_stats`, JSON.stringify(stats));
-        }
-        
-        async function viewGameStats(gameId, platform) {
-            try {
-                const response = await fetch(`${CONFIG.PINNED_API_URL}?action=getGameStats&game_id=${gameId}&platform=${platform}`);
-                
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    const stats = result.data;
-                    const modalBody = document.getElementById('gameStatsModalBody');
-                    
-                    // Format dates properly
-                    const firstClick = stats.first_click ? 
-                        `${formatDate(stats.first_click.date)} ${stats.first_click.time || ''}` : 
-                        'N/A';
-                    
-                    const lastClick = stats.last_click ? 
-                        `${formatDate(stats.last_click.date)} ${stats.last_click.time || ''}` : 
-                        'N/A';
-                    
-                    modalBody.innerHTML = `
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Game ID:</strong> ${stats.game_id || 'N/A'}</p>
-                                <p><strong>Platform:</strong> ${getPlatformName(stats.platform)}</p>
-                                <p><strong>Game Name:</strong> ${stats.game_name || 'Unknown'}</p>
-                                <p><strong>Total Clicks:</strong> <span class="badge bg-primary fs-6">${stats.total_clicks || 0}</span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>First Click:</strong> ${firstClick}</p>
-                                <p><strong>Last Click:</strong> ${lastClick}</p>
-                                <p><strong>Today's Clicks:</strong> <span class="badge bg-success">${stats.today_clicks || 0}</span></p>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4">
-                            <h6>Click Trend (Last 7 Days)</h6>
-                            <div class="chart-container" style="height: 200px;">
-                                <canvas id="gameTrendChart"></canvas>
-                            </div>
-                        </div>
-                    `;
-                    
-                    const modal = new bootstrap.Modal(document.getElementById('gameStatsModal'));
-                    modal.show();
-                    
-                    // Create trend chart
-                    setTimeout(() => {
-                        createGameTrendChart(stats);
-                    }, 100);
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                showToast('Failed to load game stats details: ' + error.message, 'error');
-            }
-        }
-        
-        function filterGameStats() {
-            const platformFilter = document.getElementById('filterPlatformStats').value;
-            const dateFrom = document.getElementById('dateFromStats').value;
-            const dateTo = document.getElementById('dateToStats').value;
-            
-            let filtered = allGameStats;
-            
-            if (platformFilter !== 'all') {
-                filtered = filtered.filter(g => g.platform === platformFilter);
-            }
-            
-            if (dateFrom) {
-                const fromDate = new Date(dateFrom);
-                filtered = filtered.filter(g => {
-                    const lastClick = g.last_click?.date ? new Date(g.last_click.date) : new Date(0);
-                    return lastClick >= fromDate;
-                });
-            }
-            
-            if (dateTo) {
-                const toDate = new Date(dateTo);
-                toDate.setHours(23, 59, 59, 999);
-                filtered = filtered.filter(g => {
-                    const lastClick = g.last_click?.date ? new Date(g.last_click.date) : new Date(0);
-                    return lastClick <= toDate;
-                });
-            }
-            
-            displayGameStats(filtered);
-        }
-        
-        function sortGameStats() {
-            const sortBy = document.getElementById('sortStats').value;
-            let sorted = [...allGameStats];
-            
-            switch(sortBy) {
-                case 'clicks':
-                    sorted.sort((a, b) => (b.total_clicks || 0) - (a.total_clicks || 0));
-                    break;
-                case 'name':
-                    sorted.sort((a, b) => (a.game_name || '').localeCompare(b.game_name || ''));
-                    break;
-                case 'platform':
-                    sorted.sort((a, b) => (a.platform || '').localeCompare(b.platform || ''));
-                    break;
-                case 'lastClick':
-                    sorted.sort((a, b) => {
-                        const dateA = a.last_click?.date ? new Date(a.last_click.date) : new Date(0);
-                        const dateB = b.last_click?.date ? new Date(b.last_click.date) : new Date(0);
-                        return dateB - dateA;
-                    });
-                    break;
-            }
-            
-            displayGameStats(sorted);
+        function updatePinnedCount(count) {
+            document.getElementById('pinned-count').textContent = count;
         }
         
         // ============================================
@@ -2929,7 +3427,6 @@ function exportAPKsgiStats() {
                     createCharts(allReports);
                     showToast('Reports loaded successfully', 'success');
                     
-                    // Check for new reports and add notification
                     checkForNewReports(allReports);
                 } else {
                     throw new Error(result.message);
@@ -2938,7 +3435,6 @@ function exportAPKsgiStats() {
                 console.error('Failed to load reports:', error);
                 showToast('Failed to load reports', 'error');
                 
-                // Load from cache if available
                 const cached = localStorage.getItem(`${CONFIG.LS_DATA}_reports`);
                 if (cached) {
                     allReports = JSON.parse(cached);
@@ -2991,10 +3487,7 @@ function exportAPKsgiStats() {
                 `;
             }).join('');
             
-            // Update recent reports table on dashboard
             updateRecentReports(reports.slice(0, 5));
-            
-            // Cache the data
             localStorage.setItem(`${CONFIG.LS_DATA}_reports`, JSON.stringify(reports));
         }
         
@@ -3086,7 +3579,6 @@ function exportAPKsgiStats() {
             if (savedNotifications) {
                 notifications = JSON.parse(savedNotifications);
             } else {
-                // Default notifications
                 notifications = [
                     { id: 1, type: 'reports', message: '5 new reports', read: false, timestamp: new Date().toISOString() },
                     { id: 2, type: 'stats', message: 'Game stats updated', read: false, timestamp: new Date().toISOString() },
@@ -3107,11 +3599,9 @@ function exportAPKsgiStats() {
             const notificationCount = document.getElementById('notification-count');
             const notificationList = document.getElementById('notification-list');
             
-            // Update count
             notificationCount.textContent = unreadCount;
             notificationCount.style.display = unreadCount > 0 ? 'inline' : 'none';
             
-            // Update list
             if (notificationList) {
                 const notificationItems = notifications.map(notification => `
                     <li>
@@ -3134,7 +3624,6 @@ function exportAPKsgiStats() {
                     <li><a class="dropdown-item text-center" href="#">View all</a></li>
                 `;
                 
-                // Re-attach event listeners
                 document.querySelectorAll('.notification-item').forEach(item => {
                     item.addEventListener('click', handleNotificationClick);
                 });
@@ -3156,7 +3645,6 @@ function exportAPKsgiStats() {
             const notificationId = parseInt(event.currentTarget.getAttribute('data-id'));
             const notificationType = event.currentTarget.getAttribute('data-type');
             
-            // Mark as read
             const notification = notifications.find(n => n.id === notificationId);
             if (notification && !notification.read) {
                 notification.read = true;
@@ -3164,7 +3652,6 @@ function exportAPKsgiStats() {
                 updateNotificationUI();
             }
             
-            // Handle based on type
             switch(notificationType) {
                 case 'reports':
                     switchSection('report-games');
@@ -3177,7 +3664,6 @@ function exportAPKsgiStats() {
                     break;
             }
             
-            // Close dropdown
             const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('notificationDropdown'));
             if (dropdown) dropdown.hide();
         }
@@ -3205,7 +3691,6 @@ function exportAPKsgiStats() {
             
             notifications.unshift(newNotification);
             
-            // Keep only last 50 notifications
             if (notifications.length > 50) {
                 notifications = notifications.slice(0, 50);
             }
@@ -3213,7 +3698,6 @@ function exportAPKsgiStats() {
             saveNotifications();
             updateNotificationUI();
             
-            // Show desktop notification if supported
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Game Admin Notification", {
                     body: message,
@@ -3234,7 +3718,6 @@ function exportAPKsgiStats() {
                 }
             }
             
-            // Save current reports for next comparison
             localStorage.setItem(`${CONFIG.LS_DATA}_reports_previous`, JSON.stringify(reports));
         }
         
@@ -3311,7 +3794,6 @@ function exportAPKsgiStats() {
             
             document.getElementById('detailModalBody').innerHTML = detailHtml;
             
-            // Set action buttons based on status
             const actionButtons = document.getElementById('actionButtons');
             if (report.status === 'pending' || report.status === 'processing') {
                 actionButtons.innerHTML = `
@@ -3337,12 +3819,10 @@ function exportAPKsgiStats() {
             
             document.getElementById('currentReportId').value = reportId;
             
-            // Set current status in dropdown
             const statusSelect = document.getElementById('newStatus');
             statusSelect.value = report.status === 'pending' ? 'processing' : 
                                report.status === 'processing' ? 'resolved' : 'rejected';
             
-            // Clear notes
             document.getElementById('adminNotes').value = '';
             
             const modal = new bootstrap.Modal(document.getElementById('updateStatusModal'));
@@ -3375,10 +3855,8 @@ function exportAPKsgiStats() {
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Refresh reports
                     await loadReports();
                     
-                    // Close modals
                     const updateModal = bootstrap.Modal.getInstance(document.getElementById('updateStatusModal'));
                     if (updateModal) updateModal.hide();
                     
@@ -3387,7 +3865,6 @@ function exportAPKsgiStats() {
                     
                     showToast('Status updated successfully', 'success');
                     
-                    // Add notification
                     addNotification('reports', `Report ${reportId} status changed to ${newStatus}`);
                 } else {
                     throw new Error(result.message);
@@ -3397,35 +3874,35 @@ function exportAPKsgiStats() {
             }
         }
         
-        function filterReports() {
-            const statusFilter = document.getElementById('filterStatus').value;
-            const platformFilter = document.getElementById('filterPlatform').value;
-            const dateFrom = document.getElementById('filterDateFrom').value;
-            const dateTo = document.getElementById('filterDateTo').value;
-            
-            let filtered = allReports;
-            
-            if (statusFilter !== 'all') {
-                filtered = filtered.filter(r => r.status === statusFilter);
-            }
-            
-            if (platformFilter !== 'all') {
-                filtered = filtered.filter(r => r.platform === platformFilter);
-            }
-            
-            if (dateFrom) {
-                const fromDate = new Date(dateFrom);
-                filtered = filtered.filter(r => new Date(r.timestamp) >= fromDate);
-            }
-            
-            if (dateTo) {
-                const toDate = new Date(dateTo);
-                toDate.setHours(23, 59, 59, 999);
-                filtered = filtered.filter(r => new Date(r.timestamp) <= toDate);
-            }
-            
-            displayReports(filtered);
-        }
+function filterReports() {
+    const statusFilter = document.getElementById('filterStatus').value;
+    const platformFilter = document.getElementById('filterPlatform').value;
+    const dateFrom = document.getElementById('filterDateFrom').value;
+    const dateTo = document.getElementById('filterDateTo').value;
+    
+    let filtered = allReports;
+    
+    if (statusFilter !== 'all') {
+        filtered = filtered.filter(r => r.status === statusFilter);
+    }
+    
+    if (platformFilter !== 'all') {
+        filtered = filtered.filter(r => r.platform === platformFilter);
+    }
+    
+    if (dateFrom) {
+        const fromDate = new Date(dateFrom);
+        filtered = filtered.filter(r => new Date(r.timestamp) >= fromDate);
+    }
+    
+    if (dateTo) {
+        const toDate = new Date(dateTo);
+        toDate.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(r => new Date(r.timestamp) <= toDate);
+    }
+    
+    displayReports(filtered);
+}
         
         function exportToExcel() {
             if (allReports.length === 0) {
@@ -3451,7 +3928,6 @@ function exportAPKsgiStats() {
             
             showToast('Report exported successfully', 'success');
             
-            // Add notification
             addNotification('reports', `Exported ${allReports.length} reports to CSV`);
         }
         
@@ -3466,7 +3942,6 @@ function exportAPKsgiStats() {
         function createReportsChart(reports) {
             const ctx = document.getElementById('reportsChart').getContext('2d');
             
-            // Group reports by date
             const reportsByDate = {};
             const last7Days = [];
             
@@ -3591,80 +4066,9 @@ function exportAPKsgiStats() {
             });
         }
         
-        function createGameTrendChart(stats) {
-            const ctx = document.getElementById('gameTrendChart').getContext('2d');
-            
-            // Mock data for trend (in real app, you would get this from API)
-            const labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Today'];
-            const todayClicks = stats.today_clicks || 0;
-            const baseClicks = Math.max(1, Math.floor((stats.total_clicks || 10) / 7));
-            
-            const data = [
-                Math.floor(baseClicks * 0.8),
-                Math.floor(baseClicks * 0.9),
-                Math.floor(baseClicks * 1.1),
-                Math.floor(baseClicks * 0.7),
-                Math.floor(baseClicks * 1.3),
-                Math.floor(baseClicks * 1.0),
-                todayClicks
-            ];
-            
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Daily Clicks',
-                        data: data,
-                        borderColor: '#4cc9f0',
-                        backgroundColor: 'rgba(76, 201, 240, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
         // ============================================
         // STATS UPDATE FUNCTIONS
         // ============================================
-        function updatePinnedCount(count) {
-            document.getElementById('pinned-count').textContent = count;
-        }
-        
-        function updateTotalGames(count) {
-            document.getElementById('total-games').textContent = count;
-        }
-        
         function updateReportStats(reports) {
             const total = reports.length;
             const pending = reports.filter(r => r.status === 'pending').length;
@@ -3675,7 +4079,6 @@ function exportAPKsgiStats() {
             document.getElementById('total-reports').textContent = total;
             document.getElementById('pending-reports').textContent = pending;
             
-            // Update report status cards
             document.getElementById('pendingCount').textContent = pending;
             document.getElementById('processingCount').textContent = processing;
             document.getElementById('resolvedCount').textContent = resolved;
@@ -3683,73 +4086,13 @@ function exportAPKsgiStats() {
         }
         
         // ============================================
-        // SETTINGS FUNCTIONS
+        // API STATUS CHECK
         // ============================================
-        function loadSettings() {
-            // Load theme
-            const savedTheme = localStorage.getItem(CONFIG.LS_THEME);
-            if (savedTheme === 'light') {
-                enableLightMode();
-            } else {
-                enableDarkMode();
-            }
-            
-            // Load other settings
-            const savedSettings = localStorage.getItem(CONFIG.LS_SETTINGS);
-            if (savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                
-                if (settings.autoRefresh) {
-                    document.getElementById('autoRefresh').value = settings.autoRefresh;
-                }
-                
-                if (settings.itemsPerPage) {
-                    document.getElementById('itemsPerPage').value = settings.itemsPerPage;
-                }
-                
-                if (settings.notifications) {
-                    document.getElementById('notifNewReports').checked = settings.notifications.newReports;
-                    document.getElementById('notifStatusChanges').checked = settings.notifications.statusChanges;
-                    document.getElementById('notifStatsUpdates').checked = settings.notifications.statsUpdates;
-                }
-            }
-        }
-        
-        function saveSettings() {
-            const settings = {
-                autoRefresh: document.getElementById('autoRefresh').value,
-                itemsPerPage: document.getElementById('itemsPerPage').value,
-                notifications: {
-                    newReports: document.getElementById('notifNewReports').checked,
-                    statusChanges: document.getElementById('notifStatusChanges').checked,
-                    statsUpdates: document.getElementById('notifStatsUpdates').checked
-                }
-            };
-            
-            localStorage.setItem(CONFIG.LS_SETTINGS, JSON.stringify(settings));
-            
-            // Update auto refresh
-            setupAutoRefresh();
-            
-            // Request notification permission if not already granted
-            if (settings.notifications.newReports || settings.notifications.statusChanges || settings.notifications.statsUpdates) {
-                if ("Notification" in window && Notification.permission === "default") {
-                    Notification.requestPermission();
-                }
-            }
-            
-            showToast('Settings saved successfully', 'success');
-            
-            // Add notification
-            addNotification('system', 'Settings updated');
-        }
-        
         async function checkApiStatus() {
             const statusSpinner = document.getElementById('apiStatusSpinner');
             const statusText = document.getElementById('apiStatusText');
             
             try {
-                // Check reports API
                 const response = await fetch(CONFIG.REPORT_API_URL, {
                     method: 'POST',
                     headers: {
@@ -3770,21 +4113,6 @@ function exportAPKsgiStats() {
                 statusSpinner.classList.add('text-danger');
                 statusText.textContent = 'Some APIs disconnected';
             }
-        }
-        
-        function clearCache() {
-            localStorage.removeItem(`${CONFIG.LS_DATA}_pinned`);
-            localStorage.removeItem(`${CONFIG.LS_DATA}_stats`);
-            localStorage.removeItem(`${CONFIG.LS_DATA}_reports`);
-            localStorage.removeItem(`${CONFIG.LS_DATA}_reports_previous`);
-            
-            showToast('Cache cleared successfully', 'success');
-            
-            // Refresh current section
-            loadSectionData(currentSection);
-            
-            // Add notification
-            addNotification('system', 'Cache cleared');
         }
         
         // ============================================
@@ -3845,19 +4173,28 @@ function exportAPKsgiStats() {
             }
         }
         
-        function getPlatformName(platform) {
-            const platforms = {
-                'ps2': 'PlayStation 2',
-                'switch': 'Nintendo Switch',
-                'psp': 'PSP',
-                'android': 'Android',
-                'psvita': 'PS Vita',
-                'pc': 'PC',
-                'wii': 'Wii'
-            };
-            
-            return platforms[platform] || platform.toUpperCase();
-        }
+function getPlatformName(platform) {
+    const platforms = {
+        'ps1': 'PlayStation 1',
+        'ps2': 'PlayStation 2',
+        'ps3': 'PlayStation 3',
+        'ps4': 'PlayStation 4',
+        'ps5': 'PlayStation 5',
+        'psvita': 'PlayStation Vita',
+        'psp': 'PSP',
+        'switch': 'Nintendo Switch',
+        '3ds': 'Nintendo 3DS',
+        'wii': 'Nintendo Wii',
+        'wiiu': 'Nintendo Wii U',
+        'gamecube': 'Nintendo GameCube',
+        'java': 'Java',
+        'ios': 'iOS',
+        'android': 'Android',
+        'pc': 'PC',
+        'apksgi': 'APKsgi'
+    };
+    return platforms[platform] || platform.toUpperCase();
+}
         
         function escapeHTML(text) {
             if (!text) return '';
@@ -3867,7 +4204,6 @@ function exportAPKsgiStats() {
         }
         
         function showToast(message, type = 'info') {
-            // Create toast container if it doesn't exist
             let toastContainer = document.querySelector('.toast-container');
             if (!toastContainer) {
                 toastContainer = document.createElement('div');
@@ -3875,7 +4211,6 @@ function exportAPKsgiStats() {
                 document.body.appendChild(toastContainer);
             }
             
-            // Create toast
             const toastId = 'toast-' + Date.now();
             const toast = document.createElement('div');
             toast.className = `toast align-items-center text-white bg-${type} border-0`;
@@ -3895,18 +4230,17 @@ function exportAPKsgiStats() {
             
             toastContainer.appendChild(toast);
             
-            // Show toast
             const bsToast = new bootstrap.Toast(toast, {
                 autohide: true,
                 delay: 3000
             });
             bsToast.show();
             
-            // Remove toast after it's hidden
             toast.addEventListener('hidden.bs.toast', function () {
                 toast.remove();
             });
         }
+        
     </script>
 </body>
 </html>
