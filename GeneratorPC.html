@@ -1505,6 +1505,7 @@ const CLOUD_OPTIONS = [
     { id: 'PixelDrain', name: 'PixelDrain', color: 'btn-info' },
     { id: '1Fichier', name: '1Fichier', color: 'btn-dark' },
     { id: 'MultiUp', name: 'MultiUp', color: 'btn-success' },
+    { id: 'Rushuploads', name: 'Rushuploads', color: 'btn-success' },
     { id: 'MEGA', name: 'MEGA', color: 'btn-secondary' },
     { id: 'KatFile', name: 'KatFile', color: 'btn-danger' },
     { id: 'ClicknUpload', name: 'ClicknUpload', color: 'btn-info' },
@@ -2289,24 +2290,39 @@ function parseGameData(text) {
     const linkLines = lines.slice(4);
     const totalExpectedLinks = gameData.linkCount;
 
-    // Asumsi linkLines berisi link asli, iklan1, iklan2 secara berurutan
+    // Reset semua link arrays
+    gameData.originalLinks = new Array(totalExpectedLinks).fill('');
+    gameData.adLinks = new Array(totalExpectedLinks).fill('');
+    gameData.adLinks2 = new Array(totalExpectedLinks).fill('');
+
+    // Link asli (posisi 4-9 dalam contoh Anda)
     for (let i = 0; i < totalExpectedLinks; i++) {
-        if (linkLines[i]) gameData.originalLinks[i] = linkLines[i];
+        if (linkLines[i]) {
+            gameData.originalLinks[i] = linkLines[i];
+        }
     }
 
+    // Link iklan 1 (posisi 10-15 dalam contoh Anda)
     for (let i = 0; i < totalExpectedLinks; i++) {
-        if (linkLines[totalExpectedLinks + i]) gameData.adLinks[i] = linkLines[totalExpectedLinks + i];
+        if (linkLines[totalExpectedLinks + i]) {
+            gameData.adLinks[i] = linkLines[totalExpectedLinks + i];
+        }
     }
 
+    // Link iklan 2 (posisi 16-21 dalam contoh Anda)
     for (let i = 0; i < totalExpectedLinks; i++) {
-        if (linkLines[totalExpectedLinks * 2 + i]) gameData.adLinks2[i] = linkLines[totalExpectedLinks * 2 + i];
+        if (linkLines[totalExpectedLinks * 2 + i]) {
+            gameData.adLinks2[i] = linkLines[totalExpectedLinks * 2 + i];
+        }
     }
 
     updateLinkInputsUI();
 
-    // Deteksi thumbnail dan screenshots di akhir
-    const totalParsedLines = totalExpectedLinks * 3 + 4;
-    const remainingLines = lines.slice(totalParsedLines);
+    // Deteksi gambar - mulai dari baris setelah semua link
+    const totalLinkLines = totalExpectedLinks * 3;
+    const remainingLines = lines.slice(4 + totalLinkLines);
+    
+    console.log('Remaining lines for images:', remainingLines); // Debug log
     
     // Filter hanya URL gambar dari sisa baris
     const imageUrls = [];
@@ -2317,50 +2333,50 @@ function parseGameData(text) {
             imageUrls.push(line);
         }
     });
+    
+    console.log('Detected image URLs:', imageUrls); // Debug log
 
     // Set thumbnail (gambar pertama)
     if (imageUrls.length > 0) {
-        document.getElementById('thumbnailUrl').value = imageUrls[0];
-        gameData.thumbnailUrl = imageUrls[0];
-        updateThumbnailPreview(imageUrls[0]);
-    }
-
-    // Set screenshots (gambar kedua dan seterusnya)
-    const screenshotUrls = imageUrls.length > 1 ? imageUrls.slice(1) : [];
-    
-    if (screenshotUrls.length > 0) {
-        // Update screenshots textarea
-        const screenshotsTextarea = document.getElementById('screenshotsInput');
-        if (screenshotsTextarea) {
-            // Ambil URL yang sudah ada di textarea
-            const existingUrls = screenshotsTextarea.value
-                .split('\n')
-                .map(url => url.trim())
-                .filter(url => url && isValidHttpUrl(url));
+        const firstImage = imageUrls[0];
+        document.getElementById('thumbnailUrl').value = firstImage;
+        gameData.thumbnailUrl = firstImage;
+        updateThumbnailPreview(firstImage);
+        console.log('Thumbnail set to:', firstImage); // Debug log
+        
+        // Set screenshots (gambar kedua dan seterusnya)
+        const screenshotUrls = imageUrls.length > 1 ? imageUrls.slice(1) : [];
+        
+        if (screenshotUrls.length > 0) {
+            // Update screenshots textarea
+            const screenshotsTextarea = document.getElementById('screenshotsInput');
+            if (screenshotsTextarea) {
+                screenshotsTextarea.value = screenshotUrls.join('\n');
+                
+                // Trigger update preview
+                setTimeout(() => {
+                    updateScreenshotsInputPreview();
+                }, 100);
+            }
             
-            // Gabungkan dengan yang baru, hilangkan duplikat
-            const allUrls = [...new Set([...existingUrls, ...screenshotUrls])];
-            screenshotsTextarea.value = allUrls.join('\n');
+            // Simpan ke gameData
+            gameData.screenshots = screenshotUrls;
             
-            // Trigger update preview
-            setTimeout(() => {
-                updateScreenshotsInputPreview();
-            }, 100);
+            // Update screenshots field hidden
+            const screenshotsField = document.getElementById('screenshotsField');
+            if (screenshotsField) {
+                screenshotsField.value = JSON.stringify(screenshotUrls);
+            }
+            
+            // Update screenshots preview
+            updateScreenshotsPreview(screenshotUrls);
+            
+            showToast('info', `Deteksi otomatis: 1 thumbnail dan ${screenshotUrls.length} screenshot gameplay ditemukan.`);
+        } else {
+            showToast('info', 'Deteksi otomatis: 1 thumbnail ditemukan, tidak ada screenshot gameplay.');
         }
-        
-        // Simpan ke gameData
-        gameData.screenshots = screenshotUrls;
-        
-        // Update screenshots field hidden
-        const screenshotsField = document.getElementById('screenshotsField');
-        if (screenshotsField) {
-            screenshotsField.value = JSON.stringify(screenshotUrls);
-        }
-        
-        // Update screenshots preview
-        updateScreenshotsPreview(screenshotUrls);
-        
-        showToast('info', `Deteksi otomatis: ${screenshotUrls.length} screenshot gameplay ditemukan.`);
+    } else {
+        showToast('warning', 'Tidak ada gambar yang terdeteksi untuk thumbnail atau screenshot.');
     }
 }
 
@@ -2528,6 +2544,14 @@ async function saveGameData() {
     const systemRequirements = document.getElementById('systemRequirements').value.trim();
     const thumbnailUrl = document.getElementById('thumbnailUrl').value.trim();
     
+    // DAPATKAN THUMBNAIL - ambil dari input atau dari gameData jika ada
+    let finalThumbnailUrl = thumbnailUrl;
+    
+    // Jika thumbnailUrl kosong, coba ambil dari gameData.thumbnailUrl
+    if (!finalThumbnailUrl && gameData.thumbnailUrl) {
+        finalThumbnailUrl = gameData.thumbnailUrl;
+    }
+    
     // DAPATKAN SCREENSHOTS DARI TEXTAREA INPUT
     const screenshotsTextarea = document.getElementById('screenshotsInput');
     let screenshotUrls = [];
@@ -2608,7 +2632,7 @@ async function saveGameData() {
     };
     
     gameData.systemRequirements = systemRequirements;
-    gameData.thumbnailUrl = thumbnailUrl;
+    gameData.thumbnailUrl = finalThumbnailUrl; // Gunakan thumbnail yang sudah diverifikasi
     gameData.screenshots = screenshotUrls; // Simpan screenshot URLs ke gameData
     
     try {
@@ -2625,6 +2649,7 @@ async function saveGameData() {
             originalLinksCount: gameData.originalLinks.length,
             adLinksCount: gameData.adLinks.length,
             adLinks2Count: gameData.adLinks2.length,
+            thumbnailUrl: finalThumbnailUrl, // Debug thumbnail
             screenshotCount: screenshotUrls.length,
             screenshots: screenshotUrls
         });
@@ -2641,7 +2666,7 @@ async function saveGameData() {
         params.append('link_iklan', JSON.stringify(gameData.adLinks));
         params.append('link_iklan2', JSON.stringify(gameData.adLinks2));
         params.append('cloud_types', JSON.stringify(gameData.cloudTypes));
-        params.append('thumbnail_url', gameData.thumbnailUrl);
+        params.append('thumbnail_url', finalThumbnailUrl); // Kirim thumbnail
         params.append('screenshot_urls', JSON.stringify(screenshotUrls)); // Kirim screenshots
         params.append('link_count', gameData.linkCount); 
         
@@ -2677,7 +2702,7 @@ async function saveGameData() {
                         screenshotParams.append('platform', 'pc'); // Platform: 'pc'
                         screenshotParams.append('download_id', gameData.downloadId);
                         screenshotParams.append('game_name', gameName);
-                        screenshotParams.append('thumbnail_url', thumbnailUrl);
+                        screenshotParams.append('thumbnail_url', finalThumbnailUrl); // Kirim thumbnail juga
                         screenshotParams.append('screenshots', JSON.stringify(screenshotUrls));
                         
                         const screenshotResponse = await fetch(SCREENSHOOT_API_URL, {
@@ -2719,7 +2744,7 @@ async function saveGameData() {
                     downloadId: gameData.downloadId,
                     name: gameData.gameInfo.nama_game,
                     developer: gameData.gameInfo.developer,
-                    thumbnailUrl: thumbnailUrl,
+                    thumbnailUrl: finalThumbnailUrl,
                     screenshotCount: screenshotCount,
                     screenshotSaved: screenshotSaved,
                     updatedAt: new Date().toISOString()
@@ -2765,6 +2790,15 @@ async function saveGameData() {
     }
 }
 
+function isValidImageUrl(url) {
+    if (!isValidHttpUrl(url)) return false;
+    
+    // Pattern untuk URL gambar
+    const imagePattern = /\.(jpg|jpeg|png|webp|gif|bmp)(\?.*)?$/i;
+    const uploadPattern = /\/uploads\//i;
+    
+    return imagePattern.test(url) || uploadPattern.test(url);
+}
 // Helper function untuk memastikan panjang array
 function ensureArrayLength(arr, length) {
     if (!Array.isArray(arr)) {
@@ -3126,6 +3160,7 @@ function getCloudColorClass(cloud) {
         'PixelDrain': 'btn-info',
         '1Fichier': 'btn-dark',
         'MultiUp': 'btn-success',
+        'Rushuploads': 'btn-success',
         'MEGA': 'btn-secondary',
         'KatFile': 'btn-danger',
         'ClicknUpload': 'btn-info',
