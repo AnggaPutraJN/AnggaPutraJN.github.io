@@ -2033,47 +2033,199 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ===================== CLOUD SELECTION =====================
-    function generateCloudSelection() {
-      const container = document.getElementById('cloudSelection');
-      container.innerHTML = '';
-      
-      // Untuk Game Android, kita butuh 3 set cloud: Link Asli, Link Iklan 1, Link Iklan 2
-      const sections = [
-        { title: 'Link Asli', arrayName: 'cloudOriginal', limit: gameData.linkCount },
-        { title: 'Link Iklan 1', arrayName: 'cloudAd1', limit: gameData.linkCount },
-        { title: 'Link Iklan 2', arrayName: 'cloudAd2', limit: gameData.linkCount }
-      ];
-      
-      sections.forEach(section => {
-        const sectionEl = document.createElement('div');
-        sectionEl.className = 'mb-4 cloud-section';
-        sectionEl.dataset.array = section.arrayName;
-        sectionEl.dataset.limit = String(section.limit);
-        
-        sectionEl.innerHTML = `
-          <div class="cloud-section-title mb-2">
-            <h5 class="mb-0">${section.title} (${section.limit} Link)</h5>
-            <small class="text-muted">
-              Dipilih: <span id="${section.arrayName}_selected">0</span> / ${section.limit}
-            </small>
-          </div>
-          <div class="cloud-grid">
-            ${CLOUD_OPTIONS.map(cloud => `
-              <label class="cloud-tile">
-                <input type="checkbox" class="cloud-check" value="${cloud.id}" data-array="${section.arrayName}" />
-                <span class="cloud-name">${cloud.name}</span>
-              </label>
-            `).join('')}
-          </div>
-        `;
-        
-        container.appendChild(sectionEl);
-      });
-      
-      // Initialize cloud checkboxes
-      updateCloudSections();
-    }
+function generateCloudSelection() {
+  const container = document.getElementById('cloudSelection');
+  container.innerHTML = '';
+  
+  // State untuk tracking urutan pemilihan
+  window.cloudSelectionOrder = {
+    cloudOriginal: [],
+    cloudAd1: [],
+    cloudAd2: []
+  };
+  
+  const sections = [
+    { title: 'Link Asli', arrayName: 'cloudOriginal', limit: gameData.linkCount },
+    { title: 'Link Iklan 1', arrayName: 'cloudAd1', limit: gameData.linkCount },
+    { title: 'Link Iklan 2', arrayName: 'cloudAd2', limit: gameData.linkCount }
+  ];
+  
+  sections.forEach(section => {
+    const sectionEl = document.createElement('div');
+    sectionEl.className = 'mb-4 cloud-section';
+    sectionEl.dataset.array = section.arrayName;
+    sectionEl.dataset.limit = String(section.limit);
     
+    sectionEl.innerHTML = `
+      <div class="cloud-section-title mb-2">
+        <h5 class="mb-0">${section.title} (${section.limit} Link)</h5>
+        <small class="text-muted">
+          Dipilih: <span id="${section.arrayName}_selected">0</span> / ${section.limit}
+        </small>
+      </div>
+      <div class="cloud-grid">
+        ${CLOUD_OPTIONS.map(cloud => `
+          <label class="cloud-tile">
+            <input type="checkbox" class="cloud-check" value="${cloud.id}" data-array="${section.arrayName}" />
+            <span class="cloud-name">${cloud.name}</span>
+          </label>
+        `).join('')}
+      </div>
+      <!-- PREVIEW SECTION -->
+      <div class="cloud-preview mt-2" id="${section.arrayName}_preview">
+        <small class="text-muted"><i class="bi bi-list-ol"></i> Urutan terpilih: </small>
+        <div class="cloud-preview-list mt-1" id="${section.arrayName}_preview_list">
+          <span class="text-muted fst-italic">Belum ada cloud dipilih</span>
+        </div>
+      </div>
+    `;
+    
+    container.appendChild(sectionEl);
+  });
+  
+  // Initialize dengan event listeners baru
+  setupCloudSelectionWithOrder();
+}
+
+// FUNGSI BARU: Setup dengan tracking urutan
+function setupCloudSelectionWithOrder() {
+  document.querySelectorAll('.cloud-section').forEach(section => {
+    const arrayName = section.dataset.array;
+    const checkboxes = section.querySelectorAll('input.cloud-check');
+    
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', function() {
+        if (this.checked) {
+          // TAMBAH ke akhir array (urutan pemilihan)
+          if (!window.cloudSelectionOrder[arrayName].includes(this.value)) {
+            window.cloudSelectionOrder[arrayName].push(this.value);
+          }
+        } else {
+          // HAPUS dari array
+          const index = window.cloudSelectionOrder[arrayName].indexOf(this.value);
+          if (index > -1) {
+            window.cloudSelectionOrder[arrayName].splice(index, 1);
+          }
+        }
+        
+        updateCloudPreviewWithOrder(arrayName);
+        updateCloudSectionState(section);
+      });
+    });
+    
+    // Inisialisasi preview
+    updateCloudPreviewWithOrder(arrayName);
+    updateCloudSectionState(section);
+  });
+}
+
+
+// FUNGSI BARU: Update preview dengan urutan
+function updateCloudPreviewWithOrder(arrayName) {
+  const previewList = document.getElementById(`${arrayName}_preview_list`);
+  if (!previewList) return;
+  
+  const selectedClouds = window.cloudSelectionOrder[arrayName] || [];
+  
+  if (selectedClouds.length === 0) {
+    previewList.innerHTML = '<span class="text-muted fst-italic">Belum ada cloud dipilih</span>';
+    return;
+  }
+  
+  // Tampilkan URUTAN SESUAI PEMILIHAN
+  const previewHTML = selectedClouds.map((cloudId, index) => {
+    const cloudName = CLOUD_OPTIONS.find(c => c.id === cloudId)?.name || cloudId;
+    return `
+      <span class="badge bg-primary me-1 mb-1 d-inline-flex align-items-center">
+        <span class="me-1">${index + 1}.</span>
+        ${cloudName}
+        <button type="button" class="btn-close btn-close-white ms-1" style="font-size: 8px; padding: 0.25rem;" 
+                onclick="removeCloudFromOrder('${arrayName}', '${cloudId}')"></button>
+      </span>
+    `;
+  }).join('');
+  
+  previewList.innerHTML = previewHTML;
+}
+
+// FUNGSI BARU: Hapus cloud dari urutan
+function removeCloudFromOrder(arrayName, cloudId) {
+  // Hapus dari array urutan
+  const index = window.cloudSelectionOrder[arrayName].indexOf(cloudId);
+  if (index > -1) {
+    window.cloudSelectionOrder[arrayName].splice(index, 1);
+  }
+  
+  // Uncheck checkbox
+  const checkbox = document.querySelector(`.cloud-section[data-array="${arrayName}"] input.cloud-check[value="${cloudId}"]`);
+  if (checkbox) {
+    checkbox.checked = false;
+    // Update preview
+    updateCloudPreviewWithOrder(arrayName);
+    
+    // Update section state
+    const section = document.querySelector(`.cloud-section[data-array="${arrayName}"]`);
+    if (section) {
+      updateCloudSectionState(section);
+    }
+  }
+}
+// FUNGSI BARU: Setup listener untuk preview cloud
+function setupCloudPreviewListeners() {
+  document.querySelectorAll('.cloud-section').forEach(section => {
+    const arrayName = section.dataset.array;
+    const checkboxes = section.querySelectorAll('input.cloud-check');
+    
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', function() {
+        updateCloudPreview(arrayName);
+      });
+    });
+  });
+}
+
+
+
+// FUNGSI BARU: Update preview cloud
+function updateCloudPreview(arrayName) {
+  const section = document.querySelector(`.cloud-section[data-array="${arrayName}"]`);
+  if (!section) return;
+  
+  const checkboxes = Array.from(section.querySelectorAll('input.cloud-check:checked'));
+  const previewList = document.getElementById(`${arrayName}_preview_list`);
+  
+  if (!previewList) return;
+  
+  if (checkboxes.length === 0) {
+    previewList.innerHTML = '<span class="text-muted fst-italic">Belum ada cloud dipilih</span>';
+    return;
+  }
+  
+  // Tampilkan urutan sesuai pemilihan
+  const previewHTML = checkboxes.map((cb, index) => {
+    const cloudName = CLOUD_OPTIONS.find(c => c.id === cb.value)?.name || cb.value;
+    return `
+      <span class="badge bg-primary me-1 mb-1">
+        ${index + 1}. ${cloudName}
+        <button type="button" class="btn-close btn-close-white ms-1" style="font-size: 8px;" 
+                onclick="removeCloudFromPreview('${arrayName}', '${cb.value}')"></button>
+      </span>
+    `;
+  }).join('');
+  
+  previewList.innerHTML = previewHTML;
+}
+
+// FUNGSI BARU: Hapus cloud dari preview
+function removeCloudFromPreview(arrayName, cloudId) {
+  const checkbox = document.querySelector(`.cloud-section[data-array="${arrayName}"] input.cloud-check[value="${cloudId}"]`);
+  if (checkbox) {
+    checkbox.checked = false;
+    checkbox.dispatchEvent(new Event('change'));
+  }
+}
+
+
     function updateCloudSections() {
       document.querySelectorAll('.cloud-section').forEach(section => {
         const arrayName = section.dataset.array;
@@ -2091,31 +2243,45 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
     
-    function updateCloudSectionState(section) {
-      const arrayName = section.dataset.array;
-      const limit = parseInt(section.dataset.limit, 10);
-      
-      const checkboxes = Array.from(section.querySelectorAll('input.cloud-check'));
-      const checked = checkboxes.filter(cb => cb.checked);
-      
-      // Update counter
-      const counter = section.querySelector(`#${arrayName}_selected`);
-      if (counter) counter.textContent = String(checked.length);
-      
-      // Validate limit
-      if (checked.length > limit) {
-        const last = checked[checked.length - 1];
-        last.checked = false;
-        alert(`Maksimal pilih ${limit} cloud untuk ${arrayName}.`);
-        return updateCloudSectionState(section);
-      }
-      
-      // Disable others if limit reached
-      const lock = checked.length >= limit;
-      checkboxes.forEach(cb => {
-        cb.disabled = lock && !cb.checked;
-      });
+function updateCloudSectionState(section) {
+  const arrayName = section.dataset.array;
+  const limit = parseInt(section.dataset.limit, 10);
+  
+  const checkboxes = Array.from(section.querySelectorAll('input.cloud-check'));
+  
+  // Gunakan urutan dari window.cloudSelectionOrder untuk validasi
+  const selectedCount = (window.cloudSelectionOrder && window.cloudSelectionOrder[arrayName]) 
+    ? window.cloudSelectionOrder[arrayName].length 
+    : 0;
+  
+  // Update counter
+  const counter = section.querySelector(`#${arrayName}_selected`);
+  if (counter) counter.textContent = String(selectedCount);
+  
+  // Validate limit
+  if (selectedCount > limit) {
+    // Hapus yang terakhir dipilih
+    if (window.cloudSelectionOrder && window.cloudSelectionOrder[arrayName]) {
+      window.cloudSelectionOrder[arrayName].pop();
     }
+    
+    // Uncheck checkbox yang terakhir
+    const lastSelected = document.querySelector(`.cloud-section[data-array="${arrayName}"] input.cloud-check:checked:last-of-type`);
+    if (lastSelected) {
+      lastSelected.checked = false;
+    }
+    
+    alert(`Maksimal pilih ${limit} cloud untuk ${arrayName}.`);
+    updateCloudPreviewWithOrder(arrayName);
+    return;
+  }
+  
+  // Disable others if limit reached
+  const lock = selectedCount >= limit;
+  checkboxes.forEach(cb => {
+    cb.disabled = lock && !cb.checked;
+  });
+}
     
     // ===================== CLOUD CACHE =====================
     const CLOUD_CACHE_KEY = 'androidCloudCaches';
@@ -2132,84 +2298,117 @@ document.addEventListener('DOMContentLoaded', function() {
       localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(list));
     }
     
-    function refreshCloudCacheUI() {
-      const caches = getCloudCaches();
-      const select = document.getElementById('cacheListStep1');
-      
-      if (!select) return;
-      select.innerHTML = '<option value="">Pilih cache</option>';
-      
-      caches.forEach(c => {
-        const option = document.createElement('option');
-        option.value = c.name;
-        option.textContent = `${c.name} (${c.linkCount} link, ${c.gameType || 'unknown'})`;
-        select.appendChild(option);
-      });
+function refreshCloudCacheUI() {
+  const caches = getCloudCaches();
+  const select = document.getElementById('cacheListStep1');
+  
+  if (!select) return;
+  
+  // Simpan nilai yang sedang dipilih
+  const currentValue = select.value;
+  
+  select.innerHTML = '<option value="">Pilih cache</option>';
+  
+  caches.forEach(c => {
+    const option = document.createElement('option');
+    option.value = c.name;
+    
+    // Buat label yang informatif
+    let label = `${c.name}`;
+    if (c.linkCount) {
+      label += ` (${c.linkCount} link)`;
+    }
+    if (c.gameType) {
+      label += ` - ${c.gameType}`;
     }
     
-    function showCachePreview(cache) {
-      const container = document.getElementById('cachePreviewContainer');
-      const content = document.getElementById('cachePreviewContent');
-      
-      if (!container || !content || !cache) {
-        hideCachePreview();
-        return;
-      }
-      
-      let html = '';
-      
-      html += `<div class="cloud-section-preview">`;
-      html += `<div class="fw-bold mb-2"><i class="bi bi-info-circle"></i> Informasi Cache</div>`;
-      html += `<div class="small">`;
-      html += `<div><strong>Tipe Game:</strong> ${cache.gameType || 'unknown'}</div>`;
-      html += `<div><strong>Jumlah Link:</strong> ${cache.linkCount || 0}</div>`;
-      if (cache.modCount) {
-        html += `<div><strong>Jumlah MOD:</strong> ${cache.modCount}</div>`;
-      }
-      html += `</div></div>`;
-      
-      if (cache.cloudOriginal && cache.cloudOriginal.length > 0) {
-        html += `<div class="cloud-section-preview">`;
-        html += `<div class="fw-bold mb-2"><i class="bi bi-cloud-upload"></i> Link Asli</div>`;
-        html += `<div class="cloud-cache-list">`;
-        cache.cloudOriginal.forEach((cloud, index) => {
-          html += `<span class="cloud-cache-badge">`;
-          html += `<span>${cloud}</span>`;
-          html += `<span class="cloud-type-label">${index + 1}</span>`;
-          html += `</span>`;
-        });
-        html += `</div></div>`;
-      }
-      
-      if (cache.cloudAd1 && cache.cloudAd1.length > 0) {
-        html += `<div class="cloud-section-preview">`;
-        html += `<div class="fw-bold mb-2"><i class="bi bi-link-45deg"></i> Link Iklan 1</div>`;
-        html += `<div class="cloud-cache-list">`;
-        cache.cloudAd1.forEach((cloud, index) => {
-          html += `<span class="cloud-cache-badge">`;
-          html += `<span>${cloud}</span>`;
-          html += `<span class="cloud-type-label">${index + 1}</span>`;
-          html += `</span>`;
-        });
-        html += `</div></div>`;
-      }
-      
-      if (cache.cloudAd2 && cache.cloudAd2.length > 0) {
-        html += `<div class="cloud-section-preview">`;
-        html += `<div class="fw-bold mb-2"><i class="bi bi-link"></i> Link Iklan 2</div>`;
-        html += `<div class="cloud-cache-list">`;
-        cache.cloudAd2.forEach((cloud, index) => {
-          html += `<span class="cloud-cache-badge">`;
-          html += `<span>${cloud}</span>`;
-          html += `<span class="cloud-type-label">${index + 1}</span>`;
-          html += `</span>`;
-        });
-        html += `</div></div>`;
-      }
-      
-      content.innerHTML = html;
-      container.style.display = 'block';
-    }
+    option.textContent = label;
+    option.title = `Disimpan: ${new Date(c.savedAt).toLocaleString()}`;
+    select.appendChild(option);
+  });
+  
+  // Kembalikan nilai yang sebelumnya dipilih jika masih ada
+  if (currentValue && caches.some(c => c.name === currentValue)) {
+    select.value = currentValue;
+    
+    // Trigger change event untuk update preview
+    setTimeout(() => {
+      select.dispatchEvent(new Event('change'));
+    }, 100);
+  }
+}
+    
+function showCachePreview(cache) {
+  const container = document.getElementById('cachePreviewContainer');
+  const content = document.getElementById('cachePreviewContent');
+  
+  if (!container || !content || !cache) {
+    hideCachePreview();
+    return;
+  }
+  
+  let html = '';
+  
+  // Header info
+  html += `<div class="cloud-section-preview">`;
+  html += `<div class="fw-bold mb-2"><i class="bi bi-info-circle"></i> Informasi Cache</div>`;
+  html += `<div class="small">`;
+  html += `<div><strong>Tipe Game:</strong> ${cache.gameType || 'unknown'}</div>`;
+  html += `<div><strong>Jumlah Link:</strong> ${cache.linkCount || 0}</div>`;
+  if (cache.modCount) {
+    html += `<div><strong>Jumlah MOD:</strong> ${cache.modCount}</div>`;
+  }
+  html += `<div><strong>Disimpan:</strong> ${new Date(cache.savedAt).toLocaleString()}</div>`;
+  html += `</div></div>`;
+  
+  // Preview URUTAN Link Asli
+  if (cache.cloudOriginal && cache.cloudOriginal.length > 0) {
+    html += `<div class="cloud-section-preview">`;
+    html += `<div class="fw-bold mb-2"><i class="bi bi-cloud-upload"></i> Link Asli (${cache.cloudOriginal.length} link)</div>`;
+    html += `<div class="cloud-cache-list">`;
+    cache.cloudOriginal.forEach((cloud, index) => {
+      const cloudName = CLOUD_OPTIONS.find(c => c.id === cloud)?.name || cloud;
+      html += `<span class="cloud-cache-badge">`;
+      html += `<span class="badge bg-secondary me-1">${index + 1}</span>`;
+      html += `<span>${cloudName}</span>`;
+      html += `</span>`;
+    });
+    html += `</div></div>`;
+  }
+  
+  // Preview URUTAN Link Iklan 1
+  if (cache.cloudAd1 && cache.cloudAd1.length > 0) {
+    html += `<div class="cloud-section-preview">`;
+    html += `<div class="fw-bold mb-2"><i class="bi bi-link-45deg"></i> Link Iklan 1 (${cache.cloudAd1.length} link)</div>`;
+    html += `<div class="cloud-cache-list">`;
+    cache.cloudAd1.forEach((cloud, index) => {
+      const cloudName = CLOUD_OPTIONS.find(c => c.id === cloud)?.name || cloud;
+      html += `<span class="cloud-cache-badge">`;
+      html += `<span class="badge bg-secondary me-1">${index + 1}</span>`;
+      html += `<span>${cloudName}</span>`;
+      html += `</span>`;
+    });
+    html += `</div></div>`;
+  }
+  
+  // Preview URUTAN Link Iklan 2
+  if (cache.cloudAd2 && cache.cloudAd2.length > 0) {
+    html += `<div class="cloud-section-preview">`;
+    html += `<div class="fw-bold mb-2"><i class="bi bi-link"></i> Link Iklan 2 (${cache.cloudAd2.length} link)</div>`;
+    html += `<div class="cloud-cache-list">`;
+    cache.cloudAd2.forEach((cloud, index) => {
+      const cloudName = CLOUD_OPTIONS.find(c => c.id === cloud)?.name || cloud;
+      html += `<span class="cloud-cache-badge">`;
+      html += `<span class="badge bg-secondary me-1">${index + 1}</span>`;
+      html += `<span>${cloudName}</span>`;
+      html += `</span>`;
+    });
+    html += `</div></div>`;
+  }
+  
+  content.innerHTML = html;
+  container.style.display = 'block';
+}
     
     function hideCachePreview() {
       const container = document.getElementById('cachePreviewContainer');
@@ -2217,53 +2416,101 @@ document.addEventListener('DOMContentLoaded', function() {
         container.style.display = 'none';
       }
     }
+
+function saveCloudCache() {
+  try {
+    const nameInput = document.getElementById('cacheName');
+    const name = (nameInput?.value || '').trim();
     
-    function saveCloudCache() {
-      try {
-        const name = document.getElementById('cacheName').value.trim();
-        if (!name) {
-          alert('Isi nama cache dulu.');
-          return;
-        }
-        
-        // Collect cloud selections
-        const selections = {};
-        document.querySelectorAll('.cloud-section').forEach(section => {
-          const arrayName = section.dataset.array;
-          const selected = Array.from(section.querySelectorAll('input.cloud-check:checked'))
-            .map(cb => cb.value);
-          selections[arrayName] = selected;
-        });
-        
-        const caches = getCloudCaches();
-        const existingIndex = caches.findIndex(c => c.name === name);
-        
-        const cacheData = {
-          name: name,
-          savedAt: new Date().toISOString(),
-          gameType: gameData.type,
-          linkCount: gameData.linkCount,
-          modCount: gameData.modCount,
-          ...selections
-        };
-        
-        if (existingIndex >= 0) {
-          const ok = confirm(`Cache "${name}" sudah ada. Timpa?`);
-          if (!ok) return;
-          caches[existingIndex] = cacheData;
-        } else {
-          caches.push(cacheData);
-        }
-        
-        setCloudCaches(caches);
-        refreshCloudCacheUI();
-        showToast('success', `Cache "${name}" tersimpan.`);
-        
-      } catch (err) {
-        showToast('error', 'Gagal simpan cache: ' + err.message);
+    if (!name) {
+      alert('Isi nama cache dulu.');
+      nameInput?.focus();
+      return;
+    }
+
+    // Gunakan urutan dari tracking (window.cloudSelectionOrder)
+    let cloudOriginal, cloudAd1, cloudAd2;
+    
+    if (window.cloudSelectionOrder) {
+      cloudOriginal = [...(window.cloudSelectionOrder.cloudOriginal || [])];
+      cloudAd1 = [...(window.cloudSelectionOrder.cloudAd1 || [])];
+      cloudAd2 = [...(window.cloudSelectionOrder.cloudAd2 || [])];
+    } else {
+      // Fallback
+      cloudOriginal = [];
+      cloudAd1 = [];
+      cloudAd2 = [];
+    }
+
+    // Validasi: harus ada cloud selection
+    if (cloudOriginal.length === 0 && cloudAd1.length === 0 && cloudAd2.length === 0) {
+      alert('Belum ada cloud yang dipilih di Step 3. Pilih cloud dulu!');
+      return;
+    }
+
+    // Validasi jumlah cloud harus sesuai linkCount
+    const linkCount = gameData.linkCount || 0;
+    if (linkCount > 0) {
+      if (cloudOriginal.length !== linkCount) {
+        alert(`Jumlah cloud untuk Link Asli harus tepat ${linkCount}, saat ini ${cloudOriginal.length}.`);
+        return;
+      }
+      if (cloudAd1.length !== linkCount) {
+        alert(`Jumlah cloud untuk Link Iklan 1 harus tepat ${linkCount}, saat ini ${cloudAd1.length}.`);
+        return;
+      }
+      if (cloudAd2.length !== linkCount) {
+        alert(`Jumlah cloud untuk Link Iklan 2 harus tepat ${linkCount}, saat ini ${cloudAd2.length}.`);
+        return;
       }
     }
+
+    const caches = getCloudCaches();
+    const existingIndex = caches.findIndex(c => c.name === name);
+
+    const cacheData = {
+      name: name,
+      savedAt: new Date().toISOString(),
+      gameType: gameData.type,
+      linkCount: gameData.linkCount,
+      modCount: gameData.modCount,
+      // Simpan urutan dari tracking
+      cloudOriginal: cloudOriginal,
+      cloudAd1: cloudAd1,
+      cloudAd2: cloudAd2
+    };
+
+    if (existingIndex >= 0) {
+      const ok = confirm(`Cache "${name}" sudah ada. Timpa?`);
+      if (!ok) return;
+      caches[existingIndex] = cacheData;
+    } else {
+      caches.push(cacheData);
+    }
+
+    setCloudCaches(caches);
+    refreshCloudCacheUI();
     
+    // Update preview cache di Step 1
+    showCachePreview(cacheData);
+    
+    // Clear nama cache field
+    if (nameInput) {
+      nameInput.value = '';
+    }
+    
+    showToast('success', `Cache "${name}" tersimpan dengan urutan yang tepat.`);
+    
+    // Debug log
+    console.log('Cache disimpan dengan urutan:', cacheData);
+
+  } catch (err) {
+    console.error('Error saving cache:', err);
+    showToast('error', 'Gagal simpan cache: ' + err.message);
+  }
+}
+
+
 function loadCloudCacheFromStep1() {
   const select = document.getElementById('cacheListStep1');
   const name = (select?.value || '').trim();
@@ -2285,7 +2532,7 @@ function loadCloudCacheFromStep1() {
   gameData.linkCount = Number(cache.linkCount || 6);
   gameData.modCount = Number(cache.modCount || 0);
 
-  // (Opsional) siapkan UI Step 2 biar kalau user pencet "Kembali", form Step 2 sudah sesuai
+  // Siapkan UI Step 2 sesuai cache
   if (gameType === 'ori-only') {
     document.getElementById('modConfigSection').innerHTML = `
       <div class="mb-4">
@@ -2316,12 +2563,12 @@ function loadCloudCacheFromStep1() {
     `;
   }
 
-  // Ambil cloud dari cache
+  // Ambil cloud dari cache - PASTIKAN URUTAN DARI CACHE
   const cloudOriginal = Array.isArray(cache.cloudOriginal) ? cache.cloudOriginal : [];
   const cloudAd1 = Array.isArray(cache.cloudAd1) ? cache.cloudAd1 : [];
   const cloudAd2 = Array.isArray(cache.cloudAd2) ? cache.cloudAd2 : [];
 
-  // Validasi harus tepat sesuai linkCount
+  // Validasi
   const need = gameData.linkCount;
   if (cloudOriginal.length !== need || cloudAd1.length !== need || cloudAd2.length !== need) {
     alert(
@@ -2335,20 +2582,110 @@ function loadCloudCacheFromStep1() {
     return;
   }
 
-  // Set langsung selection ke state (tanpa buka Step 3)
+  // Set selection ke state dengan URUTAN YANG TERSIMPAN
   gameData.cloudSelection = {
     original: cloudOriginal,
     ad1: cloudAd1,
     ad2: cloudAd2
   };
 
-  // Langsung bangun Step 4
-  generateGameDataInput();
-  showStep(4);
+  // Update window.cloudSelectionOrder
+  if (!window.cloudSelectionOrder) {
+    window.cloudSelectionOrder = {
+      cloudOriginal: [],
+      cloudAd1: [],
+      cloudAd2: []
+    };
+  }
+  
+  window.cloudSelectionOrder.cloudOriginal = [...cloudOriginal];
+  window.cloudSelectionOrder.cloudAd1 = [...cloudAd1];
+  window.cloudSelectionOrder.cloudAd2 = [...cloudAd2];
 
-  showToast('info', `Cache "${name}" dimuat. Langsung ke Step 4.`);
+  // Tampilkan preview cache di Step 1
+  showCachePreview(cache);
+
+  // Update UI Step 3 jika sudah terbuka (setelah generate cloud selection)
+  setTimeout(() => {
+    if (document.querySelector('.cloud-section')) {
+      applyCloudCacheToUI(cloudOriginal, cloudAd1, cloudAd2);
+    }
+  }, 100);
+
+  showToast('success', `Cache "${name}" dimuat. Urutan: ${cloudOriginal.join(', ')}`);
 }
 
+// FUNGSI BARU: Apply cache ke UI Step 3
+function applyCloudCacheToUI(original, ad1, ad2) {
+  // Reset semua checkbox
+  document.querySelectorAll('input.cloud-check').forEach(cb => {
+    cb.checked = false;
+  });
+  
+  // Apply untuk Link Asli
+  original.forEach(cloudId => {
+    const checkbox = document.querySelector(`.cloud-section[data-array="cloudOriginal"] input.cloud-check[value="${cloudId}"]`);
+    if (checkbox) {
+      checkbox.checked = true;
+    }
+  });
+  
+  // Apply untuk Link Iklan 1
+  ad1.forEach(cloudId => {
+    const checkbox = document.querySelector(`.cloud-section[data-array="cloudAd1"] input.cloud-check[value="${cloudId}"]`);
+    if (checkbox) {
+      checkbox.checked = true;
+    }
+  });
+  
+  // Apply untuk Link Iklan 2
+  ad2.forEach(cloudId => {
+    const checkbox = document.querySelector(`.cloud-section[data-array="cloudAd2"] input.cloud-check[value="${cloudId}"]`);
+    if (checkbox) {
+      checkbox.checked = true;
+    }
+  });
+  
+  // Update preview dan state untuk semua section
+  ['cloudOriginal', 'cloudAd1', 'cloudAd2'].forEach(arrayName => {
+    updateCloudPreviewWithOrder(arrayName);
+    
+    const section = document.querySelector(`.cloud-section[data-array="${arrayName}"]`);
+    if (section) {
+      updateCloudSectionState(section);
+    }
+  });
+}
+
+// Helper function untuk update checkboxes di Step 3
+function updateCloudCheckboxesFromCache(original, ad1, ad2) {
+  // Update checkboxes untuk Link Asli
+  if (document.querySelector('.cloud-section[data-array="cloudOriginal"]')) {
+    const checkboxes = document.querySelectorAll('.cloud-section[data-array="cloudOriginal"] input.cloud-check');
+    checkboxes.forEach(cb => {
+      cb.checked = original.includes(cb.value);
+    });
+    updateCloudPreview('cloudOriginal');
+  }
+
+  // Update checkboxes untuk Link Iklan 1
+  if (document.querySelector('.cloud-section[data-array="cloudAd1"]')) {
+    const checkboxes = document.querySelectorAll('.cloud-section[data-array="cloudAd1"] input.cloud-check');
+    checkboxes.forEach(cb => {
+      cb.checked = ad1.includes(cb.value);
+    });
+    updateCloudPreview('cloudAd1');
+  }
+
+  // Update checkboxes untuk Link Iklan 2
+  if (document.querySelector('.cloud-section[data-array="cloudAd2"]')) {
+    const checkboxes = document.querySelectorAll('.cloud-section[data-array="cloudAd2"] input.cloud-check');
+    checkboxes.forEach(cb => {
+      cb.checked = ad2.includes(cb.value);
+    });
+    updateCloudPreview('cloudAd2');
+  }
+}
     
     function deleteSelectedCloudCache() {
       const select = document.getElementById('cacheListStep1');
@@ -2374,46 +2711,110 @@ function loadCloudCacheFromStep1() {
     }
     
     // ===================== GAME DATA INPUT =====================
-    function showStep4() {
-      // Collect cloud selections
-      const cloudOriginal = [];
-      const cloudAd1 = [];
-      const cloudAd2 = [];
+function showStep4() {
+  // Collect cloud selections dengan URUTAN YANG BENAR dari window.cloudSelectionOrder
+  let cloudOriginal, cloudAd1, cloudAd2;
+  
+  if (window.cloudSelectionOrder && 
+      window.cloudSelectionOrder.cloudOriginal && 
+      window.cloudSelectionOrder.cloudAd1 && 
+      window.cloudSelectionOrder.cloudAd2) {
+    // Pakai urutan dari tracking
+    cloudOriginal = [...window.cloudSelectionOrder.cloudOriginal];
+    cloudAd1 = [...window.cloudSelectionOrder.cloudAd1];
+    cloudAd2 = [...window.cloudSelectionOrder.cloudAd2];
+  } else {
+    // Fallback: ambil dari checkboxes (urutan HTML)
+    cloudOriginal = [];
+    cloudAd1 = [];
+    cloudAd2 = [];
+    
+    document.querySelectorAll('.cloud-section').forEach(section => {
+      const arrayName = section.dataset.array;
+      const checkedBoxes = Array.from(section.querySelectorAll('input.cloud-check:checked'))
+        .map(cb => cb.value);
       
-      document.querySelectorAll('.cloud-section').forEach(section => {
-        const arrayName = section.dataset.array;
-        const selected = Array.from(section.querySelectorAll('input.cloud-check:checked'))
-          .map(cb => cb.value);
-        
-        if (arrayName === 'cloudOriginal') cloudOriginal.push(...selected);
-        else if (arrayName === 'cloudAd1') cloudAd1.push(...selected);
-        else if (arrayName === 'cloudAd2') cloudAd2.push(...selected);
-      });
-      
-      gameData.cloudSelection = {
-        original: cloudOriginal,
-        ad1: cloudAd1,
-        ad2: cloudAd2
-      };
-      
-      // Validate cloud selections
-      if (cloudOriginal.length !== gameData.linkCount ||
-          cloudAd1.length !== gameData.linkCount ||
-          cloudAd2.length !== gameData.linkCount) {
-        alert(`Harap pilih tepat ${gameData.linkCount} cloud untuk setiap tipe link!`);
-        return;
-      }
-      
-      // Generate game data input form
-      generateGameDataInput();
-      showStep(4);
-    }
+      if (arrayName === 'cloudOriginal') cloudOriginal.push(...checkedBoxes);
+      else if (arrayName === 'cloudAd1') cloudAd1.push(...checkedBoxes);
+      else if (arrayName === 'cloudAd2') cloudAd2.push(...checkedBoxes);
+    });
+  }
+  
+  // Simpan urutan yang sama
+  gameData.cloudSelection = {
+    original: cloudOriginal,
+    ad1: cloudAd1,
+    ad2: cloudAd2
+  };
+  
+  // Validate cloud selections
+  if (cloudOriginal.length !== gameData.linkCount ||
+      cloudAd1.length !== gameData.linkCount ||
+      cloudAd2.length !== gameData.linkCount) {
+    alert(`Harap pilih tepat ${gameData.linkCount} cloud untuk setiap tipe link!`);
+    return;
+  }
+  
+  // Debug log
+  console.log('Cloud Selection untuk Step 4:', {
+    original: cloudOriginal,
+    ad1: cloudAd1,
+    ad2: cloudAd2
+  });
+  
+  // Generate game data input form DENGAN URUTAN YANG SAMA
+  generateGameDataInput();
+  showStep(4);
+}
     
 
 
 function generateGameDataInput() {
   const container = document.getElementById('gameDataInput');
   container.innerHTML = '';
+
+  // TAMPILKAN PREVIEW URUTAN CLOUD
+  if (gameData.cloudSelection) {
+    const previewHTML = `
+      <div class="card mb-4 border-info">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0"><i class="bi bi-list-check"></i> Preview Urutan Cloud</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <h6>Link Asli:</h6>
+              <div class="cloud-preview-list">
+                ${gameData.cloudSelection.original.map((cloud, index) => `
+                  <span class="badge bg-primary me-1 mb-1">${index + 1}. ${cloud}</span>
+                `).join('')}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <h6>Link Iklan 1:</h6>
+              <div class="cloud-preview-list">
+                ${gameData.cloudSelection.ad1.map((cloud, index) => `
+                  <span class="badge bg-success me-1 mb-1">${index + 1}. ${cloud}</span>
+                `).join('')}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <h6>Link Iklan 2:</h6>
+              <div class="cloud-preview-list">
+                ${gameData.cloudSelection.ad2.map((cloud, index) => `
+                  <span class="badge bg-warning me-1 mb-1">${index + 1}. ${cloud}</span>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+          <small class="text-muted mt-2 d-block">
+            <i class="bi bi-info-circle"></i> Urutan ini akan digunakan untuk input link di bawah.
+          </small>
+        </div>
+      </div>
+    `;
+    container.innerHTML += previewHTML;
+  }
 
   // Update paste instructions berdasarkan tipe game
   const instructions = document.getElementById('pasteInstructions');
@@ -2640,23 +3041,25 @@ function renderThumbnailSection() {
     </div>
   `;
 }
-    function generateLinkInputs(prefix, count, clouds, modIndex = null) {
-      let html = '';
-      for (let i = 0; i < count; i++) {
-        const cloudName = clouds[i] || `Link ${i + 1}`;
-        html += `
-          <div class="input-group mb-2">
-            <span class="input-group-text" style="min-width: 150px;">${cloudName}</span>
-            <input type="text" class="form-control link-input" 
-                   data-type="${prefix}" 
-                   data-index="${i}"
-                   ${modIndex !== null ? `data-mod="${modIndex}"` : ''}
-                   placeholder="Masukkan link ${cloudName}">
-          </div>
-        `;
-      }
-      return html;
-    }
+function generateLinkInputs(prefix, count, clouds, modIndex = null) {
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    const cloudName = clouds[i] || `Link ${i + 1}`;
+    html += `
+      <div class="input-group mb-2">
+        <span class="input-group-text" style="min-width: 150px;">
+          <span class="badge bg-secondary me-1">${i + 1}</span> ${cloudName}
+        </span>
+        <input type="text" class="form-control link-input" 
+               data-type="${prefix}" 
+               data-index="${i}"
+               ${modIndex !== null ? `data-mod="${modIndex}"` : ''}
+               placeholder="Masukkan link ${cloudName} (urutan ${i + 1})">
+      </div>
+    `;
+  }
+  return html;
+}
     
     // ===================== PASTE FUNCTIONALITY =====================
 function parsePasteData() {
