@@ -2428,7 +2428,7 @@ function saveCloudCache() {
       return;
     }
 
-    // Gunakan urutan dari tracking (window.cloudSelectionOrder)
+    // Gunakan urutan dari tracking
     let cloudOriginal, cloudAd1, cloudAd2;
     
     if (window.cloudSelectionOrder) {
@@ -2436,7 +2436,6 @@ function saveCloudCache() {
       cloudAd1 = [...(window.cloudSelectionOrder.cloudAd1 || [])];
       cloudAd2 = [...(window.cloudSelectionOrder.cloudAd2 || [])];
     } else {
-      // Fallback
       cloudOriginal = [];
       cloudAd1 = [];
       cloudAd2 = [];
@@ -2465,6 +2464,21 @@ function saveCloudCache() {
       }
     }
 
+    // === AMBIL DATA GAME DARI FORM (jika sudah diisi) ===
+    let gameDataCache = null;
+    
+    // Cek apakah kita sudah di Step 4 atau form sudah terisi
+    if (document.getElementById('gameDataInput') && 
+        document.getElementById('gameDataInput').innerHTML.trim() !== '') {
+      
+      gameDataCache = {
+        oriGame: gameData.oriGame,
+        modGame: gameData.modGame,
+        thumbnailUrl: document.getElementById('thumbnailUrl')?.value.trim() || '',
+        screenshots: JSON.parse(document.getElementById('screenshotsField')?.value || '[]')
+      };
+    }
+
     const caches = getCloudCaches();
     const existingIndex = caches.findIndex(c => c.name === name);
 
@@ -2474,10 +2488,11 @@ function saveCloudCache() {
       gameType: gameData.type,
       linkCount: gameData.linkCount,
       modCount: gameData.modCount,
-      // Simpan urutan dari tracking
+      downloadId: gameData.downloadId || null, // Simpan downloadId jika sudah ada
       cloudOriginal: cloudOriginal,
       cloudAd1: cloudAd1,
-      cloudAd2: cloudAd2
+      cloudAd2: cloudAd2,
+      gameData: gameDataCache // Simpan data game jika ada
     };
 
     if (existingIndex >= 0) {
@@ -2500,8 +2515,6 @@ function saveCloudCache() {
     }
     
     showToast('success', `Cache "${name}" tersimpan dengan urutan yang tepat.`);
-    
-    // Debug log
     console.log('Cache disimpan dengan urutan:', cacheData);
 
   } catch (err) {
@@ -2531,8 +2544,50 @@ function loadCloudCacheFromStep1() {
   gameData.type = gameType;
   gameData.linkCount = Number(cache.linkCount || 6);
   gameData.modCount = Number(cache.modCount || 0);
+  gameData.downloadId = cache.downloadId || null; // Simpan downloadId jika ada
 
-  // Siapkan UI Step 2 sesuai cache
+  // === LANGSUNG SET CLOUD SELECTION DENGAN URUTAN DARI CACHE ===
+  const cloudOriginal = Array.isArray(cache.cloudOriginal) ? cache.cloudOriginal : [];
+  const cloudAd1 = Array.isArray(cache.cloudAd1) ? cache.cloudAd1 : [];
+  const cloudAd2 = Array.isArray(cache.cloudAd2) ? cache.cloudAd2 : [];
+
+  // Validasi jumlah cloud harus sesuai linkCount
+  const need = gameData.linkCount;
+  if (cloudOriginal.length !== need || cloudAd1.length !== need || cloudAd2.length !== need) {
+    alert(
+      `Cache "${name}" tidak valid.\n` +
+      `Harus tepat ${need} cloud untuk masing-masing Link Asli, Iklan 1, Iklan 2.\n\n` +
+      `Saat ini:\n` +
+      `Asli: ${cloudOriginal.length}\n` +
+      `Iklan 1: ${cloudAd1.length}\n` +
+      `Iklan 2: ${cloudAd2.length}`
+    );
+    return;
+  }
+
+  // Set ke gameData
+  gameData.cloudSelection = {
+    original: cloudOriginal,
+    ad1: cloudAd1,
+    ad2: cloudAd2
+  };
+
+  // Set window.cloudSelectionOrder dengan urutan yang sama
+  if (!window.cloudSelectionOrder) {
+    window.cloudSelectionOrder = {
+      cloudOriginal: [],
+      cloudAd1: [],
+      cloudAd2: []
+    };
+  }
+  
+  window.cloudSelectionOrder.cloudOriginal = [...cloudOriginal];
+  window.cloudSelectionOrder.cloudAd1 = [...cloudAd1];
+  window.cloudSelectionOrder.cloudAd2 = [...cloudAd2];
+
+  // === SKIP STEP 2 DAN STEP 3, LANGSUNG KE STEP 4 ===
+  
+  // 1. Setup Step 2 UI sesuai cache
   if (gameType === 'ori-only') {
     document.getElementById('modConfigSection').innerHTML = `
       <div class="mb-4">
@@ -2563,58 +2618,144 @@ function loadCloudCacheFromStep1() {
     `;
   }
 
-  // Ambil cloud dari cache - PASTIKAN URUTAN DARI CACHE
-  const cloudOriginal = Array.isArray(cache.cloudOriginal) ? cache.cloudOriginal : [];
-  const cloudAd1 = Array.isArray(cache.cloudAd1) ? cache.cloudAd1 : [];
-  const cloudAd2 = Array.isArray(cache.cloudAd2) ? cache.cloudAd2 : [];
-
-  // Validasi
-  const need = gameData.linkCount;
-  if (cloudOriginal.length !== need || cloudAd1.length !== need || cloudAd2.length !== need) {
-    alert(
-      `Cache "${name}" tidak valid.\n` +
-      `Harus tepat ${need} cloud untuk masing-masing Link Asli, Iklan 1, Iklan 2.\n\n` +
-      `Saat ini:\n` +
-      `Asli: ${cloudOriginal.length}\n` +
-      `Iklan 1: ${cloudAd1.length}\n` +
-      `Iklan 2: ${cloudAd2.length}`
-    );
-    return;
-  }
-
-  // Set selection ke state dengan URUTAN YANG TERSIMPAN
-  gameData.cloudSelection = {
-    original: cloudOriginal,
-    ad1: cloudAd1,
-    ad2: cloudAd2
-  };
-
-  // Update window.cloudSelectionOrder
-  if (!window.cloudSelectionOrder) {
-    window.cloudSelectionOrder = {
-      cloudOriginal: [],
-      cloudAd1: [],
-      cloudAd2: []
-    };
-  }
+  // 2. Generate UI Step 3 dengan data dari cache
+  generateCloudSelection();
   
-  window.cloudSelectionOrder.cloudOriginal = [...cloudOriginal];
-  window.cloudSelectionOrder.cloudAd1 = [...cloudAd1];
-  window.cloudSelectionOrder.cloudAd2 = [...cloudAd2];
-
-  // Tampilkan preview cache di Step 1
-  showCachePreview(cache);
-
-  // Update UI Step 3 jika sudah terbuka (setelah generate cloud selection)
+  // 3. Apply pilihan cloud ke UI Step 3
   setTimeout(() => {
     if (document.querySelector('.cloud-section')) {
       applyCloudCacheToUI(cloudOriginal, cloudAd1, cloudAd2);
     }
-  }, 100);
+  }, 50);
 
-  showToast('success', `Cache "${name}" dimuat. Urutan: ${cloudOriginal.join(', ')}`);
+  // 4. Tampilkan preview cache di Step 1
+  showCachePreview(cache);
+
+  // 5. LANGSUNG KE STEP 4
+  setTimeout(() => {
+    // Generate form input game data dengan urutan cloud yang sudah diset
+    generateGameDataInput();
+    showStep(4);
+    
+    // Jika cache juga menyimpan data game (ORI/MOD), isi otomatis
+    if (cache.gameData) {
+      fillGameDataFromCache(cache.gameData);
+    }
+    
+    // Jika ada downloadId, set ke gameData
+    if (cache.downloadId) {
+      gameData.downloadId = cache.downloadId;
+    }
+    
+    showToast('success', `Cache "${name}" dimuat. Langsung ke Step 4 dengan urutan: ${cloudOriginal.join(', ')}`);
+  }, 100);
 }
 
+// FUNGSI BARU: Isi data game dari cache
+function fillGameDataFromCache(gameDataCache) {
+  if (!gameDataCache) return;
+  
+  // Isi data ORI jika ada
+  if (gameDataCache.oriGame) {
+    const ori = gameDataCache.oriGame;
+    const oriNameEl = document.getElementById('oriGameName');
+    const oriSizeEl = document.getElementById('oriSize');
+    const oriModSizeEl = document.getElementById('oriModSize');
+    const oriCategoryEl = document.getElementById('oriCategory');
+    const oriVersionEl = document.getElementById('oriVersion');
+    
+    if (oriNameEl) oriNameEl.value = ori.name || '';
+    if (oriSizeEl) oriSizeEl.value = ori.sizeOri || '';
+    if (oriModSizeEl) oriModSizeEl.value = ori.sizeMod || '';
+    if (oriCategoryEl) oriCategoryEl.value = ori.category || '';
+    if (oriVersionEl) oriVersionEl.value = ori.version || '';
+    
+    // Isi link ORI
+    if (ori.originalLinks) {
+      ori.originalLinks.forEach((link, i) => {
+        const input = document.querySelector(`input[data-type="oriOriginalLinks"][data-index="${i}"]`);
+        if (input) input.value = link;
+      });
+    }
+    
+    if (ori.adLinks1) {
+      ori.adLinks1.forEach((link, i) => {
+        const input = document.querySelector(`input[data-type="oriAdLinks1"][data-index="${i}"]`);
+        if (input) input.value = link;
+      });
+    }
+    
+    if (ori.adLinks2) {
+      ori.adLinks2.forEach((link, i) => {
+        const input = document.querySelector(`input[data-type="oriAdLinks2"][data-index="${i}"]`);
+        if (input) input.value = link;
+      });
+    }
+  }
+  
+  // Isi data MOD jika ada
+  if (gameDataCache.modGame) {
+    const mod = gameDataCache.modGame;
+    const modNameEl = document.getElementById('modGameName');
+    const modSizeEl = document.getElementById('modSize');
+    const modCategoryEl = document.getElementById('modCategory');
+    const modVersionEl = document.getElementById('modVersion');
+    
+    if (modNameEl) modNameEl.value = mod.name || '';
+    if (modSizeEl) modSizeEl.value = mod.size || '';
+    if (modCategoryEl) modCategoryEl.value = mod.category || '';
+    if (modVersionEl) modVersionEl.value = mod.version || '';
+    
+    // Isi MOD features
+    if (mod.modDescription) {
+      const features = mod.modDescription.split('\n');
+      features.forEach((feature, i) => {
+        const input = document.getElementById(`modFeature${i + 1}`);
+        if (input) input.value = feature;
+      });
+    }
+    
+    // Isi link MOD
+    if (mod.originalLinks) {
+      mod.originalLinks.forEach((link, i) => {
+        const input = document.querySelector(`input[data-type="modOriginalLinks"][data-index="${i}"]`);
+        if (input) input.value = link;
+      });
+    }
+    
+    if (mod.adLinks1) {
+      mod.adLinks1.forEach((link, i) => {
+        const input = document.querySelector(`input[data-type="modAdLinks1"][data-index="${i}"]`);
+        if (input) input.value = link;
+      });
+    }
+    
+    if (mod.adLinks2) {
+      mod.adLinks2.forEach((link, i) => {
+        const input = document.querySelector(`input[data-type="modAdLinks2"][data-index="${i}"]`);
+        if (input) input.value = link;
+      });
+    }
+  }
+  
+  // Isi thumbnail jika ada
+  if (gameDataCache.thumbnailUrl) {
+    const thumbEl = document.getElementById('thumbnailUrl');
+    if (thumbEl) {
+      thumbEl.value = gameDataCache.thumbnailUrl;
+      setTimeout(() => testThumbnail(), 300);
+    }
+  }
+  
+  // Isi screenshots jika ada
+  if (gameDataCache.screenshots && gameDataCache.screenshots.length > 0) {
+    const screenshotsField = document.getElementById('screenshotsField');
+    if (screenshotsField) {
+      screenshotsField.value = JSON.stringify(gameDataCache.screenshots);
+      showScreenshotsPreview(gameDataCache.screenshots);
+    }
+  }
+}
 // FUNGSI BARU: Apply cache ke UI Step 3
 function applyCloudCacheToUI(original, ad1, ad2) {
   // Reset semua checkbox
