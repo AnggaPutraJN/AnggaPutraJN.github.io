@@ -927,6 +927,37 @@ http://link.indapk.com/QLPwH2"></textarea>
                                 <img src="" alt="Thumbnail Preview" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
                             </div>
                         </div>
+
+                        <!-- SCREENSHOT GAMEPLAY INPUT (OPTIONAL) -->
+                    <div class="col-md-12 mb-3 mt-3">
+                        <label for="screenshotsInput" class="form-label">
+                            <i class="bi bi-images"></i> Screenshot Gameplay (Optional)
+                        </label>
+                        <textarea id="screenshotsInput" class="form-control" rows="3" 
+                                  placeholder="Masukkan URL screenshot gameplay, satu baris per link&#10;Contoh:&#10;https://example.com/screenshot1.jpg&#10;https://example.com/screenshot2.png"></textarea>
+                        <div class="form-text">
+                            URL gambar screenshot gameplay. Pisahkan setiap URL dengan baris baru. 
+                            Gambar pertama akan otomatis terdeteksi sebagai Thumbnail jika field Thumbnail kosong.
+                        </div>
+                        
+                        <!-- PREVIEW SCREENSHOTS -->
+                        <div id="screenshotsPreviewContainer" class="mt-3" style="display: none;">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0"><i class="bi bi-images"></i> Preview Screenshot Gameplay</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="screenshotsPreviewGrid" class="row g-2"></div>
+                                    <div id="screenshotsEmptyMessage" class="text-muted text-center py-3" style="display: none;">
+                                        <i class="bi bi-camera"></i> Belum ada screenshot.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden field untuk menyimpan screenshots (untuk keperluan parsing) -->
+                    <input type="hidden" id="screenshotsField" value="[]">
                         
                         <div class="mt-3">
                             <button id="btnPrev3" class="btn btn-secondary">
@@ -1016,7 +1047,8 @@ http://link.indapk.com/QLPwH2"></textarea>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // ============= URL API =============
-        const GAMEWII_API_URL = "https://script.google.com/macros/s/AKfycbz8uhfQtYxyUmZSVloZlY0UDxkQayeYAemS6zDXS4zDKKJ-DYuq16pqFJLkNCYXg18a/exec"; // Ganti dengan URL Apps Script Wii Anda
+        const GAMEWII_API_URL = "https://script.google.com/macros/s/AKfycbz8uhfQtYxyUmZSVloZlY0UDxkQayeYAemS6zDXS4zDKKJ-DYuq16pqFJLkNCYXg18a/exec";
+        const SCREENSHOOT_API_URL = "https://script.google.com/macros/s/AKfycbwjF-qp6zHQGiBchoReCX3xLpWSLJysoUsRDDiXbm3nZ51RdaLWrpCh5jqno5A-Rmn4/exec";
         const USER_API_URL = "https://script.google.com/macros/s/AKfycbweRCcVmuWrz2gpvIanBqeIsyubAUgOjSssHhnXBW3WUiOu9QbNeUq-y4-9Ps6BuQ8L/exec";
         
         // Data state untuk Wii
@@ -1030,7 +1062,8 @@ http://link.indapk.com/QLPwH2"></textarea>
             originalLinksFormats: {}, // Link Asli untuk setiap format
             sizeFormats: {}, // Ukuran untuk setiap format
             gameInfo: {},
-            downloadId: null
+            downloadId: null,
+            screenshots: []
         };
         
         let currentUser = null;
@@ -1542,6 +1575,8 @@ function saveCloudCache() {
             document.getElementById('btnCopyHTML').addEventListener('click', copyHTML);
             document.getElementById('btnDownloadHTML').addEventListener('click', downloadHTML);
             document.getElementById('btnNewGame').addEventListener('click', newGame);
+            document.getElementById('screenshotsInput').addEventListener('input', updateScreenshotsPreview);
+
             
             // Cloud Cache
             document.getElementById('btnSaveCache')?.addEventListener('click', saveCloudCache);
@@ -2183,18 +2218,33 @@ function previewThumbnail() {
     testImage.src = url;
 }
         // ===================== SAVE GAME DATA =====================
+
 async function saveGameData() {
     const gameName = document.getElementById('gameName').value.trim();
     const category = document.getElementById('category').value.trim();
     const language = document.getElementById('language').value.trim();
     const thumbnailUrl = document.getElementById('thumbnailUrl').value.trim();
     
+    // === AMBIL SCREENSHOT DARI TEXTAREA ===
+    const screenshotsInput = document.getElementById('screenshotsInput');
+    let screenshotUrls = [];
+    if (screenshotsInput && screenshotsInput.value.trim()) {
+        screenshotUrls = screenshotsInput.value
+            .split('\n')
+            .map(url => url.trim())
+            .filter(url => url && isValidHttpUrl(url) && isImageUrl(url));
+    }
+    
+    // Update gameData.screenshots
+    gameData.screenshots = screenshotUrls;
+    
+    // === VALIDASI FIELD WAJIB ===
     if (!gameName || !category || !language) {
         alert('Harap isi semua field yang wajib!');
         return;
     }
     
-    // Validasi jumlah link untuk setiap format sudah diisi
+    // === VALIDASI JUMLAH LINK PER FORMAT ===
     let allLinkCountsValid = true;
     gameData.selectedFormats.forEach(format => {
         if (!gameData.formatCounts[format] || gameData.formatCounts[format] < 1) {
@@ -2204,10 +2254,11 @@ async function saveGameData() {
     
     if (!allLinkCountsValid) {
         alert('Semua format harus memiliki jumlah link minimal 1! Kembali ke Step 1 untuk mengatur jumlah link.');
+        showStep(1);
         return;
     }
     
-    // Validate all links
+    // === VALIDASI SEMUA LINK TERISI ===
     let allLinksValid = true;
     gameData.selectedFormats.forEach(format => {
         const originalLinks = gameData.originalLinksFormats[format] || [];
@@ -2216,90 +2267,171 @@ async function saveGameData() {
         
         const expectedCount = gameData.formatCounts[format] || 1;
         
+        // Cek Original Links
         if (originalLinks.length !== expectedCount || 
-            originalLinks.some(link => !link.trim()) ||
-            adLinks.length !== expectedCount || 
-            adLinks.some(link => !link.trim())) {
+            originalLinks.some(link => !link || !link.trim())) {
             allLinksValid = false;
         }
+        
+        // Cek Ad Links 1
+        if (adLinks.length !== expectedCount || 
+            adLinks.some(link => !link || !link.trim())) {
+            allLinksValid = false;
+        }
+        
+        // Ad Links 2 Boleh Kosong (Optional)
     });
     
     if (!allLinksValid) {
-        alert('Harap isi semua link untuk semua format sesuai jumlah yang ditentukan!');
+        alert('Harap isi semua link Original dan Link Iklan 1 untuk semua format sesuai jumlah yang ditentukan!');
         return;
     }
     
+    // === UPDATE GAME INFO ===
     gameData.gameInfo = {
         nama_game: gameName,
         category: category,
         language: language,
         thumbnail_url: thumbnailUrl
     };
-            
-            try {
-                const saveBtn = document.getElementById('btnSaveGame');
-                const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
-                saveBtn.disabled = true;
-                
-                const params = new URLSearchParams();
-                params.append('action', 'saveGame');
-                params.append('nama_game', gameData.gameInfo.nama_game);
-                params.append('category', gameData.gameInfo.category);
-                params.append('language', gameData.gameInfo.language);
-                params.append('thumbnail_url', gameData.gameInfo.thumbnail_url || '');
-                
-                // Add formats data
-                params.append('formats', JSON.stringify(gameData.selectedFormats));
-                params.append('format_counts', JSON.stringify(gameData.formatCounts));
-                params.append('size_formats', JSON.stringify(gameData.sizeFormats));
-                params.append('cloud_formats', JSON.stringify(gameData.cloudFormats));
-                params.append('link_asli_formats', JSON.stringify(gameData.originalLinksFormats));
-                params.append('link_iklan_formats', JSON.stringify(gameData.adLinksFormats));
-                params.append('link_iklan2_formats', JSON.stringify(gameData.adLinks2Formats));
-                
-                const response = await fetch(GAMEWII_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params.toString()
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.status === 'success') {
-                        gameData.downloadId = result.data.download_id;
-                        alert(`✅ Game Wii berhasil disimpan!\n\nNama Game: ${gameData.gameInfo.nama_game}\nDownload ID: ${result.data.download_id}`);
-                    } else {
-                        throw new Error(result.message || 'Gagal menyimpan');
-                    }
-                } else {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-            } catch (error) {
-                console.error('Save error:', error);
-                alert('❌ Gagal menyimpan game Wii: ' + error.message);
-                
-                // Fallback: Simpan ke localStorage
-                try {
-                    const gameDataToSave = {
-                        ...gameData,
-                        savedAt: new Date().toISOString()
-                    };
-                    localStorage.setItem('wiiGameData', JSON.stringify(gameDataToSave));
-                    gameData.downloadId = 'LOCAL_' + Date.now().toString().slice(-8);
-                    alert(`⚠️ Data disimpan secara lokal (karena server error).\n\nNama Game: ${gameData.gameInfo.nama_game}\nID Sementara: ${gameData.downloadId}`);
-                } catch (localError) {
-                    console.error('Local storage error:', localError);
-                }
-            } finally {
-                const saveBtn = document.getElementById('btnSaveGame');
-                saveBtn.innerHTML = 'Simpan Data Game Wii';
-                saveBtn.disabled = false;
-            }
+    
+    // === PROSES SIMPAN KE SERVER ===
+    try {
+        const saveBtn = document.getElementById('btnSaveGame');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+        saveBtn.disabled = true;
+        
+        // === KIRIM KE API UTAMA WII ===
+        const params = new URLSearchParams();
+        params.append('action', 'saveGame');
+        params.append('nama_game', gameData.gameInfo.nama_game);
+        params.append('category', gameData.gameInfo.category);
+        params.append('language', gameData.gameInfo.language);
+        params.append('thumbnail_url', gameData.gameInfo.thumbnail_url || '');
+        
+        // Data formats
+        params.append('formats', JSON.stringify(gameData.selectedFormats));
+        params.append('format_counts', JSON.stringify(gameData.formatCounts));
+        params.append('size_formats', JSON.stringify(gameData.sizeFormats));
+        params.append('cloud_formats', JSON.stringify(gameData.cloudFormats));
+        params.append('link_asli_formats', JSON.stringify(gameData.originalLinksFormats));
+        params.append('link_iklan_formats', JSON.stringify(gameData.adLinksFormats));
+        params.append('link_iklan2_formats', JSON.stringify(gameData.adLinks2Formats));
+        
+        console.log('Menyimpan game Wii ke server...');
+        
+        const response = await fetch(GAMEWII_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: params.toString()
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        const result = await response.json();
+        console.log('Response from server:', result);
+        
+        if (result.status === 'success') {
+            // === SIMPAN DOWNLOAD ID ===
+            gameData.downloadId = result.data.download_id;
+            
+            // === KIRIM SCREENSHOT KE API SCREENSHOT ===
+            let screenshotSaved = false;
+            let screenshotResult = null;
+            
+            if (screenshotUrls.length > 0 && gameData.downloadId && SCREENSHOOT_API_URL) {
+                console.log(`Menyimpan ${screenshotUrls.length} screenshot ke API screenshot...`);
+                
+                try {
+                    const screenshotParams = new URLSearchParams();
+                    screenshotParams.append('action', 'saveScreenshots');
+                    screenshotParams.append('platform', 'wii');
+                    screenshotParams.append('download_id', gameData.downloadId);
+                    screenshotParams.append('game_name', gameData.gameInfo.nama_game);
+                    screenshotParams.append('thumbnail_url', gameData.gameInfo.thumbnail_url || '');
+                    screenshotParams.append('screenshots', JSON.stringify(screenshotUrls));
+                    
+                    const screenshotResponse = await fetch(SCREENSHOOT_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: screenshotParams.toString()
+                    });
+                    
+                    if (screenshotResponse.ok) {
+                        screenshotResult = await screenshotResponse.json();
+                        if (screenshotResult.status === 'success') {
+                            screenshotSaved = true;
+                            console.log('Screenshot berhasil disimpan:', screenshotResult);
+                        }
+                    }
+                } catch (screenshotError) {
+                    console.warn('Gagal menyimpan screenshot:', screenshotError);
+                }
+            }
+            
+            // === TAMPILKAN NOTIFIKASI SUKSES ===
+            const screenshotCount = screenshotUrls.length;
+            let successMessage = `✅ GAME WII BERHASIL DISIMPAN!\n\n`;
+            successMessage += `📌 Nama Game: ${gameData.gameInfo.nama_game}\n`;
+            successMessage += `🆔 Download ID: ${gameData.downloadId}\n`;
+            successMessage += `📁 Format: ${gameData.selectedFormats.join(', ')}\n`;
+            
+            if (screenshotCount > 0) {
+                successMessage += `\n🖼️ Screenshot Gameplay: ${screenshotCount} file\n`;
+                successMessage += screenshotSaved 
+                    ? `✅ Status Screenshot: BERHASIL disimpan ke database`
+                    : `⚠️ Status Screenshot: GAGAL disimpan (tapi data game utama tersimpan)`;
+            }
+            
+            alert(successMessage);
+            
+            showToast('success', `Game "${gameData.gameInfo.nama_game}" berhasil disimpan! ID: ${gameData.downloadId}`);
+            
+        } else {
+            throw new Error(result.message || 'Gagal menyimpan ke server');
+        }
+        
+    } catch (error) {
+        console.error('Save error:', error);
+        
+        // === FALLBACK: SIMPAN KE LOCALSTORAGE ===
+        try {
+            const gameDataToSave = {
+                ...gameData,
+                screenshots: screenshotUrls,
+                savedAt: new Date().toISOString(),
+                downloadId: 'LOCAL_' + Date.now().toString().slice(-8)
+            };
+            localStorage.setItem('wiiGameData_backup', JSON.stringify(gameDataToSave));
+            gameData.downloadId = gameDataToSave.downloadId;
+            
+            alert(`⚠️ GAGAL menyimpan ke server!\n\n` +
+                  `Pesan Error: ${error.message}\n\n` +
+                  `✅ Data telah disimpan secara LOKAL di browser Anda.\n` +
+                  `📌 Download ID Sementara: ${gameData.downloadId}\n\n` +
+                  `🖼️ Screenshot: ${screenshotUrls.length} file (disimpan lokal)`);
+            
+            showToast('warning', 'Data disimpan secara lokal. Coba simpan lagi nanti.');
+            
+        } catch (localError) {
+            console.error('Local storage error:', localError);
+            alert('❌ GAGAL menyimpan game! Error: ' + error.message);
+        }
+        
+    } finally {
+        // === RESET BUTTON ===
+        const saveBtn = document.getElementById('btnSaveGame');
+        saveBtn.innerHTML = '<i class="bi bi-save"></i> Simpan Data Game Wii';
+        saveBtn.disabled = false;
+    }
+}
         
         // ===================== GENERATE HTML =====================
         function escapeHTML(text) {
@@ -3286,11 +3418,20 @@ function openPayConfirmModal(format, cloudName, saldo, cost = 1000) {
             showToast('success', 'HTML berhasil didownload.');
         }
         
-        function newGame() {
-            if (confirm('Buat game baru? Semua data yang belum disimpan akan hilang.')) {
-                location.reload();
-            }
-        }
+function newGame() {
+    if (confirm('Buat game baru? Semua data yang belum disimpan akan hilang.')) {
+        // Reset screenshots
+        gameData.screenshots = [];
+        const screenshotsInput = document.getElementById('screenshotsInput');
+        if (screenshotsInput) screenshotsInput.value = '';
+        const screenshotsField = document.getElementById('screenshotsField');
+        if (screenshotsField) screenshotsField.value = '[]';
+        const previewContainer = document.getElementById('screenshotsPreviewContainer');
+        if (previewContainer) previewContainer.style.display = 'none';
+        
+        location.reload(); // Atau reset manual
+    }
+}
         
 
 // ===================== THUMBNAIL AUTO-DETECT FUNCTIONS =====================
@@ -3331,6 +3472,69 @@ function detectThumbnailFromPasteLines(lines) {
     
     return '';
 }
+// ===================== SCREENSHOT FUNCTIONS =====================
+function isValidHttpUrl(string) {
+    try {
+        const url = new URL(string);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (_) {
+        return false;
+    }
+}
+
+function isImageUrl(url) {
+    if (!isValidHttpUrl(url)) return false;
+    const imageExtensions = /\.(jpg|jpeg|png|webp|gif|bmp)(\?.*)?$/i;
+    const uploadPattern = /\/uploads\//i;
+    return imageExtensions.test(url) || uploadPattern.test(url);
+}
+
+function updateScreenshotsPreview() {
+    const textarea = document.getElementById('screenshotsInput');
+    const container = document.getElementById('screenshotsPreviewContainer');
+    const grid = document.getElementById('screenshotsPreviewGrid');
+    const emptyMsg = document.getElementById('screenshotsEmptyMessage');
+    
+    if (!textarea || !container || !grid) return;
+    
+    const urls = textarea.value
+        .split('\n')
+        .map(url => url.trim())
+        .filter(url => url && isImageUrl(url));
+    
+    // Update hidden field
+    const screenshotsField = document.getElementById('screenshotsField');
+    if (screenshotsField) {
+        screenshotsField.value = JSON.stringify(urls);
+    }
+    
+    // Update gameData
+    gameData.screenshots = urls;
+    
+    if (urls.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    container.style.display = 'block';
+    emptyMsg.style.display = 'none';
+    
+    grid.innerHTML = urls.map((url, index) => `
+        <div class="col-md-3 col-6 mb-2">
+            <div class="card h-100">
+                <img src="${url}" 
+                     class="card-img-top" 
+                     style="height: 100px; object-fit: cover; cursor: pointer;"
+                     alt="Screenshot ${index + 1}"
+                     onclick="window.open('${url}', '_blank')"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2RkZGRkZCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2NjY2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5FcnJvcjwvdGV4dD48L3N2Zz4=';">
+                <div class="card-body p-1 text-center">
+                    <small class="text-muted">#${index + 1}</small>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
 
 function autoFillThumbnailFromPaste() {
     try {
@@ -3342,28 +3546,36 @@ function autoFillThumbnailFromPaste() {
         
         const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
         
-        // Deteksi thumbnail
-        const thumbnailUrl = detectThumbnailFromPasteLines(lines);
+        // Kumpulkan semua URL gambar dari paste data
+        const imageUrls = lines.filter(line => isImageUrl(line));
         
-        if (thumbnailUrl) {
-            // Isi field thumbnail
+        if (imageUrls.length > 0) {
+            // GAMBAR PERTAMA = THUMBNAIL
+            const thumbnailUrl = imageUrls[0];
             const thumbnailInput = document.getElementById('thumbnailUrl');
             if (thumbnailInput) {
                 thumbnailInput.value = thumbnailUrl;
-                // Trigger preview
-                setTimeout(() => {
-                    previewThumbnail();
-                }, 100);
+                setTimeout(() => previewThumbnail(), 100);
             }
             
-            console.log('✅ Thumbnail otomatis terdeteksi:', thumbnailUrl);
-            showToast('success', 'Thumbnail otomatis terdeteksi dan diisi!');
+            // GAMBAR KEDUA DAN SETERUSNYA = SCREENSHOT GAMEPLAY
+            const screenshotUrls = imageUrls.slice(1);
+            if (screenshotUrls.length > 0) {
+                const screenshotsInput = document.getElementById('screenshotsInput');
+                if (screenshotsInput) {
+                    screenshotsInput.value = screenshotUrls.join('\n');
+                    updateScreenshotsPreview();
+                }
+                showToast('success', `✅ Auto-detect: 1 thumbnail + ${screenshotUrls.length} screenshot gameplay.`);
+            } else {
+                showToast('success', '✅ Auto-detect: 1 thumbnail ditemukan.');
+            }
         } else {
-            console.log('ℹ️ Tidak ada thumbnail yang terdeteksi dalam paste data');
+            console.log('ℹ️ Tidak ada gambar yang terdeteksi dalam paste data');
         }
         
     } catch (error) {
-        console.error('❌ Error dalam auto-detect thumbnail:', error);
+        console.error('❌ Error dalam auto-detect gambar:', error);
     }
 }
 
@@ -3422,9 +3634,9 @@ function showToast(type, message) {
                 .trim();
         }
         
-        function toStr(v) {
-            return (v === null || v === undefined) ? '' : String(v);
-        }
+function toStr(v) {
+    return (v === null || v === undefined) ? '' : String(v);
+}
 
 function parseArray(v) {
     if (Array.isArray(v)) return v;
@@ -3445,6 +3657,7 @@ function parseArray(v) {
     
     return [];
 }
+
         
         // ===================== LIST GAME FUNCTIONS =====================
         function initMainTabs() {
@@ -3740,51 +3953,242 @@ async function fetchGameByDownloadId(downloadId) {
 }
         
 function applyServerGameToGameData(serverGame) {
-    console.log('Raw server game data:', serverGame); // Debug log
+    console.log('🔍 Raw server game data:', serverGame);
     
-    // Parse server data to gameData structure dengan validasi
     try {
-        gameData.selectedFormats = Array.isArray(serverGame.formats) 
-            ? serverGame.formats 
-            : parseArray(serverGame.formats || '[]');
+        // === 1. PARSING FORMATS ===
+        if (serverGame.formats) {
+            gameData.selectedFormats = Array.isArray(serverGame.formats) 
+                ? serverGame.formats 
+                : parseArray(serverGame.formats);
+        } else {
+            gameData.selectedFormats = [];
+        }
         
-        gameData.formatCounts = typeof serverGame.format_counts === 'string' 
-            ? JSON.parse(serverGame.format_counts || '{}') 
-            : (serverGame.format_counts || {});
+        // === 2. PARSING FORMAT COUNTS ===
+        if (serverGame.format_counts) {
+            gameData.formatCounts = typeof serverGame.format_counts === 'string'
+                ? JSON.parse(serverGame.format_counts)
+                : serverGame.format_counts;
+        } else {
+            gameData.formatCounts = {};
+        }
         
-        gameData.cloudFormats = typeof serverGame.cloud_formats === 'string'
-            ? JSON.parse(serverGame.cloud_formats || '{}')
-            : (serverGame.cloud_formats || {});
+        // === 3. PARSING CLOUD FORMATS ===
+        if (serverGame.cloud_formats) {
+            gameData.cloudFormats = typeof serverGame.cloud_formats === 'string'
+                ? JSON.parse(serverGame.cloud_formats)
+                : serverGame.cloud_formats;
+        } else {
+            gameData.cloudFormats = {};
+        }
         
-        gameData.sizeFormats = typeof serverGame.size_formats === 'string'
-            ? JSON.parse(serverGame.size_formats || '{}')
-            : (serverGame.size_formats || {});
+        // === 4. PARSING SIZE FORMATS ===
+        if (serverGame.size_formats) {
+            gameData.sizeFormats = typeof serverGame.size_formats === 'string'
+                ? JSON.parse(serverGame.size_formats)
+                : serverGame.size_formats;
+        } else {
+            gameData.sizeFormats = {};
+        }
         
-        gameData.originalLinksFormats = typeof serverGame.link_asli_formats === 'string'
-            ? JSON.parse(serverGame.link_asli_formats || '{}')
-            : (serverGame.link_asli_formats || {});
+        // === 5. PARSING ORIGINAL LINKS ===
+        if (serverGame.link_asli_formats) {
+            gameData.originalLinksFormats = typeof serverGame.link_asli_formats === 'string'
+                ? JSON.parse(serverGame.link_asli_formats)
+                : serverGame.link_asli_formats;
+        } else {
+            gameData.originalLinksFormats = {};
+        }
         
-        gameData.adLinksFormats = typeof serverGame.link_iklan_formats === 'string'
-            ? JSON.parse(serverGame.link_iklan_formats || '{}')
-            : (serverGame.link_iklan_formats || {});
+        // === 6. PARSING AD LINKS 1 ===
+        if (serverGame.link_iklan_formats) {
+            gameData.adLinksFormats = typeof serverGame.link_iklan_formats === 'string'
+                ? JSON.parse(serverGame.link_iklan_formats)
+                : serverGame.link_iklan_formats;
+        } else {
+            gameData.adLinksFormats = {};
+        }
         
-        gameData.adLinks2Formats = typeof serverGame.link_iklan2_formats === 'string'
-            ? JSON.parse(serverGame.link_iklan2_formats || '{}')
-            : (serverGame.link_iklan2_formats || {});
+        // === 7. PARSING AD LINKS 2 ===
+        if (serverGame.link_iklan2_formats) {
+            gameData.adLinks2Formats = typeof serverGame.link_iklan2_formats === 'string'
+                ? JSON.parse(serverGame.link_iklan2_formats)
+                : serverGame.link_iklan2_formats;
+        } else {
+            gameData.adLinks2Formats = {};
+        }
         
+        // === 8. PARSING GAME INFO ===
         gameData.gameInfo = {
-            nama_game: toStr(serverGame.nama_game || serverGame.game_name),
-            category: toStr(serverGame.category),
-            language: toStr(serverGame.language),
-            thumbnail_url: toStr(serverGame.thumbnail_url || serverGame.thumb_url)
+            nama_game: toStr(serverGame.nama_game || serverGame.game_name || ''),
+            category: toStr(serverGame.category || ''),
+            language: toStr(serverGame.language || ''),
+            thumbnail_url: toStr(serverGame.thumbnail_url || serverGame.thumb_url || '')
         };
-
-        gameData.downloadId = toStr(serverGame.download_id || serverGame.id);
         
-        console.log('Applied game data:', gameData); // Debug log
+        // === 9. PARSING DOWNLOAD ID ===
+        gameData.downloadId = toStr(serverGame.download_id || serverGame.id || '');
+        
+        // ============================================
+        // === 10. PARSING SCREENSHOTS - YANG BARU ===
+        // ============================================
+        let screenshotUrls = [];
+        
+        // Coba ambil dari field screenshot_urls (JSON string)
+        if (serverGame.screenshot_urls) {
+            try {
+                if (Array.isArray(serverGame.screenshot_urls)) {
+                    screenshotUrls = serverGame.screenshot_urls;
+                } else if (typeof serverGame.screenshot_urls === 'string') {
+                    // Coba parse JSON
+                    if (serverGame.screenshot_urls.trim().startsWith('[')) {
+                        screenshotUrls = JSON.parse(serverGame.screenshot_urls);
+                    } else {
+                        // Split per baris
+                        screenshotUrls = serverGame.screenshot_urls
+                            .split('\n')
+                            .map(url => url.trim())
+                            .filter(url => url && isValidHttpUrl(url));
+                    }
+                }
+            } catch (e) {
+                console.warn('Gagal parse screenshot_urls:', e);
+                // Fallback: split per baris
+                if (typeof serverGame.screenshot_urls === 'string') {
+                    screenshotUrls = serverGame.screenshot_urls
+                        .split('\n')
+                        .map(url => url.trim())
+                        .filter(url => url && isValidHttpUrl(url));
+                }
+            }
+        }
+        
+        // Jika tidak ada, coba ambil dari field screenshots
+        if (screenshotUrls.length === 0 && serverGame.screenshots) {
+            if (Array.isArray(serverGame.screenshots)) {
+                screenshotUrls = serverGame.screenshots;
+            } else if (typeof serverGame.screenshots === 'string') {
+                try {
+                    screenshotUrls = JSON.parse(serverGame.screenshots);
+                } catch (e) {
+                    screenshotUrls = serverGame.screenshots.split('\n').filter(Boolean);
+                }
+            }
+        }
+        
+        // Filter hanya URL gambar yang valid
+        screenshotUrls = screenshotUrls.filter(url => isValidHttpUrl(url) && isImageUrl(url));
+        
+        // Simpan ke gameData
+        gameData.screenshots = screenshotUrls;
+        
+        console.log(`✅ Screenshots loaded: ${screenshotUrls.length} file`);
+        
+        // ============================================
+        // === UPDATE UI DENGAN DATA YANG DIPARSE ===
+        // ============================================
+        
+        // 1. Update Format Order UI
+        updateFormatOrderUI();
+        
+        // 2. Update Size Inputs
+        gameData.selectedFormats.forEach(format => {
+            const sizeInput = document.getElementById(`size_${format}`);
+            if (sizeInput && gameData.sizeFormats[format]) {
+                sizeInput.value = gameData.sizeFormats[format];
+            }
+        });
+        
+        // 3. Update Form Game Info
+        const gameNameInput = document.getElementById('gameName');
+        if (gameNameInput) gameNameInput.value = gameData.gameInfo.nama_game;
+        
+        const categoryInput = document.getElementById('category');
+        if (categoryInput) categoryInput.value = gameData.gameInfo.category;
+        
+        const languageInput = document.getElementById('language');
+        if (languageInput) languageInput.value = gameData.gameInfo.language;
+        
+        // 4. Update Thumbnail
+        const thumbnailInput = document.getElementById('thumbnailUrl');
+        if (thumbnailInput) {
+            thumbnailInput.value = gameData.gameInfo.thumbnail_url || '';
+            setTimeout(() => previewThumbnail(), 100);
+        }
+        
+        // ============================================
+        // === UPDATE UI SCREENSHOTS ===
+        // ============================================
+        const screenshotsInput = document.getElementById('screenshotsInput');
+        if (screenshotsInput) {
+            if (screenshotUrls.length > 0) {
+                screenshotsInput.value = screenshotUrls.join('\n');
+            } else {
+                screenshotsInput.value = '';
+            }
+            
+            // Trigger preview update
+            setTimeout(() => {
+                if (typeof updateScreenshotsPreview === 'function') {
+                    updateScreenshotsPreview();
+                }
+            }, 200);
+        }
+        
+        // Update hidden field
+        const screenshotsField = document.getElementById('screenshotsField');
+        if (screenshotsField) {
+            screenshotsField.value = JSON.stringify(screenshotUrls);
+        }
+        
+        // 5. Generate Link Input Fields
+        generateLinkInputFields();
+        
+        // 6. Update Link Inputs dengan data dari server
+        setTimeout(() => {
+            // Update Original Links
+            gameData.selectedFormats.forEach(format => {
+                const inputs = document.querySelectorAll(`.link-input[data-array="originalLinksFormats"][data-format="${format}"]`);
+                inputs.forEach((input, index) => {
+                    if (gameData.originalLinksFormats[format] && 
+                        gameData.originalLinksFormats[format][index]) {
+                        input.value = gameData.originalLinksFormats[format][index];
+                    }
+                });
+            });
+            
+            // Update Ad Links 1
+            gameData.selectedFormats.forEach(format => {
+                const inputs = document.querySelectorAll(`.link-input[data-array="adLinksFormats"][data-format="${format}"]`);
+                inputs.forEach((input, index) => {
+                    if (gameData.adLinksFormats[format] && 
+                        gameData.adLinksFormats[format][index]) {
+                        input.value = gameData.adLinksFormats[format][index];
+                    }
+                });
+            });
+            
+            // Update Ad Links 2
+            gameData.selectedFormats.forEach(format => {
+                const inputs = document.querySelectorAll(`.link-input[data-array="adLinks2Formats"][data-format="${format}"]`);
+                inputs.forEach((input, index) => {
+                    if (gameData.adLinks2Formats[format] && 
+                        gameData.adLinks2Formats[format][index]) {
+                        input.value = gameData.adLinks2Formats[format][index];
+                    }
+                });
+            });
+        }, 300);
+        
+        console.log('✅ Game data berhasil diaplikasikan ke UI:', {
+            formats: gameData.selectedFormats,
+            screenshots: gameData.screenshots.length,
+            downloadId: gameData.downloadId
+        });
         
     } catch (error) {
-        console.error('Error applying server game data:', error);
+        console.error('❌ Error dalam applyServerGameToGameData:', error);
         throw new Error('Gagal memproses data game: ' + error.message);
     }
 }
