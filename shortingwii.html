@@ -527,12 +527,54 @@
     <i class="fas fa-moon" id="themeIcon"></i>
 </div>
 
-<!-- Initial selection screen for number of games -->
+<!-- Initial selection screen for number of games AND formats -->
 <div id="gameSelection" class="selection-screen">
-    <div class="selection-card fade-in">
+    <div class="selection-card fade-in" style="max-width: 600px;">
         <h2>Masukkan jumlah game Wii yang ingin dishorting</h2>
-        <p style="color: var(--text-muted); margin-bottom: 2rem;">Maximum 10 game</p>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Maximum 10 game</p>
         <input type="number" id="gameCountInput" min="1" max="10" placeholder="1-10" class="modern-input">
+        
+        <!-- NEW: Format selection checkboxes -->
+        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Pilih Format File Wii</h3>
+        <div class="checkbox-container" id="formatCheckboxes" style="margin-bottom: 1.5rem;">
+            <div class="checkbox-item">
+                <input type="checkbox" id="formatCISO" value="CISO" checked>
+                <label for="formatCISO">
+                    <i class="fas fa-file" style="margin-right: 8px; color: var(--accent-blue);"></i>
+                    CISO
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="formatGCZ" value="GCZ" checked>
+                <label for="formatGCZ">
+                    <i class="fas fa-file-archive" style="margin-right: 8px; color: var(--accent-green);"></i>
+                    GCZ
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="formatISO" value="ISO" checked>
+                <label for="formatISO">
+                    <i class="fas fa-disc" style="margin-right: 8px; color: var(--accent-red);"></i>
+                    ISO
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="formatRVZ" value="RVZ" checked>
+                <label for="formatRVZ">
+                    <i class="fas fa-compress" style="margin-right: 8px; color: var(--accent-purple);"></i>
+                    RVZ
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="formatWBFS" value="WBFS" checked>
+                <label for="formatWBFS">
+                    <i class="fas fa-hdd" style="margin-right: 8px; color: var(--accent-blue);"></i>
+                    WBFS
+                </label>
+            </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Centang format yang ingin ditampilkan (minimal 1)</p>
+        
         <button class="modern-btn" onclick="validateGameCount()">
             <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
             Lanjutkan
@@ -604,6 +646,13 @@
                 <label for="checkMultiup">
                     <i class="fas fa-upload" style="margin-right: 8px; color: var(--accent-purple);"></i>
                     Multiup
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkRushuploads" value="Rushuploads">
+                <label for="checkRushuploads">
+                    <i class="fas fa-wallet" style="margin-right: 8px; color: var(--accent-green);"></i>
+                    Rushuploads
                 </label>
             </div>
             <div class="checkbox-item">
@@ -811,6 +860,9 @@
     let gameCount = 0;
     let linkCount = 0;
     let selectedLinkTypes = [];
+    // NEW: Store selected formats
+    let selectedFormats = ['CISO', 'GCZ', 'ISO', 'RVZ', 'WBFS']; // Default semua aktif
+    
     const allLinkTypes = [
         { id: 'checkGdrive', value: 'Gdrive', label: 'Google Drive' },
         { id: 'checkMediafire', value: 'Mediafire', label: 'Mediafire' },
@@ -819,6 +871,7 @@
         { id: 'check1Fichier', value: '1Fichier', label: '1Fichier' },
         { id: 'checkMultiup', value: 'Multiup', label: 'Multiup' },
         { id: 'checkQiwi', value: 'Qiwi', label: 'Qiwi' },
+        { id: 'checkRushuploads', value: 'Rushuploads', label: 'Rushuploads' },
         { id: 'checkGofile', value: 'Gofile', label: 'GoFile' },
         { id: 'checkMega', value: 'Mega', label: 'Mega' },
         { id: 'checkMegaup', value: 'Megaup', label: 'Megaup' },
@@ -830,8 +883,8 @@
         { id: 'checkMixDrop', value: 'MixDrop', label: 'MixDrop' }
     ];
 
-    // Wii format types
-    const wiiFormats = ['CISO', 'GCZ', 'ISO', 'RVZ', 'WBFS'];
+    // Wii format types - now dynamic
+    let wiiFormats = [];
 
     // Modal functions
     function showSaveSettingsModal() {
@@ -848,90 +901,95 @@
     }
 
     function populateSettingsList() {
-    const settingsList = document.getElementById('settingsList');
-    settingsList.innerHTML = '';
-    
-    const savedSettings = getAllSettings();
-    
-    if (Object.keys(savedSettings).length === 0) {
-        settingsList.innerHTML = '<div class="empty-settings"><i class="fas fa-folder-open"></i><p>Tidak ada settings yang tersimpan</p></div>';
-        return;
+        const settingsList = document.getElementById('settingsList');
+        settingsList.innerHTML = '';
+        
+        const savedSettings = getAllSettings();
+        
+        if (Object.keys(savedSettings).length === 0) {
+            settingsList.innerHTML = '<div class="empty-settings"><i class="fas fa-folder-open"></i><p>Tidak ada settings yang tersimpan</p></div>';
+            return;
+        }
+        
+        Object.keys(savedSettings).forEach(settingName => {
+            const setting = savedSettings[settingName];
+            const settingItem = document.createElement('div');
+            settingItem.className = 'setting-item';
+            
+            // Buat mapping dari ID checkbox ke label yang lebih user-friendly
+            const linkTypeLabels = {
+                'checkGdrive': 'Google Drive',
+                'checkMediafire': 'Mediafire',
+                'checkVikingFile': 'VikingFile',
+                'checkPixeldrain': 'PixelDrain',
+                'check1Fichier': '1Fichier',
+                'checkMultiup': 'Multiup',
+                'checkQiwi': 'Qiwi',
+                'checkRushuploads': 'Rushuploads',
+                'checkGofile': 'GoFile',
+                'checkMega': 'Mega',
+                'checkMegaup': 'Megaup',
+                'checkKatFile': 'KatFile',
+                'checkDupload': 'Dupload',
+                'checkBowFile': 'BowFile',
+                'checkWorkupload': 'Workupload',
+                'checkTerabox': 'Terabox',
+                'checkMixDrop': 'MixDrop'
+            };
+            
+            // Dapatkan nama-nama link yang dipilih
+            const selectedLinkNames = setting.selectedLinkTypes.map(id => linkTypeLabels[id] || id);
+            
+            // Dapatkan format yang dipilih
+            const selectedFormatNames = setting.selectedFormats ? setting.selectedFormats.join(', ') : 'Semua Format';
+            
+            const settingInfo = document.createElement('div');
+            settingInfo.className = 'setting-info';
+            settingInfo.innerHTML = `
+                <div class="setting-name">
+                    <i class="fas fa-cog"></i>
+                    <strong>${settingName}</strong>
+                </div>
+                <div class="setting-details">
+                    <span>${setting.gameCount} Game</span> • 
+                    <span>${setting.linkCount} Link</span> • 
+                    <span>Format: ${selectedFormatNames}</span>
+                </div>
+                <div class="link-types">
+                    <strong>Jenis Link:</strong> ${selectedLinkNames.join(', ')}
+                </div>
+            `;
+            
+            const settingActions = document.createElement('div');
+            settingActions.className = 'setting-actions';
+            
+            const loadBtn = document.createElement('button');
+            loadBtn.className = 'load-setting';
+            loadBtn.innerHTML = '<i class="fas fa-folder-open"></i> Load';
+            loadBtn.onclick = (e) => {
+                e.stopPropagation();
+                loadSettings(settingName);
+            };
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-setting';
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Hapus';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (confirm(`Hapus setting "${settingName}"?`)) {
+                    deleteSetting(settingName);
+                    populateSettingsList();
+                }
+            };
+            
+            settingActions.appendChild(loadBtn);
+            settingActions.appendChild(deleteBtn);
+            
+            settingItem.appendChild(settingInfo);
+            settingItem.appendChild(settingActions);
+            settingsList.appendChild(settingItem);
+        });
     }
-    
-    Object.keys(savedSettings).forEach(settingName => {
-        const setting = savedSettings[settingName];
-        const settingItem = document.createElement('div');
-        settingItem.className = 'setting-item';
-        
-        // Buat mapping dari ID checkbox ke label yang lebih user-friendly
-        const linkTypeLabels = {
-            'checkGdrive': 'Google Drive',
-            'checkMediafire': 'Mediafire',
-            'checkVikingFile': 'VikingFile',
-            'checkPixeldrain': 'PixelDrain',
-            'check1Fichier': '1Fichier',
-            'checkMultiup': 'Multiup',
-            'checkQiwi': 'Qiwi',
-            'checkGofile': 'GoFile',
-            'checkMega': 'Mega',
-            'checkMegaup': 'Megaup',
-            'checkKatFile': 'KatFile',
-            'checkDupload': 'Dupload',
-            'checkBowFile': 'BowFile',
-            'checkWorkupload': 'Workupload',
-            'checkTerabox': 'Terabox',
-            'checkMixDrop': 'MixDrop'
-        };
-        
-        // Dapatkan nama-nama link yang dipilih
-        const selectedLinkNames = setting.selectedLinkTypes.map(id => linkTypeLabels[id] || id);
-        
-        const settingInfo = document.createElement('div');
-        settingInfo.className = 'setting-info';
-        settingInfo.innerHTML = `
-            <div class="setting-name">
-                <i class="fas fa-cog"></i>
-                <strong>${settingName}</strong>
-            </div>
-            <div class="setting-details">
-                <span>${setting.gameCount} Game</span> • 
-                <span>${setting.linkCount} Link</span>
-            </div>
-            <div class="link-types">
-                <strong>Jenis Link:</strong> ${selectedLinkNames.join(', ')}
-            </div>
-        `;
-        
-        const settingActions = document.createElement('div');
-        settingActions.className = 'setting-actions';
-        
-        const loadBtn = document.createElement('button');
-        loadBtn.className = 'load-setting';
-        loadBtn.innerHTML = '<i class="fas fa-folder-open"></i> Load';
-        loadBtn.onclick = (e) => {
-            e.stopPropagation();
-            loadSettings(settingName);
-        };
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-setting';
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Hapus';
-        deleteBtn.onclick = (e) => {
-            e.stopPropagation();
-            if (confirm(`Hapus setting "${settingName}"?`)) {
-                deleteSetting(settingName);
-                populateSettingsList();
-            }
-        };
-        
-        settingActions.appendChild(loadBtn);
-        settingActions.appendChild(deleteBtn);
-        
-        settingItem.appendChild(settingInfo);
-        settingItem.appendChild(settingActions);
-        settingsList.appendChild(settingItem);
-    });
-}
 
     // Settings management functions
     function getAllSettings() {
@@ -947,10 +1005,20 @@
             return;
         }
         
+        // Get current format selections
+        const formatCheckboxes = document.querySelectorAll('#formatCheckboxes input[type="checkbox"]');
+        const selectedFormats = [];
+        formatCheckboxes.forEach(cb => {
+            if (cb.checked) {
+                selectedFormats.push(cb.value);
+            }
+        });
+        
         const settings = {
             gameCount: gameCount,
             linkCount: linkCount,
-            selectedLinkTypes: selectedLinkTypes.map(lt => lt.id)
+            selectedLinkTypes: selectedLinkTypes.map(lt => lt.id),
+            selectedFormats: selectedFormats
         };
         
         const allSettings = getAllSettings();
@@ -963,55 +1031,70 @@
         closeModal('saveSettingsModal');
     }
 
-function loadSettings(settingsName) {
-    const allSettings = getAllSettings();
-    const settings = allSettings[settingsName];
-    
-    if (!settings) {
-        alert('Setting tidak ditemukan!');
-        return;
-    }
-    
-    // Set game count
-    gameCount = settings.gameCount;
-    document.getElementById('gameCountInput').value = gameCount;
-    
-    // Set link count
-    linkCount = settings.linkCount;
-    document.getElementById('linkCountInput').value = linkCount;
-    
-    // Reset all checkboxes first
-    allLinkTypes.forEach(lt => {
-        document.getElementById(lt.id).checked = false;
-    });
-    
-    // Set selected link types in the correct order
-    selectedLinkTypes = [];
-    settings.selectedLinkTypes.forEach(linkId => {
-        const linkType = allLinkTypes.find(lt => lt.id === linkId);
-        if (linkType) {
-            selectedLinkTypes.push(linkType);
-            document.getElementById(linkId).checked = true;
+    function loadSettings(settingsName) {
+        const allSettings = getAllSettings();
+        const settings = allSettings[settingsName];
+        
+        if (!settings) {
+            alert('Setting tidak ditemukan!');
+            return;
         }
-    });
-    
-    // Update UI
-    document.getElementById('selectedCount').textContent = selectedLinkTypes.length;
-    document.getElementById('maxLinks').textContent = linkCount;
-    document.getElementById('linkCountDisplay').textContent = linkCount;
-    
-    // Show the link type selection screen
-    document.getElementById('gameSelection').classList.add('hidden');
-    document.getElementById('linkSelection').classList.add('hidden');
-    document.getElementById('linkTypeSelection').classList.remove('hidden');
-    document.getElementById('mainContent').classList.add('hidden');
-    
-    updateSelectedLinksDisplay();
-    updateCheckboxStates();
-    
-    alert(`Settings "${settingsName}" berhasil dimuat!`);
-    closeModal('loadSettingsModal');
-}
+        
+        // Set game count
+        gameCount = settings.gameCount;
+        document.getElementById('gameCountInput').value = gameCount;
+        
+        // Load selected formats
+        if (settings.selectedFormats) {
+            // Reset all format checkboxes first
+            const formatCheckboxes = document.querySelectorAll('#formatCheckboxes input[type="checkbox"]');
+            formatCheckboxes.forEach(cb => {
+                cb.checked = false;
+            });
+            
+            // Set the saved formats
+            settings.selectedFormats.forEach(format => {
+                const cb = document.querySelector(`#formatCheckboxes input[value="${format}"]`);
+                if (cb) cb.checked = true;
+            });
+        }
+        
+        // Set link count
+        linkCount = settings.linkCount;
+        document.getElementById('linkCountInput').value = linkCount;
+        
+        // Reset all link checkboxes first
+        allLinkTypes.forEach(lt => {
+            document.getElementById(lt.id).checked = false;
+        });
+        
+        // Set selected link types in the correct order
+        selectedLinkTypes = [];
+        settings.selectedLinkTypes.forEach(linkId => {
+            const linkType = allLinkTypes.find(lt => lt.id === linkId);
+            if (linkType) {
+                selectedLinkTypes.push(linkType);
+                document.getElementById(linkId).checked = true;
+            }
+        });
+        
+        // Update UI
+        document.getElementById('selectedCount').textContent = selectedLinkTypes.length;
+        document.getElementById('maxLinks').textContent = linkCount;
+        document.getElementById('linkCountDisplay').textContent = linkCount;
+        
+        // Show the link type selection screen
+        document.getElementById('gameSelection').classList.add('hidden');
+        document.getElementById('linkSelection').classList.add('hidden');
+        document.getElementById('linkTypeSelection').classList.remove('hidden');
+        document.getElementById('mainContent').classList.add('hidden');
+        
+        updateSelectedLinksDisplay();
+        updateCheckboxStates();
+        
+        alert(`Settings "${settingsName}" berhasil dimuat!`);
+        closeModal('loadSettingsModal');
+    }
 
     function deleteSetting(settingsName) {
         const allSettings = getAllSettings();
@@ -1077,16 +1160,36 @@ function loadSettings(settingsName) {
         }
     }
 
-    // Function to validate game count input
+    // Function to validate game count input AND format selection
     function validateGameCount() {
         const input = document.getElementById('gameCountInput');
         const count = parseInt(input.value);
         
+        // Check game count
         if (isNaN(count) || count < 1 || count > 10) {
             alert('Masukkan angka antara 1-10');
             input.focus();
             return;
         }
+        
+        // Check format selection - at least one format must be selected
+        const formatCheckboxes = document.querySelectorAll('#formatCheckboxes input[type="checkbox"]');
+        let formatChecked = false;
+        selectedFormats = [];
+        formatCheckboxes.forEach(cb => {
+            if (cb.checked) {
+                formatChecked = true;
+                selectedFormats.push(cb.value);
+            }
+        });
+        
+        if (!formatChecked || selectedFormats.length === 0) {
+            alert('Pilih minimal satu format file Wii!');
+            return;
+        }
+        
+        // Update wiiFormats global variable
+        wiiFormats = [...selectedFormats];
         
         selectGameCount(count);
     }
@@ -1174,7 +1277,7 @@ function loadSettings(settingsName) {
         form.innerHTML = '';
 
         // Update the title
-        document.getElementById('mainContentTitle').textContent = `Masukkan Detail Game Wii (${gameCount} Game, ${linkCount} Link)`;
+        document.getElementById('mainContentTitle').textContent = `Masukkan Detail Game Wii (${gameCount} Game, ${linkCount} Link) - Format: ${wiiFormats.join(', ')}`;
 
         // Generate game name fields
         for (let i = 1; i <= gameCount; i++) {
@@ -1191,7 +1294,7 @@ function loadSettings(settingsName) {
             form.appendChild(gameNameInput);
         }
 
-        // Generate size fields for each format
+        // Generate size fields for each selected format
         for (let i = 1; i <= gameCount; i++) {
             wiiFormats.forEach(format => {
                 const sizeLabel = document.createElement('label');
@@ -1211,7 +1314,7 @@ function loadSettings(settingsName) {
         // Generate link fields based on selected link types (in the order they were checked)
         selectedLinkTypes.forEach((linkType, index) => {
             for (let i = 1; i <= gameCount; i++) {
-                // Generate link fields for each format
+                // Generate link fields for each selected format
                 wiiFormats.forEach(format => {
                     const linkLabel = document.createElement('label');
                     linkLabel.textContent = `Link Game ${i} (${index + 1}. ${linkType.label}) ${format}:`;
@@ -1271,18 +1374,19 @@ function loadSettings(settingsName) {
             }
         }
         
-        // Fill sizes (assuming sizes come right after game names)
+        // Fill sizes (sizes come right after game names)
         const sizeOffset = gameCount;
         for (let i = 1; i <= gameCount; i++) {
             wiiFormats.forEach((format, formatIndex) => {
                 const valueIndex = sizeOffset + (i-1)*wiiFormats.length + formatIndex;
                 if (values[valueIndex]) {
-                    document.getElementById(`inputSizeGame${i}${format}`).value = values[valueIndex];
+                    const sizeInput = document.getElementById(`inputSizeGame${i}${format}`);
+                    if (sizeInput) sizeInput.value = values[valueIndex];
                 }
             });
         }
         
-        // Fill links (assuming links come after sizes)
+        // Fill links (links come after sizes)
         const linkOffset = sizeOffset + gameCount * wiiFormats.length;
         
         let currentPosition = linkOffset;
@@ -1291,7 +1395,8 @@ function loadSettings(settingsName) {
                 // Generate link fields for each format
                 wiiFormats.forEach(format => {
                     if (values[currentPosition]) {
-                        document.getElementById(`inputLinkGame${i}${linkType.value}${format}`).value = values[currentPosition];
+                        const linkInput = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`);
+                        if (linkInput) linkInput.value = values[currentPosition];
                     }
                     currentPosition++;
                 });
@@ -1319,9 +1424,9 @@ function loadSettings(settingsName) {
         for (let i = 1; i <= gameCount; i++) {
             const gameName = document.getElementById(`inputNameGame${i}`).value;
 
-            // Generate sections for each format
+            // Generate sections for each selected format
             wiiFormats.forEach(format => {
-                const size = document.getElementById(`inputSizeGame${i}${format}`).value;
+                const size = document.getElementById(`inputSizeGame${i}${format}`)?.value || '';
 
                 // Collect links for this format in the order they were selected
                 let formatLinks = [];
@@ -1329,7 +1434,7 @@ function loadSettings(settingsName) {
                 // Get selected links in the order they were checked
                 selectedLinkTypes.forEach(linkType => {
                     // Get link if exists
-                    const link = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`).value;
+                    const link = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`)?.value || '';
                     if (link.trim() !== '') {
                         formatLinks.push(link);
                     }
@@ -1343,13 +1448,13 @@ function loadSettings(settingsName) {
 
             // Generated untuk web
             generatedText += `========================================================================\nUPLOAD WEB\n========================================================================\n\n\n`;
-            generatedText += `${gameName} Wii Edition All Format [Google Drive & MediaFire] (Tanpa Ekstrak) [CISO, GCZ, ISO, RVZ, WBFS] (USA) (Dolphin) [IDGAME]\n\n`;
+            generatedText += `${gameName} Wii Edition All Format [Google Drive & MediaFire] (Tanpa Ekstrak) [${wiiFormats.join(', ')}] (USA) (Dolphin) [IDGAME]\n\n`;
             generatedText += `${gameName}\n`;
             
             generatedText += `GENERATOR WII V1\n`;
-            // Add sizes for all formats
+            // Add sizes for all selected formats
             wiiFormats.forEach(format => {
-                const size = document.getElementById(`inputSizeGame${i}${format}`).value;
+                const size = document.getElementById(`inputSizeGame${i}${format}`)?.value || '';
                 generatedText += `${size}\n`;
             });
             
@@ -1359,7 +1464,7 @@ function loadSettings(settingsName) {
             // Add links for all formats
             selectedLinkTypes.forEach(linkType => {
                 wiiFormats.forEach(format => {
-                    const link = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`).value;
+                    const link = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`)?.value || '';
                     if (link.trim() !== '') {
                         generatedText += `${link}\n`;
                     }
@@ -1383,13 +1488,13 @@ function loadSettings(settingsName) {
 
             // Generated untuk web
             generatedText += `========================================================================\nUPLOAD WEB\n========================================================================\n\n\n`;
-            generatedText += `${gameName} Wii Edition All Format [Google Drive & MediaFire] (Tanpa Ekstrak) [CISO, GCZ, ISO, RVZ, WBFS] (USA) (Dolphin) [IDGAME]\n\n`;
+            generatedText += `${gameName} Wii Edition All Format [Google Drive & MediaFire] (Tanpa Ekstrak) [${wiiFormats.join(', ')}] (USA) (Dolphin) [IDGAME]\n\n`;
             generatedText += `${gameName}\n`;
             
             generatedText += `GENERATOR WII V2\n`;
-            // Add sizes for all formats
+            // Add sizes for all selected formats
             wiiFormats.forEach(format => {
-                const size = document.getElementById(`inputSizeGame${i}${format}`).value;
+                const size = document.getElementById(`inputSizeGame${i}${format}`)?.value || '';
                 generatedText += `${size}\n`;
             });
             
@@ -1399,7 +1504,7 @@ function loadSettings(settingsName) {
             // Group links by format first, then by link type
             wiiFormats.forEach(format => {
                 selectedLinkTypes.forEach(linkType => {
-                    const link = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`).value;
+                    const link = document.getElementById(`inputLinkGame${i}${linkType.value}${format}`)?.value || '';
                     if (link.trim() !== '') {
                         generatedText += `${link}\n`;
                     }
@@ -1466,6 +1571,9 @@ function loadSettings(settingsName) {
                 updateCheckboxStates();
             }
         });
+        
+        // Initialize format checkboxes - all checked by default
+        wiiFormats = ['CISO', 'GCZ', 'ISO', 'RVZ', 'WBFS'];
     };
 </script>
 </body>
