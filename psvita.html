@@ -57,13 +57,13 @@
         radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.3), transparent 50%),
         radial-gradient(circle at 40% 20%, rgba(59, 130, 246, 0.2), transparent 50%);
       pointer-events: none;
-      animation: gradientShift 15s ease infinite;
+  animation: none;
     }
 
-    @keyframes gradientShift {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.8; }
-    }
+@keyframes gradientShift {
+  0%, 100% { opacity: 0.8; } /* Kurangi perubahan */
+}
+
 
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
@@ -242,6 +242,9 @@
       font-weight: 600;
       color: var(--text-primary);
     }
+img {
+  loading: lazy;
+}
 
     .dropdown-item:hover {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1368,21 +1371,29 @@
 
 
             <!-- Cache Controls -->
-            <div class="row g-2 mb-3 align-items-center mt-3">
-              <div class="col-md-5">
-                <input type="text" id="cacheName" class="form-control" placeholder="Nama cache, contoh: PSVita-Clouds" />
-              </div>
-              <div class="col-md-3 d-grid">
-                <button id="btnSaveCache" class="btn btn-outline-success">
-                  <i class="bi bi-cloud-plus-fill"></i> Simpan Cache
-                </button>
-              </div>
-              <div class="col-12">
-                <div class="small-note">
-                  <i class="bi bi-info-circle-fill"></i> Cache menyimpan pilihan cloud untuk PS Vita.
-                </div>
-              </div>
-            </div>
+<!-- Ganti bagian cache controls dengan ini: -->
+<div class="row g-2 mb-3 align-items-center mt-3">
+  <div class="col-md-5">
+    <input type="text" id="cacheName" class="form-control" 
+           placeholder="Opsional: Nama custom, kosongkan untuk auto-naming" />
+  </div>
+  <div class="col-md-3 d-grid">
+    <button id="btnSaveCache" class="btn btn-outline-success">
+      <i class="bi bi-cloud-plus-fill"></i> Simpan Cache
+    </button>
+  </div>
+  <div class="col-md-4 d-grid">
+    <button id="btnSaveCacheAuto" class="btn btn-outline-info">
+      <i class="bi bi-cloud-arrow-up-fill"></i> Simpan Auto (Tanpa Nama)
+    </button>
+  </div>
+  <div class="col-12">
+    <div class="small-note">
+      <i class="bi bi-info-circle-fill"></i> 
+      Jika nama dikosongkan, akan dibuat otomatis berdasarkan urutan cloud.
+    </div>
+  </div>
+</div>
 
             <div class="mt-3 d-flex gap-2">
               <button id="btnPrev2" class="btn btn-secondary">
@@ -1734,6 +1745,7 @@ https://example.com/screenshot3.png"></textarea>
         document.getElementById('btnCopyHTML').addEventListener('click', copyHTML);
         document.getElementById('btnDownloadHTML').addEventListener('click', downloadHTML);
         document.getElementById('btnNewGame').addEventListener('click', newGame);
+        document.getElementById('btnSaveCacheAuto')?.addEventListener('click', saveCloudCacheAuto);
         // Screenshots input listener
         const screenshotsInput = document.getElementById('screenshotsInput');
         if (screenshotsInput) {
@@ -1753,7 +1765,54 @@ https://example.com/screenshot3.png"></textarea>
         document.getElementById('btnDeleteCache')?.addEventListener('click', deleteSelectedCloudCache);
     }
 
+function findCacheByCloudTypes(cloudTypesArray) {
+    const caches = getCloudCaches();
+    const target = JSON.stringify(cloudTypesArray);
+    
+    return caches.find(cache => 
+        JSON.stringify(cache.cloudTypes) === target
+    );
+}
 
+// Fungsi untuk menyarankan nama cache
+function suggestCacheName() {
+    if (!gameData.cloudTypes || gameData.cloudTypes.length === 0) {
+        return 'Cache-kosong';
+    }
+    
+    const cloudAbbreviations = {
+        'Google Drive': 'GD',
+        'MediaFire': 'MF',
+        'VikingFile': 'VF',
+        'PixelDrain': 'PD',
+        '1Fichier': '1F',
+        'MultiUp': 'MU',
+        'Rushuploads': 'RU',
+        'MEGA': 'MG',
+        'KatFile': 'KF',
+        'ClicknUpload': 'CU',
+        'Qiwi': 'QW'
+    };
+    
+    // Buat singkatan urutan
+    const sequence = gameData.cloudTypes.map(id => {
+        const cloud = CLOUD_OPTIONS.find(c => c.id === id);
+        return cloudAbbreviations[cloud?.name] || id.substring(0, 2);
+    }).join('-');
+    
+    return `Cache-${sequence}`;
+}
+
+// Otomatis isi nama cache saat cloud dipilih
+function autoFillCacheName() {
+    const nameInput = document.getElementById('cacheName');
+    if (!nameInput) return;
+    
+    // Hanya isi otomatis jika input kosong
+    if (!nameInput.value.trim()) {
+        nameInput.value = suggestCacheName();
+    }
+}
 function isValidHttpUrl(str) {
   try {
     const u = new URL(String(str || '').trim());
@@ -3973,10 +4032,10 @@ function createHTMLTemplate() {
                 <a class="nav-link active" href="javascript:void(0)" data-tab="details">Detail Game</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="javascript:void(0)" data-tab="adLinks">Link with ads (Link Iklan)</a>
+                <a class="nav-link" href="javascript:void(0)" data-tab="adLinks">Download Game (Link Iklan)</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="javascript:void(0)" data-tab="originalLinks">Ad-free link (Tanpa Iklan)</a>
+                <a class="nav-link" href="javascript:void(0)" data-tab="originalLinks"Download Game (Tanpa Iklan)</a>
             </li>
         </ul>
         
@@ -4857,7 +4916,7 @@ function newGame() {
     function setCloudCaches(list) {
         localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(list));
     }
-    
+
 function refreshCloudCacheUI() {
   const caches = getCloudCaches();
   const step1Select = document.getElementById('cacheListStep1');
@@ -4874,16 +4933,20 @@ function refreshCloudCacheUI() {
   opt0.textContent = caches.length ? 'Pilih cache' : 'Tidak ada cache';
   step1Select.appendChild(opt0);
 
-  caches.forEach(c => {
+  caches.forEach((c, index) => {
     const opt = document.createElement('option');
     opt.value = c.name;
     
-    // Tampilkan info urutan dalam option text
-    const orderSummary = c.cloudTypes ? 
+    // Tampilkan info dengan format yang lebih baik
+    const cloudSummary = c.cloudTypes ? 
       c.cloudTypes.map((id, idx) => `${idx + 1}.${CLOUD_OPTIONS.find(co => co.id === id)?.name || id}`).join(', ') :
       'No order';
     
-    opt.textContent = `${c.name} (${c.linkCount} link, ${orderSummary})`;
+    // Tampilkan dengan format: [1] NamaCache (6 links)
+    const displayText = `${index + 1}. ${c.name} (${c.linkCount} links)`;
+    
+    opt.textContent = displayText;
+    opt.title = cloudSummary; // Tooltip dengan detail urutan
     opt.dataset.order = JSON.stringify(c.cloudTypes || []);
     
     if (c.name === currentSelection) {
@@ -4893,28 +4956,85 @@ function refreshCloudCacheUI() {
     step1Select.appendChild(opt);
   });
   
-  // Tambahkan event listener untuk debug
-  step1Select.addEventListener('change', function() {
-    const selectedOption = this.options[this.selectedIndex];
-    if (selectedOption && selectedOption.dataset.order) {
-      console.log('Cache yang dipilih memiliki urutan:', JSON.parse(selectedOption.dataset.order));
-    }
-  });
+  // Update info jumlah cache
+  const cacheInfo = document.getElementById('cacheInfo');
+  if (!cacheInfo) {
+    // Buat elemen info jika belum ada
+    const infoEl = document.createElement('div');
+    infoEl.id = 'cacheInfo';
+    infoEl.className = 'small text-muted mt-2';
+    step1Select.parentNode.appendChild(infoEl);
+  }
+  
+  document.getElementById('cacheInfo').textContent = 
+    `${caches.length} cache tersimpan`;
 }
-
+function saveCloudCacheAuto() {
+    try {
+        // Validasi data
+        if (!Array.isArray(gameData.cloudTypes) || gameData.cloudTypes.length === 0) {
+            showToast('warning', 'Pilih cloud terlebih dahulu!');
+            return;
+        }
+        
+        // Generate nama otomatis berdasarkan urutan
+        const cloudSequence = gameData.cloudTypes.map((id, idx) => {
+            const cloud = CLOUD_OPTIONS.find(c => c.id === id);
+            return cloud ? cloud.name : id;
+        }).join('-');
+        
+        // Buat nama yang lebih singkat
+        let cacheName;
+        if (cloudSequence.length > 50) {
+            // Jika terlalu panjang, buat nama numerik
+            const dateCode = new Date().toISOString().slice(11, 19).replace(/:/g, '');
+            cacheName = `Cache-${gameData.linkCount}links-${dateCode}`;
+        } else {
+            cacheName = cloudSequence.substring(0, 80);
+        }
+        
+        // Cek apakah cache dengan urutan yang sama sudah ada
+        const caches = getCloudCaches();
+        const existingCache = caches.find(c => 
+            JSON.stringify(c.cloudTypes) === JSON.stringify(gameData.cloudTypes) &&
+            c.linkCount === gameData.linkCount
+        );
+        
+        if (existingCache) {
+            const useExisting = confirm(`Cache dengan urutan yang sama sudah ada:\n"${existingCache.name}"\n\nGunakan cache yang sudah ada?`);
+            if (useExisting) {
+                loadCloudCacheByName(existingCache.name);
+                return;
+            }
+        }
+        
+        // Simpan cache baru
+        const payload = {
+            name: cacheName,
+            savedAt: new Date().toISOString(),
+            linkCount: gameData.linkCount,
+            cloudTypes: [...gameData.cloudTypes]
+        };
+        
+        caches.push(payload);
+        setCloudCaches(caches);
+        refreshCloudCacheUI();
+        
+        showToast('success', `Cache otomatis disimpan sebagai:\n${cacheName}`);
+        
+    } catch (err) {
+        console.error('Error saveCloudCacheAuto:', err);
+        showToast('error', 'Gagal menyimpan cache otomatis');
+    }
+}
 
 function saveCloudCache() {
     try {
+        // Jika cacheName kosong, gunakan nomor urutan otomatis
         const nameEl = document.getElementById('cacheName');
-        const cacheName = (nameEl?.value || '').trim();
-
-        if (!cacheName) {
-            alert('Isi nama cache dulu.');
-            return;
-        }
-
+        const cacheNameInput = (nameEl?.value || '').trim();
+        
         console.log('=== DEBUG saveCloudCache ===');
-        console.log('Nama cache:', cacheName);
         console.log('linkCount:', gameData.linkCount);
         console.log('cloudTypes:', gameData.cloudTypes);
         
@@ -4928,13 +5048,36 @@ function saveCloudCache() {
         }
 
         const caches = getCloudCaches();
+        
+        // Buat nama cache otomatis berdasarkan urutan cloud
+        let cacheName;
+        if (cacheNameInput) {
+            cacheName = cacheNameInput;
+        } else {
+            // Generate nama otomatis: "Urutan-1_Google Drive-2_MediaFire-..."
+            const cloudNames = gameData.cloudTypes.map((id, idx) => {
+                const cloudObj = CLOUD_OPTIONS.find(c => c.id === id);
+                return `${idx + 1}_${cloudObj?.name || id}`;
+            }).join('-');
+            cacheName = `Cache-${cloudNames}`;
+            
+            // Batasi panjang nama jika terlalu panjang
+            if (cacheName.length > 100) {
+                cacheName = `Cache-${gameData.cloudTypes.length}links-${Date.now().toString().slice(-6)}`;
+            }
+        }
+        
         const existingIndex = caches.findIndex(c => c.name === cacheName);
 
         const payload = {
             name: cacheName,
             savedAt: new Date().toISOString(),
             linkCount: gameData.linkCount,
-            cloudTypes: [...gameData.cloudTypes] // Simpan COPY array
+            cloudTypes: [...gameData.cloudTypes],
+            // Simpan juga deskripsi singkat
+            description: `${gameData.linkCount} links: ${gameData.cloudTypes.map(id => 
+                CLOUD_OPTIONS.find(c => c.id === id)?.name || id
+            ).join(', ')}`
         };
 
         if (existingIndex >= 0) {
@@ -4948,13 +5091,18 @@ function saveCloudCache() {
         setCloudCaches(caches);
         refreshCloudCacheUI();
         
+        // Update input nama dengan nama yang digunakan
+        if (nameEl) {
+            nameEl.value = cacheName;
+        }
+        
         // Tampilkan konfirmasi dengan urutan
         const orderList = gameData.cloudTypes.map((id, idx) => {
             const name = CLOUD_OPTIONS.find(c => c.id === id)?.name || id;
             return `${idx + 1}. ${name}`;
         }).join('\n');
         
-        alert(`✅ Cache "${cacheName}" tersimpan dengan urutan:\n\n${orderList}`);
+        alert(`✅ Cache disimpan sebagai:\n"${cacheName}"\n\nUrutan:\n${orderList}`);
         
         showToast('success', `Cache "${cacheName}" tersimpan.`);
         
@@ -5169,11 +5317,24 @@ async function loadSavedGames() {
     
 function renderSavedGamesTable(list) {
   const tbody = document.getElementById('savedGamesBody');
+  const limitedList = list.slice(0, 50);
   if (!tbody) return;
 
   if (!list.length) {
     tbody.innerHTML = `<tr><td colspan="5" class="text-muted">Belum ada data di spreadsheet.</td></tr>`;
     return;
+  }
+  // Tambahkan infinite scroll
+  if (list.length > 50) {
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td colspan="5" class="text-center">
+          <button class="btn btn-sm btn-primary" onclick="loadMoreGames()">
+            Load More (${list.length - 50} remaining)
+          </button>
+        </td>
+      </tr>
+    `);
   }
 
   tbody.innerHTML = list.map(g => {
