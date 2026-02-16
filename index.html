@@ -2235,7 +2235,6 @@ function setupPasteFunctionality() {
     });
 }
 
-// Fungsi untuk parse data dari textarea
 // Fungsi untuk parse data dari textarea - DIPERBAIKI
 function parsePasteData(text) {
   const lines = text
@@ -2243,7 +2242,7 @@ function parsePasteData(text) {
     .map(l => l.trim())
     .filter(l => l !== '');
 
-  console.log('Lines to parse:', lines); // Debug log
+  console.log('Lines to parse:', lines);
 
   const { hasNSP, hasXCI } = getGameTypeFlags();
   const sizeLineCount = (hasNSP ? 1 : 0) + (hasXCI ? 1 : 0);
@@ -2257,7 +2256,7 @@ function parsePasteData(text) {
 
   // 1. Nama Game
   const gameName = lines[idx++] || '';
-  console.log('Game Name:', gameName); // Debug
+  console.log('Game Name:', gameName);
 
   // 2. Ukuran NSP dan XCI (dinamis)
   let nspSize = '';
@@ -2272,15 +2271,11 @@ function parsePasteData(text) {
     xciSize = lines[idx++] || '';
   }
 
-  console.log('Sizes - NSP:', nspSize, 'XCI:', xciSize); // Debug
-
   // 3. Metadata Game
   const category = lines[idx++] || '';
   const gameId = lines[idx++] || '';
   const region = lines[idx++] || '';
   const language = lines[idx++] || '';
-
-  console.log('Metadata:', { category, gameId, region, language }); // Debug
 
   // Isi form dasar
   document.getElementById('gameName').value = gameName;
@@ -2291,7 +2286,7 @@ function parsePasteData(text) {
   document.getElementById('region').value = region;
   document.getElementById('language').value = language;
 
-  // Pastikan field ukuran yang tidak dipakai disembunyikan
+  // Update size fields visibility
   updateSizeFieldsVisibility();
 
   // Hitung total link yang diharapkan
@@ -2304,50 +2299,73 @@ function parsePasteData(text) {
   const totalExpectedOriginalLinks = totalExpectedLinks;
   const totalExpectedAdLinks1 = totalExpectedLinks;
   const totalExpectedAdLinks2 = totalExpectedLinks;
-
-  const totalExpectedAllLinks =
-    totalExpectedOriginalLinks + totalExpectedAdLinks1 + totalExpectedAdLinks2;
+  const totalExpectedAllLinks = totalExpectedOriginalLinks + totalExpectedAdLinks1 + totalExpectedAdLinks2;
 
   // Ambil sisa baris untuk link
   let remainingLines = lines.slice(idx);
 
-  console.log('Remaining lines for links:', remainingLines.length, 'Expected:', totalExpectedAllLinks); // Debug
+  console.log('Remaining lines for links:', remainingLines.length, 'Expected:', totalExpectedAllLinks);
 
-  // === PERBAIKAN DETEKSI GAMBAR ===
+  // ========== DETEKSI GAMBAR DENGAN LOGIKA YANG LEBIH AKURAT ==========
   const imagePattern = /\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i;
-  const isImageUrl = (url) => {
-    return url && url.match(/^https?:\/\//i) && imagePattern.test(url);
-  };
+  const isImageUrl = (url) => url && url.match(/^https?:\/\//i) && imagePattern.test(url);
 
   let thumbnailUrl = '';
   let screenshotUrls = [];
 
-  // Cari semua URL gambar dalam remainingLines
+  // Ambil semua URL gambar dari remainingLines
   const allImageUrls = remainingLines.filter(line => isImageUrl(line));
-  console.log('All image URLs found:', allImageUrls); // Debug
-
+  
   if (allImageUrls.length > 0) {
-    // LOGIKA BARU: Bedakan thumbnail dan screenshot berdasarkan pola URL
-    for (const url of allImageUrls) {
-      // Pattern untuk thumbnail: biasanya mengandung "1.png" atau "thumbnail" atau "wp-content/uploads"
-      if (url.includes('1.png') || 
-          url.includes('thumbnail') || 
-          url.includes('-1.') ||
-          url.match(/\/\d+\.(png|jpg|jpeg)$/) && !url.includes('screenshot')) {
-        if (!thumbnailUrl) {
-          thumbnailUrl = url;
-          console.log('Detected as THUMBNAIL:', url);
-        } else {
-          screenshotUrls.push(url);
+    console.log('All image URLs found:', allImageUrls);
+    
+    // KRITERIA THUMBNAIL (HANYA 1 GAMBAR PERTAMA YANG MEMENUHI):
+    // 1. Mengandung "1.png" atau "wp-content/uploads" atau "cover" atau "thumb"
+    // 2. Atau URL dengan format tertentu seperti /1., /cover., dll
+    // 3. ATAU jika hanya ada 1 gambar, itu adalah thumbnail
+    // 4. ATAU gambar pertama dianggap thumbnail, sisanya screenshot
+    
+    if (allImageUrls.length === 1) {
+      // Jika hanya ada 1 gambar, itu adalah thumbnail
+      thumbnailUrl = allImageUrls[0];
+      console.log('Only one image found, using as thumbnail:', thumbnailUrl);
+    } else {
+      // Multiple images - cari gambar yang paling mungkin sebagai thumbnail
+      let thumbnailCandidateIndex = -1;
+      
+      for (let i = 0; i < allImageUrls.length; i++) {
+        const url = allImageUrls[i].toLowerCase();
+        
+        // Cek kriteria thumbnail
+        if (url.includes('1.png') || 
+            url.includes('cover') || 
+            url.includes('thumb') || 
+            url.includes('wp-content/uploads') ||
+            url.match(/\/\d+\.(png|jpg|jpeg)$/) && !url.includes('screenshot') ||
+            url.includes('-1.') ||
+            url.includes('_1.') ||
+            url.includes('thumbnail')) {
+          
+          thumbnailCandidateIndex = i;
+          console.log('Found thumbnail candidate at index', i, ':', allImageUrls[i]);
+          break;
         }
-      } else {
-        screenshotUrls.push(url);
       }
+      
+      // Jika tidak ada yang memenuhi kriteria, gunakan gambar pertama sebagai thumbnail
+      if (thumbnailCandidateIndex === -1) {
+        thumbnailCandidateIndex = 0;
+        console.log('No thumbnail candidate found, using first image as thumbnail');
+      }
+      
+      // Set thumbnail dan screenshot
+      thumbnailUrl = allImageUrls[thumbnailCandidateIndex];
+      screenshotUrls = allImageUrls.filter((_, index) => index !== thumbnailCandidateIndex);
+      
+      console.log('Thumbnail (index ' + thumbnailCandidateIndex + '):', thumbnailUrl);
+      console.log('Screenshots (count: ' + screenshotUrls.length + '):', screenshotUrls);
     }
   }
-
-  console.log('Thumbnail:', thumbnailUrl);
-  console.log('Screenshots:', screenshotUrls);
 
   // Filter out image URLs dari remainingLines untuk link
   remainingLines = remainingLines.filter(line => !isImageUrl(line));
@@ -2409,7 +2427,7 @@ function parsePasteData(text) {
   for (let i = 0; i < (gameData.nspPartCount || 0); i++) gameData.originalLinksNSPPart[i] = originalLinks[linkIndex++] || '';
   for (let i = 0; i < (gameData.xciPartCount || 0); i++) gameData.originalLinksXCIPart[i] = originalLinks[linkIndex++] || '';
 
-  // === UPDATE THUMBNAIL DAN SCREENSHOT ===
+  // ===== UPDATE THUMBNAIL DAN SCREENSHOT =====
   // Isi thumbnail jika ditemukan
   if (thumbnailUrl) {
     gameData.thumbnailUrl = thumbnailUrl;
@@ -2419,23 +2437,31 @@ function parsePasteData(text) {
 
   // Isi screenshot URLs jika ditemukan
   if (screenshotUrls.length > 0) {
-    // Filter out thumbnail dari screenshot jika ada
-    const filteredScreenshots = screenshotUrls.filter(url => url !== thumbnailUrl);
-    gameData.screenshotUrls = filteredScreenshots;
+    gameData.screenshotUrls = screenshotUrls;
     const screenshotInput = document.getElementById('screenshotUrls');
     if (screenshotInput) {
-      screenshotInput.value = filteredScreenshots.join('\n');
+      screenshotInput.value = screenshotUrls.join('\n');
     }
+  } else {
+    // Reset screenshot jika tidak ada
+    gameData.screenshotUrls = [];
+    const screenshotInput = document.getElementById('screenshotUrls');
+    if (screenshotInput) screenshotInput.value = '';
   }
 
   // Update UI
   updateLinkInputsUI();
 
-  // Tampilkan info jika ada screenshot
-  if (screenshotUrls.length > 0) {
-    showToast('info', `Ditemukan thumbnail dan ${screenshotUrls.filter(url => url !== thumbnailUrl).length} screenshot gameplay.`);
+  // Tampilkan info
+  const totalImages = allImageUrls.length;
+  if (totalImages > 0) {
+    const thumbnailText = thumbnailUrl ? '✓' : '✗';
+    const screenshotCount = screenshotUrls.length;
+    showToast('info', `Ditemukan ${totalImages} gambar: Thumbnail ${thumbnailText}, Screenshot: ${screenshotCount}`);
   }
 }
+
+
 // Fungsi untuk debug parsing
 function debugParseData(text) {
   console.log('=== DEBUG PARSING DATA ===');
