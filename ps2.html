@@ -2099,9 +2099,7 @@ async function saveGameData() {
             .split(/[\n,]/)
             .map(url => url.trim())
             .filter(url => {
-                // Filter hanya URL gambar yang valid
                 if (!url || !url.match(/^https?:\/\//i)) return false;
-                // Validasi ekstensi gambar
                 return /\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i.test(url);
             }) : [];
     
@@ -2186,7 +2184,11 @@ async function saveGameData() {
         // Simpan download ID
         gameData.downloadId = gameResult.data.download_id;
         
-        // ===== 2. SIMPAN SCREENSHOT KE API SCREENSHOT =====
+        // ===== 2. GENERATE HTML DAHULU =====
+        // Generate HTML langsung setelah dapat downloadId
+        const generatedHtml = createHTMLTemplate();
+        
+        // ===== 3. SIMPAN SCREENSHOT KE API SCREENSHOT =====
         let screenshotSaved = false;
         let screenshotResult = null;
         
@@ -2196,7 +2198,7 @@ async function saveGameData() {
             try {
                 const screenshotParams = new URLSearchParams();
                 screenshotParams.append('action', 'saveScreenshots');
-                screenshotParams.append('platform', 'ps2'); // GANTI dari 'switch' jadi 'ps2'
+                screenshotParams.append('platform', 'ps2');
                 screenshotParams.append('download_id', gameData.downloadId);
                 screenshotParams.append('game_name', gameName);
                 screenshotParams.append('thumbnail_url', thumbnailUrl);
@@ -2222,27 +2224,28 @@ async function saveGameData() {
             }
         }
         
-        // ===== 3. TAMPILKAN MODAL SUKSES =====
+        // ===== 4. TAMPILKAN MODAL SUKSES DENGAN TOMBOL COPY HTML =====
         const screenshotCount = screenshotUrls.length;
         const successTitle = screenshotCount > 0 
             ? `✅ Game PS2 Berhasil Disimpan (${screenshotCount} Screenshot)`
             : '✅ Game PS2 Berhasil Disimpan';
         
-        showSuccessModalPS2(
+        showSuccessModalPS2WithHTML(
             successTitle,
             gameData.gameInfo.nama_game,
             gameResult.data.download_id,
+            generatedHtml, // <-- Kirim HTML yang sudah digenerate
             screenshotCount,
             screenshotSaved
         );
         
-        // ===== 4. SIMPAN KE LOCALSTORAGE =====
+        // ===== 5. SIMPAN KE LOCALSTORAGE =====
         if (gameData.downloadId && gameData.gameInfo.nama_game) {
             saveGameToLocalStorage({
                 downloadId: gameData.downloadId,
                 name: gameData.gameInfo.nama_game,
                 language: gameData.gameInfo.language,
-                gameId: gameData.gameInfo.nama_game, // PS2 biasanya tidak punya Game ID
+                gameId: gameData.gameInfo.nama_game,
                 thumbnailUrl: thumbnailUrl,
                 screenshotCount: screenshotCount,
                 screenshotSaved: screenshotSaved,
@@ -2253,19 +2256,24 @@ async function saveGameData() {
     } catch (error) {
         console.error('Save error:', error);
         
-        // ===== FALLBACK: SIMPAN KE LOCALSTORAGE =====
+        // ===== FALLBACK: GENERATE HTML UNTUK MODAL =====
+        // Tetap generate HTML untuk modal fallback
         const fallbackId = 'LOCAL_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 8).toUpperCase();
         gameData.downloadId = fallbackId;
+        
+        // Generate HTML untuk fallback
+        const generatedHtml = createHTMLTemplate();
         
         const screenshotCount = screenshotUrls.length;
         const fallbackTitle = screenshotCount > 0
             ? `⚠️ Disimpan Secara Lokal (${screenshotCount} Screenshot)`
             : '⚠️ Disimpan Secara Lokal';
         
-        showFallbackModalPS2(
+        showFallbackModalPS2WithHTML(
             fallbackTitle,
             gameData.gameInfo.nama_game,
             fallbackId,
+            generatedHtml, // <-- Kirim HTML yang sudah digenerate
             screenshotCount
         );
         
@@ -2308,7 +2316,7 @@ function saveGameToLocalStorage(game) {
 }
 
 // Modal Success untuk PS2
-function showSuccessModalPS2(title, gameName, downloadId, screenshotCount = 0, screenshotSaved = false) {
+function showSuccessModalPS2WithHTML(title, gameName, downloadId, htmlContent, screenshotCount = 0, screenshotSaved = false) {
     const modalHtml = `
         <div class="modal fade" id="saveSuccessModalPS2" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
@@ -2346,8 +2354,12 @@ function showSuccessModalPS2(title, gameName, downloadId, screenshotCount = 0, s
                                     ID ini <strong>100% UNIK</strong> dan tidak akan pernah duplikat
                                 </small>
                             </div>
+                            
+                            <!-- HTML Preview (hidden) -->
+                            <textarea id="generatedHtmlContent" style="display: none;">${escapeHTML(htmlContent)}</textarea>
+                            
                             <p class="text-muted mt-3">
-                                ID digenerate otomatis dengan sistem anti-duplikat
+                                HTML sudah siap! Klik tombol "Copy HTML" untuk menyalin kode HTML.
                             </p>
                         </div>
                     </div>
@@ -2355,8 +2367,8 @@ function showSuccessModalPS2(title, gameName, downloadId, screenshotCount = 0, s
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
                             <i class="bi bi-check"></i> OK
                         </button>
-                        <button type="button" class="btn btn-outline-success" onclick="copyToClipboard('${downloadId}')">
-                            <i class="bi bi-clipboard"></i> Copy ID
+                        <button type="button" class="btn btn-outline-success" onclick="copyGeneratedHTML()">
+                            <i class="bi bi-code-slash"></i> Copy HTML
                         </button>
                         ${screenshotCount > 0 ? `
                         <button type="button" class="btn btn-outline-info" onclick="previewGameScreenshotsPS2('${downloadId}')">
@@ -2382,6 +2394,7 @@ function showSuccessModalPS2(title, gameName, downloadId, screenshotCount = 0, s
     const successModal = new bootstrap.Modal(document.getElementById('saveSuccessModalPS2'));
     successModal.show();
 }
+
 
 // Fungsi untuk mengambil screenshot dari API screenshot (PS2)
 async function getGameScreenshotsFromAPIPS2(downloadId) {
@@ -2457,7 +2470,7 @@ async function previewGameScreenshotsPS2(downloadId) {
     }
 }
 // Modal Fallback untuk PS2
-function showFallbackModalPS2(title, gameName, downloadId, screenshotCount = 0) {
+function showFallbackModalPS2WithHTML(title, gameName, downloadId, htmlContent, screenshotCount = 0) {
     const modalHtml = `
         <div class="modal fade" id="fallbackModalPS2" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
@@ -2496,8 +2509,12 @@ function showFallbackModalPS2(title, gameName, downloadId, screenshotCount = 0) 
                                     Data akan hilang jika cache browser dibersihkan
                                 </small>
                             </div>
+                            
+                            <!-- HTML Preview (hidden) -->
+                            <textarea id="fallbackHtmlContent" style="display: none;">${escapeHTML(htmlContent)}</textarea>
+                            
                             <p class="text-muted mt-3">
-                                Coba simpan lagi nanti untuk mendapatkan ID permanen
+                                HTML sudah siap! Klik tombol "Copy HTML" untuk menyalin kode HTML.
                             </p>
                         </div>
                     </div>
@@ -2505,7 +2522,10 @@ function showFallbackModalPS2(title, gameName, downloadId, screenshotCount = 0) 
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
                             <i class="bi bi-check"></i> OK
                         </button>
-                        <button type="button" class="btn btn-outline-warning" onclick="copyToClipboard('${downloadId}')">
+                        <button type="button" class="btn btn-outline-warning" onclick="copyFallbackHTML()">
+                            <i class="bi bi-code-slash"></i> Copy HTML
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="copyToClipboard('${downloadId}')">
                             <i class="bi bi-clipboard"></i> Copy ID
                         </button>
                     </div>
@@ -2524,6 +2544,91 @@ function showFallbackModalPS2(title, gameName, downloadId, screenshotCount = 0) 
     
     const fallbackModal = new bootstrap.Modal(document.getElementById('fallbackModalPS2'));
     fallbackModal.show();
+}
+
+
+// Fungsi global untuk copy HTML dari modal sukses
+function copyGeneratedHTML() {
+    const htmlContent = document.getElementById('generatedHtmlContent')?.value;
+    if (!htmlContent) {
+        alert('HTML tidak ditemukan!');
+        return;
+    }
+    
+    navigator.clipboard.writeText(htmlContent).then(() => {
+        showToast('success', '✅ HTML berhasil disalin ke clipboard!');
+        
+        // Tutup modal setelah sukses copy
+        const modalEl = document.getElementById('saveSuccessModalPS2');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        
+    }).catch(err => {
+        // Fallback untuk browser lama
+        const textArea = document.createElement('textarea');
+        textArea.value = htmlContent;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showToast('success', '✅ HTML berhasil disalin ke clipboard!');
+            
+            const modalEl = document.getElementById('saveSuccessModalPS2');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+            
+        } catch (err) {
+            showToast('error', '❌ Gagal menyalin HTML');
+        }
+        
+        document.body.removeChild(textArea);
+    });
+}
+
+// Fungsi global untuk copy HTML dari modal fallback
+function copyFallbackHTML() {
+    const htmlContent = document.getElementById('fallbackHtmlContent')?.value;
+    if (!htmlContent) {
+        alert('HTML tidak ditemukan!');
+        return;
+    }
+    
+    navigator.clipboard.writeText(htmlContent).then(() => {
+        showToast('success', '✅ HTML berhasil disalin ke clipboard!');
+        
+        const modalEl = document.getElementById('fallbackModalPS2');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        
+    }).catch(err => {
+        const textArea = document.createElement('textarea');
+        textArea.value = htmlContent;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showToast('success', '✅ HTML berhasil disalin ke clipboard!');
+            
+            const modalEl = document.getElementById('fallbackModalPS2');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+            
+        } catch (err) {
+            showToast('error', '❌ Gagal menyalin HTML');
+        }
+        
+        document.body.removeChild(textArea);
+    });
 }
         // ===================== GENERATE HTML =====================
         function escapeHTML(text) {
