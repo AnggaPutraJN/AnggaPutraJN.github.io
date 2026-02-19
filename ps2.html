@@ -1617,20 +1617,20 @@ function nextStep2() {
             // CHD Links (DI ATAS)
             if (gameData.chdCount > 0) {
                 originalLinksContainer.appendChild(createLinkSection('CHD (Link Asli)', gameData.chdCount, 'originalLinksCHD', gameData.cloudCHD));
-                adLinksContainer.appendChild(createLinkSection('CHD (Link Iklan 1)', gameData.chdCount, 'adLinksCHD', gameData.cloudCHD));
+                adLinksContainer.appendChild(createLinkSection('CHD (INDapk Short)', gameData.chdCount, 'adLinksCHD', gameData.cloudCHD));
                 
                 if (adLinks2Container) {
-                    adLinks2Container.appendChild(createLinkSection('CHD (Link Iklan 2)', gameData.chdCount, 'adLinks2CHD', gameData.cloudCHD));
+                    adLinks2Container.appendChild(createLinkSection('CHD (Semawur)', gameData.chdCount, 'adLinks2CHD', gameData.cloudCHD));
                 }
             }
             
             // ISO Links (DI BAWAH)
             if (gameData.isoCount > 0) {
                 originalLinksContainer.appendChild(createLinkSection('ISO (Link Asli)', gameData.isoCount, 'originalLinksISO', gameData.cloudISO));
-                adLinksContainer.appendChild(createLinkSection('ISO (Link Iklan 1)', gameData.isoCount, 'adLinksISO', gameData.cloudISO));
+                adLinksContainer.appendChild(createLinkSection('ISO (INDapk Short)', gameData.isoCount, 'adLinksISO', gameData.cloudISO));
                 
                 if (adLinks2Container) {
-                    adLinks2Container.appendChild(createLinkSection('ISO (Link Iklan 2)', gameData.isoCount, 'adLinks2ISO', gameData.cloudISO));
+                    adLinks2Container.appendChild(createLinkSection('ISO (Semawur)', gameData.isoCount, 'adLinks2ISO', gameData.cloudISO));
                 }
             }
         }
@@ -2695,8 +2695,8 @@ const getCloudColorClass = (cloud) => {
             
             // CHD Links (DI ATAS)
             if (gameData.chdCount > 0) {
-                adLinks1HTML += `<h4>CHD Link (Link Iklan 1)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-                adLinks2HTML += `<h4>CHD Link (Link Iklan 2)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                adLinks1HTML += `<h4>CHD Link (INDapk Short)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                adLinks2HTML += `<h4>CHD Link (Semawur)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
                 originalLinksHTML += `<h4>CHD Link (Link Asli)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
                 
                 for (let i = 0; i < gameData.chdCount; i++) {
@@ -2717,8 +2717,8 @@ const getCloudColorClass = (cloud) => {
             
             // ISO Links (DI BAWAH)
             if (gameData.isoCount > 0) {
-                adLinks1HTML += `<h4>ISO Link (Link Iklan 1)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
-                adLinks2HTML += `<h4>ISO Link (Link Iklan 2)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                adLinks1HTML += `<h4>ISO Link (INDapk Short)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
+                adLinks2HTML += `<h4>ISO Link (Semawur)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
                 originalLinksHTML += `<h4>ISO Link (Link Asli)</h4><div class="d-flex flex-wrap gap-2 mb-3">`;
                 
                 for (let i = 0; i < gameData.isoCount; i++) {
