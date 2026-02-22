@@ -3671,20 +3671,42 @@ function createHTMLTemplate() {
             --base-font: 18px;
             --tab-font: 16px;
             --btn-font: 16px;
+            --bg-deep: #050812;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(22, 27, 46, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --dropdown-bg: #0f1422;
+            --neon-cyan: #00f0ff;
+            --neon-purple: #bc13fe;
+            --neon-pink: #ff0055;
+            --accent-grad: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
         }
 
-        *,
-        *::before,
-        *::after{
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body{
-            background-color: #f8f9fa;
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.08), transparent 25%);
+            color: var(--text-main);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: var(--base-font);
             line-height: 1.55;
+            min-height: 100vh;
         }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
 
         .psvita-header{
             background: var(--psvita-gradient);
@@ -3702,6 +3724,57 @@ function createHTMLTemplate() {
             border-radius: 20px;
             font-size: 0.95rem;
             font-weight: 700;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--bg-dark);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0.8rem 0;
+            margin-bottom: 20px;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            background: var(--accent-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .btn-custom {
+            background: var(--accent-grad);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);
+            color: #fff;
+        }
+
+        /* User Info Box */
+        .user-info-box {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #007bff;
+            animation: slideInRight 0.5s ease-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            color: #000;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         /* Tabs */
@@ -3724,9 +3797,9 @@ function createHTMLTemplate() {
             line-height: 1.2 !important;
             white-space: normal !important;
             text-align: center;
-            color: #212529 !important;
-            background: #ffffff !important;
-            border: 1px solid #dee2e6 !important;
+            color: var(--text-main) !important;
+            background: rgba(255,255,255,0.1) !important;
+            border: 1px solid var(--glass-border) !important;
             border-bottom: 0 !important;
             padding: 10px 14px !important;
             border-radius: 10px 10px 0 0;
@@ -3734,10 +3807,8 @@ function createHTMLTemplate() {
 
         .nav-tabs .nav-link:hover,
         .nav-tabs .nav-link:focus{
-            color: #000 !important;
-            background: #f8f9fa !important;
-            outline: none;
-            box-shadow: none;
+            color: #fff !important;
+            background: rgba(255,255,255,0.2) !important;
         }
 
         .nav-tabs .nav-link.active{
@@ -3750,10 +3821,11 @@ function createHTMLTemplate() {
         .tab-pane-custom{
             display: none;
             padding: 25px;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--glass-border);
             border-top: none;
             border-radius: 0 0 15px 15px;
-            background: #fff;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
         }
 
         .tab-pane-custom.active{
@@ -3790,7 +3862,7 @@ function createHTMLTemplate() {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Login prompt fix */
+        /* Login prompt */
         .login-prompt{
             background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
             border: 2px dashed #ffc107;
@@ -3799,53 +3871,212 @@ function createHTMLTemplate() {
             margin-bottom: 20px;
             overflow: visible !important;
             padding-bottom: 22px;
+            color: #000;
         }
 
-        /* User info box */
-        .user-info-box{
-            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 5px solid #ee5a24;
+        /* Login Modal Styling */
+        .modal-content {
+            background: var(--dropdown-bg);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            color: var(--text-main);
         }
 
-        /* Modal fix */
-        .modal-header{
-            background: var(--psvita-gradient);
+        .modal-header {
+            border-bottom-color: var(--glass-border);
+        }
+
+        .modal .form-control,
+        .modal input,
+        .modal textarea {
+            color: #fff !important;
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--glass-border);
+        }
+
+        .modal .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal .input-group .btn-outline-secondary {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--glass-border);
+            color: var(--text-muted);
+        }
+
+        .modal .input-group .btn-outline-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+            color: var(--neon-cyan);
+        }
+
+        .modal .form-label {
+            color: var(--text-main) !important;
+            font-weight: 600;
+        }
+
+        .ad-note-banner{
+            position: relative;
+            border-radius: 16px;
+            padding: 16px 18px;
+            color: #0b2a3a;
+            background: linear-gradient(135deg, rgba(0,210,255,0.18), rgba(255,79,216,0.12));
+            border: 1px solid rgba(13,110,253,0.25);
+            overflow: hidden;
+        }
+        .ad-note-banner:before{
+            content:"";
+            position:absolute;
+            inset:-2px;
+            background: radial-gradient(circle at 20% 20%, rgba(0,210,255,0.22), transparent 55%),
+                        radial-gradient(circle at 85% 60%, rgba(255,79,216,0.18), transparent 55%);
+            pointer-events:none;
+        }
+        .ad-note-banner .content{
+            position: relative;
+            display:flex;
+            gap:14px;
+            flex-wrap: wrap;
+            align-items:flex-start;
+        }
+        .ad-note-pill{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(13,110,253,0.12);
+            border: 1px solid rgba(13,110,253,0.25);
+            font-weight: 700;
+        }
+        .ad-note-grid{
+            position: relative;
+            display:grid;
+            grid-template-columns: 1fr;
+            gap:10px;
+            width: 100%;
+        }
+        @media (min-width: 768px){
+            .ad-note-grid{ grid-template-columns: 1fr 1fr; }
+        }
+        .ad-note-box{
+            background:#fff;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 14px;
+            padding: 12px 14px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+        }
+
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            min-width: 320px;
+            max-width: 400px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid var(--neon-cyan);
+        }
+
+        .toast-notification.show {
+            transform: translateX(0);
+        }
+
+        .toast-notification.success {
+            border-left-color: #10b981;
+        }
+
+        .toast-notification.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast-notification.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
             color: #fff;
         }
 
-        .modal-dialog{
-            max-width: 95vw;
-            margin: 0.75rem auto;
+        .toast-content {
+            flex: 1;
         }
 
-        .modal-content{
-            max-height: calc(100vh - 24px);
-            display: flex;
-            flex-direction: column;
+        .toast-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-main);
         }
 
-        .modal-header{
-            flex: 0 0 auto;
+        .toast-message {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
 
-        .modal-body{
-            flex: 1 1 auto;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 90px;
-        }
-
-        /* Sticky area untuk grup tombol */
-        .modal-body .d-flex.gap-2{
-            position: sticky;
+        .toast-progress {
+            position: absolute;
             bottom: 0;
-            background: #fff;
-            padding: 12px 0 6px;
-            margin-top: 12px;
-            z-index: 10;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 0 0 0 16px;
+            animation: toastProgress 3s linear forwards;
+            width: 100%;
+        }
+
+        @keyframes toastProgress {
+            0% { width: 100%; }
+            100% { width: 0%; }
+        }
+
+        .toast-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toast-close:hover {
+            color: var(--neon-cyan);
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 576px) {
+            .toast-notification {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                min-width: auto;
+                max-width: none;
+            }
         }
 
         /* Responsive */
@@ -3889,122 +4120,48 @@ function createHTMLTemplate() {
                 width: 100%;
             }
         }
-/* Tambahkan di bagian <style> */
-.ad-note-banner{
-    position: relative;
-    border-radius: 16px;
-    padding: 16px 18px;
-    color: #0b2a3a;
-    background: linear-gradient(135deg, rgba(0,210,255,0.18), rgba(255,79,216,0.12));
-    border: 1px solid rgba(13,110,253,0.25);
-    overflow: hidden;
-}
-.ad-note-banner:before{
-    content:"";
-    position:absolute;
-    inset:-2px;
-    background: radial-gradient(circle at 20% 20%, rgba(0,210,255,0.22), transparent 55%),
-                radial-gradient(circle at 85% 60%, rgba(255,79,216,0.18), transparent 55%);
-    pointer-events:none;
-}
-.ad-note-banner .content{
-    position: relative;
-    display:flex;
-    gap:14px;
-    flex-wrap: wrap;
-    align-items:flex-start;
-}
-.ad-note-pill{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: rgba(13,110,253,0.12);
-    border: 1px solid rgba(13,110,253,0.25);
-    font-weight: 700;
-}
-.ad-note-grid{
-    position: relative;
-    display:grid;
-    grid-template-columns: 1fr;
-    gap:10px;
-    width: 100%;
-}
-@media (min-width: 768px){
-    .ad-note-grid{ grid-template-columns: 1fr 1fr; }
-}
-.ad-note-box{
-    background:#fff;
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 14px;
-    padding: 12px 14px;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
-}
 
-                   /* Login Prompt */
-        .login-prompt {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            border: 2px dashed #ffc107;
-            padding: 20px;
-            border-radius: 12px;
-            animation: pulseWarning 2s infinite;
-            position: relative;
-            overflow: hidden;
-        }
-        
         @keyframes pulseWarning {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
-        
-        .login-prompt::before {
-            content: '⚠️';
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 2rem;
-            opacity: 0.2;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        /* User Info Box */
-        .user-info-box {
-            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 5px solid #007bff;
-            animation: slideInRight 0.5s ease-out;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        @keyframes slideInRight {
-            from {
-                transform: translateX(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <!-- User Info -->
-        <div id="userHeader" class="user-info-box mb-3" style="display: none;">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-controller me-2"></i>INDapk PS Vita
+            </a>
+            
+            <div class="d-flex align-items-center gap-2">
+                <div id="userHeader" class="d-none d-flex align-items-center gap-2">
+                    <div class="badge bg-secondary p-2">
+                        <i class="bi bi-person me-1"></i><span id="loggedUserName">User</span>
+                    </div>
+                    <div class="badge bg-success p-2">
+                        <i class="bi bi-wallet2 me-1"></i>Rp <span id="loggedUserBalance">0</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="logout()">
+                        <i class="bi bi-power"></i>
+                    </button>
+                </div>
+                <button id="loginButton" class="btn btn-custom btn-sm" onclick="openLoginModal()">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-2">
+        <!-- User Info (for logged in users) -->
+        <div id="userHeaderFull" class="user-info-box mb-3" style="display: none;">
             <div>
                 <div>
-                    <strong>Login sebagai:</strong> <span id="loggedUserName"></span> |
-                    <strong>Saldo:</strong> Rp <span id="loggedUserBalance"></span> |
-                    <strong>ID:</strong> <span id="loggedUserId"></span>
+                    <strong>Login sebagai:</strong> <span id="loggedUserNameFull"></span> |
+                    <strong>Saldo:</strong> Rp <span id="loggedUserBalanceFull"></span> |
+                    <strong>ID:</strong> <span id="loggedUserIdFull"></span>
                 </div>
                 <div class="mt-2 d-flex gap-2 flex-wrap">
                     <a class="btn btn-success btn-sm"
@@ -4044,21 +4201,21 @@ function createHTMLTemplate() {
             <h3>Detail Game PS Vita</h3>
             <div class="row">
                 <div class="col-md-6">
-                    <table class="table">
+                    <table class="table table-dark">
                         <tr><th>Nama Game:</th><td>${escapeHTML(gameData.gameInfo.nama_game)}</td></tr>
                         <tr><th>Game ID:</th><td>${escapeHTML(gameData.gameInfo.game_id)}</td></tr>
                         <tr><th>Ukuran Game:</th><td>${escapeHTML(gameData.gameInfo.ukuran_game)}</td></tr>
                     </table>
                 </div>
                 <div class="col-md-6">
-                    <table class="table">
+                    <table class="table table-dark">
                         <tr><th>Category:</th><td>${escapeHTML(gameData.gameInfo.category)}</td></tr>
                         <tr><th>Language:</th><td>${escapeHTML(gameData.gameInfo.language)}</td></tr>
                         <tr><th>Platform:</th><td>PlayStation Vita (PS Vita)</td></tr>
                         <tr>
                             <th>Web 2:</th>
                             <td>
-                                <a href="${escapeHTML(altLink)}" target="_blank" rel="noopener">
+                                <a href="${escapeHTML(altLink)}" target="_blank" rel="noopener" style="color: #00f0ff;">
                                     ${escapeHTML(altLink)}
                                 </a>
                             </td>
@@ -4098,7 +4255,7 @@ function createHTMLTemplate() {
             </div>
             
             <!-- LINK IKLAN 1 -->
-            <div class="card border-primary mb-4" style="border-width: 2px;">
+            <div class="card border-primary mb-4" style="border-width: 2px; background: rgba(0,0,0,0.3);">
                 <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
                     <span><i class="bi bi-star-fill"></i> INDapk Short</span>
                     <span class="badge bg-light text-dark">Utama</span>
@@ -4113,7 +4270,7 @@ function createHTMLTemplate() {
             
             <!-- LINK IKLAN 2 -->
             ${hasAdLinks2 ? `
-            <div class="card border-secondary mb-3">
+            <div class="card border-secondary mb-3" style="background: rgba(0,0,0,0.3);">
                 <div class="card-header bg-secondary text-white d-flex align-items-center justify-content-between">
                     <span><i class="bi bi-link-45deg"></i> Semawurt Short</span>
                     <span class="badge bg-light text-dark">Alternatif</span>
@@ -4135,20 +4292,16 @@ function createHTMLTemplate() {
                 <p class="mb-2">
                     <strong>⚠️ Perhatian:</strong>
                     Untuk mengakses link download tanpa iklan, Anda perlu login.
-                    Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
-                    Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
                 </p>
                 <p class="mb-3 text-muted">
                     <strong>⚠️ Notice:</strong>
                     To access the ad-free download links, you must log in.
-                    Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
-                    Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
                 </p>
                 <div class="d-flex gap-2 flex-wrap">
                     <button class="btn btn-primary" onclick="openLoginModal()">
                         <i class="fa fa-sign-in-alt"></i> Login
                     </button>
-                    <button class="btn btn-secondary" onclick="register()">
+                    <button class="btn btn-secondary" onclick="openRegisterModal()">
                         <i class="fa fa-user-plus"></i> Register
                     </button>
                 </div>
@@ -4161,95 +4314,107 @@ function createHTMLTemplate() {
     </div>
     
     <!-- Login Modal -->
-    <div class="modal fade" id="loginModal">
-        <div class="modal-dialog">
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" style="color: #667eea;">
+                        <i class="bi bi-shield-lock me-2"></i>Login Account
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="telegramWidget">
-                        <div class="alert alert-info py-2 mb-3">
-                            <div><strong>Cara daftar:</strong></div>
-                            <ol class="mb-0 ps-3">
-                                <li>Register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank"><i class="fa fa-sign-in-alt"></i> Register</a></li>
-                                <li>Atau buka bot <strong>@indapkbot</strong></li>
-                                <li>Ketik <strong>/register</strong></li>
-                                <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
-                            </ol>
-                        </div>
+                <div class="modal-body p-4">
+                    <form id="loginForm" onsubmit="event.preventDefault(); login(this);">
                         <div class="mb-3">
-                            <label class="form-label">Telegram ID atau Username</label>
-                            <input
-                                type="text"
-                                id="telegramId"
-                                class="form-control"
-                                placeholder="Masukkan ID Telegram atau Username"
-                                autocomplete="off"
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Key/Password</label>
+                            <label class="form-label small text-uppercase fw-semibold">Username / Telegram ID</label>
                             <div class="input-group">
-                                <input
-                                    type="password"
-                                    id="userKey"
-                                    class="form-control"
-                                    placeholder="Masukkan Key atau Password"
-                                    autocomplete="off"
-                                />
-                                <button class="btn btn-outline-secondary" type="button" id="toggleKeyBtn" aria-label="Tampilkan key">
-                                    <i class="bi bi-eye"></i>
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" id="telegramIdInput" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small text-uppercase fw-semibold">Password (Key)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-key"></i></span>
+                                <input type="password" id="telegramKeyInput" class="form-control" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleLoginKeyVisibility()">
+                                    <i class="bi bi-eye" id="toggleLoginKeyIcon"></i>
                                 </button>
                             </div>
-                            <div class="form-text">
-                                <i class="bi bi-info-circle"></i> Key dapat Anda dapatkan dengan mengetik <strong>/profile</strong> di bot @INDapkBot
-                            </div>
                         </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary flex-fill" onclick="login(this)">
-                                <i class="fa fa-sign-in-alt"></i> Login
-                            </button>
-                            <button class="btn btn-secondary flex-fill" onclick="register()">
-                                <i class="fa fa-user-plus"></i> Register
-                            </button>
-                        </div>
+                        <button type="submit" id="btnLoginAction" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                        </button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">Don't have an account?</small>
+                        <a href="#" onclick="switchModal('loginModal', 'registerModal')" class="text-info ms-1">Register</a>
                     </div>
-                    <div id="userInfo" style="display: none;">
-                        <div class="alert alert-success">
-                            <h5>Login Berhasil!</h5>
-                            <p><strong>Nama:</strong> <span id="userName"></span></p>
-                            <p><strong>Saldo:</strong> Rp <span id="userBalance"></span></p>
-                            <p><strong>ID Telegram:</strong> <span id="userId"></span></p>
-                            <p><strong>Key:</strong> <span id="userKeyDisplay"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="color: #764ba2;">
+                        <i class="bi bi-person-plus me-2"></i>New User Registration
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="registerForm" onsubmit="event.preventDefault(); register(this);">
+                        <div class="mb-3">
+                            <label class="form-label small text-uppercase fw-semibold">Full Name</label>
+                            <input type="text" id="regName" class="form-control" required>
                         </div>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <a class="btn btn-success flex-fill"
-                               href="https://indapk.com/topup.html"
-                               target="_blank" rel="noopener">
-                                Top Up
-                            </a>
-                            <button class="btn btn-danger flex-fill" onclick="logout()">Logout</button>
-                            <button class="btn btn-secondary flex-fill" data-bs-dismiss="modal">Tutup</button>
+                        <div class="mb-3">
+                            <label class="form-label small text-uppercase fw-semibold">Telegram ID (Username)</label>
+                            <input type="text" id="regTelegramId" class="form-control" required>
+                            <div class="form-text text-muted">This will be your login ID.</div>
                         </div>
+                        <div class="mb-4">
+                            <label class="form-label small text-uppercase fw-semibold">Create Password (Key)</label>
+                            <div class="input-group">
+                                <input type="password" id="regKey" class="form-control" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleRegisterKeyVisibility()">
+                                    <i class="bi bi-eye" id="toggleRegKeyIcon"></i>
+                                </button>
+                            </div>
+                            <div class="form-text text-muted">Keep this key safe for login.</div>
+                        </div>
+                        <button type="submit" id="btnRegisterAction" class="btn btn-success w-100 py-2" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);">
+                            <i class="bi bi-check-circle me-2"></i>Register Account
+                        </button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">Already registered?</small>
+                        <a href="#" onclick="switchModal('registerModal', 'loginModal')" class="text-info ms-1">Login</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js">${SCRIPT_END}
     <script>
         // Configuration
         const PSVITA_API_URL = "${gameApiUrl}";
         const USER_API_URL = "${userApiUrl}";
+        const ADMIN_TELEGRAM_ID = "1172835542";
         const DOWNLOAD_ID = "${gameData.downloadId || 'TEMP_' + Date.now().toString().slice(-8)}";
         const BALANCE_REFRESH_MS = 60 * 1000;
 
         // Data links
         const cloudTypes = ${JSON.stringify(gameData.cloudTypes || [])};
         const adLinks = ${JSON.stringify(gameData.adLinks || [])};
+        const originalLinks = ${JSON.stringify(gameData.originalLinks || [])};
         
         let currentUser = null;
         let balanceRefreshInterval = null;
@@ -4269,8 +4434,9 @@ function createHTMLTemplate() {
         
         // Tab functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Reset UI dulu supaya tidak ada state nyangkut
+            // Reset UI
             updateUIForLoggedOutUser();
+            checkLogin();
             
             // Tab switching
             document.querySelectorAll('[data-tab]').forEach(tab => {
@@ -4288,22 +4454,6 @@ function createHTMLTemplate() {
                         .classList.add('active');
                 });
             });
-            
-            // Toggle key visibility
-            const toggleKeyBtn = document.getElementById('toggleKeyBtn');
-            const userKeyInput = document.getElementById('userKey');
-            
-            if (toggleKeyBtn && userKeyInput) {
-                toggleKeyBtn.addEventListener('click', function() {
-                    const isHidden = userKeyInput.type === 'password';
-                    userKeyInput.type = isHidden ? 'text' : 'password';
-                    toggleKeyBtn.innerHTML = isHidden
-                        ? '<i class="bi bi-eye-slash"></i>'
-                        : '<i class="bi bi-eye"></i>';
-                });
-            }
-            
-            checkLogin();
         });
         
         // Sinkron logout antar tab
@@ -4332,7 +4482,6 @@ function createHTMLTemplate() {
             const logoutAt = getLogoutAt();
             const loginAt = parseInt(savedUser.login_at || '0', 10) || 0;
             
-            // Kalau logout lebih baru dari login, paksa logout
             if (logoutAt && loginAt && logoutAt >= loginAt) {
                 localStorage.removeItem(AUTH_KEY);
                 currentUser = null;
@@ -4348,228 +4497,273 @@ function createHTMLTemplate() {
             return String(raw || '').trim();
         }
         
-        async function login(btn) {
-            const telegramIdInput = document.getElementById('telegramId');
-            const userKeyInput = document.getElementById('userKey');
-            
-            const telegramId = normalizeInput(telegramIdInput.value);
-            const userKey = normalizeInput(userKeyInput.value);
-            
-            if (!telegramId) {
-                alert('Masukkan Telegram ID atau Username!');
-                return;
+
+        const toast = new ToastNotification();
+        
+function showToast(type, message, duration) {
+    if (!duration) duration = 3000;
+    
+    const toastId = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    const icon = {
+        success: 'bi-check-circle-fill',
+        error: 'bi-x-circle-fill',
+        warning: 'bi-exclamation-triangle-fill',
+        info: 'bi-info-circle-fill'
+    }[type] || 'bi-info-circle-fill';
+
+    const bgColor = {
+        success: 'bg-success',
+        error: 'bg-danger',
+        warning: 'bg-warning',
+        info: 'bg-info'
+    }[type] || 'bg-info';
+
+    const toastHtml = '<div id=\"' + toastId + '\" class=\"toast ' + bgColor + ' text-white border-0\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\">' +
+        '<div class=\"d-flex\">' +
+        '<div class=\"toast-body\">' +
+        '<i class=\"bi ' + icon + ' me-2\"></i> ' + message +
+        '</div>' +
+        '<button type=\"button\" class=\"btn-close btn-close-white me-2 m-auto\" data-bs-dismiss=\"toast\"></button>' +
+        '</div>' +
+        '</div>';
+
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+    }
+
+    container.insertAdjacentHTML('beforeend', toastHtml);
+
+    const toastEl = document.getElementById(toastId);
+    if (toastEl) {
+        const toast = new bootstrap.Toast(toastEl, {
+            delay: duration,
+            autohide: true
+        });
+        toast.show();
+
+        toastEl.addEventListener('hidden.bs.toast', function() {
+            if (toastEl && toastEl.parentNode) {
+                toastEl.remove();
             }
-            
-            if (!userKey) {
-                alert('Masukkan Key atau Password Anda!');
-                return;
-            }
-            
-            const originalBtnHtml = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Verifikasi...';
-            }
-            telegramIdInput.disabled = true;
-            userKeyInput.disabled = true;
-            
-            try {
-                const body = new URLSearchParams();
-                body.append('action', 'loginUser');
-                body.append('wa_number', telegramId);
-                body.append('key', userKey);
-                
-                const res = await fetch(USER_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
-                    },
-                    body: body.toString()
-                });
-                
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                
-                const result = await res.json();
-                
-                if (result.status !== 'success' || !result.data) {
-                    alert(result.message || 'Login gagal.');
-                    return;
-                }
-                
-                // Login sukses
-                currentUser = {
-                    ...result.data,
-                    wa_number: telegramId,
-                    key: userKey,
-                    login_at: Date.now()
-                };
-                
-                localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
-                updateUIForLoggedInUser();
-                
-                document.getElementById('telegramWidget').style.display = 'none';
-                document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('userName').textContent = currentUser.nama_user || '';
-                document.getElementById('userBalance').textContent = (currentUser.saldo ?? 0).toLocaleString();
-                document.getElementById('userId').textContent = currentUser.wa_number || '';
-                document.getElementById('userKeyDisplay').textContent = currentUser.key || '';
-                
-                setTimeout(() => {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                    if (modal) modal.hide();
-                }, 800);
-                
-            } catch (err) {
-                alert('Login gagal: ' + (err.message || err));
-            } finally {
-                telegramIdInput.disabled = false;
-                userKeyInput.disabled = false;
-                
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = originalBtnHtml || 'Login';
-                }
+        });
+    }
+}
+        
+        // Login Functions
+        function openLoginModal() {
+            new bootstrap.Modal(document.getElementById('loginModal')).show();
+        }
+        
+        function openRegisterModal() {
+            new bootstrap.Modal(document.getElementById('registerModal')).show();
+        }
+        
+        function switchModal(fromId, toId) {
+            bootstrap.Modal.getInstance(document.getElementById(fromId)).hide();
+            new bootstrap.Modal(document.getElementById(toId)).show();
+        }
+        
+        function toggleLoginKeyVisibility() {
+            const input = document.getElementById('telegramKeyInput');
+            const icon = document.getElementById('toggleLoginKeyIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
             }
         }
         
-        function register() {
-            window.open('https://indapk.github.io/dashboard.html', '_blank');
+        function toggleRegisterKeyVisibility() {
+            const input = document.getElementById('regKey');
+            const icon = document.getElementById('toggleRegKeyIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
         }
+        
+async function login(form) {
+    const id = document.getElementById('telegramIdInput').value.trim();
+    const key = document.getElementById('telegramKeyInput').value.trim();
+    const btn = document.getElementById('btnLoginAction');
+    
+    if (!id || !key) {
+        showToast('warning', 'Isi semua field!');
+        return;
+    }
+    
+    btn.innerHTML = '<span class=\"spinner-border spinner-border-sm\"><\/span> Authenticating...';
+    btn.disabled = true;
+    
+    try {
+        const params = new URLSearchParams();
+        params.append('action', 'getUser');
+        params.append('wa_number', id);
+        
+        const response = await fetch(USER_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString()
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success' && String(result.data.key) === key) {
+            currentUser = {
+                ...result.data,
+                wa_number: id,
+                key: key,
+                login_at: Date.now()
+            };
+            localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
+            
+            updateUIForLoggedInUser();
+            bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+            
+            showToast('success', \`Login berhasil! Selamat datang, \${currentUser.nama_user || currentUser.wa_number}\`);
+            
+            document.getElementById('telegramIdInput').value = '';
+            document.getElementById('telegramKeyInput').value = '';
+        } else {
+            showToast('error', '❌ Login gagal! Periksa ID/Username dan Key Anda.');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showToast('error', '❌ Gagal terhubung ke server.');
+    } finally {
+        btn.innerHTML = '<i class=\"bi bi-box-arrow-in-right me-2\"><\/i>Login';
+        btn.disabled = false;
+    }
+}
+        
+async function register(form) {
+    const name = document.getElementById('regName').value.trim();
+    const user = document.getElementById('regTelegramId').value.trim();
+    const key = document.getElementById('regKey').value.trim();
+    const btn = document.getElementById('btnRegisterAction');
+    
+    if (!name || !user || !key) {
+        showToast('warning', 'Isi semua field!');
+        return;
+    }
+    
+    btn.innerHTML = '<span class=\"spinner-border spinner-border-sm\"><\/span> Registering...';
+    btn.disabled = true;
+    
+    try {
+        const params = new URLSearchParams();
+        params.append('action', 'registerUser');
+        params.append('nama_user', name);
+        params.append('wa_number', user);
+        params.append('key', key);
+        
+        const response = await fetch(USER_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString()
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            // ===== TOAST SUKSES REGISTER =====
+            showToast('success', '\u2705 Registrasi berhasil! Silakan login dengan akun baru Anda.');
+            
+            // Tutup modal register
+            bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+            
+            // Kosongkan form
+            document.getElementById('regName').value = '';
+            document.getElementById('regTelegramId').value = '';
+            document.getElementById('regKey').value = '';
+            
+            // Buka modal login setelah 1 detik
+            setTimeout(() => {
+                new bootstrap.Modal(document.getElementById('loginModal')).show();
+            }, 1000);
+            
+        } else {
+            // ===== TOAST ERROR REGISTER =====
+            showToast('error', '\u274C Registrasi gagal: ' + (result.message || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Register error:', error);
+        // ===== TOAST ERROR REGISTER =====
+        showToast('error', '\u274C Gagal terhubung ke server.');
+    } finally {
+        btn.innerHTML = '<i class=\"bi bi-check-circle me-2\"><\/i>Register Account';
+        btn.disabled = false;
+    }
+}
         
         function logout() {
             if (confirm('Yakin ingin logout?')) {
                 localStorage.setItem(LOGOUT_KEY, String(Date.now()));
-                currentUser = null;
                 localStorage.removeItem(AUTH_KEY);
+                currentUser = null;
                 updateUIForLoggedOutUser();
-                alert('Logout berhasil!');
+                showToast('info', 'Logout berhasil!');
             }
         }
         
         function updateUIForLoggedOutUser() {
             const userHeader = document.getElementById('userHeader');
+            const userHeaderFull = document.getElementById('userHeaderFull');
             const loginPrompt = document.getElementById('loginPrompt');
             const links = document.getElementById('originalLinksContent');
+            const loginBtn = document.getElementById('loginButton');
             
-            if (userHeader) userHeader.style.display = 'none';
+            if (userHeader) userHeader.classList.add('d-none');
+            if (userHeaderFull) userHeaderFull.style.display = 'none';
             if (loginPrompt) loginPrompt.style.display = 'block';
             if (links) links.style.display = 'none';
+            if (loginBtn) loginBtn.classList.remove('d-none');
             
             stopBalanceAutoRefresh();
         }
         
         function updateUIForLoggedInUser() {
             const userHeader = document.getElementById('userHeader');
+            const userHeaderFull = document.getElementById('userHeaderFull');
             const loginPrompt = document.getElementById('loginPrompt');
             const links = document.getElementById('originalLinksContent');
+            const loginBtn = document.getElementById('loginButton');
             
-            if (userHeader) userHeader.style.display = 'block';
+            if (userHeader) userHeader.classList.remove('d-none');
+            if (userHeaderFull) userHeaderFull.style.display = 'block';
             if (loginPrompt) loginPrompt.style.display = 'none';
             if (links) links.style.display = 'block';
+            if (loginBtn) loginBtn.classList.add('d-none');
             
             const elName = document.getElementById('loggedUserName');
             const elBal = document.getElementById('loggedUserBalance');
-            const elId = document.getElementById('loggedUserId');
+            const elNameFull = document.getElementById('loggedUserNameFull');
+            const elBalFull = document.getElementById('loggedUserBalanceFull');
+            const elIdFull = document.getElementById('loggedUserIdFull');
             
-            if (elName) elName.textContent = currentUser?.nama_user || '';
-            if (elBal) elBal.textContent = (currentUser?.saldo ?? 0).toLocaleString();
-            if (elId) elId.textContent = currentUser?.wa_number || '';
+            if (elName) elName.textContent = currentUser?.nama_user || currentUser?.wa_number || '';
+            if (elBal) elBal.textContent = (currentUser?.saldo || 0).toLocaleString();
+            if (elNameFull) elNameFull.textContent = currentUser?.nama_user || currentUser?.wa_number || '';
+            if (elBalFull) elBalFull.textContent = (currentUser?.saldo || 0).toLocaleString();
+            if (elIdFull) elIdFull.textContent = currentUser?.wa_number || '';
             
             startBalanceAutoRefresh();
         }
         
-        function openLoginModal() {
-            document.getElementById('telegramWidget').style.display = 'block';
-            document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('telegramId').value = '';
-            document.getElementById('userKey').value = '';
-            new bootstrap.Modal(document.getElementById('loginModal')).show();
-        }
-        
-        // Access original link with payment
-        async function accessOriginalLink(index) {
-            if (!currentUser) {
-                openLoginModal();
-                return;
-            }
-            
-            // Validasi Key user
-            if (!currentUser.key || currentUser.key === '') {
-                alert('Akun Anda tidak memiliki Key. Silakan hubungi admin untuk mendapatkan Key.');
-                return;
-            }
-            
-            if (currentUser.saldo < 1000) {
-                alert('Saldo tidak mencukupi. Harga per link: Rp 1000. Saldo Anda: Rp ' + currentUser.saldo);
-                return;
-            }
-            
-            const button = event.target;
-            const originalText = button.getAttribute('data-original-text') || button.textContent.trim();
-            
-            const confirmed = await showConfirmModal(index);
-            if (!confirmed) return;
-            
-            try {
-                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-                button.classList.add('loading');
-                button.disabled = true;
-                
-                // Request link asli ke API
-                const cloudName = cloudTypes[index] || 'Unknown';
-                
-                const response = await fetch(PSVITA_API_URL, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
-                    },
-                    body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
-                          '&index=' + index + 
-                          '&cloud_type=' + encodeURIComponent(cloudName) +
-                          '&telegram_id=' + currentUser.wa_number +
-                          '&user_key=' + currentUser.key
-                });
-                
-                if (!response.ok) throw new Error('Network response was not ok');
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    currentUser.saldo = result.data.new_balance;
-                    localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
-                    updateUserBalanceUI();
-                    
-                    const link = result.data.link;
-                    
-                    showLinkModal(link, {
-                        game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
-                        cloud: result.data.cloud || cloudName,
-                        amount_deducted: result.data.amount_deducted || 1000,
-                        new_balance: result.data.new_balance || currentUser.saldo,
-                        download_id: DOWNLOAD_ID
-                    });
-                } else {
-                    throw new Error(result.message || 'Gagal mengakses link');
-                }
-            } catch (error) {
-                console.error('Access link error:', error);
-                showErrorModal(error.message);
-            } finally {
-                button.innerHTML = originalText;
-                button.classList.remove('loading');
-                button.disabled = false;
-            }
-        }
-        
-        // Helper functions
         function startBalanceAutoRefresh() {
             stopBalanceAutoRefresh();
             if (!currentUser?.wa_number || !currentUser?.key) return;
             
-            // refresh sekali langsung, lalu tiap 1 menit
             refreshBalanceOnce();
             balanceRefreshInterval = setInterval(refreshBalanceOnce, BALANCE_REFRESH_MS);
         }
@@ -4586,9 +4780,8 @@ function createHTMLTemplate() {
             
             try {
                 const body = new URLSearchParams();
-                body.append("action", "loginUser");
+                body.append("action", "getUser");
                 body.append("wa_number", currentUser.wa_number);
-                body.append("key", currentUser.key);
                 
                 const res = await fetch(USER_API_URL, {
                     method: "POST",
@@ -4613,19 +4806,86 @@ function createHTMLTemplate() {
                 };
                 
                 localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
-                updateUserBalanceUI();
+                
+                document.getElementById('loggedUserBalance').textContent = newSaldo.toLocaleString();
+                document.getElementById('loggedUserBalanceFull').textContent = newSaldo.toLocaleString();
             } catch (err) {
                 console.warn("Saldo refresh gagal:", err);
             }
         }
         
-        function updateUserBalanceUI() {
-            if (currentUser) {
-                document.getElementById('loggedUserBalance').textContent = currentUser.saldo.toLocaleString();
-                const userBalanceEl = document.getElementById('userBalance');
-                if (userBalanceEl) {
-                    userBalanceEl.textContent = currentUser.saldo.toLocaleString();
+        // Access original link with payment
+        async function accessOriginalLink(index) {
+            if (!currentUser) {
+                openLoginModal();
+                return;
+            }
+            
+            if (!currentUser.key || currentUser.key === '') {
+                alert('Akun Anda tidak memiliki Key. Silakan hubungi admin untuk mendapatkan Key.');
+                return;
+            }
+            
+            if (currentUser.saldo < 1000) {
+                alert('Saldo tidak mencukupi. Harga per link: Rp 1000. Saldo Anda: Rp ' + currentUser.saldo);
+                return;
+            }
+            
+            const button = event.target;
+            const originalText = button.getAttribute('data-original-text') || button.textContent.trim();
+            
+            const confirmed = await showConfirmModal(index);
+            if (!confirmed) return;
+            
+            try {
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+                button.classList.add('loading');
+                button.disabled = true;
+                
+                const cloudName = cloudTypes[index] || 'Unknown';
+                
+                const response = await fetch(PSVITA_API_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json'
+                    },
+                    body: 'action=accessOriginalLink&download_id=' + DOWNLOAD_ID + 
+                          '&index=' + index + 
+                          '&cloud_type=' + encodeURIComponent(cloudName) +
+                          '&telegram_id=' + currentUser.wa_number +
+                          '&user_key=' + currentUser.key
+                });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    currentUser.saldo = result.data.new_balance;
+                    localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
+                    
+                    document.getElementById('loggedUserBalance').textContent = currentUser.saldo.toLocaleString();
+                    document.getElementById('loggedUserBalanceFull').textContent = currentUser.saldo.toLocaleString();
+                    
+                    const link = result.data.link;
+                    
+                    showLinkModal(link, {
+                        game_name: result.data.game_name || '${escapeHTML(gameData.gameInfo.nama_game)}',
+                        cloud: result.data.cloud || cloudName,
+                        amount_deducted: result.data.amount_deducted || 1000,
+                        new_balance: result.data.new_balance || currentUser.saldo,
+                        download_id: DOWNLOAD_ID
+                    });
+                } else {
+                    throw new Error(result.message || 'Gagal mengakses link');
                 }
+            } catch (error) {
+                console.error('Access link error:', error);
+                showErrorModal(error.message);
+            } finally {
+                button.innerHTML = originalText;
+                button.classList.remove('loading');
+                button.disabled = false;
             }
         }
         
@@ -4742,18 +5002,26 @@ function createHTMLTemplate() {
             
             const linkModal = new bootstrap.Modal(document.getElementById('linkModal'));
             document.getElementById('copyLinkBtn').addEventListener('click', function() {
-                copyLinkToClipboard();
+                const linkInput = document.getElementById('linkInput');
+                if (linkInput) {
+                    linkInput.select();
+                    navigator.clipboard.writeText(linkInput.value).then(() => {
+                        const copyBtn = document.getElementById('copyLinkBtn');
+                        const originalHtml = copyBtn.innerHTML;
+                        copyBtn.innerHTML = '<i class="bi bi-check2"></i> Copied!';
+                        copyBtn.classList.remove('btn-outline-primary');
+                        copyBtn.classList.add('btn-success');
+                        
+                        setTimeout(() => {
+                            copyBtn.innerHTML = originalHtml;
+                            copyBtn.classList.remove('btn-success');
+                            copyBtn.classList.add('btn-outline-primary');
+                        }, 2000);
+                    });
+                }
             });
             
             linkModal.show();
-            
-            setTimeout(() => {
-                const linkInput = document.getElementById('linkInput');
-                if (linkInput) {
-                    linkInput.focus();
-                    linkInput.select();
-                }
-            }, 300);
         }
         
         function showErrorModal(message) {
@@ -4791,26 +5059,6 @@ function createHTMLTemplate() {
             
             const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
             errorModal.show();
-        }
-        
-        function copyLinkToClipboard() {
-            const linkInput = document.getElementById('linkInput');
-            if (linkInput) {
-                linkInput.select();
-                navigator.clipboard.writeText(linkInput.value).then(() => {
-                    const copyBtn = document.getElementById('copyLinkBtn');
-                    const originalHtml = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '<i class="bi bi-check2"></i> Copied!';
-                    copyBtn.classList.remove('btn-outline-primary');
-                    copyBtn.classList.add('btn-copy-success');
-                    
-                    setTimeout(() => {
-                        copyBtn.innerHTML = originalHtml;
-                        copyBtn.classList.remove('btn-copy-success');
-                        copyBtn.classList.add('btn-outline-primary');
-                    }, 2000);
-                });
-            }
         }
         
     <\/script>
