@@ -3082,7 +3082,7 @@ if (hasScreenshots) {
                 opacity: 1;
             }
         }
-            /* Modern Modal Styling dengan Warna Text Input */
+/* Modern Modal Styling */
 .modal-content {
     animation: modalFadeIn 0.3s ease;
 }
@@ -3098,181 +3098,82 @@ if (hasScreenshots) {
     }
 }
 
-/* Styling untuk input dengan warna text gradient */
-.modal .input-group .form-control {
-    transition: all 0.3s ease;
-    font-weight: 500;
+.modal .input-group {
+    transition: all 0.2s ease;
 }
 
-/* Warna text berbeda untuk setiap field */
-#telegramId, #regName, #regTelegramId {
-    color: #2c3e50 !important;
-    font-weight: 600;
-    background: linear-gradient(to right, #fff, #f8f9fa) !important;
-}
-
-#telegramKey, #regKey {
-    color: #e74c3c !important;
-    font-weight: 600;
-    letter-spacing: 1px;
-    background: linear-gradient(to right, #fff, #fff5f5) !important;
-}
-
-/* Rainbow gradient untuk placeholder */
-.modal .form-control::placeholder {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    opacity: 0.7;
-    font-weight: 400;
-}
-
-/* Efek saat focus dengan gradient border */
 .modal .input-group:focus-within {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
-}
-
-.modal .input-group:focus-within .form-control {
-    background: white !important;
-    border-color: transparent;
-}
-
-/* Gradient border animation */
-.modal .input-group {
-    position: relative;
-    border-radius: 10px;
-    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
-    padding: 2px;
-    transition: all 0.3s ease;
-}
-
-.modal .input-group .bg-light {
-    background: white !important;
-    border: none !important;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
 }
 
 .modal .input-group .form-control {
-    border: none !important;
-    background: white !important;
+    transition: all 0.2s ease;
 }
 
-/* Hover effect dengan warna berubah */
-.modal .input-group:hover {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-    animation: gradientShift 3s ease infinite;
+.modal .input-group .form-control:focus {
+    background-color: white !important;
+    box-shadow: none;
 }
 
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Warna icon yang dinamis */
-.modal .input-group-text {
-    background: white !important;
-    border: none !important;
-    color: #667eea;
-    font-size: 1.1rem;
+.modal .btn {
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.modal .input-group:hover .input-group-text i {
-    animation: iconWiggle 0.5s ease;
+.modal .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes iconWiggle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(10deg); }
-    75% { transform: rotate(-10deg); }
+.modal .btn:active {
+    transform: translateY(0);
 }
 
-/* Rainbow text saat mengetik */
-.modal .form-control:focus {
-    animation: typingGlow 2s linear infinite;
+.modal .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
 }
 
-@keyframes typingGlow {
-    0% { text-shadow: 0 0 2px #ff6b6b; }
-    25% { text-shadow: 0 0 2px #4ecdc4; }
-    50% { text-shadow: 0 0 2px #45b7d1; }
-    75% { text-shadow: 0 0 2px #96ceb4; }
-    100% { text-shadow: 0 0 2px #ff6b6b; }
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 1;
+    }
+    20% {
+        transform: scale(25, 25);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: scale(40, 40);
+    }
 }
 
-/* Warna text berbeda untuk setiap field saat diisi */
-.form-control[value]:not([value=""]) {
-    animation: none !important;
+.modal .btn:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
 }
 
-/* Rainbow border untuk input yang aktif */
-.modal .input-group:focus-within {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-    background-size: 300% 300%;
-    animation: borderGradient 3s ease infinite;
+/* Floating Label Effect */
+.modal .form-label {
+    transition: all 0.2s ease;
 }
 
-@keyframes borderGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Efek typing indicator */
-.modal .form-control:focus::after {
-    content: '|';
-    animation: blink 1s infinite;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-
-/* Password field dengan warna khusus */
-.modal input[type="password"] {
-    color: #ff4757 !important;
-    font-weight: 700;
-    letter-spacing: 3px;
-}
-
-/* Username field dengan warna gradient */
-.modal input[type="text"] {
-    background: linear-gradient(135deg, #667eea20, #764ba220) !important;
-    color: #2c3e50;
-}
-
-/* Success state dengan warna hijau gradient */
-.modal .form-control:valid {
-    background: linear-gradient(135deg, #a8e6cf20, #d4edda20) !important;
-    border-left: 3px solid #28a745 !important;
-}
-
-/* Error state dengan warna merah gradient */
-.modal .form-control:invalid:not(:placeholder-shown) {
-    background: linear-gradient(135deg, #ff6b6b20, #ff475720) !important;
-    border-left: 3px solid #dc3545 !important;
-}
-
-/* Custom scrollbar untuk modal */
-.modal-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: linear-gradient(180deg, #667eea20, #764ba220);
-    border-radius: 10px;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #667eea, #764ba2);
-    border-radius: 10px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #764ba2, #667eea);
+.modal .input-group:focus-within + .form-label,
+.modal .form-control:not(:placeholder-shown) + .form-label {
+    transform: translateY(-5px);
+    font-size: 0.8rem;
+    color: #667eea;
 }
     </style>
 </head>
@@ -3461,41 +3362,31 @@ if (hasScreenshots) {
                 <form id="loginForm" onsubmit="event.preventDefault(); login(this);">
                     <div class="mb-3">
                         <label class="form-label text-secondary fw-semibold small text-uppercase">
-                            <i class="bi bi-telegram me-1" style="color: #667eea;"></i>
-                            <span style="background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Telegram ID / Username</span>
+                            <i class="bi bi-telegram me-1"></i>Telegram ID / Username
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-person" style="color: #667eea;"></i>
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-person text-primary"></i>
                             </span>
-                            <input type="text" id="telegramId" class="form-control" 
-                                   placeholder="Masukkan Telegram ID" required>
+                            <input type="text" id="telegramId" class="form-control bg-light border-start-0 ps-0" 
+                                   placeholder="Masukkan Telegram ID" required style="border-left: none;">
                         </div>
-                        <small class="form-text text-muted">
-                            <i class="bi bi-info-circle" style="color: #4ecdc4;"></i>
-                            Gunakan Telegram ID yang terdaftar
-                        </small>
                     </div>
                     
                     <div class="mb-4">
                         <label class="form-label text-secondary fw-semibold small text-uppercase">
-                            <i class="bi bi-key me-1" style="color: #f5576c;"></i>
-                            <span style="background: linear-gradient(45deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Password (Key)</span>
+                            <i class="bi bi-key me-1"></i>Password (Key)
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-lock" style="color: #f5576c;"></i>
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-lock text-primary"></i>
                             </span>
-                            <input type="password" id="telegramKey" class="form-control" 
-                                   placeholder="Masukkan key Anda" required>
+                            <input type="password" id="telegramKey" class="form-control bg-light border-start-0 ps-0" 
+                                   placeholder="Masukkan key Anda" required style="border-left: none;">
                             <button class="btn btn-light border" type="button" onclick="toggleLoginKeyVisibility()">
                                 <i class="bi bi-eye" id="toggleLoginKeyIcon"></i>
                             </button>
                         </div>
-                        <small class="form-text text-muted">
-                            <i class="bi bi-shield-check" style="color: #96ceb4;"></i>
-                            Key bersifat rahasia
-                        </small>
                     </div>
                     
                     <button type="submit" id="btnLoginAction" class="btn w-100 py-3 fw-bold text-white border-0" 
@@ -3507,8 +3398,7 @@ if (hasScreenshots) {
                 <div class="text-center mt-4">
                     <p class="text-muted mb-0">Belum punya akun? 
                         <a href="#" onclick="switchModal('loginModal', 'registerModal')" 
-                           class="text-decoration-none fw-bold" 
-                           style="background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                           class="text-decoration-none fw-bold" style="color: #667eea;">
                             Daftar <i class="bi bi-arrow-right ms-1"></i>
                         </a>
                     </p>
@@ -3540,54 +3430,49 @@ if (hasScreenshots) {
                 <form id="registerForm" onsubmit="event.preventDefault(); register(this);">
                     <div class="mb-3">
                         <label class="form-label text-secondary fw-semibold small text-uppercase">
-                            <i class="bi bi-person-badge me-1" style="color: #4ecdc4;"></i>
-                            <span style="background: linear-gradient(45deg, #4ecdc4, #45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Full Name</span>
+                            <i class="bi bi-person-badge me-1"></i>Full Name
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-person" style="color: #4ecdc4;"></i>
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-person text-danger"></i>
                             </span>
-                            <input type="text" id="regName" class="form-control" 
-                                   placeholder="Masukkan nama lengkap" required>
+                            <input type="text" id="regName" class="form-control bg-light border-start-0 ps-0" 
+                                   placeholder="Masukkan nama lengkap" required style="border-left: none;">
                         </div>
                     </div>
                     
                     <div class="mb-3">
                         <label class="form-label text-secondary fw-semibold small text-uppercase">
-                            <i class="bi bi-telegram me-1" style="color: #45b7d1;"></i>
-                            <span style="background: linear-gradient(45deg, #45b7d1, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Telegram ID</span>
+                            <i class="bi bi-telegram me-1"></i>Telegram ID
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-chat-dots" style="color: #45b7d1;"></i>
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-chat-dots text-danger"></i>
                             </span>
-                            <input type="text" id="regTelegramId" class="form-control" 
-                                   placeholder="Contoh: @username" required>
+                            <input type="text" id="regTelegramId" class="form-control bg-light border-start-0 ps-0" 
+                                   placeholder="Contoh: @username" required style="border-left: none;">
                         </div>
                         <div class="form-text text-muted small">
-                            <i class="bi bi-info-circle" style="color: #96ceb4;"></i>
-                            Akan menjadi ID login Anda
+                            <i class="bi bi-info-circle me-1"></i>Akan menjadi ID login Anda
                         </div>
                     </div>
                     
                     <div class="mb-4">
                         <label class="form-label text-secondary fw-semibold small text-uppercase">
-                            <i class="bi bi-key me-1" style="color: #ff6b6b;"></i>
-                            <span style="background: linear-gradient(45deg, #ff6b6b, #ff4757); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Create Password (Key)</span>
+                            <i class="bi bi-key me-1"></i>Create Password (Key)
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-shield-lock" style="color: #ff6b6b;"></i>
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-shield-lock text-danger"></i>
                             </span>
-                            <input type="password" id="regKey" class="form-control" 
-                                   placeholder="Buat key yang kuat" required>
+                            <input type="password" id="regKey" class="form-control bg-light border-start-0 ps-0" 
+                                   placeholder="Buat key yang kuat" required style="border-left: none;">
                             <button class="btn btn-light border" type="button" onclick="toggleRegisterKeyVisibility()">
                                 <i class="bi bi-eye" id="toggleRegKeyIcon"></i>
                             </button>
                         </div>
                         <div class="form-text text-muted small">
-                            <i class="bi bi-shield-check" style="color: #96ceb4;"></i>
-                            Simpan key ini dengan aman
+                            <i class="bi bi-shield-check me-1"></i>Simpan key ini dengan aman
                         </div>
                     </div>
                     
@@ -3600,8 +3485,7 @@ if (hasScreenshots) {
                 <div class="text-center mt-4">
                     <p class="text-muted mb-0">Sudah punya akun? 
                         <a href="#" onclick="switchModal('registerModal', 'loginModal')" 
-                           class="text-decoration-none fw-bold"
-                           style="background: linear-gradient(45deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                           class="text-decoration-none fw-bold" style="color: #f5576c;">
                             Login <i class="bi bi-arrow-right ms-1"></i>
                         </a>
                     </p>
@@ -3610,7 +3494,7 @@ if (hasScreenshots) {
         </div>
     </div>
 </div>
-    
+
     <!-- Payment Confirmation Modal -->
     <div class="modal fade" id="payConfirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -3820,7 +3704,7 @@ async function login(btn) {
     
     const originalBtnHtml = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses masuk ke akun anda...';
     
     try {
         const response = await fetch(USER_API_URL, {
@@ -3843,7 +3727,7 @@ async function login(btn) {
         
         const serverKey = String(result.data.key || '').trim();
         if (serverKey !== key) {
-            alert('Key tidak sesuai!');
+            alert('Password/Key tidak sesuai!');
             return;
         }
         
@@ -3883,7 +3767,7 @@ async function register(btn) {
     
     const originalBtnHtml = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mendaftar...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mendaftar akun baru anda...';
     
     try {
         const response = await fetch(USER_API_URL, {
