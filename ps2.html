@@ -3082,6 +3082,198 @@ if (hasScreenshots) {
                 opacity: 1;
             }
         }
+            /* Modern Modal Styling dengan Warna Text Input */
+.modal-content {
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Styling untuk input dengan warna text gradient */
+.modal .input-group .form-control {
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* Warna text berbeda untuk setiap field */
+#telegramId, #regName, #regTelegramId {
+    color: #2c3e50 !important;
+    font-weight: 600;
+    background: linear-gradient(to right, #fff, #f8f9fa) !important;
+}
+
+#telegramKey, #regKey {
+    color: #e74c3c !important;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: linear-gradient(to right, #fff, #fff5f5) !important;
+}
+
+/* Rainbow gradient untuk placeholder */
+.modal .form-control::placeholder {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0.7;
+    font-weight: 400;
+}
+
+/* Efek saat focus dengan gradient border */
+.modal .input-group:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+.modal .input-group:focus-within .form-control {
+    background: white !important;
+    border-color: transparent;
+}
+
+/* Gradient border animation */
+.modal .input-group {
+    position: relative;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+    padding: 2px;
+    transition: all 0.3s ease;
+}
+
+.modal .input-group .bg-light {
+    background: white !important;
+    border: none !important;
+}
+
+.modal .input-group .form-control {
+    border: none !important;
+    background: white !important;
+}
+
+/* Hover effect dengan warna berubah */
+.modal .input-group:hover {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+    animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Warna icon yang dinamis */
+.modal .input-group-text {
+    background: white !important;
+    border: none !important;
+    color: #667eea;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.modal .input-group:hover .input-group-text i {
+    animation: iconWiggle 0.5s ease;
+}
+
+@keyframes iconWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    75% { transform: rotate(-10deg); }
+}
+
+/* Rainbow text saat mengetik */
+.modal .form-control:focus {
+    animation: typingGlow 2s linear infinite;
+}
+
+@keyframes typingGlow {
+    0% { text-shadow: 0 0 2px #ff6b6b; }
+    25% { text-shadow: 0 0 2px #4ecdc4; }
+    50% { text-shadow: 0 0 2px #45b7d1; }
+    75% { text-shadow: 0 0 2px #96ceb4; }
+    100% { text-shadow: 0 0 2px #ff6b6b; }
+}
+
+/* Warna text berbeda untuk setiap field saat diisi */
+.form-control[value]:not([value=""]) {
+    animation: none !important;
+}
+
+/* Rainbow border untuk input yang aktif */
+.modal .input-group:focus-within {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+    background-size: 300% 300%;
+    animation: borderGradient 3s ease infinite;
+}
+
+@keyframes borderGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Efek typing indicator */
+.modal .form-control:focus::after {
+    content: '|';
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Password field dengan warna khusus */
+.modal input[type="password"] {
+    color: #ff4757 !important;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+/* Username field dengan warna gradient */
+.modal input[type="text"] {
+    background: linear-gradient(135deg, #667eea20, #764ba220) !important;
+    color: #2c3e50;
+}
+
+/* Success state dengan warna hijau gradient */
+.modal .form-control:valid {
+    background: linear-gradient(135deg, #a8e6cf20, #d4edda20) !important;
+    border-left: 3px solid #28a745 !important;
+}
+
+/* Error state dengan warna merah gradient */
+.modal .form-control:invalid:not(:placeholder-shown) {
+    background: linear-gradient(135deg, #ff6b6b20, #ff475720) !important;
+    border-left: 3px solid #dc3545 !important;
+}
+
+/* Custom scrollbar untuk modal */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: linear-gradient(180deg, #667eea20, #764ba220);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #667eea, #764ba2);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #764ba2, #667eea);
+}
     </style>
 </head>
 <body>
@@ -3227,21 +3419,18 @@ if (hasScreenshots) {
                 <h3>Download Game (Download Link Without Ads)</h3>
                 
                 <div class="login-prompt mb-3" id="loginPrompt">
-                     <p class="mb-2">
-                        <strong>⚠️ Perhatian:</strong>
-                        Untuk mengakses link download tanpa iklan, Anda perlu login.
-                        Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
-                        Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
-                    </p>
-
-                    <p class="mb-3 text-muted">
-                        <strong>⚠️ Notice:</strong>
-                        To access the ad-free download links, you must log in.
-                        Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
-                        Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
-                    </p>
+                <p class="mb-2">
+                    <strong>⚠️ Perhatian:</strong>
+                    Untuk mengakses link download tanpa iklan, Anda perlu login.
+                </p>
+                <p class="mb-3 text-muted">
+                    <strong>⚠️ Notice:</strong>
+                    To access the ad-free download links, you must log in.
+                </p>
                     <button class="btn btn-primary" onclick="openLoginModal()"><i class="fa fa-sign-in-alt"></i> Login</button>
-                    <button class="btn btn-secondary flex-fill" onclick="register()"><i class="fa fa-user-plus"></i>Register</button>
+                    <button class="btn btn-secondary" onclick="openRegisterModal()">
+                        <i class="fa fa-user-plus"></i> Register
+                    </button>
                 </div>
                 
                 <div id="originalLinksContent" style="display: none;">
@@ -3251,43 +3440,176 @@ if (hasScreenshots) {
         </div>
     </div>
     
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header" style="background: var(--ps2-gradient); color: white;">
-                    <h5 class="modal-title">Login</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="telegramWidget">
-                        <div class="alert alert-info py-2 mb-3">
-                            <div><strong>Cara daftar:</strong></div>
-                            <ol class="mb-0 ps-3">
-                                <li>Register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank"><i class="fa fa-sign-in-alt"></i>Register</a></li>
-                                <li>Atau buka bot <strong>@indapkbot</strong></li>
-                                <li>Ketik <strong>/register</strong></li>
-                                <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
-                            </ol>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Telegram ID / Username</label>
-                            <input type="text" id="telegramId" class="form-control" placeholder="Masukkan Username atau ID Telegram">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Key</label>
-                            <input type="password" id="telegramKey" class="form-control" placeholder="Masukkan Key">
-                            <small class="text-muted">Dapatkan Key dari bot @INDapkBot (contoh: /key atau cek profil).</small>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary flex-fill" onclick="login(this)"><i class="fa fa-sign-in-alt"></i>Login</button>
-                            <button class="btn btn-secondary flex-fill" onclick="register()"><i class="fa fa-user-plus"></i>Register</button>
-                        </div>
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h5 class="modal-title text-white fw-bold">
+                    <i class="bi bi-shield-lock-check me-2"></i>Welcome Back!
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-4">
+                    <div class="bg-light rounded-circle d-inline-flex p-3 mb-3" style="background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);">
+                        <i class="bi bi-person-circle" style="font-size: 3rem; color: #667eea;"></i>
                     </div>
+                    <h6 class="text-muted">Masuk ke akun Anda</h6>
+                </div>
+                
+                <form id="loginForm" onsubmit="event.preventDefault(); login(this);">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary fw-semibold small text-uppercase">
+                            <i class="bi bi-telegram me-1" style="color: #667eea;"></i>
+                            <span style="background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Telegram ID / Username</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-person" style="color: #667eea;"></i>
+                            </span>
+                            <input type="text" id="telegramId" class="form-control" 
+                                   placeholder="Masukkan Telegram ID" required>
+                        </div>
+                        <small class="form-text text-muted">
+                            <i class="bi bi-info-circle" style="color: #4ecdc4;"></i>
+                            Gunakan Telegram ID yang terdaftar
+                        </small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label text-secondary fw-semibold small text-uppercase">
+                            <i class="bi bi-key me-1" style="color: #f5576c;"></i>
+                            <span style="background: linear-gradient(45deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Password (Key)</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-lock" style="color: #f5576c;"></i>
+                            </span>
+                            <input type="password" id="telegramKey" class="form-control" 
+                                   placeholder="Masukkan key Anda" required>
+                            <button class="btn btn-light border" type="button" onclick="toggleLoginKeyVisibility()">
+                                <i class="bi bi-eye" id="toggleLoginKeyIcon"></i>
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">
+                            <i class="bi bi-shield-check" style="color: #96ceb4;"></i>
+                            Key bersifat rahasia
+                        </small>
+                    </div>
+                    
+                    <button type="submit" id="btnLoginAction" class="btn w-100 py-3 fw-bold text-white border-0" 
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Login Now
+                    </button>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted mb-0">Belum punya akun? 
+                        <a href="#" onclick="switchModal('loginModal', 'registerModal')" 
+                           class="text-decoration-none fw-bold" 
+                           style="background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            Daftar <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <h5 class="modal-title text-white fw-bold">
+                    <i class="bi bi-person-plus-fill me-2"></i>Create Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-4">
+                    <div class="bg-light rounded-circle d-inline-flex p-3 mb-3" style="background: linear-gradient(135deg, #f093fb20 0%, #f5576c20 100%);">
+                        <i class="bi bi-people" style="font-size: 3rem; color: #f5576c;"></i>
+                    </div>
+                    <h6 class="text-muted">Daftar dan dapat download game tanpa iklan</h6>
+                </div>
+                
+                <form id="registerForm" onsubmit="event.preventDefault(); register(this);">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary fw-semibold small text-uppercase">
+                            <i class="bi bi-person-badge me-1" style="color: #4ecdc4;"></i>
+                            <span style="background: linear-gradient(45deg, #4ecdc4, #45b7d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Full Name</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-person" style="color: #4ecdc4;"></i>
+                            </span>
+                            <input type="text" id="regName" class="form-control" 
+                                   placeholder="Masukkan nama lengkap" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-secondary fw-semibold small text-uppercase">
+                            <i class="bi bi-telegram me-1" style="color: #45b7d1;"></i>
+                            <span style="background: linear-gradient(45deg, #45b7d1, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Telegram ID</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-chat-dots" style="color: #45b7d1;"></i>
+                            </span>
+                            <input type="text" id="regTelegramId" class="form-control" 
+                                   placeholder="Contoh: @username" required>
+                        </div>
+                        <div class="form-text text-muted small">
+                            <i class="bi bi-info-circle" style="color: #96ceb4;"></i>
+                            Akan menjadi ID login Anda
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label text-secondary fw-semibold small text-uppercase">
+                            <i class="bi bi-key me-1" style="color: #ff6b6b;"></i>
+                            <span style="background: linear-gradient(45deg, #ff6b6b, #ff4757); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Create Password (Key)</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-shield-lock" style="color: #ff6b6b;"></i>
+                            </span>
+                            <input type="password" id="regKey" class="form-control" 
+                                   placeholder="Buat key yang kuat" required>
+                            <button class="btn btn-light border" type="button" onclick="toggleRegisterKeyVisibility()">
+                                <i class="bi bi-eye" id="toggleRegKeyIcon"></i>
+                            </button>
+                        </div>
+                        <div class="form-text text-muted small">
+                            <i class="bi bi-shield-check" style="color: #96ceb4;"></i>
+                            Simpan key ini dengan aman
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="btnRegisterAction" class="btn w-100 py-3 fw-bold text-white border-0" 
+                            style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 15px;">
+                        <i class="bi bi-check-circle me-2"></i>REGISTER ACCOUNT
+                    </button>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted mb-0">Sudah punya akun? 
+                        <a href="#" onclick="switchModal('registerModal', 'loginModal')" 
+                           class="text-decoration-none fw-bold"
+                           style="background: linear-gradient(45deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            Login <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     
     <!-- Payment Confirmation Modal -->
     <div class="modal fade" id="payConfirmModal" tabindex="-1" aria-hidden="true">
@@ -3427,95 +3749,276 @@ if (hasScreenshots) {
         }
         
         // ====== UI HELPERS ======
-        function openLoginModal() {
-            const el = document.getElementById('loginModal');
-            if (!el) return alert('Login modal tidak ditemukan.');
-            new bootstrap.Modal(el).show();
-        }
+
+function openLoginModal() {
+    const modalEl = document.getElementById('loginModal');
+    if (modalEl) {
+        new bootstrap.Modal(modalEl).show();
+    } else {
+        alert('Login modal tidak ditemukan');
+    }
+}
         
-        function register() {
-            window.open('https://indapk.github.io/dashboard.html', '_blank');
-        }
+function openRegisterModal() {
+    const modalEl = document.getElementById('registerModal');
+    if (modalEl) {
+        new bootstrap.Modal(modalEl).show();
+    } else {
+        alert('Login modal tidak ditemukan');
+    }
+}
+  
         
-        function updateUserBalanceUI() {
-            if (!currentUser) return;
-            document.getElementById('loggedUserBalance').textContent = Number(currentUser.saldo || 0).toLocaleString();
-            document.getElementById('loggedUserName').textContent = currentUser.nama_user || '-';
-            document.getElementById('loggedUserId').textContent = currentUser.wa_number || '-';
-        }
-        
-        function logout() {
-            localStorage.removeItem(LS_USER_KEY);
-            localStorage.setItem(LS_LOGOUT_AT_KEY, String(Date.now()));
-            currentUser = null;
-            stopSaldoAutoRefresh();
+
+function checkLoginStatus() {
+    const savedUser = localStorage.getItem(LS_USER_KEY);
+    if (savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
             
-            document.getElementById('userHeader').style.display = 'none';
-            document.getElementById('loginPrompt').style.display = 'block';
-            document.getElementById('originalLinksContent').style.display = 'none';
+            // Update UI
+            document.getElementById('userHeader').style.display = 'block';
+            document.getElementById('loginPrompt').style.display = 'none';
+            document.getElementById('originalLinksContent').style.display = 'block';
+            
+            updateUserBalanceUI();
+            startSaldoAutoRefresh();
+        } catch (e) {
+            localStorage.removeItem(LS_USER_KEY);
         }
+    }
+}
+
+function updateUserBalanceUI() {
+    if (!currentUser) return;
+    document.getElementById('loggedUserBalance').textContent = Number(currentUser.saldo || 0).toLocaleString();
+    document.getElementById('loggedUserName').textContent = currentUser.nama_user || '-';
+    document.getElementById('loggedUserId').textContent = currentUser.wa_number || '-';
+}
+function logout() {
+    localStorage.removeItem(LS_USER_KEY);
+    localStorage.setItem('ps2GameLogoutAt', String(Date.now()));
+    currentUser = null;
+    stopSaldoAutoRefresh();
+    
+    document.getElementById('userHeader').style.display = 'none';
+    document.getElementById('loginPrompt').style.display = 'block';
+    document.getElementById('originalLinksContent').style.display = 'none';
+    
+    showToast('info', 'Anda telah logout');
+}
         
         // ====== LOGIN ======
-        async function login(btn) {
-            const telegramId = document.getElementById('telegramId').value.trim();
-            const key = document.getElementById('telegramKey').value.trim();
-            
-            if (!telegramId || !key) {
-                alert('Masukkan Telegram ID dan Key!');
-                return;
-            }
-            
-            const originalBtnHtml = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-            
-            try {
-                const response = await fetch(USER_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': 'application/json'
-                    },
-                    body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
-                });
-                
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                
-                const result = await response.json();
-                
-                if (result.status !== 'success' || !result.data) {
-                    alert('User tidak ditemukan!');
-                    return;
-                }
-                
-                const serverKey = String(result.data.key || '').trim();
-                if (serverKey !== key) {
-                    alert('Key tidak sesuai!');
-                    return;
-                }
-                
-                currentUser = { ...result.data, key: serverKey };
-                localStorage.setItem(LS_USER_KEY, JSON.stringify(currentUser));
-                
-                document.getElementById('userHeader').style.display = 'block';
-                document.getElementById('loginPrompt').style.display = 'none';
-                document.getElementById('originalLinksContent').style.display = 'block';
-                
-                updateUserBalanceUI();
-                
-                const modalEl = document.getElementById('loginModal');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
-                
-                alert('Login berhasil!');
-                startSaldoAutoRefresh();
-            } catch (err) {
-                alert('Login gagal: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalBtnHtml;
-            }
+async function login(btn) {
+    const telegramId = document.getElementById('telegramId').value.trim();
+    const key = document.getElementById('telegramKey').value.trim();
+    
+    if (!telegramId || !key) {
+        alert('Masukkan Telegram ID dan Key!');
+        return;
+    }
+    
+    const originalBtnHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+    
+    try {
+        const response = await fetch(USER_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
+            body: 'action=getUser&wa_number=' + encodeURIComponent(telegramId)
+        });
+        
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        
+        const result = await response.json();
+        
+        if (result.status !== 'success' || !result.data) {
+            alert('User tidak ditemukan!');
+            return;
         }
+        
+        const serverKey = String(result.data.key || '').trim();
+        if (serverKey !== key) {
+            alert('Key tidak sesuai!');
+            return;
+        }
+        
+        currentUser = { ...result.data, key: serverKey };
+        localStorage.setItem(LS_USER_KEY, JSON.stringify(currentUser));
+        
+        document.getElementById('userHeader').style.display = 'block';
+        document.getElementById('loginPrompt').style.display = 'none';
+        document.getElementById('originalLinksContent').style.display = 'block';
+        
+        updateUserBalanceUI();
+        
+        const modalEl = document.getElementById('loginModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        
+        showToast('success', 'Login berhasil!');
+        startSaldoAutoRefresh();
+    } catch (err) {
+        alert('Login gagal: ' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+    }
+}
+
+
+async function register(btn) {
+    const name = document.getElementById('regName').value.trim();
+    const telegramId = document.getElementById('regTelegramId').value.trim();
+    const key = document.getElementById('regKey').value.trim();
+    
+    if (!name || !telegramId || !key) {
+        alert('Isi semua field!');
+        return;
+    }
+    
+    const originalBtnHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mendaftar...';
+    
+    try {
+        const response = await fetch(USER_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
+            body: 'action=registerUser&nama_user=' + encodeURIComponent(name) + 
+                  '&wa_number=' + encodeURIComponent(telegramId) + 
+                  '&key=' + encodeURIComponent(key)
+        });
+        
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        
+        const result = await response.json();
+        
+        if (result.status !== 'success') {
+            alert('Registrasi gagal: ' + (result.message || 'Unknown error'));
+            return;
+        }
+        
+        showToast('success', 'Registrasi berhasil! Silakan login.');
+        
+        // Tutup modal register dan buka modal login
+        const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+        if (registerModal) registerModal.hide();
+        
+        // Kosongkan form login dan buka modal login
+        document.getElementById('telegramId').value = telegramId;
+        document.getElementById('telegramKey').value = '';
+        openLoginModal();
+        
+    } catch (err) {
+        alert('Registrasi gagal: ' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+    }
+}
+
+
+function switchModal(fromId, toId) {
+    const fromModal = bootstrap.Modal.getInstance(document.getElementById(fromId));
+    if (fromModal) fromModal.hide();
+    
+    setTimeout(() => {
+        new bootstrap.Modal(document.getElementById(toId)).show();
+    }, 300);
+}
+
+
+function toggleLoginKeyVisibility() {
+    const input = document.getElementById('telegramKey');
+    const icon = document.getElementById('toggleLoginKeyIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+}
+
+function toggleRegisterKeyVisibility() {
+    const input = document.getElementById('regKey');
+    const icon = document.getElementById('toggleRegKeyIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+}
+
+// Fungsi untuk mengecek apakah user adalah admin
+function isAdminUser() {
+    return currentUser && String(currentUser.wa_number) === ADMIN_TELEGRAM_ID;
+}
+
+        
+function showToast(type, message, duration) {
+    if (!duration) duration = 3000;
+    
+    const toastId = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    const icon = {
+        success: 'bi-check-circle-fill',
+        error: 'bi-x-circle-fill',
+        warning: 'bi-exclamation-triangle-fill',
+        info: 'bi-info-circle-fill'
+    }[type] || 'bi-info-circle-fill';
+
+    const bgColor = {
+        success: 'bg-success',
+        error: 'bg-danger',
+        warning: 'bg-warning',
+        info: 'bg-info'
+    }[type] || 'bg-info';
+
+    const toastHtml = '<div id=\"' + toastId + '\" class=\"toast ' + bgColor + ' text-white border-0\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\">' +
+        '<div class=\"d-flex\">' +
+        '<div class=\"toast-body\">' +
+        '<i class=\"bi ' + icon + ' me-2\"></i> ' + message +
+        '</div>' +
+        '<button type=\"button\" class=\"btn-close btn-close-white me-2 m-auto\" data-bs-dismiss=\"toast\"></button>' +
+        '</div>' +
+        '</div>';
+
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+    }
+
+    container.insertAdjacentHTML('beforeend', toastHtml);
+
+    const toastEl = document.getElementById(toastId);
+    if (toastEl) {
+        const toast = new bootstrap.Toast(toastEl, {
+            delay: duration,
+            autohide: true
+        });
+        toast.show();
+
+        toastEl.addEventListener('hidden.bs.toast', function() {
+            if (toastEl && toastEl.parentNode) {
+                toastEl.remove();
+            }
+        });
+    }
+}
         
         // ====== PAYMENT MODALS ======
         function openPayConfirmModal(cloudName, saldo) {
@@ -3622,6 +4125,14 @@ if (hasScreenshots) {
                     localStorage.setItem(LS_USER_KEY, JSON.stringify(currentUser));
                     updateUserBalanceUI();
                     startSaldoAutoRefresh();
+                    checkLoginStatus();
+                    
+                    // Tambahkan event listener untuk tombol login di login prompt
+                    const loginPromptBtn = document.querySelector('#loginPrompt .btn-primary');
+                    if (loginPromptBtn) {
+                        loginPromptBtn.addEventListener('click', openLoginModal);
+                    }
+                
                     
                     // Tutup modal konfirmasi
                     const confirmEl = document.getElementById('payConfirmModal');
