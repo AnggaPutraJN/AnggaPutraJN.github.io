@@ -1591,6 +1591,7 @@ img {
       setupEventListeners();
       initMainTabs();
       refreshCloudCacheUI();
+      checkLogin();
     });
     
     // ===================== EVENT LISTENERS =====================
@@ -4158,7 +4159,7 @@ function autoParsePasteData() {
       document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
     }
     
-    function createHTMLTemplate() {
+function createHTMLTemplate() {
       // Escape HTML untuk data yang masuk ke template output
       const escapeHTML = (str) => {
         if (str === undefined || str === null) return "";
@@ -4450,17 +4451,17 @@ function autoParsePasteData() {
               <strong>⚠️ Perhatian:</strong>
               Untuk mengakses link download tanpa iklan, Anda perlu login.
               Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
-              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
+              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini.
             </p>
 
             <p class="mb-3 text-muted">
               <strong>⚠️ Notice:</strong>
               To access the ad-free download links, you must log in.
               Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
-              Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
+              Then type <strong>/profile</strong> in the bot to get your Telegram ID.
             </p>
             <button class="btn btn-primary" onclick="openLoginModal()"><i class="bi bi-telegram"></i> Login</button>
-            <button class="btn btn-secondary" onclick="register()"><i class="bi bi-person-plus"></i> Register</button>
+            <button class="btn btn-secondary" onclick="openRegisterModal()"><i class="bi bi-person-plus"></i> Register</button>
           </div>
 
           <div id="originalLinksContent" style="display: none;">
@@ -4503,17 +4504,17 @@ function autoParsePasteData() {
               <strong>⚠️ Perhatian:</strong>
               Untuk mengakses link download tanpa iklan, Anda perlu login.
               Daftar melalui bot Telegram <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
-              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
+              Lalu ketik command <strong>/profile</strong> di bot telegram untuk mendapatkan ID Telegram Anda  atau bisa register disini.
             </p>
 
             <p class="mb-3 text-muted">
               <strong>⚠️ Notice:</strong>
               To access the ad-free download links, you must log in.
               Register via the Telegram bot <strong><a href="https://t.me/INDapkBot" target="_blank">@INDapkBot</a></strong>.
-              Then type <strong>/profile</strong> in the bot to get your Telegram ID or you can register here <a href="https://indapk.github.io/dashboard.html" target="_blank">Register</a>.
+              Then type <strong>/profile</strong> in the bot to get your Telegram ID.
             </p>
             <button class="btn btn-primary" onclick="openLoginModal()"><i class="bi bi-telegram"></i> Login</button>
-            <button class="btn btn-secondary" onclick="register()"><i class="bi bi-person-plus"></i> Register</button>
+            <button class="btn btn-secondary" onclick="openRegisterModal()"><i class="bi bi-person-plus"></i> Register</button>
           </div>
 
           <div id="originalLinksContent" style="display: none;">
@@ -4792,6 +4793,52 @@ function autoParsePasteData() {
         flex-wrap: wrap;
       }
     }
+
+    /* Modal Styling */
+    .modal-content {
+      background: #0f1422;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      color: #ffffff;
+    }
+
+    .modal-header {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .modal .form-control,
+    .modal input,
+    .modal textarea {
+      color: #fff !important;
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .modal .form-control:focus {
+      border-color: #34a853;
+      box-shadow: 0 0 0 4px rgba(61, 220, 132, 0.1);
+    }
+
+    .modal .input-group .btn-outline-secondary {
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+    }
+
+    .modal .input-group .btn-outline-secondary:hover {
+      background: rgba(61, 220, 132, 0.1);
+      border-color: #34a853;
+      color: #3ddc84;
+    }
+
+    .modal .form-label {
+      color: #ffffff !important;
+      font-weight: 600;
+    }
+
+    .modal .text-muted {
+      color: #94a3b8 !important;
+    }
   </style>
 </head>
 
@@ -4879,55 +4926,86 @@ function autoParsePasteData() {
       </div>
     </div>
 
-    <div class="modal fade" id="loginModal">
-      <div class="modal-dialog">
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header" style="background: var(--android-gradient); color: white;">
-            <h5 class="modal-title">Login</h5>
+            <h5 class="modal-title">
+              <i class="bi bi-shield-lock me-2"></i>Login Account
+            </h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body">
-            <div id="telegramWidget">
-              <div class="alert alert-info py-2 mb-3">
-                <div><strong>Cara daftar:</strong></div>
-                <ol class="mb-0 ps-3">
-                <li>Register disini  <a href="https://indapk.github.io/dashboard.html" target="_blank"><i class="fa fa-sign-in-alt"></i>Register</a></li>
-                <li>Atau buka bot <strong>@indapkbot</strong></li>
-                <li>Ketik <strong>/register</strong></li>
-                <li>Setelah register, ketik <strong>/profile</strong> untuk lihat Telegram ID</li>
-                </ol>
-              </div>
-
+          <div class="modal-body p-4">
+            <form id="loginForm" onsubmit="event.preventDefault(); login(this);">
               <div class="mb-3">
-                <label class="form-label">Telegram ID / Username</label>
-                <input type="text" id="telegramId" class="form-control" placeholder="Masukkan Username atau ID Telegram">
+                <label class="form-label small text-uppercase fw-semibold">Username / Telegram ID</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" id="telegramId" class="form-control" required>
+                </div>
               </div>
-
-              <div class="mb-3">
-                <label class="form-label">Key</label>
-                <input type="password" id="telegramKey" class="form-control" placeholder="Masukkan Key">
-                <small class="text-muted">Dapatkan Key dari bot @INDapkBot (contoh: /key atau cek profil).</small>
+              <div class="mb-4">
+                <label class="form-label small text-uppercase fw-semibold">Password (Key)</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-key"></i></span>
+                  <input type="password" id="telegramKey" class="form-control" required>
+                  <button class="btn btn-outline-secondary" type="button" onclick="toggleLoginKeyVisibility()">
+                    <i class="bi bi-eye" id="toggleLoginKeyIcon"></i>
+                  </button>
+                </div>
               </div>
-
-              <div class="d-flex gap-2">
-                <button class="btn btn-primary flex-fill" onclick="login(this)"><i class="bi bi-telegram"></i> Login</button>
-                <button class="btn btn-secondary flex-fill" onclick="register()"><i class="bi bi-person-plus"></i> Register</button>
-              </div>
+              <button type="submit" id="btnLoginAction" class="btn btn-primary w-100 py-2" style="background: var(--android-gradient);">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+              </button>
+            </form>
+            <div class="text-center mt-3">
+              <small class="text-muted">Don't have an account?</small>
+              <a href="#" onclick="switchModal('loginModal', 'registerModal')" class="text-info ms-1">Register</a>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            <div id="userInfo" style="display: none;">
-              <div class="alert alert-success">
-                <h5>Login Berhasil!</h5>
-                <p><strong>Nama:</strong> <span id="userName"></span></p>
-                <p><strong>Saldo:</strong> Rp <span id="userBalance"></span></p>
-                <p><strong>ID Telegram / Username:</strong> <span id="userId"></span></p>
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); color: white;">
+            <h5 class="modal-title">
+              <i class="bi bi-person-plus me-2"></i>New User Registration
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+            <form id="registerForm" onsubmit="event.preventDefault(); registerUser(this);">
+              <div class="mb-3">
+                <label class="form-label small text-uppercase fw-semibold">Full Name</label>
+                <input type="text" id="regName" class="form-control" required>
               </div>
-
-              <div class="d-flex gap-2 flex-wrap">
-                <a class="btn btn-success flex-fill" href="https://indapk.com/topup.html" target="_blank" rel="noopener">Top Up</a>
-                <button class="btn btn-danger flex-fill" onclick="logout()">Logout</button>
-                <button class="btn btn-secondary flex-fill" data-bs-dismiss="modal">Tutup</button>
+              <div class="mb-3">
+                <label class="form-label small text-uppercase fw-semibold">Telegram ID (Username)</label>
+                <input type="text" id="regTelegramId" class="form-control" required>
+                <div class="form-text text-muted">This will be your login ID.</div>
               </div>
+              <div class="mb-4">
+                <label class="form-label small text-uppercase fw-semibold">Create Password (Key)</label>
+                <div class="input-group">
+                  <input type="password" id="regKey" class="form-control" required>
+                  <button class="btn btn-outline-secondary" type="button" onclick="toggleRegisterKeyVisibility()">
+                    <i class="bi bi-eye" id="toggleRegKeyIcon"></i>
+                  </button>
+                </div>
+                <div class="form-text text-muted">Keep this key safe for login.</div>
+              </div>
+              <button type="submit" id="btnRegisterAction" class="btn btn-success w-100 py-2" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);">
+                <i class="bi bi-check-circle me-2"></i>Register Account
+              </button>
+            </form>
+            <div class="text-center mt-3">
+              <small class="text-muted">Already registered?</small>
+              <a href="#" onclick="switchModal('registerModal', 'loginModal')" class="text-info ms-1">Login</a>
             </div>
           </div>
         </div>
@@ -5066,6 +5144,43 @@ function autoParsePasteData() {
         }
       }
 
+      function toggleLoginKeyVisibility() {
+        const input = document.getElementById('telegramKey');
+        const icon = document.getElementById('toggleLoginKeyIcon');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+      }
+
+      function toggleRegisterKeyVisibility() {
+        const input = document.getElementById('regKey');
+        const icon = document.getElementById('toggleRegKeyIcon');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+      }
+
+      function switchModal(fromId, toId) {
+        bootstrap.Modal.getInstance(document.getElementById(fromId)).hide();
+        new bootstrap.Modal(document.getElementById(toId)).show();
+      }
+
+      function openLoginModal() {
+        new bootstrap.Modal(document.getElementById('loginModal')).show();
+      }
+
+      function openRegisterModal() {
+        new bootstrap.Modal(document.getElementById('registerModal')).show();
+      }
+
       async function login(btn) {
         const telegramIdInput = document.getElementById("telegramId");
         const keyInput = document.getElementById("telegramKey");
@@ -5113,13 +5228,11 @@ function autoParsePasteData() {
 
             updateUIForLoggedInUser();
 
-            document.getElementById("telegramWidget").style.display = "none";
-            document.getElementById("userInfo").style.display = "block";
-            document.getElementById("userName").textContent = currentUser.nama_user || "";
-            document.getElementById("userBalance").textContent = (currentUser.saldo || 0).toLocaleString();
-            document.getElementById("userId").textContent = currentUser.wa_number || "";
+            bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+
+            alert('Login berhasil! Selamat datang, ' + (currentUser.nama_user || currentUser.wa_number));
           } else {
-            alert("User tidak ditemukan. Silakan daftar dulu lewat @indapkbot.");
+            alert("User tidak ditemukan. Silakan daftar dulu.");
           }
         } catch (error) {
           console.error("Login error:", error);
@@ -5134,13 +5247,57 @@ function autoParsePasteData() {
         }
       }
 
-      function register() {
-        const urlWeb = "https://indapk.github.io/dashboard.html";
-        const urlTme = "https://indapk.github.io/dashboard.html";
-        const urlDashboard = "https://indapk.github.io/dashboard.html";
-
-        const w = window.open(urlDashboard, "_blank", "noopener");
-        if (!w) window.open(urlTme, "_blank", "noopener");
+      async function registerUser(form) {
+        const name = document.getElementById('regName').value.trim();
+        const user = document.getElementById('regTelegramId').value.trim();
+        const key = document.getElementById('regKey').value.trim();
+        const btn = document.getElementById('btnRegisterAction');
+        
+        if (!name || !user || !key) {
+          alert('Isi semua field!');
+          return;
+        }
+        
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Registering...';
+        btn.disabled = true;
+        
+        try {
+          const params = new URLSearchParams();
+          params.append('action', 'registerUser');
+          params.append('nama_user', name);
+          params.append('wa_number', user);
+          params.append('key', key);
+          
+          const response = await fetch(USER_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString()
+          });
+          
+          const result = await response.json();
+          
+          if (result.status === 'success') {
+            alert('✅ Registrasi berhasil! Silakan login dengan akun baru Anda.');
+            
+            bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+            
+            document.getElementById('regName').value = '';
+            document.getElementById('regTelegramId').value = '';
+            document.getElementById('regKey').value = '';
+            
+            setTimeout(() => {
+              new bootstrap.Modal(document.getElementById('loginModal')).show();
+            }, 1000);
+          } else {
+            alert('❌ Registrasi gagal: ' + (result.message || 'Unknown error'));
+          }
+        } catch (error) {
+          console.error('Register error:', error);
+          alert('❌ Gagal terhubung ke server.');
+        } finally {
+          btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Register Account';
+          btn.disabled = false;
+        }
       }
 
       function logout() {
@@ -5151,17 +5308,6 @@ function autoParsePasteData() {
 
         currentUser = null;
         updateUIForLoggedOutUser();
-
-        document.getElementById("telegramWidget").style.display = "block";
-        document.getElementById("userInfo").style.display = "none";
-
-        const idEl = document.getElementById("telegramId");
-        if (idEl) idEl.value = "";
-        const keyEl = document.getElementById("telegramKey");
-        if (keyEl) keyEl.value = "";
-
-        const modal = bootstrap.Modal.getInstance(document.getElementById("loginModal"));
-        if (modal) modal.hide();
 
         alert("Logout berhasil!");
       }
@@ -5191,17 +5337,6 @@ function autoParsePasteData() {
         document.getElementById("loginPrompt").style.display = "block";
         document.getElementById("originalLinksContent").style.display = "none";
         stopBalanceAutoRefresh();
-      }
-
-      function openLoginModal() {
-        document.getElementById("telegramWidget").style.display = "block";
-        document.getElementById("userInfo").style.display = "none";
-        document.getElementById("telegramId").value = "";
-
-        const keyEl = document.getElementById("telegramKey");
-        if (keyEl) keyEl.value = "";
-
-        new bootstrap.Modal(document.getElementById("loginModal")).show();
       }
 
       async function accessOriginalLink(gameType, gameIndex, linkIndex) {
