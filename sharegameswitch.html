@@ -1028,8 +1028,7 @@ function generateCode() {
         if (selectedFormat === 'only-nsp') {
             // Template ONLY NSP
             if (postType === 'share') {
-                generatedHtml = `🎮SHARE GAME SWITCH
-🎮Update Game Switch:
+                generatedHtml = `🎮SHARE GAME SWITCH:
 Nama Game: ${inputName}
 Ukuran NSP: ${inputSizeNSP}
 Category: ${inputCategory}
@@ -1042,10 +1041,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: NSP
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1056,8 +1055,7 @@ https://indapk.com/requestgame.html
 
 #INDapk`;
             } else if (postType === 'upload') {
-                generatedHtml = `🎮Upload Ulang GAME SWITCH
-🎮Update Game Switch:
+                generatedHtml = `🎮Upload Ulang GAME SWITCH:
 Nama Game: ${inputName}
 Ukuran NSP: ${inputSizeNSP}
 Category: ${inputCategory}
@@ -1070,10 +1068,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: NSP
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1084,8 +1082,7 @@ https://indapk.com/requestgame.html
 
 #INDapk`;
             } else {
-                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH
-🎮Update Game Switch:
+                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH:
 Nama Game: ${inputName}
 Ukuran NSP: ${inputSizeNSP}
 Category: ${inputCategory}
@@ -1098,10 +1095,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: NSP
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1115,8 +1112,7 @@ https://indapk.com/requestgame.html
         } else if (selectedFormat === 'only-xci') {
             // Template ONLY XCI
             if (postType === 'share') {
-                generatedHtml = `🎮SHARE GAME SWITCH
-🎮Update Game Switch:
+                generatedHtml = `🎮SHARE GAME SWITCH:
 Nama Game: ${inputName}
 Ukuran XCI: ${inputSizeXCI}
 Category: ${inputCategory}
@@ -1129,10 +1125,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: XCI
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1143,8 +1139,7 @@ https://indapk.com/requestgame.html
 
 #INDapk`;
             } else if (postType === 'upload') {
-                generatedHtml = `🎮Upload Ulang GAME SWITCH
-🎮Update Game Switch:
+                generatedHtml = `🎮Upload Ulang GAME SWITCH:
 Nama Game: ${inputName}
 Ukuran XCI: ${inputSizeXCI}
 Category: ${inputCategory}
@@ -1157,10 +1152,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: XCI
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1171,8 +1166,7 @@ https://indapk.com/requestgame.html
 
 #INDapk`;
             } else {
-                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH
-🎮Update Game Switch:
+                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH:
 Nama Game: ${inputName}
 Ukuran XCI: ${inputSizeXCI}
 Category: ${inputCategory}
@@ -1185,10 +1179,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: XCI
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1202,8 +1196,7 @@ https://indapk.com/requestgame.html
         } else {
             // Template NSP DAN XCI (default)
             if (postType === 'share') {
-                generatedHtml = `🎮SHARE GAME SWITCH
-🎮Update Game Switch (Include Update+DLC):
+                generatedHtml = `🎮SHARE GAME SWITCH (Include Update+DLC):
 Nama Game: ${inputName}
 Ukuran NSP: ${inputSizeNSP}
 Ukuran XCI: ${inputSizeXCI}
@@ -1217,10 +1210,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: NSP Dan XCI
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1231,8 +1224,7 @@ https://indapk.com/requestgame.html
 
 #INDapk`;
             } else if (postType === 'upload') {
-                generatedHtml = `🎮Upload Ulang GAME SWITCH
-🎮Update Game Switch (Include Update+DLC):
+                generatedHtml = `🎮Upload Ulang GAME SWITCH (Include Update+DLC):
 Nama Game: ${inputName}
 Ukuran NSP: ${inputSizeNSP}
 Ukuran XCI: ${inputSizeXCI}
@@ -1246,10 +1238,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: NSP Dan XCI
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
@@ -1260,8 +1252,7 @@ https://indapk.com/requestgame.html
 
 #INDapk`;
             } else {
-                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH
-🎮Update Game Switch (Include Update+DLC):
+                generatedHtml = `🎮UPDATE REQUEST GAME SWITCH (Include Update+DLC):
 Nama Game: ${inputName}
 Ukuran NSP: ${inputSizeNSP}
 Ukuran XCI: ${inputSizeXCI}
@@ -1275,10 +1266,10 @@ Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
 Format: NSP Dan XCI
 
 🌐Link Game:
-${inputLink}
+${altLink}
 
 🌐Link Alternative Download:
-${altLink}
+${inputLink}
 
 🌐Join Komunitas INDapk:
 https://www.kuysocial.com/pages/INDapk
