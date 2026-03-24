@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Game APK | PC | APK+PC - Generator Kode Share</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --card-bg: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --accent-color: #7CC6ED;
+            --accent-secondary: #ff6b6b;
+            --accent-green: #00ff88;
+            --border-color: #333;
+            --placeholder-color: #888;
+        }
+
+        [data-theme="light"] {
+            --primary-bg: #f0f2f5;
+            --secondary-bg: #ffffff;
+            --card-bg: #ffffff;
+            --text-primary: #212529;
+            --accent-color: #0066cc;
+            --accent-secondary: #dc3545;
+            --accent-green: #28a745;
+            --border-color: #dee2e6;
+            --placeholder-color: #6c757d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            padding-bottom: 2rem;
+        }
+
+        /* Enhanced Navigation Bar Styles */
+        .main-navigation {
+            background: var(--secondary-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-btn i {
+            font-size: 1rem;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+        }
+
+        .nav-btn.active-nav {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(124,198,237,0.3);
+        }
+
+        .theme-switch-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        .theme-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch.active::before {
+            transform: translateX(28px);
+        }
+
+        .container-fluid {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .custom-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .custom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .card-header h2 i {
+            margin-right: 8px;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Platform Selector */
+        .platform-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .platform-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid var(--border-color);
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .platform-btn i {
+            font-size: 1.5rem;
+        }
+
+        .platform-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .platform-btn.active {
+            border-color: var(--accent-color);
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+        }
+
+        /* Paste Area */
+        .paste-area {
+            margin-bottom: 1.5rem;
+        }
+
+        .paste-area textarea {
+            background: var(--secondary-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            padding: 12px 15px;
+            font-size: 0.9rem;
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            min-height: 280px;
+            resize: vertical;
+        }
+
+        .paste-area textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(124, 198, 237, 0.3);
+        }
+
+        .paste-area label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .paste-area label i {
+            color: var(--accent-color);
+            margin-right: 8px;
+        }
+
+        .paste-helper {
+            font-size: 0.8rem;
+            color: var(--placeholder-color);
+            margin-top: 5px;
+        }
+
+        /* Form Styles */
+        .form-control, input[type="text"], textarea {
+            background: var(--secondary-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .form-control:focus, input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(124, 198, 237, 0.3);
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: var(--text-primary);
+        }
+
+        label i {
+            color: var(--accent-color);
+            width: 25px;
+        }
+
+        .input-group-custom {
+            margin-bottom: 1rem;
+        }
+
+        .row-custom {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Platform specific fields */
+        .platform-fields {
+            display: none;
+        }
+
+        .platform-fields.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Buttons */
+        .btn-custom {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+        }
+
+        .btn-secondary-custom {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .btn-danger-custom {
+            background: linear-gradient(45deg, var(--accent-secondary), #ff4757);
+            color: white;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+
+        .btn-group-custom {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        /* Result Section */
+        #result {
+            background: var(--secondary-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            color: var(--text-primary);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .result-badge {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Post Type Selector */
+        .post-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .post-type-option {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .post-type-option input {
+            display: none;
+        }
+
+        .post-type-option.active {
+            border-color: var(--accent-color);
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+            color: white;
+        }
+
+        .post-type-option i {
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding: 1rem;
+            }
+            .row-custom {
+                grid-template-columns: 1fr;
+            }
+            .platform-selector, .post-type-selector {
+                flex-direction: column;
+            }
+            .btn-group-custom {
+                flex-direction: column;
+            }
+            .btn-custom {
+                justify-content: center;
+            }
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+        }
+
+        .success-animation {
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        .badge-info {
+            background: var(--accent-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+        
+        hr {
+            border-color: var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation Bar -->
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <div class="logo-area">
+                <i class="fas fa-gamepad logo-icon"></i>
+                <span class="logo-text">INDapk Generator</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-btn active-nav" id="navShareGenerator">
+                    <i class="fas fa-share-alt"></i> Share Generator
+                </a>
+                <a href="index" class="nav-btn" id="navHtmlSwitch">
+                    <i class="fas fa-code"></i> Generator HTML Switch
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="theme-switch-container">
+        <div class="theme-switch" onclick="toggleTheme()"></div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-edit"></i> Input Detail Game</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- PASTE AREA - MASUKKAN DETAIL GAME LANGSUNG -->
+                        <div class="paste-area">
+                            <label><i class="fas fa-paste"></i> Masukkan Detail Game (satu per baris):</label>
+                            <textarea id="pasteArea" placeholder="Contoh:
+Double Perception
+1.12 GB
+7.05 GB
+v5.8
+v5.9
+3DCG, Male Protagonist, Big Ass, Big Tits, Handjob, Blowjob, MILF, Harem, Vaginal sex, Adventure, Turn based combat, RPG, sandbox, Incest
+English
+https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
+                            <div class="paste-helper">
+                                <i class="fas fa-info-circle"></i> Format: Nama Game | Ukuran APK | Ukuran PC | Versi APK | Versi PC | Category | Language | Link Game
+                            </div>
+                        </div>
+
+                        <!-- Platform Selection -->
+                        <label><i class="fas fa-mobile-alt"></i> Pilih Format Game:</label>
+                        <div class="platform-selector">
+                            <div class="platform-btn active" onclick="selectPlatform('apk')">
+                                <i class="fas fa-android"></i>
+                                <span>APK</span>
+                                <small>Android Only</small>
+                            </div>
+                            <div class="platform-btn" onclick="selectPlatform('pc')">
+                                <i class="fas fa-desktop"></i>
+                                <span>PC</span>
+                                <small>Windows Only</small>
+                            </div>
+                            <div class="platform-btn" onclick="selectPlatform('apk+pc')">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>APK+PC</span>
+                                <small>Both Platforms</small>
+                            </div>
+                        </div>
+
+                        <!-- Post Type Selection -->
+                        <label><i class="fas fa-tag"></i> Tipe Postingan:</label>
+                        <div class="post-type-selector">
+                            <div class="post-type-option active" onclick="selectPostType('share')">
+                                <input type="radio" name="postType" value="share" checked hidden>
+                                <i class="fas fa-share-alt"></i> SHARE GAME
+                            </div>
+                            <div class="post-type-option" onclick="selectPostType('update')">
+                                <input type="radio" name="postType" value="update" hidden>
+                                <i class="fas fa-sync-alt"></i> UPDATE REQUEST
+                            </div>
+                            <div class="post-type-option" onclick="selectPostType('reupload')">
+                                <input type="radio" name="postType" value="reupload" hidden>
+                                <i class="fas fa-upload"></i> UPLOAD ULANG
+                            </div>
+                        </div>
+
+                        <!-- Tombol Parse dari Paste Area -->
+                        <div class="btn-group-custom" style="margin-bottom: 1rem;">
+                            <button onclick="parseFromPaste()" class="btn-custom btn-success-custom">
+                                <i class="fas fa-arrow-down"></i> Parse dari Paste Area
+                            </button>
+                        </div>
+
+                        <hr style="margin: 1rem 0;">
+
+                        <!-- Game Details Form (Otomatis terisi dari Parse) -->
+                        <form id="gameForm">
+                            <div class="input-group-custom">
+                                <label><i class="fas fa-heading"></i> Nama Game:</label>
+                                <input type="text" id="gameName" class="form-control" placeholder="Contoh: Double Perception">
+                            </div>
+
+                            <!-- APK Fields -->
+                            <div id="apkFields" class="platform-fields active">
+                                <div class="input-group-custom">
+                                    <label><i class="fas fa-mobile"></i> Ukuran APK:</label>
+                                    <input type="text" id="apkSize" class="form-control" placeholder="Contoh: 1.12 GB">
+                                </div>
+                                <div class="input-group-custom">
+                                    <label><i class="fas fa-code-branch"></i> Versi APK:</label>
+                                    <input type="text" id="apkVersion" class="form-control" placeholder="Contoh: v5.8">
+                                </div>
+                            </div>
+
+                            <!-- PC Fields -->
+                            <div id="pcFields" class="platform-fields">
+                                <div class="input-group-custom">
+                                    <label><i class="fas fa-desktop"></i> Ukuran PC:</label>
+                                    <input type="text" id="pcSize" class="form-control" placeholder="Contoh: 7.05 GB">
+                                </div>
+                                <div class="input-group-custom">
+                                    <label><i class="fas fa-code-branch"></i> Versi PC:</label>
+                                    <input type="text" id="pcVersion" class="form-control" placeholder="Contoh: v5.9">
+                                </div>
+                            </div>
+
+                            <!-- Common Fields -->
+                            <div class="row-custom">
+                                <div class="input-group-custom">
+                                    <label><i class="fas fa-list"></i> Category:</label>
+                                    <input type="text" id="category" class="form-control" placeholder="3DCG, Male Protagonist, RPG, Sandbox">
+                                </div>
+                                <div class="input-group-custom">
+                                    <label><i class="fas fa-language"></i> Language:</label>
+                                    <input type="text" id="language" class="form-control" placeholder="English, Indonesia">
+                                </div>
+                            </div>
+
+                            <div class="input-group-custom">
+                                <label><i class="fas fa-link"></i> Link Game:</label>
+                                <input type="text" id="gameLink" class="form-control" placeholder="https://indapk.github.io/download.html?game=21956&platform=apksgi">
+                            </div>
+
+                            <div class="input-group-custom">
+                                <label><i class="fas fa-sticky-note"></i> Sinopsis Tambahan (Opsional):</label>
+                                <textarea id="notes" class="form-control" placeholder="Tambahkan Sinopsis khusus jika ada..."></textarea>
+                            </div>
+                        </form>
+
+                        <div class="btn-group-custom">
+                            <button onclick="generateCode()" class="btn-custom btn-primary-custom">
+                                <i class="fas fa-cogs"></i> Generate Code
+                            </button>
+                            <button onclick="copyCode()" class="btn-custom btn-secondary-custom">
+                                <i class="fas fa-copy"></i> Copy Code
+                            </button>
+                            <button onclick="clearAll()" class="btn-custom btn-danger-custom">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="custom-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-code"></i> Hasil Kode Share</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="result-header">
+                            <h5 class="mb-0"><i class="fas fa-terminal"></i> Output:</h5>
+                            <span class="result-badge" id="platformBadge">APK Only</span>
+                        </div>
+                        <div id="result"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPlatform = 'apk';
+        let currentPostType = 'share';
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeSwitch = document.querySelector('.theme-switch');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                themeSwitch.classList.remove('active');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                themeSwitch.classList.add('active');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Navigation Buttons Handlers
+        function setupNavigation() {
+            const navShare = document.getElementById('navShareGenerator');
+            const navHtmlSwitch = document.getElementById('navHtmlSwitch');
+            const navPs2 = document.getElementById('navPs2');
+            
+            navShare.addEventListener('click', (e) => {
+                e.preventDefault();
+                showNotification('Anda sudah berada di Share Generator', 'info');
+                setActiveNav(navShare);
+            });
+            
+            navHtmlSwitch.addEventListener('click', (e) => {
+                e.preventDefault();
+                showNotification('Navigasi ke Generator HTML Switch (fitur dalam pengembangan)', 'info');
+                setActiveNav(navHtmlSwitch);
+            });
+            
+            navPs2.addEventListener('click', (e) => {
+                e.preventDefault();
+                showNotification('Navigasi ke Generator HTML PS2 (fitur dalam pengembangan)', 'info');
+                setActiveNav(navPs2);
+            });
+        }
+        
+        function setActiveNav(activeElement) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav'));
+            activeElement.classList.add('active-nav');
+        }
+
+        // Load saved theme and init
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.setAttribute('data-theme', 'light');
+                document.querySelector('.theme-switch').classList.add('active');
+            }
+            
+            // Set default platform to APK+PC
+            selectPlatform('apk+pc');
+            setupNavigation();
+        });
+
+        // Select Platform
+        function selectPlatform(platform) {
+            currentPlatform = platform;
+            
+            document.querySelectorAll('.platform-btn').forEach(btn => btn.classList.remove('active'));
+            if(event && event.target) {
+                event.target.closest('.platform-btn').classList.add('active');
+            } else {
+                document.querySelector(`.platform-btn[onclick="selectPlatform('${platform}')"]`).classList.add('active');
+            }
+            
+            document.getElementById('apkFields').classList.remove('active');
+            document.getElementById('pcFields').classList.remove('active');
+            
+            if (platform === 'apk') {
+                document.getElementById('apkFields').classList.add('active');
+                document.getElementById('platformBadge').textContent = 'APK Only';
+            } else if (platform === 'pc') {
+                document.getElementById('pcFields').classList.add('active');
+                document.getElementById('platformBadge').textContent = 'PC Only';
+            } else {
+                document.getElementById('apkFields').classList.add('active');
+                document.getElementById('pcFields').classList.add('active');
+                document.getElementById('platformBadge').textContent = 'APK + PC';
+            }
+        }
+
+        // Select Post Type
+        function selectPostType(type) {
+            currentPostType = type;
+            document.querySelectorAll('.post-type-option').forEach(opt => opt.classList.remove('active'));
+            if(event && event.target) {
+                event.target.closest('.post-type-option').classList.add('active');
+            }
+        }
+
+        // PARSE FROM PASTE AREA (unchanged but improved)
+        function parseFromPaste() {
+            const pasteText = document.getElementById('pasteArea').value;
+            if (!pasteText.trim()) {
+                showNotification('Paste area kosong!', 'error');
+                return;
+            }
+            
+            const lines = pasteText.split('\n').filter(line => line.trim() !== '');
+            if (lines.length < 1) {
+                showNotification('Format tidak valid!', 'error');
+                return;
+            }
+            
+            document.getElementById('gameName').value = lines[0] || '';
+            if (lines[1]) document.getElementById('apkSize').value = lines[1];
+            if (lines[2]) document.getElementById('pcSize').value = lines[2];
+            if (lines[3]) document.getElementById('apkVersion').value = lines[3];
+            if (lines[4]) document.getElementById('pcVersion').value = lines[4];
+            if (lines[5]) document.getElementById('category').value = lines[5];
+            if (lines[6]) document.getElementById('language').value = lines[6];
+            if (lines[7]) document.getElementById('gameLink').value = lines[7];
+            
+            showNotification('Data berhasil di-parse dari paste area!', 'success');
+            
+            const hasApkSize = lines[1] && lines[1].trim() !== '';
+            const hasPcSize = lines[2] && lines[2].trim() !== '';
+            if (hasApkSize && hasPcSize) {
+                selectPlatform('apk+pc');
+            } else if (hasApkSize) {
+                selectPlatform('apk');
+            } else if (hasPcSize) {
+                selectPlatform('pc');
+            }
+        }
+
+        function buildAlternativeLink(gameName) {
+            let name = gameName || '';
+            name = String(name).trim();
+            if (!name) return 'https://indapk.github.io';
+            return `https://indapk.github.io/?q=${encodeURIComponent(name).replace(/%20/g, '+')}`;
+        }
+
+        function generateCode() {
+            const btn = document.querySelector('.btn-primary-custom');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="loading"></span> Generating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const gameName = document.getElementById('gameName').value.trim() || 'Nama Game';
+                const category = document.getElementById('category').value.trim() || 'Not Specified';
+                const language = document.getElementById('language').value.trim() || 'English';
+                const gameLink = document.getElementById('gameLink').value.trim();
+                const notes = document.getElementById('notes').value.trim();
+                const apkSize = document.getElementById('apkSize').value.trim();
+                const apkVersion = document.getElementById('apkVersion').value.trim();
+                const pcSize = document.getElementById('pcSize').value.trim();
+                const pcVersion = document.getElementById('pcVersion').value.trim();
+                const altLink = buildAlternativeLink(gameName);
+                
+                let postTitle = '';
+                switch(currentPostType) {
+                    case 'share': postTitle = 'SHARE GAME Adult'; break;
+                    case 'update': postTitle = 'UPDATE REQUEST GAME Adult'; break;
+                    case 'reupload': postTitle = 'Upload Ulang GAME Adult'; break;
+                }
+                
+                let output = `🎮${postTitle}:\n`;
+                output += `Nama Game: ${gameName}\n`;
+                
+                if (currentPlatform === 'apk') {
+                    output += `Ukuran Game: ${apkSize || 'N/A'} (APK)\n`;
+                    output += `Versi : ${apkVersion || 'N/A'} (APK)\n`;
+                } else if (currentPlatform === 'pc') {
+                    output += `Ukuran Game: ${pcSize || 'N/A'} (PC)\n`;
+                    output += `Versi : ${pcVersion || 'N/A'} (PC)\n`;
+                } else {
+                    output += `Ukuran Game: ${apkSize || 'N/A'} (APK)\n`;
+                    output += `Ukuran Game: ${pcSize || 'N/A'} (PC)\n`;
+                    output += `Versi : ${apkVersion || 'N/A'} (APK)\n`;
+                    output += `Versi : ${pcVersion || 'N/A'} (PC)\n`;
+                }
+                
+                output += `Category: ${category}\n`;
+                output += `Language: ${language}\n`;
+                let platformText = '';
+                if (currentPlatform === 'apk') platformText = 'Android';
+                else if (currentPlatform === 'pc') platformText = 'PC';
+                else platformText = 'Android, PC';
+                output += `Platform: ${platformText}\n`;
+                output += `Connection: Offline\n`;
+                output += `Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup\n`;
+                if (currentPlatform === 'apk') output += `Format: APK (Android)\n`;
+                else if (currentPlatform === 'pc') output += `Format: PC Installer / Portable\n`;
+                else output += `Format: APK (Android) + PC Installer\n`;
+                
+                if (notes) output += `\n📝Sinopsis:\n${notes}\n`;
+                output += `\n🌐Link Game:\n${altLink}\n`;
+                if (gameLink) output += `\nLink Alternatif:\n${gameLink}\n`;
+                output += `\n🌐Join Komunitas INDapk:\nhttps://www.kuysocial.com/pages/INDapk\n`;
+                output += `\n🌐Request Game:\nhttps://indapk.com/requestgame.html\n`;
+                output += `\n\n#INDapk`;
+                
+                document.getElementById('result').innerText = output;
+                document.getElementById('result').classList.add('success-animation');
+                setTimeout(() => document.getElementById('result').classList.remove('success-animation'), 500);
+                
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                showNotification('Code berhasil di-generate!', 'success');
+            }, 500);
+        }
+
+        function copyCode() {
+            const result = document.getElementById('result').innerText;
+            if (!result.trim()) {
+                showNotification('Belum ada code yang di-generate!', 'error');
+                return;
+            }
+            navigator.clipboard.writeText(result).then(() => {
+                showNotification('Code berhasil disalin ke clipboard!', 'success');
+                document.getElementById('result').classList.add('success-animation');
+                setTimeout(() => document.getElementById('result').classList.remove('success-animation'), 500);
+            }).catch(() => {
+                showNotification('Gagal menyalin code', 'error');
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('gameName').value = '';
+            document.getElementById('apkSize').value = '';
+            document.getElementById('apkVersion').value = '';
+            document.getElementById('pcSize').value = '';
+            document.getElementById('pcVersion').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('language').value = '';
+            document.getElementById('gameLink').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('pasteArea').value = '';
+            document.getElementById('result').innerHTML = '';
+            showNotification('Semua field telah dibersihkan!', 'success');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.background = type === 'success' 
+                ? 'linear-gradient(45deg, #00ff88, #00d4ff)' 
+                : (type === 'error' ? 'linear-gradient(45deg, #ff006e, #ff4757)' : 'linear-gradient(45deg, #7CC6ED, #0066cc)');
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideUp 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
