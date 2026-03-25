@@ -1,9 +1,11 @@
+Berikut adalah kode HTML yang telah diperbaiki sesuai dengan format yang Anda minta. Saya telah menambahkan logika untuk menangani format "PC Only" dengan benar, serta menyesuaikan struktur input dan output agar sesuai dengan contoh yang diberikan.
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Share Game APK | PC | APK+PC - Generator Kode Share</title>
+    <title>INDapk Generator - Share Game APK | PC | APK+PC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
@@ -44,7 +46,6 @@
             padding-bottom: 2rem;
         }
 
-        /* Enhanced Navigation Bar Styles */
         .main-navigation {
             background: var(--secondary-bg);
             backdrop-filter: blur(10px);
@@ -205,7 +206,6 @@
             padding: 1.5rem;
         }
 
-        /* Platform Selector */
         .platform-selector {
             display: flex;
             gap: 1rem;
@@ -244,7 +244,6 @@
             color: white;
         }
 
-        /* Paste Area */
         .paste-area {
             margin-bottom: 1.5rem;
         }
@@ -285,7 +284,6 @@
             margin-top: 5px;
         }
 
-        /* Form Styles */
         .form-control, input[type="text"], textarea {
             background: var(--secondary-bg);
             border: 2px solid var(--border-color);
@@ -326,7 +324,6 @@
             gap: 1rem;
         }
 
-        /* Platform specific fields */
         .platform-fields {
             display: none;
         }
@@ -341,7 +338,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Buttons */
         .btn-custom {
             padding: 10px 24px;
             border-radius: 25px;
@@ -387,7 +383,6 @@
             margin-top: 1rem;
         }
 
-        /* Result Section */
         #result {
             background: var(--secondary-bg);
             border: 2px solid var(--accent-color);
@@ -420,7 +415,6 @@
             font-weight: 600;
         }
 
-        /* Post Type Selector */
         .post-type-selector {
             display: flex;
             gap: 1rem;
@@ -551,7 +545,6 @@
     </style>
 </head>
 <body>
-    <!-- Enhanced Navigation Bar -->
     <nav class="main-navigation">
         <div class="nav-container">
             <div class="logo-area">
@@ -562,7 +555,7 @@
                 <a href="#" class="nav-btn active-nav" id="navShareGenerator">
                     <i class="fas fa-share-alt"></i> Share Generator
                 </a>
-                <a href="index" class="nav-btn" id="navHtmlSwitch">
+                <a href="#" class="nav-btn" id="navHtmlSwitch">
                     <i class="fas fa-code"></i> Generator HTML Switch
                 </a>
             </div>
@@ -581,44 +574,47 @@
                         <h2><i class="fas fa-edit"></i> Input Detail Game</h2>
                     </div>
                     <div class="card-body">
-                        <!-- PASTE AREA - MASUKKAN DETAIL GAME LANGSUNG -->
                         <div class="paste-area">
                             <label><i class="fas fa-paste"></i> Masukkan Detail Game (satu per baris):</label>
-                            <textarea id="pasteArea" placeholder="Contoh:
-Double Perception
-1.12 GB
-7.05 GB
-v5.8
-v5.9
-3DCG, Male Protagonist, Big Ass, Big Tits, Handjob, Blowjob, MILF, Harem, Vaginal sex, Adventure, Turn based combat, RPG, sandbox, Incest
+                            <textarea id="pasteArea" placeholder="Contoh Format:
+Medschool, Love and Friends
+936 MB
+v0.2
+3DCG, Male protagonist, Animated, Teasing, Voyeurism, Milf, Virgin, Vaginal, Harem, College, Medical
 English
-https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
+https://indapk.github.io/?q=Medschool%2C+Love+and+Friends
+
+Atau Format APK+PC:
+Crimson Prison
+54.4 MB
+2.38 GB
+v0.1.5.7
+v0.1.5.7
+3DCG, Animated, Mobile Game, Male Protagonist, Voiced, Corruption
+English
+https://indapk.github.io/?q=Crimson+Prison"></textarea>
                             <div class="paste-helper">
-                                <i class="fas fa-info-circle"></i> Format: Nama Game | Ukuran APK | Ukuran PC | Versi APK | Versi PC | Category | Language | Link Game
+                                <i class="fas fa-info-circle"></i> Format PC Only: Nama Game | Ukuran PC | Versi PC | Category | Language | Link<br>
+                                Format APK+PC: Nama Game | Ukuran APK | Ukuran PC | Versi APK | Versi PC | Category | Language | Link
                             </div>
                         </div>
 
-                        <!-- Platform Selection -->
                         <label><i class="fas fa-mobile-alt"></i> Pilih Format Game:</label>
                         <div class="platform-selector">
-                            <div class="platform-btn active" onclick="selectPlatform('apk')">
+                            <div class="platform-btn" onclick="selectPlatform('apk')">
                                 <i class="fas fa-android"></i>
-                                <span>APK</span>
-                                <small>Android Only</small>
+                                <span>APK Only</span>
                             </div>
-                            <div class="platform-btn" onclick="selectPlatform('pc')">
+                            <div class="platform-btn active" onclick="selectPlatform('pc')">
                                 <i class="fas fa-desktop"></i>
-                                <span>PC</span>
-                                <small>Windows Only</small>
+                                <span>PC Only</span>
                             </div>
                             <div class="platform-btn" onclick="selectPlatform('apk+pc')">
                                 <i class="fas fa-sync-alt"></i>
-                                <span>APK+PC</span>
-                                <small>Both Platforms</small>
+                                <span>APK + PC</span>
                             </div>
                         </div>
 
-                        <!-- Post Type Selection -->
                         <label><i class="fas fa-tag"></i> Tipe Postingan:</label>
                         <div class="post-type-selector">
                             <div class="post-type-option active" onclick="selectPostType('share')">
@@ -635,7 +631,6 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
                             </div>
                         </div>
 
-                        <!-- Tombol Parse dari Paste Area -->
                         <div class="btn-group-custom" style="margin-bottom: 1rem;">
                             <button onclick="parseFromPaste()" class="btn-custom btn-success-custom">
                                 <i class="fas fa-arrow-down"></i> Parse dari Paste Area
@@ -644,32 +639,33 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
 
                         <hr style="margin: 1rem 0;">
 
-                        <!-- Game Details Form (Otomatis terisi dari Parse) -->
                         <form id="gameForm">
                             <div class="input-group-custom">
                                 <label><i class="fas fa-heading"></i> Nama Game:</label>
-                                <input type="text" id="gameName" class="form-control" placeholder="Contoh: Double Perception">
+                                <input type="text" id="gameName" class="form-control" placeholder="Contoh: Medschool, Love and Friends">
                             </div>
 
                             <!-- APK Fields -->
-                            <div id="apkFields" class="platform-fields active">
+                            <div id="apkFields" class="platform-fields">
                                 <div class="input-group-custom">
                                     <label><i class="fas fa-mobile"></i> Ukuran APK:</label>
-                                    <input type="text" id="apkSize" class="form-control" placeholder="Contoh: 1.12 GB">
-                                </div>
-                            <div id="pcFields" class="platform-fields">
-                                <div class="input-group-custom">
-                                    <label><i class="fas fa-desktop"></i> Ukuran PC:</label>
-                                    <input type="text" id="pcSize" class="form-control" placeholder="Contoh: 7.05 GB">
+                                    <input type="text" id="apkSize" class="form-control" placeholder="Contoh: 936 MB">
                                 </div>
                                 <div class="input-group-custom">
                                     <label><i class="fas fa-code-branch"></i> Versi APK:</label>
-                                    <input type="text" id="apkVersion" class="form-control" placeholder="Contoh: v5.8">
+                                    <input type="text" id="apkVersion" class="form-control" placeholder="Contoh: v0.2">
                                 </div>
                             </div>
+
+                            <!-- PC Fields -->
+                            <div id="pcFields" class="platform-fields active">
+                                <div class="input-group-custom">
+                                    <label><i class="fas fa-desktop"></i> Ukuran PC:</label>
+                                    <input type="text" id="pcSize" class="form-control" placeholder="Contoh: 936 MB">
+                                </div>
                                 <div class="input-group-custom">
                                     <label><i class="fas fa-code-branch"></i> Versi PC:</label>
-                                    <input type="text" id="pcVersion" class="form-control" placeholder="Contoh: v5.9">
+                                    <input type="text" id="pcVersion" class="form-control" placeholder="Contoh: v0.2">
                                 </div>
                             </div>
 
@@ -677,17 +673,17 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
                             <div class="row-custom">
                                 <div class="input-group-custom">
                                     <label><i class="fas fa-list"></i> Category:</label>
-                                    <input type="text" id="category" class="form-control" placeholder="3DCG, Male Protagonist, RPG, Sandbox">
+                                    <input type="text" id="category" class="form-control" placeholder="3DCG, Male protagonist, Animated, Milf">
                                 </div>
                                 <div class="input-group-custom">
                                     <label><i class="fas fa-language"></i> Language:</label>
-                                    <input type="text" id="language" class="form-control" placeholder="English, Indonesia">
+                                    <input type="text" id="language" class="form-control" placeholder="English">
                                 </div>
                             </div>
 
                             <div class="input-group-custom">
                                 <label><i class="fas fa-link"></i> Link Game:</label>
-                                <input type="text" id="gameLink" class="form-control" placeholder="https://indapk.github.io/download.html?game=21956&platform=apksgi">
+                                <input type="text" id="gameLink" class="form-control" placeholder="https://indapk.github.io/?q=Nama+Game">
                             </div>
 
                             <div class="input-group-custom">
@@ -719,7 +715,7 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
                     <div class="card-body">
                         <div class="result-header">
                             <h5 class="mb-0"><i class="fas fa-terminal"></i> Output:</h5>
-                            <span class="result-badge" id="platformBadge">APK Only</span>
+                            <span class="result-badge" id="platformBadge">PC Only</span>
                         </div>
                         <div id="result"></div>
                     </div>
@@ -729,10 +725,9 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
     </div>
 
     <script>
-        let currentPlatform = 'apk';
+        let currentPlatform = 'pc';
         let currentPostType = 'share';
 
-        // Theme Toggle
         function toggleTheme() {
             const body = document.body;
             const themeSwitch = document.querySelector('.theme-switch');
@@ -747,59 +742,29 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
             }
         }
 
-        // Navigation Buttons Handlers
-        function setupNavigation() {
-            const navShare = document.getElementById('navShareGenerator');
-            const navHtmlSwitch = document.getElementById('navHtmlSwitch');
-            const navPs2 = document.getElementById('navPs2');
-            
-            navShare.addEventListener('click', (e) => {
-                e.preventDefault();
-                showNotification('Anda sudah berada di Share Generator', 'info');
-                setActiveNav(navShare);
-            });
-            
-            navHtmlSwitch.addEventListener('click', (e) => {
-                e.preventDefault();
-                showNotification('Navigasi ke Generator HTML Switch (fitur dalam pengembangan)', 'info');
-                setActiveNav(navHtmlSwitch);
-            });
-            
-            navPs2.addEventListener('click', (e) => {
-                e.preventDefault();
-                showNotification('Navigasi ke Generator HTML PS2 (fitur dalam pengembangan)', 'info');
-                setActiveNav(navPs2);
-            });
-        }
-        
-        function setActiveNav(activeElement) {
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav'));
-            activeElement.classList.add('active-nav');
-        }
-
-        // Load saved theme and init
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
                 document.body.setAttribute('data-theme', 'light');
                 document.querySelector('.theme-switch').classList.add('active');
             }
+            selectPlatform('pc');
             
-            // Set default platform to APK+PC
-            selectPlatform('apk+pc');
-            setupNavigation();
+            document.getElementById('navShareGenerator').addEventListener('click', (e) => {
+                e.preventDefault();
+                showNotification('Anda sudah berada di Share Generator', 'info');
+            });
+            document.getElementById('navHtmlSwitch').addEventListener('click', (e) => {
+                e.preventDefault();
+                showNotification('Fitur dalam pengembangan', 'info');
+            });
         });
 
-        // Select Platform
         function selectPlatform(platform) {
             currentPlatform = platform;
             
             document.querySelectorAll('.platform-btn').forEach(btn => btn.classList.remove('active'));
-            if(event && event.target) {
-                event.target.closest('.platform-btn').classList.add('active');
-            } else {
-                document.querySelector(`.platform-btn[onclick="selectPlatform('${platform}')"]`).classList.add('active');
-            }
+            document.querySelector(`.platform-btn[onclick="selectPlatform('${platform}')"]`).classList.add('active');
             
             document.getElementById('apkFields').classList.remove('active');
             document.getElementById('pcFields').classList.remove('active');
@@ -817,7 +782,6 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
             }
         }
 
-        // Select Post Type
         function selectPostType(type) {
             currentPostType = type;
             document.querySelectorAll('.post-type-option').forEach(opt => opt.classList.remove('active'));
@@ -826,7 +790,6 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
             }
         }
 
-        // PARSE FROM PASTE AREA (unchanged but improved)
         function parseFromPaste() {
             const pasteText = document.getElementById('pasteArea').value;
             if (!pasteText.trim()) {
@@ -841,25 +804,35 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
             }
             
             document.getElementById('gameName').value = lines[0] || '';
-            if (lines[1]) document.getElementById('apkSize').value = lines[1];
-            if (lines[2]) document.getElementById('pcSize').value = lines[2];
-            if (lines[3]) document.getElementById('apkVersion').value = lines[3];
-            if (lines[4]) document.getElementById('pcVersion').value = lines[4];
-            if (lines[5]) document.getElementById('category').value = lines[5];
-            if (lines[6]) document.getElementById('language').value = lines[6];
-            if (lines[7]) document.getElementById('gameLink').value = lines[7];
+            
+            // Deteksi format berdasarkan jumlah baris dan konten
+            const hasApkSize = lines[1] && (lines[1].includes('MB') || lines[1].includes('GB')) && !lines[2]?.includes('MB') && !lines[2]?.includes('GB');
+            const hasPcSize = lines[1] && (lines[1].includes('MB') || lines[1].includes('GB'));
+            const hasSecondSize = lines[2] && (lines[2].includes('MB') || lines[2].includes('GB'));
+            
+            if (lines.length >= 6 && hasSecondSize) {
+                // Format APK+PC: Nama, Ukuran APK, Ukuran PC, Versi APK, Versi PC, Category, Language, Link
+                if (lines[1]) document.getElementById('apkSize').value = lines[1];
+                if (lines[2]) document.getElementById('pcSize').value = lines[2];
+                if (lines[3]) document.getElementById('apkVersion').value = lines[3];
+                if (lines[4]) document.getElementById('pcVersion').value = lines[4];
+                if (lines[5]) document.getElementById('category').value = lines[5];
+                if (lines[6]) document.getElementById('language').value = lines[6];
+                if (lines[7]) document.getElementById('gameLink').value = lines[7];
+                selectPlatform('apk+pc');
+            } else if (lines.length >= 4 && !hasSecondSize) {
+                // Format PC Only: Nama, Ukuran PC, Versi PC, Category, Language, Link
+                if (lines[1]) document.getElementById('pcSize').value = lines[1];
+                if (lines[2]) document.getElementById('pcVersion').value = lines[2];
+                if (lines[3]) document.getElementById('category').value = lines[3];
+                if (lines[4]) document.getElementById('language').value = lines[4];
+                if (lines[5]) document.getElementById('gameLink').value = lines[5];
+                selectPlatform('pc');
+            } else {
+                showNotification('Format tidak dikenali, silakan cek contoh format', 'error');
+            }
             
             showNotification('Data berhasil di-parse dari paste area!', 'success');
-            
-            const hasApkSize = lines[1] && lines[1].trim() !== '';
-            const hasPcSize = lines[2] && lines[2].trim() !== '';
-            if (hasApkSize && hasPcSize) {
-                selectPlatform('apk+pc');
-            } else if (hasApkSize) {
-                selectPlatform('apk');
-            } else if (hasPcSize) {
-                selectPlatform('pc');
-            }
         }
 
         function buildAlternativeLink(gameName) {
@@ -885,7 +858,7 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
                 const apkVersion = document.getElementById('apkVersion').value.trim();
                 const pcSize = document.getElementById('pcSize').value.trim();
                 const pcVersion = document.getElementById('pcVersion').value.trim();
-                const altLink = buildAlternativeLink(gameName);
+                const altLink = gameLink || buildAlternativeLink(gameName);
                 
                 let postTitle = '';
                 switch(currentPostType) {
@@ -898,20 +871,21 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
                 output += `Nama Game: ${gameName}\n`;
                 
                 if (currentPlatform === 'apk') {
-                    output += `Ukuran Game: ${apkSize || 'N/A'} (APK)\n`;
-                    output += `Versi : ${apkVersion || 'N/A'} (APK)\n`;
+                    output += `Ukuran Game: ${apkSize || 'N/A'}\n`;
+                    output += `Versi Game: ${apkVersion || 'N/A'}\n`;
                 } else if (currentPlatform === 'pc') {
-                    output += `Ukuran Game: ${pcSize || 'N/A'} (PC)\n`;
-                    output += `Versi : ${pcVersion || 'N/A'} (PC)\n`;
+                    output += `Ukuran Game: ${pcSize || 'N/A'}\n`;
+                    output += `Versi Game: ${pcVersion || 'N/A'}\n`;
                 } else {
                     output += `Ukuran Game: ${apkSize || 'N/A'} (APK)\n`;
                     output += `Ukuran Game: ${pcSize || 'N/A'} (PC)\n`;
-                    output += `Versi : ${apkVersion || 'N/A'} (APK)\n`;
-                    output += `Versi : ${pcVersion || 'N/A'} (PC)\n`;
+                    output += `Versi Game: ${apkVersion || 'N/A'} (APK)\n`;
+                    output += `Versi Game: ${pcVersion || 'N/A'} (PC)\n`;
                 }
                 
                 output += `Category: ${category}\n`;
                 output += `Language: ${language}\n`;
+                
                 let platformText = '';
                 if (currentPlatform === 'apk') platformText = 'Android';
                 else if (currentPlatform === 'pc') platformText = 'PC';
@@ -919,13 +893,13 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
                 output += `Platform: ${platformText}\n`;
                 output += `Connection: Offline\n`;
                 output += `Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup\n`;
+                
                 if (currentPlatform === 'apk') output += `Format: APK (Android)\n`;
                 else if (currentPlatform === 'pc') output += `Format: PC Installer / Portable\n`;
-                else output += `Format: APK (Android) + PC Installer\n`;
+                else output += `Format: APK (Android) + PC Installer / Portable\n`;
                 
                 if (notes) output += `\n📝Sinopsis:\n${notes}\n`;
                 output += `\n🌐Link Game:\n${altLink}\n`;
-                output += `\n🌐Join Komunitas INDapk:\nhttps://www.kuysocial.com/pages/INDapk\n`;
                 output += `\n🌐Request Game:\nhttps://indapk.com/requestgame.html\n`;
                 output += `\n\n#INDapk`;
                 
@@ -985,3 +959,4 @@ https://indapk.github.io/download.html?game=21956&platform=apksgi"></textarea>
     </script>
 </body>
 </html>
+```
