@@ -1,5 +1,3 @@
-Berikut adalah kode HTML yang telah diperbaiki sesuai dengan format yang Anda minta. Saya telah menambahkan logika untuk menangani format "PC Only" dengan benar, serta menyesuaikan struktur input dan output agar sesuai dengan contoh yang diberikan.
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -891,12 +889,10 @@ https://indapk.github.io/?q=Crimson+Prison"></textarea>
                 else if (currentPlatform === 'pc') platformText = 'PC';
                 else platformText = 'Android, PC';
                 output += `Platform: ${platformText}\n`;
-                output += `Connection: Offline\n`;
-                output += `Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup\n`;
                 
                 if (currentPlatform === 'apk') output += `Format: APK (Android)\n`;
                 else if (currentPlatform === 'pc') output += `Format: PC Installer / Portable\n`;
-                else output += `Format: APK (Android) + PC Installer / Portable\n`;
+                else output += `Format: APK (Android)\n`;
                 
                 if (notes) output += `\n📝Sinopsis:\n${notes}\n`;
                 output += `\n🌐Link Game:\n${altLink}\n`;
@@ -959,4 +955,3 @@ https://indapk.github.io/?q=Crimson+Prison"></textarea>
     </script>
 </body>
 </html>
-```
