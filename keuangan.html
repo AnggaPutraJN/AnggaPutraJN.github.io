@@ -296,7 +296,7 @@
         .stat-dana::before { background: linear-gradient(135deg, #047857, #0891b2); }
         .stat-mandiri::before { background: linear-gradient(135deg, #b91c1c, #dc2626); }
         .stat-qris::before { background: linear-gradient(135deg, #7c3aed, #a855f7); }
-        .stat-ibu::before { background: linear-gradient(135deg, #ec4899, #f43f5e); } /* Warna untuk Saldo Ibu */
+        .stat-bca::before { background: linear-gradient(135deg, #ec4899, #f43f5e); } /* Warna untuk Saldo BCA */
 
         .stat-head {
             display: flex;
@@ -347,11 +347,20 @@
         .stat-dana .stat-icon { color: #0891b2; }
         .stat-mandiri .stat-icon { color: #dc2626; }
         .stat-qris .stat-icon { color: #a855f7; }
-        .stat-ibu .stat-icon { color: #ec4899; } /* Ikon Saldo Ibu */
+        .stat-bca .stat-icon { color: #ec4899; } /* Ikon Saldo BCA */
         .stat-custom-wallet::before { background: linear-gradient(135deg, #0891b2, #2563eb); }
         .stat-custom-wallet .stat-icon { color: var(--accent-info); }
         .wallet-dashboard-card .btn { width: auto; margin-bottom: 0; }
         .wallet-adjust-preview { border-left: 3px solid var(--accent-info); }
+        .dashboard-wallet-loading {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(8, 145, 178, 0.08));
+            border: 1px dashed rgba(96, 165, 250, 0.45);
+        }
+        .dashboard-wallet-loading .spinner {
+            width: 34px;
+            height: 34px;
+            margin-bottom: 0.65rem;
+        }
 
         .stat-foot {
             display: flex;
@@ -1918,11 +1927,235 @@
             }
         }
 
+
+        /* ============================================
+           LOGIN / REGISTER MULTI USER
+           ============================================ */
+        .auth-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(5, 150, 105, 0.16), transparent 34%),
+                linear-gradient(180deg, #090d19 0%, #0f172a 55%, #0a0e1a 100%);
+        }
+
+        .auth-card {
+            width: min(100%, 520px);
+            background: linear-gradient(145deg, rgba(26, 35, 50, 0.96), rgba(15, 23, 42, 0.94));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 24px;
+            padding: 1.35rem;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+        }
+
+        .auth-logo {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            color: #fff;
+            font-size: 1.65rem;
+            box-shadow: 0 14px 32px rgba(37, 99, 235, 0.35);
+        }
+
+        .auth-title {
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin: 0;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 0.88rem;
+        }
+
+        .auth-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 16px;
+            padding: 0.35rem;
+            margin: 1.15rem 0;
+        }
+
+        .auth-tab-btn {
+            border: 0;
+            border-radius: 12px;
+            padding: 0.7rem 0.85rem;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .auth-tab-btn.active {
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
+        }
+
+        .auth-form { display: none; }
+        .auth-form.active { display: block; animation: fadeIn 0.25s ease; }
+
+        .auth-message {
+            border-radius: 14px;
+            padding: 0.75rem 0.9rem;
+            margin-bottom: 0.85rem;
+            font-size: 0.86rem;
+            display: none;
+        }
+
+        .auth-message.show { display: block; }
+        .auth-message.error {
+            background: rgba(220, 38, 38, 0.14);
+            border: 1px solid rgba(220, 38, 38, 0.28);
+            color: #fecaca;
+        }
+        .auth-message.success {
+            background: rgba(5, 150, 105, 0.14);
+            border: 1px solid rgba(5, 150, 105, 0.28);
+            color: #bbf7d0;
+        }
+
+        .user-badge {
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.28);
+            color: var(--text-primary);
+            border-radius: 999px;
+            padding: 0.55rem 0.85rem;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .auth-small-note {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            line-height: 1.45;
+        }
+
+        @media (max-width: 768px) {
+            .auth-screen {
+                align-items: flex-start;
+                padding: 0.85rem;
+            }
+
+            .auth-card {
+                border-radius: 20px;
+                padding: 1rem;
+                margin-top: 0.75rem;
+            }
+
+            .auth-card .btn {
+                width: 100%;
+            }
+
+            .user-badge {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
     </style>
 </head>
 
 <body>
-    <div class="container">
+
+    <!-- ============================================
+    LOGIN / REGISTER MULTI USER
+    ============================================ -->
+    <section id="authScreen" class="auth-screen">
+        <div class="auth-card">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="auth-logo"><i class="bi bi-shield-lock"></i></div>
+                <div>
+                    <h2 class="auth-title">Keuangan Pribadi</h2>
+                    <p class="auth-subtitle">Login atau daftar untuk membuka data keuangan Anda sendiri.</p>
+                </div>
+            </div>
+
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab-btn active" id="loginTabBtn">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+                <button type="button" class="auth-tab-btn" id="registerTabBtn">
+                    <i class="bi bi-person-plus"></i> Register
+                </button>
+            </div>
+
+            <div id="authMessage" class="auth-message"></div>
+
+            <form id="loginForm" class="auth-form active">
+                <div class="mb-3">
+                    <label class="form-label required">Username</label>
+                    <input type="text" class="form-control" id="loginUsername" autocomplete="username" placeholder="Masukkan username" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label required">Password</label>
+                    <input type="password" class="form-control" id="loginPassword" autocomplete="current-password" placeholder="Masukkan password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-unlock"></i> Login
+                </button>
+                <p class="auth-small-note mt-3 mb-0">
+                    Data transaksi, wallet, target, utang, budget, PDF, dan Excel akan dibuka sesuai User ID yang login.
+                </p>
+            </form>
+
+            <form id="registerForm" class="auth-form">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label required">Nama Lengkap</label>
+                        <input type="text" class="form-control" id="registerName" placeholder="Contoh: Angga Putra" required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label required">Username</label>
+                        <input type="text" class="form-control" id="registerUsername" autocomplete="username" placeholder="Username unik" required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label required">No WhatsApp</label>
+                        <input type="tel" class="form-control" id="registerWhatsapp" placeholder="08xxxxxxxxxx" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Email <span class="text-muted">(Optional)</span></label>
+                        <input type="email" class="form-control" id="registerEmail" autocomplete="email" placeholder="email@contoh.com">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label required">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" autocomplete="new-password" placeholder="Minimal 6 karakter" required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label required">Default E-Wallet</label>
+                        <select class="form-select" id="registerDefaultWallet" required>
+                            <option value="Cash">Cash</option>
+                            <option value="Dana">Dana</option>
+                            <option value="Mandiri">Mandiri</option>
+                            <option value="Qris">Qris</option>
+                            <option value="BCA">BCA</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success w-100 mt-3">
+                    <i class="bi bi-person-check"></i> Buat Akun
+                </button>
+                <p class="auth-small-note mt-3 mb-0">
+                    Username tidak boleh sama dengan user lain. Setelah daftar, sistem otomatis membuat ruang data sesuai User ID Anda.
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <div class="container hidden" id="appContainer">
         <!-- ============================================
         HEADER
         ============================================ -->
@@ -1934,6 +2167,10 @@
                 <p class="brand-subtitle">Manajemen Keuangan Pribadi • AnggaPutraJN</p>
             </div>
             <div class="text-end">
+                <span class="user-badge" id="authUserBadge"><i class="bi bi-person"></i> Belum login</span>
+                <button class="btn btn-outline-danger me-2" id="logoutBtn">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
                 <button class="btn btn-outline-primary me-2" id="refreshData">
                     <i class="bi bi-arrow-clockwise"></i> Refresh
                 </button>
@@ -2051,9 +2288,9 @@
                     </div>
                 </div>
 
-                <!-- 5 kartu dompet (Cash, Dana, Mandiri, Qris, Ibu) -->
+                <!-- 5 kartu dompet (Cash, Dana, Mandiri, Qris, BCA) -->
                 <div class="row g-3 mb-4 fade-in dashboard-wallet-row" style="animation-delay: 0.1s">
-                    <div class="col-12 col-sm-6 col-lg-2">
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
                         <div class="stat-card stat-cash">
                             <div class="stat-head">
                                 <div>
@@ -2068,7 +2305,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-lg-2">
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
                         <div class="stat-card stat-dana">
                             <div class="stat-head">
                                 <div>
@@ -2083,7 +2320,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-lg-2">
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
                         <div class="stat-card stat-mandiri">
                             <div class="stat-head">
                                 <div>
@@ -2098,7 +2335,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-lg-2">
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
                         <div class="stat-card stat-qris">
                             <div class="stat-head">
                                 <div>
@@ -2113,13 +2350,13 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-lg-2">
-                        <div class="stat-card stat-ibu">
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
+                        <div class="stat-card stat-bca">
                             <div class="stat-head">
                                 <div>
-                                    <p class="stat-label">Saldo Ibu</p>
-                                    <div class="stat-value" id="ibuAmount">Rp 0</div>
-                                    <p class="stat-meta">Dompet Ibu</p>
+                                    <p class="stat-label">Saldo BCA</p>
+                                    <div class="stat-value" id="bcaAmount">Rp 0</div>
+                                    <p class="stat-meta">Dompet BCA</p>
                                 </div>
                                 <div class="stat-icon">
                                     <i class="bi bi-heart"></i>
@@ -2422,7 +2659,7 @@
                                             <div>
                                                 <h6 class="mb-0">Pilih Tampilan Chart:</h6>
                                                 <p class="text-muted small mb-0">
-                                                    Grafik menampilkan pemasukan dan pengeluaran berdasarkan wallet: Cash, Dana, Mandiri, Qris, dan Ibu.
+                                                    Grafik menampilkan pemasukan dan pengeluaran berdasarkan wallet aktif milik user login saja.
                                                 </p>
                                             </div>
                                             <div class="btn-group" role="group">
@@ -2643,7 +2880,7 @@
                                             <option value="Dana">Dana</option>
                                             <option value="Mandiri">Mandiri</option>
                                             <option value="Qris">Qris</option>
-                                            <option value="Ibu">Ibu</option>
+                                            <option value="BCA">BCA</option>
                                         </select>
                                     </div>
                                 </div>
@@ -2671,7 +2908,7 @@
                                             <option value="Dana">Dana</option>
                                             <option value="Mandiri">Mandiri</option>
                                             <option value="Qris">Qris</option>
-                                            <option value="Ibu">Ibu</option>
+                                            <option value="BCA">BCA</option>
                                         </select>
                                     </div>
                                 </div>
@@ -3084,7 +3321,7 @@
                                                     <option value="Dana">Dana</option>
                                                     <option value="Mandiri">Mandiri</option>
                                                     <option value="Qris">Qris</option>
-                                                    <option value="Ibu">Ibu</option>
+                                                    <option value="BCA">BCA</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -3335,7 +3572,7 @@
                                                 <option value="Dana">Dana</option>
                                                 <option value="Mandiri">Mandiri</option>
                                                 <option value="Qris">Qris</option>
-                                                <option value="Ibu">Ibu</option>
+                                                <option value="BCA">BCA</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
@@ -3422,7 +3659,7 @@
                                                 <option value="Dana">Dana</option>
                                                 <option value="Mandiri">Mandiri</option>
                                                 <option value="Qris">Qris</option>
-                                                <option value="Ibu">Ibu</option>
+                                                <option value="BCA">BCA</option>
                                             </select>
                                         </div>
                                     </div>
@@ -3491,25 +3728,11 @@
                         <div class="col-md-6">
                             <label class="form-label required">Dompet Penerima</label>
                             <div class="row text-center" id="incomeWalletSelector">
-                                <div class="col wallet-selector" data-wallet="Cash">
-                                    <div class="wallet-icon"><i class="bi bi-cash-coin"></i></div>
-                                    <div>Cash</div>
-                                </div>
-                                <div class="col wallet-selector" data-wallet="Dana">
-                                    <div class="wallet-icon"><i class="bi bi-phone"></i></div>
-                                    <div>Dana</div>
-                                </div>
-                                <div class="col wallet-selector" data-wallet="Mandiri">
-                                    <div class="wallet-icon"><i class="bi bi-bank"></i></div>
-                                    <div>Mandiri</div>
-                                </div>
-                                <div class="col wallet-selector" data-wallet="Qris">
-                                    <div class="wallet-icon"><i class="bi bi-credit-card"></i></div>
-                                    <div>Qris</div>
-                                </div>
-                                <div class="col wallet-selector" data-wallet="Ibu">
-                                    <div class="wallet-icon"><i class="bi bi-heart"></i></div>
-                                    <div>Ibu</div>
+                                <div class="col-12">
+                                    <div class="mini-card mini-card-muted">
+                                        <div class="spinner mb-2"></div>
+                                        <div class="mini-card-sub">Memuat wallet user...</div>
+                                    </div>
                                 </div>
                             </div>
                             <input type="hidden" id="incomeWallet" required>
@@ -3534,25 +3757,11 @@
                         <div class="col-md-6">
                             <label class="form-label required">Dompet Pengeluaran</label>
                             <div class="row text-center" id="expenseWalletSelector">
-                                <div class="col wallet-selector" data-wallet="Cash">
-                                    <div class="wallet-icon"><i class="bi bi-cash-coin"></i></div>
-                                    <div>Cash</div>
-                                </div>
-                                <div class="col wallet-selector" data-wallet="Dana">
-                                    <div class="wallet-icon"><i class="bi bi-phone"></i></div>
-                                    <div>Dana</div>
-                                </div>
-                                <div class="col wallet-selector" data-wallet="Mandiri">
-                                    <div class="wallet-icon"><i class="bi bi-bank"></i></div>
-                                    <div>Mandiri</div>
-                                </div>
-                                <div class="col wallet-selector" data-wallet="Qris">
-                                    <div class="wallet-icon"><i class="bi bi-credit-card"></i></div>
-                                    <div>Qris</div>
-                                </div>
-                                <div class="col wallet-selector" data-wallet="Ibu">
-                                    <div class="wallet-icon"><i class="bi bi-heart"></i></div>
-                                    <div>Ibu</div>
+                                <div class="col-12">
+                                    <div class="mini-card mini-card-muted">
+                                        <div class="spinner mb-2"></div>
+                                        <div class="mini-card-sub">Memuat wallet user...</div>
+                                    </div>
                                 </div>
                             </div>
                             <input type="hidden" id="expenseWallet" required>
@@ -3754,7 +3963,7 @@
                                 <option value="Dana">Dana</option>
                                 <option value="Mandiri">Mandiri</option>
                                 <option value="Qris">Qris</option>
-                                <option value="Ibu">Ibu</option>
+                                <option value="BCA">BCA</option>
                             </select>
                         </div>
                     </div>
@@ -3963,10 +4172,299 @@
         // ============================================
         const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbx5hWHJfX8f8KGT3di3-0I42EPhXJU4vddlq0ZZbQ7-xmYY5_lvjwhz18V-bvqfi7Gd/exec";
 
+        // ============================================
+        // LOGIN / REGISTER MULTI USER
+        // ============================================
+        const AUTH_STORAGE_KEY = 'finance_current_user_v3';
+        const AUTH_PUBLIC_ACTIONS = ['loginUser', 'registerUser', 'ping'];
+        let currentUser = readCurrentUser();
+
+        function readCurrentUser() {
+            try {
+                return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || 'null');
+            } catch (err) {
+                return null;
+            }
+        }
+
+        function saveCurrentUser(user) {
+            currentUser = user || null;
+            if (currentUser) {
+                localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentUser));
+            } else {
+                localStorage.removeItem(AUTH_STORAGE_KEY);
+            }
+            updateAuthUserBadge();
+        }
+
+        function getAuthUserId() {
+            return currentUser && currentUser.userId ? currentUser.userId : '';
+        }
+
+        function getAuthSessionToken() {
+            return currentUser && currentUser.sessionToken ? currentUser.sessionToken : '';
+        }
+
+        function getAuthDefaultWallet() {
+            return currentUser && currentUser.defaultWallet ? currentUser.defaultWallet : 'Cash';
+        }
+
+        function showAuthMessage(message, type = 'error') {
+            const box = document.getElementById('authMessage');
+            if (!box) {
+                alert(message);
+                return;
+            }
+            box.textContent = message;
+            box.className = `auth-message ${type} show`;
+        }
+
+        function clearAuthMessage() {
+            const box = document.getElementById('authMessage');
+            if (box) {
+                box.textContent = '';
+                box.className = 'auth-message';
+            }
+        }
+
+        function setAuthMode(mode) {
+            const isLogin = mode !== 'register';
+            document.getElementById('loginTabBtn')?.classList.toggle('active', isLogin);
+            document.getElementById('registerTabBtn')?.classList.toggle('active', !isLogin);
+            document.getElementById('loginForm')?.classList.toggle('active', isLogin);
+            document.getElementById('registerForm')?.classList.toggle('active', !isLogin);
+            clearAuthMessage();
+        }
+
+        function requireLoginGate() {
+            const loggedIn = !!getAuthUserId() && !!getAuthSessionToken();
+            const authScreen = document.getElementById('authScreen');
+            const appContainer = document.getElementById('appContainer');
+
+            if (authScreen) authScreen.classList.toggle('hidden', loggedIn);
+            if (appContainer) appContainer.classList.toggle('hidden', !loggedIn);
+
+            updateAuthUserBadge();
+
+            if (!loggedIn) {
+                setAuthMode('login');
+                return false;
+            }
+            setDashboardWalletLoading(true);
+            return true;
+        }
+
+        function updateAuthUserBadge() {
+            const badge = document.getElementById('authUserBadge');
+            if (!badge) return;
+
+            if (!currentUser) {
+                badge.innerHTML = '<i class="bi bi-person"></i> Belum login';
+                return;
+            }
+
+            badge.innerHTML = `
+                <i class="bi bi-person-check"></i>
+                <span>${escapeHtml(currentUser.name || currentUser.username || 'User')}</span>
+                <small class="text-muted">(${escapeHtml(currentUser.userId || '')})</small>
+            `;
+        }
+
+        function logoutFinanceUser() {
+            saveCurrentUser(null);
+            lastTransactions = [];
+            lastTargets = [];
+            debtsData = [];
+            paymentsData = [];
+            requireLoginGate();
+        }
+
+        async function authPost(action, payload) {
+            const body = new URLSearchParams(Object.assign({ action }, payload || {}));
+            const response = await nativeFetch(SPREADSHEET_URL, {
+                method: 'POST',
+                body: body.toString(),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+            }
+
+            return response.json();
+        }
+
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            clearAuthMessage();
+
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showAuthMessage('Username dan password wajib diisi.');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const oldText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Login...';
+
+            try {
+                const result = await authPost('loginUser', { username, password });
+                if (result.status !== 'success') throw new Error(result.message || 'Login gagal.');
+
+                saveCurrentUser(result.user);
+                showAuthMessage('Login berhasil. Memuat data Anda...', 'success');
+                requireLoginGate();
+                applyCurrentUserDefaultWallet();
+                await loadData();
+            } catch (err) {
+                showAuthMessage(err.message || String(err), 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = oldText;
+            }
+        }
+
+        async function handleRegisterSubmit(e) {
+            e.preventDefault();
+            clearAuthMessage();
+
+            const payload = {
+                name: document.getElementById('registerName').value.trim(),
+                username: document.getElementById('registerUsername').value.trim(),
+                whatsapp: document.getElementById('registerWhatsapp').value.trim(),
+                email: document.getElementById('registerEmail').value.trim(),
+                password: document.getElementById('registerPassword').value,
+                defaultWallet: document.getElementById('registerDefaultWallet').value || 'Cash'
+            };
+
+            if (!payload.name || !payload.username || !payload.whatsapp || !payload.password) {
+                showAuthMessage('Nama, username, No WhatsApp, dan password wajib diisi.');
+                return;
+            }
+
+            if (payload.password.length < 6) {
+                showAuthMessage('Password minimal 6 karakter.');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const oldText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Membuat akun...';
+
+            try {
+                const result = await authPost('registerUser', payload);
+                if (result.status !== 'success') throw new Error(result.message || 'Register gagal.');
+
+                saveCurrentUser(result.user);
+                showAuthMessage('Akun berhasil dibuat. Memuat dashboard Anda...', 'success');
+                requireLoginGate();
+                applyCurrentUserDefaultWallet();
+                await loadData();
+            } catch (err) {
+                showAuthMessage(err.message || String(err), 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = oldText;
+            }
+        }
+
+        function applyCurrentUserDefaultWallet() {
+            const wallet = getAuthDefaultWallet();
+            const walletFieldIds = [
+                'incomeWallet', 'expenseWallet', 'collectWallet', 'paymentWallet',
+                'debtWallet', 'billWallet', 'adjustWalletSelect'
+            ];
+
+            walletFieldIds.forEach(id => {
+                const field = document.getElementById(id);
+                if (field && Array.from(field.options || []).some(opt => opt.value === wallet)) {
+                    field.value = wallet;
+                }
+            });
+
+            document.querySelectorAll('.wallet-selector').forEach(card => {
+                card.classList.toggle('active', card.dataset.wallet === wallet);
+            });
+        }
+
+        function appendAuthToUrl(urlValue) {
+            if (!getAuthUserId() || !getAuthSessionToken()) return urlValue;
+
+            const url = new URL(urlValue, window.location.href);
+            const action = url.searchParams.get('action');
+            if (AUTH_PUBLIC_ACTIONS.includes(action)) return urlValue;
+
+            url.searchParams.set('userId', getAuthUserId());
+            url.searchParams.set('sessionToken', getAuthSessionToken());
+            return url.toString();
+        }
+
+        const nativeFetch = window.fetch.bind(window);
+        window.fetch = function(input, init = {}) {
+            try {
+                const urlValue = typeof input === 'string' ? input : input.url;
+                const isFinanceApi = urlValue && urlValue.indexOf(SPREADSHEET_URL) === 0;
+
+                if (isFinanceApi && getAuthUserId() && getAuthSessionToken()) {
+                    const nextInit = Object.assign({}, init || {});
+                    const method = String(nextInit.method || 'GET').toUpperCase();
+
+                    if (method === 'GET') {
+                        const nextUrl = appendAuthToUrl(urlValue);
+                        if (typeof input === 'string') return nativeFetch(nextUrl, nextInit);
+                        return nativeFetch(new Request(nextUrl, input), nextInit);
+                    }
+
+                    const contentType = String((nextInit.headers && (nextInit.headers['Content-Type'] || nextInit.headers.get?.('Content-Type'))) || '').toLowerCase();
+
+                    if (nextInit.body instanceof URLSearchParams) {
+                        nextInit.body.set('userId', getAuthUserId());
+                        nextInit.body.set('sessionToken', getAuthSessionToken());
+                    } else if (typeof nextInit.body === 'string' && contentType.includes('application/x-www-form-urlencoded')) {
+                        const params = new URLSearchParams(nextInit.body);
+                        const action = params.get('action');
+                        if (!AUTH_PUBLIC_ACTIONS.includes(action)) {
+                            params.set('userId', getAuthUserId());
+                            params.set('sessionToken', getAuthSessionToken());
+                        }
+                        nextInit.body = params.toString();
+                    } else if (typeof nextInit.body === 'string' && contentType.includes('application/json')) {
+                        const jsonBody = JSON.parse(nextInit.body || '{}');
+                        if (!AUTH_PUBLIC_ACTIONS.includes(jsonBody.action)) {
+                            jsonBody.userId = getAuthUserId();
+                            jsonBody.sessionToken = getAuthSessionToken();
+                        }
+                        nextInit.body = JSON.stringify(jsonBody);
+                    }
+
+                    return nativeFetch(input, nextInit);
+                }
+            } catch (err) {
+                console.warn('Auth fetch wrapper warning:', err);
+            }
+
+            return nativeFetch(input, init);
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginTabBtn')?.addEventListener('click', () => setAuthMode('login'));
+            document.getElementById('registerTabBtn')?.addEventListener('click', () => setAuthMode('register'));
+            document.getElementById('loginForm')?.addEventListener('submit', handleLoginSubmit);
+            document.getElementById('registerForm')?.addEventListener('submit', handleRegisterSubmit);
+            document.getElementById('logoutBtn')?.addEventListener('click', logoutFinanceUser);
+            requireLoginGate();
+        });
+
+
         // Variabel global
         let currentFile = null;
         let lastTransactions = [];
-        let financeSettings = { wallets: ['Cash','Dana','Mandiri','Qris','Ibu'], expenseCategories: [], incomeSources: [], budgets: [], bills: [] };
+        let financeSettings = { wallets: [], expenseCategories: [], incomeSources: [], budgets: [], bills: [] };
         let lastHealth = {};
         let transactionFilterAppliedCount = 0;
         let expenseCategoryChart = null;
@@ -3979,11 +4477,108 @@
         let lastTargets = [];
         const DAILY_JAJAN_LIMIT = 50000;
         const JAJAN_CATEGORIES = ['Makanan', 'Minuman', 'Jajanan'];
-        const DEFAULT_WALLETS = ['Cash', 'Dana', 'Mandiri', 'Qris', 'Ibu'];
+        const DEFAULT_WALLETS = ['Cash', 'Dana', 'Mandiri', 'Qris', 'BCA'];
+        const DEFAULT_WALLET_ICON_MAP = {
+            Cash: 'bi-cash-coin',
+            Dana: 'bi-phone',
+            Mandiri: 'bi-bank',
+            Qris: 'bi-qr-code-scan',
+            BCA: 'bi-heart'
+        };
+
+        function normalizeWalletKey(walletName) {
+            return String(walletName || '').trim().toLowerCase();
+        }
+
+        function getRegisteredDefaultWallet() {
+            const selected = String(getAuthDefaultWallet() || '').trim();
+            return selected || 'Cash';
+        }
+
+        function isBuiltInWallet(walletName) {
+            const key = normalizeWalletKey(walletName);
+            return DEFAULT_WALLETS.some(w => normalizeWalletKey(w) === key);
+        }
+
+        function isSelectedDefaultWallet(walletName) {
+            return normalizeWalletKey(walletName) === normalizeWalletKey(getRegisteredDefaultWallet());
+        }
+
+        function isWalletAllowedForCurrentUser(walletName) {
+            const name = String(walletName || '').trim();
+            if (!name) return false;
+
+            // Wallet bawaan hanya boleh tampil 1, yaitu wallet default yang dipilih saat register.
+            // Contoh: user memilih Mandiri, maka Cash/Dana/Qris/BCA disembunyikan dari seluruh UI.
+            if (isBuiltInWallet(name)) return isSelectedDefaultWallet(name);
+
+            // Selain wallet bawaan dianggap wallet custom milik user yang berasal dari settings/dashboard/cache user.
+            return true;
+        }
+
+        function filterUserWalletList(wallets) {
+            const result = [];
+            const seen = new Set();
+            const pushWallet = (wallet) => {
+                const name = String(wallet || '').trim();
+                if (!name || !isWalletAllowedForCurrentUser(name)) return;
+                const key = normalizeWalletKey(name);
+                if (seen.has(key)) return;
+                seen.add(key);
+                result.push(name);
+            };
+
+            pushWallet(getRegisteredDefaultWallet());
+            (wallets || []).forEach(pushWallet);
+            return result;
+        }
+
+        function getWalletIcon(walletName) {
+            const found = DEFAULT_WALLETS.find(w => normalizeWalletKey(w) === normalizeWalletKey(walletName));
+            return found ? DEFAULT_WALLET_ICON_MAP[found] : 'bi-wallet2';
+        }
+
+        function hideAllDashboardDefaultWalletCards() {
+            ['cashAmount', 'danaAmount', 'mandiriAmount', 'qrisAmount', 'bcaAmount'].forEach(id => {
+                const el = document.getElementById(id);
+                const cardCol = el?.closest('[class*="col-"]');
+                if (cardCol) cardCol.classList.add('hidden');
+            });
+        }
+
+        function setDashboardWalletLoading(isLoading) {
+            const dashboardRow = document.querySelector('.dashboard-wallet-row');
+            const customRow = document.getElementById('customWalletDashboardRow');
+            if (!dashboardRow) return;
+
+            let loader = document.getElementById('dashboardWalletLoading');
+            if (!loader) {
+                dashboardRow.insertAdjacentHTML('beforebegin', `
+                    <div id="dashboardWalletLoading" class="row g-3 mb-4">
+                        <div class="col-12">
+                            <div class="mini-card mini-card-primary dashboard-wallet-loading text-center py-4">
+                                <div class="spinner"></div>
+                                <div class="mini-card-title">Memuat saldo wallet user...</div>
+                                <div class="mini-card-sub">Dashboard akan menampilkan hanya wallet default saat register dan wallet custom milik akun ini.</div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                loader = document.getElementById('dashboardWalletLoading');
+            }
+
+            if (isLoading) {
+                hideAllDashboardDefaultWalletCards();
+                if (customRow) customRow.classList.add('hidden');
+                loader.classList.remove('hidden');
+            } else {
+                loader.classList.add('hidden');
+            }
+        }
 
         let lastDashboard = {
             total: 0,
-            wallets: { Cash: 0, Dana: 0, Mandiri: 0, Qris: 0, Ibu: 0 } // Tambahkan Ibu
+            wallets: {}
         };
 
         // ============================================
@@ -5222,7 +5817,7 @@
 
         function getLocalWallets() {
             try {
-                return JSON.parse(localStorage.getItem('finance_custom_wallets') || '[]')
+                return JSON.parse(localStorage.getItem('finance_custom_wallets_' + (getAuthUserId() || 'guest')) || '[]')
                     .map(w => String(w || '').trim())
                     .filter(Boolean);
             } catch (err) {
@@ -5233,7 +5828,7 @@
         function saveLocalWallets(wallets) {
             try {
                 const list = uniq((wallets || []).map(w => String(w || '').trim()).filter(Boolean));
-                localStorage.setItem('finance_custom_wallets', JSON.stringify(list));
+                localStorage.setItem('finance_custom_wallets_' + (getAuthUserId() || 'guest'), JSON.stringify(list));
             } catch (err) {
                 console.warn('Gagal menyimpan cache wallet lokal:', err);
             }
@@ -5278,7 +5873,7 @@
             const fromSettings = (financeSettings.wallets || []).map(getWalletName);
             const fromDashboard = Object.keys((lastDashboard && lastDashboard.wallets) || {});
             const fromLocalCache = getLocalWallets();
-            return uniq([...DEFAULT_WALLETS, ...fromSettings, ...fromDashboard, ...fromLocalCache]);
+            return filterUserWalletList([...fromSettings, ...fromDashboard, ...fromLocalCache]);
         }
 
         function getCategoryName(item) {
@@ -5441,7 +6036,7 @@
             const expenseCategories = getAllExpenseCategories();
             const incomeSources = getAllIncomeSources();
 
-            ['filterWallet', 'transferFromWallet', 'transferToWallet', 'billWallet', 'collectWallet', 'paymentWallet', 'debtWallet', 'adjustWalletSelect'].forEach(id => fillSelectOptions(id, wallets, id === 'filterWallet' ? 'Semua' : 'Pilih wallet'));
+            ['filterWallet', 'transferFromWallet', 'transferToWallet', 'billWallet', 'collectWallet', 'paymentWallet', 'debtWallet', 'targetWallet', 'editIncomeWallet', 'editExpenseWallet', 'editDebtWallet', 'adjustWalletSelect'].forEach(id => fillSelectOptions(id, wallets, id === 'filterWallet' ? 'Semua' : 'Pilih wallet'));
             ['filterCategory', 'budgetCategory', 'billCategory', 'category', 'editCategory'].forEach(id => fillSelectOptions(id, expenseCategories, id === 'filterCategory' ? 'Semua' : 'Pilih kategori'));
             ['editIncomeSource'].forEach(id => fillSelectOptions(id, incomeSources, 'Pilih sumber'));
 
@@ -5455,14 +6050,28 @@
             populateAdjustWalletSelect();
             renderCustomDashboardWallets();
             updateBalanceAdjustmentPreview();
+            applyCurrentUserDefaultWallet();
         }
 
         function renderWalletSelectorCards(containerId, wallets) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            container.innerHTML = wallets.map(wallet => `
+            const list = filterUserWalletList(wallets);
+
+            if (!list.length) {
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="mini-card mini-card-warning">
+                            <div class="mini-card-sub">Belum ada wallet aktif untuk akun ini.</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map(wallet => `
                 <div class="col wallet-selector" data-wallet="${escapeHtml(wallet)}">
-                    <div class="wallet-icon"><i class="bi bi-wallet2"></i></div>
+                    <div class="wallet-icon"><i class="bi ${getWalletIcon(wallet)}"></i></div>
                     <div>${escapeHtml(wallet)}</div>
                 </div>
             `).join('');
@@ -5746,23 +6355,38 @@
             const el = document.getElementById('customWalletList');
             if (!el) return;
             const wallets = getAllWallets();
-            el.innerHTML = wallets.map(w => `
-                <div class="col-12 col-md-6">
-                    <div class="mini-card mini-card-primary">
-                        <div class="d-flex justify-content-between align-items-center gap-2">
-                            <div>
-                                <div class="mini-card-title">${DEFAULT_WALLETS.includes(w) ? 'Wallet bawaan' : 'Wallet custom'}</div>
-                                <div class="mini-card-value">${escapeHtml(w)}</div>
-                                <div class="mini-card-sub">Saldo: ${formatRupiah(getCurrentWalletBalance(w))}</div>
-                            </div>
-                            <div class="d-flex gap-1 flex-wrap justify-content-end">
-                                <button type="button" class="btn btn-sm btn-outline-primary edit-wallet-balance-btn" data-wallet="${escapeHtml(w)}"><i class="bi bi-pencil-square"></i></button>
-                                ${DEFAULT_WALLETS.includes(w) ? '' : `<button type="button" class="btn btn-sm btn-outline-danger delete-wallet-btn" data-name="${escapeHtml(w)}"><i class="bi bi-trash"></i></button>`}
+
+            if (!wallets.length) {
+                el.innerHTML = `
+                    <div class="col-12">
+                        <div class="mini-card mini-card-muted">
+                            <div class="mini-card-sub">Belum ada wallet aktif untuk akun ini.</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            el.innerHTML = wallets.map(w => {
+                const isMainWallet = isBuiltInWallet(w) && isSelectedDefaultWallet(w);
+                return `
+                    <div class="col-12 col-md-6">
+                        <div class="mini-card mini-card-primary">
+                            <div class="d-flex justify-content-between align-items-center gap-2">
+                                <div>
+                                    <div class="mini-card-title">${isMainWallet ? 'Wallet utama akun' : 'Wallet custom'}</div>
+                                    <div class="mini-card-value"><i class="bi ${getWalletIcon(w)}"></i> ${escapeHtml(w)}</div>
+                                    <div class="mini-card-sub">Saldo: ${formatRupiah(getCurrentWalletBalance(w))}</div>
+                                </div>
+                                <div class="d-flex gap-1 flex-wrap justify-content-end">
+                                    <button type="button" class="btn btn-sm btn-outline-primary edit-wallet-balance-btn" data-wallet="${escapeHtml(w)}"><i class="bi bi-pencil-square"></i></button>
+                                    ${isMainWallet ? '' : `<button type="button" class="btn btn-sm btn-outline-danger delete-wallet-btn" data-name="${escapeHtml(w)}"><i class="bi bi-trash"></i></button>`}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function renderCustomCategoryList() {
@@ -6159,6 +6783,7 @@
         }
 
         async function loadData() {
+            setDashboardWalletLoading(true);
             try {
                 console.log('Loading data from:', SPREADSHEET_URL);
 
@@ -6225,46 +6850,71 @@
                         </td>
                     </tr>
                 `;
+            } finally {
+                setDashboardWalletLoading(false);
             }
+        }
+
+        function toggleDashboardWalletCard(amountId, walletName, wallets) {
+            const amountEl = document.getElementById(amountId);
+            if (!amountEl) return;
+            const cardCol = amountEl.closest('[class*="col-"]');
+            const exists = Object.prototype.hasOwnProperty.call(wallets || {}, walletName) && isWalletAllowedForCurrentUser(walletName);
+            if (cardCol) cardCol.classList.toggle('hidden', !exists);
         }
 
         function updateDashboard(dashboardData) {
             if (!dashboardData) return;
 
             const wallets = dashboardData.wallets || {};
-
             const income = toInt(dashboardData.income || 0);
             const expense = toInt(dashboardData.expense || 0);
 
+            const walletCandidates = [
+                ...Object.keys(wallets),
+                ...((financeSettings.wallets || []).map(getWalletName)),
+                ...getLocalWallets(),
+                getRegisteredDefaultWallet()
+            ];
+            const walletNames = filterUserWalletList(walletCandidates);
             const mergedWallets = {};
-            const walletNames = uniq([...DEFAULT_WALLETS, ...Object.keys(wallets), ...(financeSettings.wallets || []).map(getWalletName)]);
+
             walletNames.forEach(w => {
                 let value = wallets[w];
-                if (w === 'Cash') value = dashboardData.cash ?? value;
-                if (w === 'Dana') value = dashboardData.dana ?? value;
-                if (w === 'Mandiri') value = dashboardData.mandiri ?? value;
-                if (w === 'Qris') value = dashboardData.qris ?? dashboardData.bri ?? value;
-                if (w === 'Ibu') value = dashboardData.ibu ?? value;
+
+                // Legacy field lama hanya boleh dipakai jika wallet tersebut memang wallet default user login.
+                if (isSelectedDefaultWallet(w)) {
+                    if (normalizeWalletKey(w) === 'cash') value = dashboardData.cash ?? value;
+                    if (normalizeWalletKey(w) === 'dana') value = dashboardData.dana ?? value;
+                    if (normalizeWalletKey(w) === 'mandiri') value = dashboardData.mandiri ?? value;
+                    if (normalizeWalletKey(w) === 'qris') value = dashboardData.qris ?? dashboardData.bri ?? value;
+                    if (normalizeWalletKey(w) === 'bca') value = dashboardData.bca ?? value;
+                }
+
                 if (value === undefined || value === null || value === '') value = getWalletOpeningBalance(w);
                 mergedWallets[w] = toInt(value);
             });
 
-            const cash = toInt(mergedWallets.Cash || 0);
-            const dana = toInt(mergedWallets.Dana || 0);
-            const mandiri = toInt(mergedWallets.Mandiri || 0);
-            const qris = toInt(mergedWallets.Qris || 0);
-            const ibu = toInt(mergedWallets.Ibu || 0);
             const total = Object.values(mergedWallets).reduce((a, b) => a + toInt(b), 0);
 
             document.getElementById('incomeAmount').textContent = formatRupiah(income);
             document.getElementById('expenseAmount').textContent = formatRupiah(expense);
             document.getElementById('totalBalance').textContent = formatRupiah(total);
 
-            document.getElementById('cashAmount').textContent = formatRupiah(cash);
-            document.getElementById('danaAmount').textContent = formatRupiah(dana);
-            document.getElementById('mandiriAmount').textContent = formatRupiah(mandiri);
-            document.getElementById('qrisAmount').textContent = formatRupiah(qris);
-            document.getElementById('ibuAmount').textContent = formatRupiah(ibu);
+            const amountMap = {
+                Cash: 'cashAmount',
+                Dana: 'danaAmount',
+                Mandiri: 'mandiriAmount',
+                Qris: 'qrisAmount',
+                BCA: 'bcaAmount'
+            };
+
+            DEFAULT_WALLETS.forEach(walletName => {
+                const amountId = amountMap[walletName];
+                const el = document.getElementById(amountId);
+                if (el) el.textContent = formatRupiah(toInt(mergedWallets[walletName] || 0));
+                toggleDashboardWalletCard(amountId, walletName, mergedWallets);
+            });
 
             lastDashboard = {
                 total: total,
@@ -6361,21 +7011,19 @@
         }
 
         function getWalletListFromTransactions(transactions) {
-            const set = new Set();
+            const candidates = [
+                ...getAllWallets(),
+                ...((financeSettings.wallets || []).map(getWalletName)),
+                ...Object.keys((lastDashboard && lastDashboard.wallets) || {})
+            ];
 
-            // Wallet default + wallet custom dari pengaturan + saldo dashboard.
-            [...DEFAULT_WALLETS, ...((financeSettings.wallets || []).map(getWalletName)), ...Object.keys((lastDashboard && lastDashboard.wallets) || {})]
-                .map(w => String(w || '').trim())
-                .filter(Boolean)
-                .forEach(w => set.add(w));
-
-            // Wallet yang muncul di transaksi tetap ikut meskipun belum masuk pengaturan.
+            // Wallet yang muncul di transaksi tetap ikut, tetapi wallet bawaan lain tetap disaring.
             (transactions || []).forEach(t => {
                 const wallet = getTransactionWallet(t);
-                if (wallet) set.add(wallet);
+                if (wallet) candidates.push(wallet);
             });
 
-            return Array.from(set);
+            return filterUserWalletList(candidates);
         }
 
         function buildWalletFinanceSummary(transactions) {
@@ -9075,7 +9723,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('Keuangan Pro - Tema Gelap Loaded with Saldo Ibu');
+            console.log('Keuangan Pro - Tema Gelap Loaded with Saldo BCA');
 
             const today = new Date().toISOString().split('T')[0];
             const debtUploadArea = document.getElementById('debtUploadArea');
@@ -9253,7 +9901,7 @@
             if (targetDeadline) targetDeadline.value = '';
             if (typeof toggleTargetDeadlineUI === 'function') toggleTargetDeadlineUI();
 
-            loadData();
+            if (requireLoginGate()) loadData();
 
             const showFormBtn = document.getElementById('showForm');
             if (showFormBtn) {
