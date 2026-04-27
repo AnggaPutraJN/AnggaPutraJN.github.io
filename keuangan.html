@@ -1776,6 +1776,148 @@
             }
         }
 
+
+
+        /* ============================================
+           MULTI BUDGET + MODAL PESAN + EXPORT
+           ============================================ */
+        #budgetCategory[multiple] {
+            min-height: 154px;
+            padding: 0.65rem;
+        }
+
+        #budgetCategory[multiple] option {
+            padding: 7px 9px;
+            border-radius: 8px;
+            margin-bottom: 3px;
+        }
+
+        .budget-category-box {
+            background: rgba(15, 23, 42, 0.32);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 0.75rem;
+        }
+
+        .budget-category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.5rem;
+            max-height: 215px;
+            overflow-y: auto;
+            padding-right: 0.15rem;
+        }
+
+        .budget-category-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 0.65rem;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 12px;
+            background: rgba(21, 27, 46, 0.78);
+            cursor: pointer;
+            user-select: none;
+            margin: 0;
+            min-height: 42px;
+        }
+
+        .budget-category-chip:hover {
+            border-color: rgba(37, 99, 235, 0.65);
+            background: rgba(37, 99, 235, 0.11);
+        }
+
+        .budget-category-chip.is-selected {
+            border-color: var(--accent-primary);
+            background: rgba(37, 99, 235, 0.18);
+            color: var(--text-primary);
+        }
+
+        .budget-category-chip .form-check-input {
+            margin: 0;
+            flex: 0 0 auto;
+        }
+
+        .budget-category-chip span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .budget-selected-summary {
+            margin-top: 0.6rem;
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            line-height: 1.45;
+        }
+
+        @media (max-width: 768px) {
+            .budget-category-grid {
+                grid-template-columns: 1fr;
+                max-height: 260px;
+            }
+        }
+
+        .multi-select-help {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-top: 0.35rem;
+        }
+
+        .app-modal-message {
+            white-space: pre-line;
+            line-height: 1.65;
+            color: var(--text-secondary);
+        }
+
+        .app-modal-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(37, 99, 235, 0.12);
+            color: var(--accent-primary);
+            font-size: 1.45rem;
+            flex: 0 0 auto;
+        }
+
+        .app-modal-icon.warning {
+            background: rgba(217, 119, 6, 0.14);
+            color: var(--accent-warning);
+        }
+
+        .app-modal-icon.danger {
+            background: rgba(220, 38, 38, 0.14);
+            color: var(--accent-danger);
+        }
+
+        .app-modal-icon.success {
+            background: rgba(5, 150, 105, 0.14);
+            color: var(--accent-success);
+        }
+
+        .export-action-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .export-action-group {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .export-action-group .btn {
+                flex: 1 1 100%;
+                width: 100% !important;
+            }
+        }
+
     </style>
 </head>
 
@@ -2401,11 +2543,19 @@
                 <div class="row g-3 fade-in">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                                 <h5 class="mb-0"><i class="bi bi-wallet2"></i> Riwayat Transaksi</h5>
-                                <button class="btn btn-outline-primary btn-sm" id="refreshTransactions">
-                                    <i class="bi bi-arrow-clockwise"></i> Refresh
-                                </button>
+                                <div class="export-action-group">
+                                    <button class="btn btn-success btn-sm" id="downloadTransactionsExcel" type="button">
+                                        <i class="bi bi-file-earmark-excel"></i> Download Excel
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" id="downloadTransactionsPdf" type="button">
+                                        <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" id="refreshTransactions" type="button">
+                                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -2504,8 +2654,8 @@
                                         <select class="form-select" id="editCategory">
                                             <option value="">Pilih Kategori</option>
                                             <option value="Makanan">Makanan</option>
-                                            <option value="Makanan dan Minuman">Makanan dan Minuman</option>
                                             <option value="Minuman">Minuman</option>
+                                            <option value="Jajanan">Jajanan</option>
                                             <option value="Alat">Alat</option>
                                             <option value="Shopee">Shopee</option>
                                             <option value="Tiktok Shop">Tiktok Shop</option>
@@ -2611,20 +2761,44 @@
                                         <label class="form-label required">Bulan</label>
                                         <input type="month" class="form-control" id="budgetMonth">
                                     </div>
-                                    <div class="col-12 col-md-3">
-                                        <label class="form-label required">Kategori</label>
-                                        <select class="form-select" id="budgetCategory">
-                                            <option value="">Pilih kategori</option>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label required">Kategori Budget</label>
+
+                                        <!-- Select asli tetap dipertahankan untuk kompatibilitas JS lama, tapi UI utama memakai checkbox agar tidak bug di HP/laptop. -->
+                                        <select class="form-select d-none" id="budgetCategory" multiple size="6" aria-label="Pilih satu atau lebih kategori budget">
                                         </select>
+
+                                        <div class="budget-category-box">
+                                            <div class="input-group input-group-sm mb-2">
+                                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                                <input type="text" class="form-control" id="budgetCategorySearch" placeholder="Cari kategori...">
+                                            </div>
+                                            <div class="d-flex gap-2 flex-wrap mb-2">
+                                                <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllBudgetCategories">
+                                                    <i class="bi bi-check2-square"></i> Pilih Semua
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" id="clearBudgetCategories">
+                                                    <i class="bi bi-x-square"></i> Bersihkan
+                                                </button>
+                                            </div>
+                                            <div class="budget-category-grid" id="budgetCategoryCheckboxList">
+                                                <div class="text-muted small">Memuat kategori...</div>
+                                            </div>
+                                            <div class="budget-selected-summary" id="budgetCategorySummary">Belum ada kategori dipilih.</div>
+                                        </div>
+
+                                        <div class="multi-select-help">
+                                            Bisa pilih lebih dari 1 kategori. Contoh: Makanan, Minuman, Jajanan.
+                                        </div>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12 col-md-4">
                                         <label class="form-label required">Nominal Budget</label>
                                         <div class="input-group">
                                             <span class="input-group-text">Rp</span>
                                             <input type="number" class="form-control" id="budgetAmount" min="1" placeholder="500000">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12 col-md-4">
                                         <label class="form-label">Catatan</label>
                                         <input type="text" class="form-control" id="budgetNotes" placeholder="Opsional">
                                     </div>
@@ -3349,6 +3523,7 @@
                                 <option value="">Pilih Kategori</option>
                                 <option value="Makanan">Makanan</option>
                                 <option value="Minuman">Minuman</option>
+                                <option value="Jajanan">Jajanan</option>
                                 <option value="Alat">Alat</option>
                                 <option value="Shopee">Shopee</option>
                                 <option value="Tiktok Shop">Tiktok Shop</option>
@@ -3744,10 +3919,42 @@
         </div>
     </div>
 
+
+
+    <!-- ============================================
+    MODAL PESAN APLIKASI (Pengganti alert/confirm browser)
+    ============================================ -->
+    <div class="modal fade" id="appMessageModal" tabindex="-1" aria-labelledby="appMessageModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="app-modal-icon" id="appMessageModalIcon">
+                            <i class="bi bi-info-circle"></i>
+                        </div>
+                        <h5 class="modal-title mb-0" id="appMessageModalTitle">Informasi</h5>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="app-modal-message" id="appMessageModalBody"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" id="appMessageModalCancel" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="appMessageModalOk">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- ============================================
     SCRIPT LIBRARY
     ============================================ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
@@ -3769,8 +3976,9 @@
         let currentChartType = 'pie';
         let debtsData = [];
         let paymentsData = [];
+        let lastTargets = [];
         const DAILY_JAJAN_LIMIT = 50000;
-        const JAJAN_CATEGORIES = ['Makanan', 'Minuman', 'Makanan dan Minuman'];
+        const JAJAN_CATEGORIES = ['Makanan', 'Minuman', 'Jajanan'];
         const DEFAULT_WALLETS = ['Cash', 'Dana', 'Mandiri', 'Qris', 'Ibu'];
 
         let lastDashboard = {
@@ -3781,6 +3989,100 @@
         // ============================================
         // FUNGSI UTILITAS
         // ============================================
+
+        const nativeAlert = window.alert.bind(window);
+        const nativeConfirm = window.confirm.bind(window);
+
+        function getAppModalIcon(type) {
+            const icons = {
+                success: 'bi-check-circle',
+                warning: 'bi-exclamation-triangle',
+                danger: 'bi-x-octagon',
+                error: 'bi-x-octagon',
+                info: 'bi-info-circle',
+                question: 'bi-question-circle'
+            };
+            return icons[type] || icons.info;
+        }
+
+        function showAppModal(options = {}) {
+            const title = options.title || 'Informasi';
+            const message = String(options.message ?? '');
+            const type = options.type || 'info';
+            const showCancel = !!options.showCancel;
+            const okText = options.okText || (showCancel ? 'Ya, Lanjutkan' : 'OK');
+            const cancelText = options.cancelText || 'Batal';
+
+            return new Promise(resolve => {
+                const modalEl = document.getElementById('appMessageModal');
+                if (!modalEl || typeof bootstrap === 'undefined') {
+                    if (showCancel) resolve(nativeConfirm(message));
+                    else { nativeAlert(message); resolve(true); }
+                    return;
+                }
+
+                const titleEl = document.getElementById('appMessageModalTitle');
+                const bodyEl = document.getElementById('appMessageModalBody');
+                const iconEl = document.getElementById('appMessageModalIcon');
+                const okBtn = document.getElementById('appMessageModalOk');
+                const cancelBtn = document.getElementById('appMessageModalCancel');
+
+                titleEl.textContent = title;
+                bodyEl.textContent = message;
+                okBtn.textContent = okText;
+                cancelBtn.textContent = cancelText;
+                cancelBtn.classList.toggle('hidden', !showCancel);
+
+                iconEl.className = `app-modal-icon ${type === 'error' ? 'danger' : type}`;
+                iconEl.innerHTML = `<i class="bi ${getAppModalIcon(type)}"></i>`;
+
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl, {
+                    backdrop: showCancel ? 'static' : true,
+                    keyboard: !showCancel
+                });
+
+                let settled = false;
+                const cleanup = () => {
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                    modalEl.removeEventListener('hidden.bs.modal', onHidden);
+                };
+                const finish = value => {
+                    if (settled) return;
+                    settled = true;
+                    cleanup();
+                    resolve(value);
+                };
+                const onOk = () => {
+                    modal.hide();
+                    finish(true);
+                };
+                const onCancel = () => {
+                    modal.hide();
+                    finish(false);
+                };
+                const onHidden = () => finish(!showCancel);
+
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+                modalEl.addEventListener('hidden.bs.modal', onHidden);
+                modal.show();
+            });
+        }
+
+        function appAlert(message, title = 'Informasi', type = 'info') {
+            return showAppModal({ message, title, type, showCancel: false, okText: 'OK' });
+        }
+
+        function appConfirm(message, title = 'Konfirmasi', type = 'question') {
+            return showAppModal({ message, title, type, showCancel: true, okText: 'Ya', cancelText: 'Batal' });
+        }
+
+        // Semua alert() lama diarahkan ke modal agar tidak muncul lagi pesan bawaan browser "This page says".
+        window.alert = function(message) {
+            appAlert(message);
+        };
+
 
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
@@ -4818,7 +5120,7 @@
             }
 
             const confirmMsg = `Apakah anda yakin ingin mengumpulkan ${formatRupiah(amount)} dari ${wallet} untuk target "${targetName}"?`;
-            if (!confirm(confirmMsg)) return;
+            if (!(await appConfirm(confirmMsg, 'Konfirmasi Kumpulkan Target'))) return;
 
             try {
                 const btn = document.getElementById('submitCollectTarget');
@@ -4901,7 +5203,7 @@
         // FITUR TAMBAHAN: SETTINGS, FILTER, BUDGET, REMINDER, HEALTH
         // ============================================
         function getDefaultExpenseCategories() {
-            return ['Makanan', 'Makanan dan Minuman', 'Minuman', 'Alat', 'Shopee', 'Tiktok Shop', 'Vape', 'Transport', 'Tagihan', 'Lainnya'];
+            return ['Makanan', 'Minuman', 'Jajanan','Alat', 'Shopee', 'Tiktok Shop', 'Vape', 'Transport', 'Tagihan', 'Lainnya'];
         }
 
         function getDefaultIncomeSources() {
@@ -4916,6 +5218,37 @@
             if (typeof item === 'string') return item;
             if (!item || typeof item !== 'object') return '';
             return item.name || item.walletName || item.wallet || item.nama || item.namaWallet || '';
+        }
+
+        function getLocalWallets() {
+            try {
+                return JSON.parse(localStorage.getItem('finance_custom_wallets') || '[]')
+                    .map(w => String(w || '').trim())
+                    .filter(Boolean);
+            } catch (err) {
+                return [];
+            }
+        }
+
+        function saveLocalWallets(wallets) {
+            try {
+                const list = uniq((wallets || []).map(w => String(w || '').trim()).filter(Boolean));
+                localStorage.setItem('finance_custom_wallets', JSON.stringify(list));
+            } catch (err) {
+                console.warn('Gagal menyimpan cache wallet lokal:', err);
+            }
+        }
+
+        function rememberWallet(walletName) {
+            const name = String(walletName || '').trim();
+            if (!name) return;
+            saveLocalWallets([...getLocalWallets(), name]);
+        }
+
+        function forgetWallet(walletName) {
+            const target = normalizeTextKey(walletName);
+            if (!target) return;
+            saveLocalWallets(getLocalWallets().filter(w => normalizeTextKey(w) !== target));
         }
 
         function getWalletOpeningBalance(walletName) {
@@ -4944,23 +5277,163 @@
         function getAllWallets() {
             const fromSettings = (financeSettings.wallets || []).map(getWalletName);
             const fromDashboard = Object.keys((lastDashboard && lastDashboard.wallets) || {});
-            return uniq([...fromSettings, ...fromDashboard, ...DEFAULT_WALLETS]);
+            const fromLocalCache = getLocalWallets();
+            return uniq([...DEFAULT_WALLETS, ...fromSettings, ...fromDashboard, ...fromLocalCache]);
+        }
+
+        function getCategoryName(item) {
+            if (typeof item === 'string') return item;
+            if (!item || typeof item !== 'object') return '';
+            return item.name || item.categoryName || item.category || item.kategori || item.nama || item.namaKategori || '';
+        }
+
+        function normalizeOptionList(items, mapper = (x) => x) {
+            return uniq((items || []).map(mapper).filter(Boolean));
         }
 
         function getAllExpenseCategories() {
-            return uniq([...(financeSettings.expenseCategories || []), ...getDefaultExpenseCategories()]);
+            return normalizeOptionList([...(financeSettings.expenseCategories || []), ...getDefaultExpenseCategories()], getCategoryName);
         }
 
         function getAllIncomeSources() {
-            return uniq([...(financeSettings.incomeSources || []), ...getDefaultIncomeSources()]);
+            return normalizeOptionList([...(financeSettings.incomeSources || []), ...getDefaultIncomeSources()], getCategoryName);
+        }
+
+        function getCurrentSelectValues(el) {
+            if (!el) return [];
+            return el.multiple
+                ? Array.from(el.selectedOptions || []).map(opt => opt.value).filter(Boolean)
+                : (el.value ? [el.value] : []);
         }
 
         function fillSelectOptions(selectId, items, placeholder = 'Pilih') {
             const el = document.getElementById(selectId);
             if (!el) return;
-            const current = el.value;
-            el.innerHTML = `<option value="">${placeholder}</option>` + (items || []).map(item => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join('');
-            if (items.includes(current)) el.value = current;
+
+            const list = normalizeOptionList(items || [], x => String(x || '').trim());
+            const isMultiple = !!el.multiple;
+            const currentValues = getCurrentSelectValues(el);
+
+            el.innerHTML = (isMultiple ? '' : `<option value="">${placeholder}</option>`)
+                + list.map(item => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join('');
+
+            if (isMultiple) {
+                const currentKeys = new Set(currentValues.map(normalizeTextKey));
+                Array.from(el.options).forEach(opt => {
+                    opt.selected = currentKeys.has(normalizeTextKey(opt.value));
+                });
+            } else if (list.includes(currentValues[0])) {
+                el.value = currentValues[0];
+            }
+
+            if (selectId === 'budgetCategory') {
+                renderBudgetCategoryCheckboxes(list, getCurrentSelectValues(el));
+            }
+        }
+
+        function renderBudgetCategoryCheckboxes(categories, selectedValues = []) {
+            const listEl = document.getElementById('budgetCategoryCheckboxList');
+            if (!listEl) return;
+
+            const query = normalizeTextKey(document.getElementById('budgetCategorySearch')?.value || '');
+            const selectedKeys = new Set((selectedValues || []).map(normalizeTextKey));
+            const allCategories = normalizeOptionList(categories || [], x => String(x || '').trim());
+            const visibleCategories = allCategories.filter(cat => !query || normalizeTextKey(cat).includes(query));
+
+            if (!visibleCategories.length) {
+                listEl.innerHTML = '<div class="text-muted small">Kategori tidak ditemukan.</div>';
+                updateBudgetCategorySummary();
+                return;
+            }
+
+            listEl.innerHTML = visibleCategories.map((cat, index) => {
+                const id = `budgetCatCheck_${index}_${normalizeTextKey(cat).replace(/[^a-z0-9]+/g, '_')}`;
+                const checked = selectedKeys.has(normalizeTextKey(cat));
+                return `
+                    <label class="budget-category-chip ${checked ? 'is-selected' : ''}" for="${escapeHtml(id)}">
+                        <input class="form-check-input budget-category-check" type="checkbox" id="${escapeHtml(id)}" value="${escapeHtml(cat)}" ${checked ? 'checked' : ''}>
+                        <span>${escapeHtml(cat)}</span>
+                    </label>
+                `;
+            }).join('');
+
+            listEl.querySelectorAll('.budget-category-check').forEach(chk => {
+                chk.addEventListener('change', syncBudgetCategorySelectFromChecks);
+            });
+            updateBudgetCategorySummary();
+        }
+
+        function syncBudgetCategorySelectFromChecks() {
+            const select = document.getElementById('budgetCategory');
+            if (!select) return;
+
+            const visibleChecks = Array.from(document.querySelectorAll('#budgetCategoryCheckboxList .budget-category-check'));
+            const visibleKeys = new Set(visibleChecks.map(chk => normalizeTextKey(chk.value)));
+
+            // Simpan pilihan yang sedang tidak terlihat karena filter pencarian, agar tidak hilang saat user mencari kategori lain.
+            const hiddenSelectedValues = getCurrentSelectValues(select)
+                .filter(value => !visibleKeys.has(normalizeTextKey(value)));
+
+            const checkedVisibleValues = visibleChecks
+                .filter(chk => chk.checked)
+                .map(chk => chk.value)
+                .filter(Boolean);
+
+            const finalValues = uniq([...hiddenSelectedValues, ...checkedVisibleValues]);
+            const finalKeys = new Set(finalValues.map(normalizeTextKey));
+
+            Array.from(select.options).forEach(opt => {
+                opt.selected = finalKeys.has(normalizeTextKey(opt.value));
+            });
+
+            document.querySelectorAll('#budgetCategoryCheckboxList .budget-category-chip').forEach(label => {
+                const input = label.querySelector('.budget-category-check');
+                label.classList.toggle('is-selected', !!input?.checked);
+            });
+
+            updateBudgetCategorySummary(finalValues);
+        }
+
+        function updateBudgetCategorySummary(values = null) {
+            const summary = document.getElementById('budgetCategorySummary');
+            if (!summary) return;
+            const selected = values || getCurrentSelectValues(document.getElementById('budgetCategory'));
+            summary.textContent = selected.length
+                ? `${selected.length} kategori dipilih: ${selected.join(', ')}`
+                : 'Belum ada kategori dipilih.';
+        }
+
+        function clearBudgetCategorySelection() {
+            const select = document.getElementById('budgetCategory');
+            if (select) Array.from(select.options).forEach(opt => opt.selected = false);
+            document.querySelectorAll('#budgetCategoryCheckboxList .budget-category-check').forEach(chk => { chk.checked = false; });
+            document.querySelectorAll('#budgetCategoryCheckboxList .budget-category-chip').forEach(label => label.classList.remove('is-selected'));
+            updateBudgetCategorySummary([]);
+        }
+
+        function attachBudgetCategorySelectorEvents() {
+            const search = document.getElementById('budgetCategorySearch');
+            if (search && !search.dataset.bound) {
+                search.dataset.bound = '1';
+                search.addEventListener('input', () => {
+                    renderBudgetCategoryCheckboxes(getAllExpenseCategories(), getCurrentSelectValues(document.getElementById('budgetCategory')));
+                });
+            }
+
+            const selectAllBtn = document.getElementById('selectAllBudgetCategories');
+            if (selectAllBtn && !selectAllBtn.dataset.bound) {
+                selectAllBtn.dataset.bound = '1';
+                selectAllBtn.addEventListener('click', () => {
+                    document.querySelectorAll('#budgetCategoryCheckboxList .budget-category-check').forEach(chk => { chk.checked = true; });
+                    syncBudgetCategorySelectFromChecks();
+                });
+            }
+
+            const clearBtn = document.getElementById('clearBudgetCategories');
+            if (clearBtn && !clearBtn.dataset.bound) {
+                clearBtn.dataset.bound = '1';
+                clearBtn.addEventListener('click', clearBudgetCategorySelection);
+            }
         }
 
         function applyFinanceSettingsUI() {
@@ -5016,6 +5489,9 @@
                     financeSettings = Object.assign(financeSettings, result.settings || {});
                     applyFinanceSettingsUI();
                     renderFinancialHealth(lastHealth, lastTransactions);
+                    if (document.getElementById('grafik-panel')?.classList.contains('active')) {
+                        renderExpenseCharts();
+                    }
                     if (useAlert) alert('Pengaturan berhasil dimuat ulang.');
                 }
             } catch (err) {
@@ -5030,6 +5506,44 @@
 
         function getMonthKeyFromDate(raw) {
             return normalizeMonthKey(raw);
+        }
+
+
+
+        function getSelectedSelectValues(selectId) {
+            const el = document.getElementById(selectId);
+            if (!el) return [];
+
+            if (selectId === 'budgetCategory') {
+                syncBudgetCategorySelectFromChecks();
+                return getCurrentSelectValues(el);
+            }
+
+            if (el.multiple) {
+                return Array.from(el.selectedOptions || []).map(opt => opt.value).filter(Boolean);
+            }
+            return el.value ? [el.value] : [];
+        }
+
+        function splitBudgetCategories(value) {
+            if (Array.isArray(value)) return value.map(v => String(v || '').trim()).filter(Boolean);
+            return String(value || '')
+                .split(/[,;|]/)
+                .map(v => v.trim())
+                .filter(Boolean);
+        }
+
+        function getBudgetCategoryLabel(budget) {
+            const categories = splitBudgetCategories(budget?.categories || budget?.category || budget?.kategori);
+            return categories.length ? categories.join(', ') : '-';
+        }
+
+        function getSpentForBudget(monthKey, budget, spentMap) {
+            const categories = splitBudgetCategories(budget?.categories || budget?.category || budget?.kategori);
+            return categories.reduce((total, category) => {
+                const key = normalizeTextKey(category);
+                return total + toInt((spentMap || {})[key] || 0);
+            }, 0);
         }
 
         function getExpenseSpentByCategory(monthKey) {
@@ -5065,8 +5579,8 @@
 
             body.innerHTML = budgets.map(b => {
                 const monthKey = normalizeMonthKey(b.month);
-                const catKey = normalizeTextKey(b.category);
-                const spent = toInt((spentByMonth[monthKey] || {})[catKey] || 0);
+                const categoryLabel = getBudgetCategoryLabel(b);
+                const spent = getSpentForBudget(monthKey, b, spentByMonth[monthKey] || {});
                 const amount = toInt(b.amount || 0);
                 const pct = amount > 0 ? Math.round((spent / amount) * 100) : 0;
                 const barClass = pct >= 100 ? 'danger' : (pct >= 80 ? 'warning' : '');
@@ -5075,7 +5589,7 @@
                 return `
                     <tr>
                         <td>${formatMonthLabel(monthKey)}</td>
-                        <td>${escapeHtml(b.category || '-')}</td>
+                        <td>${escapeHtml(categoryLabel)}</td>
                         <td>${formatRupiah(amount)}</td>
                         <td>
                             <div class="fw-bold">${formatRupiah(spent)} <span class="text-muted small">(${pct}%)</span></div>
@@ -5098,13 +5612,14 @@
                 .filter(b => normalizeMonthKey(b.month) === normalizedMonth)
                 .map(b => {
                     const amount = toInt(b.amount || 0);
-                    const spent = toInt(spentMap[normalizeTextKey(b.category)] || 0);
+                    const spent = getSpentForBudget(normalizedMonth, b, spentMap);
                     const pct = amount > 0 ? Math.round((spent / amount) * 100) : 0;
                     const remaining = amount - spent;
                     return {
                         id: b.id,
                         month: normalizedMonth,
-                        category: b.category || '-',
+                        category: getBudgetCategoryLabel(b),
+                        categories: splitBudgetCategories(b.categories || b.category),
                         amount,
                         spent,
                         pct,
@@ -5524,7 +6039,7 @@
             if (diff === 0) return alert('Saldo sudah sesuai, tidak ada penyesuaian yang perlu disimpan.');
 
             const amount = Math.abs(diff);
-            const ok = confirm(`Simpan edit saldo ${wallet}?\n\nSaldo saat ini: ${formatRupiah(current)}\nSaldo terbaru: ${formatRupiah(desired)}\nSelisih: ${diff > 0 ? '+' : '-'} ${formatRupiah(amount)}\n\nCatatan: ini akan dicatat sebagai "Saldo Diedit", bukan pemasukan/pengeluaran.`);
+            const ok = await appConfirm(`Simpan edit saldo ${wallet}?\n\nSaldo saat ini: ${formatRupiah(current)}\nSaldo terbaru: ${formatRupiah(desired)}\nSelisih: ${diff > 0 ? '+' : '-'} ${formatRupiah(amount)}\n\nCatatan: ini akan dicatat sebagai "Saldo Diedit", bukan pemasukan/pengeluaran.`, 'Konfirmasi Edit Saldo');
             if (!ok) return;
 
             const btn = document.getElementById('saveBalanceAdjustmentBtn');
@@ -5575,6 +6090,7 @@
             if (!name) return alert('Nama wallet wajib diisi.');
             try {
                 await postFinanceAction({action: 'saveWallet', walletName: name, openingBalance});
+                rememberWallet(name);
 
                 // Fallback lokal: memastikan wallet baru langsung muncul di Dashboard,
                 // meskipun respons Apps Script hanya menyimpan nama wallet tanpa saldo awal.
@@ -5588,8 +6104,13 @@
                 await loadFinanceSettings();
                 await loadData();
                 renderCustomDashboardWallets();
+                renderCustomWalletList();
+                renderMonthlyExpenseSummary(lastTransactions);
+                if (document.getElementById('grafik-panel')?.classList.contains('active')) {
+                    renderExpenseCharts();
+                }
                 updateBalanceAdjustmentPreview();
-                alert('Wallet berhasil ditambahkan.');
+                alert('Wallet berhasil ditambahkan dan sudah tersinkron ke Dashboard, Grafik, Filter, dan Export.');
             } catch (e) { alert(e.message); }
         }
 
@@ -5607,16 +6128,18 @@
 
         async function saveBudget() {
             const month = document.getElementById('budgetMonth').value || getCurrentMonthKey();
-            const category = document.getElementById('budgetCategory').value;
+            const categories = getSelectedSelectValues('budgetCategory');
+            const category = categories.join(', ');
             const amount = document.getElementById('budgetAmount').value;
             const notes = document.getElementById('budgetNotes').value;
-            if (!month || !category || !amount) return alert('Bulan, kategori, dan nominal budget wajib diisi.');
+            if (!month || !categories.length || !amount) return alert('Bulan, minimal satu kategori, dan nominal budget wajib diisi.');
             try {
-                await postFinanceAction({action: 'saveBudget', month, category, amount, notes});
+                await postFinanceAction({action: 'saveBudget', month, category, categories: category, amount, notes});
                 document.getElementById('budgetAmount').value = '';
                 document.getElementById('budgetNotes').value = '';
+                clearBudgetCategorySelection();
                 await loadFinanceSettings();
-                alert('Budget berhasil disimpan.');
+                alert('Budget berhasil disimpan untuk kategori: ' + category);
             } catch (e) { alert(e.message); }
         }
 
@@ -5671,9 +6194,15 @@
                 updateDashboard(data.dashboard || data);
 
                 lastTransactions = data.transactions || [];
+                lastTargets = data.targets || [];
+                debtsData = data.debts || debtsData || [];
+                paymentsData = data.payments || paymentsData || [];
                 updateTransactionTable(lastTransactions);
 
                 renderMonthlyExpenseSummary(lastTransactions);
+                if (document.getElementById('grafik-panel')?.classList.contains('active')) {
+                    renderExpenseCharts();
+                }
                 renderBudgetTable();
                 renderFinancialHealth(lastHealth, lastTransactions);
 
@@ -5783,6 +6312,20 @@
             return dateObj.getFullYear() === refDate.getFullYear() && dateObj.getMonth() === refDate.getMonth();
         }
 
+        function getTransactionWallet(t) {
+            if (!t || typeof t !== 'object') return '';
+            return String(
+                t.dompet ??
+                t.wallet ??
+                t.walletName ??
+                t.namaWallet ??
+                t.dompet_tujuan ??
+                t.dompet_terkait ??
+                t.debtWallet ??
+                ''
+            ).trim();
+        }
+
         function buildMonthlyExpenseSummary(transactions) {
             const now = new Date();
 
@@ -5796,6 +6339,11 @@
             const byCategory = {};
             const byWallet = {};
 
+            // FIX WALLET DINAMIS: semua wallet dari Pengaturan, Dashboard, dan transaksi tetap tampil.
+            getWalletListFromTransactions(transactions).forEach(wallet => {
+                byWallet[wallet] = 0;
+            });
+
             monthExpenses.forEach(t => {
                 const amt = toInt(t.jumlah);
                 if (amt <= 0) return;
@@ -5805,7 +6353,7 @@
                 const cat = (t.kategori || 'Lainnya').trim() || 'Lainnya';
                 byCategory[cat] = (byCategory[cat] || 0) + amt;
 
-                const w = (t.dompet || 'Tidak diketahui').trim() || 'Tidak diketahui';
+                const w = getTransactionWallet(t) || 'Tidak diketahui';
                 byWallet[w] = (byWallet[w] || 0) + amt;
             });
 
@@ -5813,11 +6361,17 @@
         }
 
         function getWalletListFromTransactions(transactions) {
-            const baseWallets = ['Cash', 'Dana', 'Mandiri', 'Qris', 'Ibu'];
-            const set = new Set(baseWallets);
+            const set = new Set();
 
+            // Wallet default + wallet custom dari pengaturan + saldo dashboard.
+            [...DEFAULT_WALLETS, ...((financeSettings.wallets || []).map(getWalletName)), ...Object.keys((lastDashboard && lastDashboard.wallets) || {})]
+                .map(w => String(w || '').trim())
+                .filter(Boolean)
+                .forEach(w => set.add(w));
+
+            // Wallet yang muncul di transaksi tetap ikut meskipun belum masuk pengaturan.
             (transactions || []).forEach(t => {
-                const wallet = String(t.dompet || '').trim();
+                const wallet = getTransactionWallet(t);
                 if (wallet) set.add(wallet);
             });
 
@@ -5855,7 +6409,7 @@
                 const amount = toInt(t.jumlah || 0);
                 if (amount <= 0) return;
 
-                const wallet = String(t.dompet || 'Tidak diketahui').trim() || 'Tidak diketahui';
+                const wallet = getTransactionWallet(t) || 'Tidak diketahui';
                 if (!today[wallet]) today[wallet] = createBucket();
                 if (!month[wallet]) month[wallet] = createBucket();
                 if (!wallets.includes(wallet)) wallets.push(wallet);
@@ -5936,7 +6490,7 @@
 
                 return `
                     <tr>
-                        <td><i class="bi bi-wallet2"></i> ${wallet}</td>
+                        <td><i class="bi bi-wallet2"></i> ${escapeHtml(wallet)}</td>
                         <td class="text-end text-success fw-bold">${formatRupiah(today.income)}</td>
                         <td class="text-end text-danger fw-bold">${formatRupiah(today.expense)}</td>
                         <td class="text-end ${netClass}">${formatRupiah(today.net)}</td>
@@ -6160,10 +6714,10 @@
 
             const entries = Object.entries(byWallet || {}).sort((a, b) => b[1] - a[1]);
 
-            if (totalExpense <= 0 || entries.length === 0) {
+            if (entries.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="3" class="text-center text-muted">Belum ada pengeluaran bulan ini.</td>
+                        <td colspan="3" class="text-center text-muted">Belum ada wallet yang tersedia.</td>
                     </tr>
                 `;
                 return;
@@ -6173,7 +6727,7 @@
                 const pct = totalExpense > 0 ? Math.round((amt / totalExpense) * 100) : 0;
                 return `
                     <tr>
-                        <td>${wallet}</td>
+                        <td>${escapeHtml(wallet)}</td>
                         <td class="text-end fw-bold text-danger">${formatRupiah(amt)}</td>
                         <td class="text-end">${pct}%</td>
                     </tr>
@@ -6253,7 +6807,8 @@
                 'rgba(236, 72, 153, 0.8)'
             ];
             
-            const chartColors = colors || defaultColors;
+            const baseColors = colors || defaultColors;
+            const chartColors = (labels || []).map((_, idx) => baseColors[idx % baseColors.length]);
             
             if (type === 'pie') {
                 return {
@@ -6800,7 +7355,7 @@
         }
 
         async function deleteTransaction(transactionId) {
-            if (!confirm('Apakah anda yakin ingin menghapus transaksi ini?')) {
+            if (!(await appConfirm('Apakah anda yakin ingin menghapus transaksi ini?', 'Konfirmasi Hapus Transaksi', 'warning'))) {
                 return;
             }
             
@@ -6922,6 +7477,347 @@
                     deleteTransaction(transactionId);
                 });
             });
+        }
+
+
+
+        function getExportTransactionRows(transactions = lastTransactions) {
+            return (transactions || []).map((t, index) => {
+                const type = getTransactionType(t);
+                const sourceCategory = type === 'Pemasukan'
+                    ? (t.sumber || '-')
+                    : (type === 'Transfer Wallet' ? `${t.sumber || '-'} → ${t.kategori || '-'}` : (type === 'Saldo Diedit' ? 'Saldo Diedit' : (t.kategori || '-')));
+                return {
+                    No: index + 1,
+                    Tanggal: formatDateForDisplay(t.tanggal),
+                    Jenis: type,
+                    'Sumber/Kategori': sourceCategory,
+                    Wallet: t.dompet || '-',
+                    Keterangan: t.keterangan || '-',
+                    Jumlah: getTransactionAmount(t),
+                    Target: t.target || '-',
+                    Catatan: t.catatan || '-',
+                    'Link Bukti': t.linkBukti || '',
+                    'Nama File': t.namaFile || ''
+                };
+            });
+        }
+
+        function getExpenseByPeriod(transactions = lastTransactions) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const sevenDaysAgo = new Date(today);
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+            const lastWeekStart = new Date(today);
+            lastWeekStart.setDate(lastWeekStart.getDate() - 13);
+            const lastWeekEnd = new Date(today);
+            lastWeekEnd.setDate(lastWeekEnd.getDate() - 7);
+            const currentMonth = getCurrentMonthKey();
+            const lastMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            const lastMonth = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
+
+            const sumExpenses = (start, end) => (transactions || []).reduce((total, t) => {
+                if (getTransactionType(t) !== 'Pengeluaran') return total;
+                const d = parseDateFlexible(t.tanggal);
+                if (!d) return total;
+                d.setHours(0,0,0,0);
+                if (start && d < start) return total;
+                if (end && d > end) return total;
+                return total + getTransactionAmount(t);
+            }, 0);
+
+            const monthExpense = monthKey => (transactions || []).reduce((total, t) => {
+                if (getTransactionType(t) !== 'Pengeluaran') return total;
+                if (getMonthKeyFromDate(t.tanggal) !== monthKey) return total;
+                return total + getTransactionAmount(t);
+            }, 0);
+
+            return {
+                today: sumExpenses(today, today),
+                yesterday: sumExpenses(yesterday, yesterday),
+                thisWeek: sumExpenses(sevenDaysAgo, today),
+                lastWeek: sumExpenses(lastWeekStart, lastWeekEnd),
+                thisMonth: monthExpense(currentMonth),
+                lastMonth: monthExpense(lastMonth),
+                currentMonth,
+                lastMonth
+            };
+        }
+
+        function buildExportBudgetRows() {
+            return (financeSettings.budgets || []).map(b => {
+                const month = normalizeMonthKey(b.month);
+                const spentMap = getExpenseSpentByCategory(month);
+                const spent = getSpentForBudget(month, b, spentMap);
+                const amount = toInt(b.amount || 0);
+                const pct = amount > 0 ? Math.round((spent / amount) * 100) : 0;
+                const remaining = amount - spent;
+                return {
+                    Bulan: formatMonthLabel(month),
+                    Kategori: getBudgetCategoryLabel(b),
+                    Budget: amount,
+                    Terpakai: spent,
+                    'Progress %': pct,
+                    Sisa: remaining,
+                    Status: pct >= 100 ? 'Melebihi budget' : (pct >= 80 ? 'Hampir habis' : 'Aman'),
+                    Catatan: b.notes || ''
+                };
+            });
+        }
+
+        function buildExportTargetRows() {
+            return (lastTargets || []).map(t => {
+                const targetAmount = toInt(t.target_amount || t.nominal_target || 0);
+                const current = toInt(t.current_amount || t.terkumpul || 0);
+                const pct = targetAmount > 0 ? Math.round((current / targetAmount) * 100) : 0;
+                return {
+                    Target: t.name || t.nama_target || '-',
+                    Wallet: t.wallet || t.dompet_tujuan || '-',
+                    Nominal: targetAmount,
+                    Terkumpul: current,
+                    'Progress %': Math.min(100, pct),
+                    Sisa: Math.max(0, targetAmount - current),
+                    Deadline: t.deadline || '-',
+                    Status: pct >= 100 ? 'Selesai' : 'Dalam Progress',
+                    Deskripsi: t.description || t.deskripsi || ''
+                };
+            });
+        }
+
+        function buildExportDebtRows() {
+            return (debtsData || []).map(d => ({
+                'Nama/Instansi': d.nama_orang || d.name || '-',
+                'Jenis Utang': d.target_utang || d.target || '-',
+                'Pokok Awal': toInt(d.pokok_awal || d.principal || 0),
+                'Total Bayar': toInt(d.total_bayar || 0),
+                'Sisa Utang': toInt(d.sisa_utang || 0),
+                'Tanggal Mulai': d.tanggal_mulai || '-',
+                'Jatuh Tempo': d.jatuh_tempo || '-',
+                Status: d.status || '-',
+                Wallet: d.dompet_terkait || '-',
+                'Skema Pembayaran': d.skema_pembayaran || '-',
+                Catatan: d.catatan || ''
+            }));
+        }
+
+        function buildExportWalletRows() {
+            const wallets = getAllWallets();
+            return wallets.map(wallet => {
+                const income = (lastTransactions || []).reduce((total, t) => {
+                    if (getTransactionType(t) !== 'Pemasukan') return total;
+                    if (getTransactionWallet(t) !== wallet) return total;
+                    return total + getTransactionAmount(t);
+                }, 0);
+                const expense = (lastTransactions || []).reduce((total, t) => {
+                    if (getTransactionType(t) !== 'Pengeluaran') return total;
+                    if (getTransactionWallet(t) !== wallet) return total;
+                    return total + getTransactionAmount(t);
+                }, 0);
+                return {
+                    Wallet: wallet,
+                    Saldo: getCurrentWalletBalance(wallet),
+                    Pemasukan: income,
+                    Pengeluaran: expense,
+                    'Net Flow': income - expense,
+                    'Rasio Pengeluaran %': income > 0 ? Math.round((expense / income) * 100) : 0
+                };
+            });
+        }
+
+        function buildExportSuggestions() {
+            const period = getExpenseByPeriod(lastTransactions);
+            const incomeMonth = (lastTransactions || []).reduce((total, t) => {
+                if (getTransactionType(t) !== 'Pemasukan') return total;
+                if (getMonthKeyFromDate(t.tanggal) !== period.currentMonth) return total;
+                return total + getTransactionAmount(t);
+            }, 0);
+            const expenseMonth = period.thisMonth;
+            const savings = incomeMonth - expenseMonth;
+            const spendRatio = incomeMonth > 0 ? Math.round((expenseMonth / incomeMonth) * 100) : 0;
+            const weekChange = period.lastWeek > 0 ? Math.round(((period.thisWeek - period.lastWeek) / period.lastWeek) * 100) : 0;
+            const monthChange = period.lastMonth > 0 ? Math.round(((period.thisMonth - period.lastMonth) / period.lastMonth) * 100) : 0;
+            const suggestions = [];
+
+            if (incomeMonth <= 0) suggestions.push('Belum ada pemasukan bulan ini. Masukkan data pemasukan agar analisis lebih akurat.');
+            if (spendRatio >= 90) suggestions.push(`Pengeluaran bulan ini sudah ${spendRatio}% dari pemasukan. Kurangi pengeluaran tidak wajib agar saldo tetap aman.`);
+            else if (spendRatio >= 70) suggestions.push(`Pengeluaran bulan ini ${spendRatio}% dari pemasukan. Masih aman, tetapi perlu dikontrol.`);
+            else if (incomeMonth > 0) suggestions.push(`Pengeluaran bulan ini ${spendRatio}% dari pemasukan. Anda berhasil menghemat sekitar ${Math.max(0, 100 - spendRatio)}% dari pemasukan bulan ini.`);
+
+            if (weekChange > 0) suggestions.push(`Pengeluaran minggu ini naik ${weekChange}% dibanding minggu lalu. Cek kategori paling boros sebelum akhir minggu.`);
+            else if (period.lastWeek > 0) suggestions.push(`Pengeluaran minggu ini turun ${Math.abs(weekChange)}% dibanding minggu lalu. Pola hemat Anda membaik.`);
+
+            if (monthChange > 0) suggestions.push(`Pengeluaran bulan ini naik ${monthChange}% dibanding bulan lalu.`);
+            else if (period.lastMonth > 0) suggestions.push(`Pengeluaran bulan ini turun ${Math.abs(monthChange)}% dibanding bulan lalu.`);
+
+            const riskyBudgets = buildExportBudgetRows().filter(b => b['Progress %'] >= 80);
+            riskyBudgets.forEach(b => suggestions.push(`Budget ${b.Kategori} bulan ${b.Bulan} sudah ${b['Progress %']}% terpakai.`));
+
+            const overdueDebts = (debtsData || []).filter(d => d.status !== 'Lunas' && daysUntil(d.jatuh_tempo) !== null && daysUntil(d.jatuh_tempo) < 0);
+            overdueDebts.forEach(d => suggestions.push(`Utang ${d.nama_orang || '-'} sudah melewati jatuh tempo. Prioritaskan pelunasan atau restrukturisasi.`));
+
+            if (!suggestions.length) suggestions.push('Kondisi keuangan terlihat stabil. Pertahankan pencatatan transaksi dan pantau budget bulanan.');
+            return suggestions;
+        }
+
+        function buildExportSummaryRows() {
+            const period = getExpenseByPeriod(lastTransactions);
+            const totalIncome = (lastTransactions || []).reduce((total, t) => getTransactionType(t) === 'Pemasukan' ? total + getTransactionAmount(t) : total, 0);
+            const totalExpense = (lastTransactions || []).reduce((total, t) => getTransactionType(t) === 'Pengeluaran' ? total + getTransactionAmount(t) : total, 0);
+            const incomeMonth = (lastTransactions || []).reduce((total, t) => {
+                if (getTransactionType(t) !== 'Pemasukan') return total;
+                if (getMonthKeyFromDate(t.tanggal) !== period.currentMonth) return total;
+                return total + getTransactionAmount(t);
+            }, 0);
+            const expenseRatio = incomeMonth > 0 ? Math.round((period.thisMonth / incomeMonth) * 100) : 0;
+            const healthScore = lastHealth.score ?? lastHealth.healthScore ?? lastHealth.skor ?? '-';
+            const healthStatus = lastHealth.status || lastHealth.label || lastHealth.kategori || '-';
+
+            return [
+                ['Tanggal Export', new Date().toLocaleString('id-ID')],
+                ['Jumlah Semua Transaksi', (lastTransactions || []).length],
+                ['Total Pemasukan Semua Data', totalIncome],
+                ['Total Pengeluaran Semua Data', totalExpense],
+                ['Saldo Total Dashboard', lastDashboard.total || 0],
+                ['Pemasukan Bulan Ini', incomeMonth],
+                ['Pengeluaran Hari Ini', period.today],
+                ['Pengeluaran Kemarin', period.yesterday],
+                ['Pengeluaran Minggu Ini', period.thisWeek],
+                ['Pengeluaran Minggu Lalu', period.lastWeek],
+                ['Pengeluaran Bulan Ini', period.thisMonth],
+                ['Pengeluaran Bulan Lalu', period.lastMonth],
+                ['Rasio Pengeluaran Bulan Ini', `${expenseRatio}%`],
+                ['Perkiraan Hemat Bulan Ini', `${Math.max(0, 100 - expenseRatio)}% dari pemasukan bulan ini`],
+                ['Skor Kesehatan Keuangan', healthScore],
+                ['Status Kesehatan Keuangan', healthStatus]
+            ];
+        }
+
+        function downloadCsvFallback(rows, filename) {
+            if (!rows.length) return alert('Belum ada data untuk di-download.');
+            const headers = Object.keys(rows[0]);
+            const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`).join(','))).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename.replace(/\.xlsx$/i, '.csv');
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        async function downloadTransactionsExcel() {
+            if (!lastTransactions || !lastTransactions.length) await loadData();
+            const transactionRows = getExportTransactionRows(lastTransactions);
+            if (!transactionRows.length) return alert('Belum ada transaksi untuk di-download.');
+
+            if (typeof XLSX === 'undefined') {
+                downloadCsvFallback(transactionRows, `Laporan_Keuangan_${getCurrentMonthKey()}.xlsx`);
+                return;
+            }
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(buildExportSummaryRows()), 'Ringkasan');
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(transactionRows), 'Semua Transaksi');
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(buildExportBudgetRows()), 'Kinerja Budget');
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(buildExportWalletRows()), 'Kinerja Wallet');
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(buildExportTargetRows()), 'Target');
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(buildExportDebtRows()), 'Utang');
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(buildExportSuggestions().map((s, i) => [i + 1, s])), 'Saran Sistem');
+            XLSX.writeFile(workbook, `Laporan_Keuangan_Lengkap_${getCurrentMonthKey()}.xlsx`);
+            alert('File Excel berhasil dibuat.');
+        }
+
+        async function downloadTransactionsPdf() {
+            if (!lastTransactions || !lastTransactions.length) await loadData();
+            const transactionRows = getExportTransactionRows(lastTransactions);
+            if (!transactionRows.length) return alert('Belum ada transaksi untuk di-download.');
+
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                return alert('Library PDF belum berhasil dimuat. Pastikan koneksi internet aktif lalu coba lagi.');
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+            const pageWidth = doc.internal.pageSize.getWidth();
+            let y = 36;
+
+            doc.setFontSize(16);
+            doc.text('Laporan Keuangan Lengkap', pageWidth / 2, y, { align: 'center' });
+            y += 18;
+            doc.setFontSize(9);
+            doc.text(`Dicetak: ${new Date().toLocaleString('id-ID')}`, pageWidth / 2, y, { align: 'center' });
+            y += 18;
+
+            doc.autoTable({
+                startY: y,
+                head: [['Ringkasan', 'Nilai']],
+                body: buildExportSummaryRows().map(([k, v]) => [k, typeof v === 'number' ? formatRupiah(v) : String(v)]),
+                theme: 'grid',
+                styles: { fontSize: 8, cellPadding: 4 },
+                headStyles: { fillColor: [37, 99, 235] }
+            });
+
+            y = doc.lastAutoTable.finalY + 14;
+            doc.setFontSize(11);
+            doc.text('Saran Sistem', 40, y);
+            y += 8;
+            doc.autoTable({
+                startY: y,
+                head: [['No', 'Saran']],
+                body: buildExportSuggestions().map((s, i) => [i + 1, s]),
+                theme: 'striped',
+                styles: { fontSize: 8, cellPadding: 4 },
+                headStyles: { fillColor: [5, 150, 105] }
+            });
+
+            doc.addPage('a4', 'landscape');
+            doc.setFontSize(13);
+            doc.text('Semua Riwayat Transaksi', 40, 36);
+            doc.autoTable({
+                startY: 50,
+                head: [['No', 'Tanggal', 'Jenis', 'Sumber/Kategori', 'Wallet', 'Keterangan', 'Jumlah', 'Target', 'Catatan']],
+                body: transactionRows.map(r => [r.No, r.Tanggal, r.Jenis, r['Sumber/Kategori'], r.Wallet, r.Keterangan, formatRupiah(r.Jumlah), r.Target, r.Catatan]),
+                theme: 'grid',
+                styles: { fontSize: 7, cellPadding: 3, overflow: 'linebreak' },
+                headStyles: { fillColor: [37, 99, 235] },
+                columnStyles: { 0: { cellWidth: 28 }, 1: { cellWidth: 58 }, 2: { cellWidth: 68 }, 6: { cellWidth: 78 } }
+            });
+
+            doc.addPage('a4', 'landscape');
+            doc.setFontSize(13);
+            doc.text('Kinerja Budget, Wallet, Target, dan Utang', 40, 36);
+            doc.autoTable({
+                startY: 50,
+                head: [['Bulan', 'Kategori', 'Budget', 'Terpakai', 'Progress', 'Sisa', 'Status']],
+                body: buildExportBudgetRows().map(r => [r.Bulan, r.Kategori, formatRupiah(r.Budget), formatRupiah(r.Terpakai), `${r['Progress %']}%`, formatRupiah(r.Sisa), r.Status]),
+                theme: 'grid',
+                styles: { fontSize: 7, cellPadding: 3 },
+                headStyles: { fillColor: [217, 119, 6] }
+            });
+
+            let nextY = doc.lastAutoTable.finalY + 16;
+            doc.autoTable({
+                startY: nextY,
+                head: [['Wallet', 'Saldo', 'Pemasukan', 'Pengeluaran', 'Net Flow', 'Rasio Pengeluaran']],
+                body: buildExportWalletRows().map(r => [r.Wallet, formatRupiah(r.Saldo), formatRupiah(r.Pemasukan), formatRupiah(r.Pengeluaran), formatRupiah(r['Net Flow']), `${r['Rasio Pengeluaran %']}%`]),
+                theme: 'striped',
+                styles: { fontSize: 7, cellPadding: 3 },
+                headStyles: { fillColor: [8, 145, 178] }
+            });
+
+            nextY = doc.lastAutoTable.finalY + 16;
+            doc.autoTable({
+                startY: nextY,
+                head: [['Target', 'Wallet', 'Nominal', 'Terkumpul', 'Progress', 'Sisa', 'Status']],
+                body: buildExportTargetRows().map(r => [r.Target, r.Wallet, formatRupiah(r.Nominal), formatRupiah(r.Terkumpul), `${r['Progress %']}%`, formatRupiah(r.Sisa), r.Status]),
+                theme: 'striped',
+                styles: { fontSize: 7, cellPadding: 3 },
+                headStyles: { fillColor: [124, 58, 237] }
+            });
+
+            doc.save(`Laporan_Keuangan_Lengkap_${getCurrentMonthKey()}.pdf`);
+            alert('File PDF berhasil dibuat.');
         }
 
         function updateTargetDropdown() {
@@ -7391,7 +8287,7 @@
         async function deleteDebt(debtId) {
             const debt = (debtsData || []).find(d => String(d.id) === String(debtId));
             const debtName = debt ? `${debt.nama_orang} - ${debt.target_utang}` : 'utang ini';
-            if (!confirm(`Hapus ${debtName}?\n\nData utang akan disembunyikan dari tab Utang Saya. Riwayat pembayaran tidak dihapus.`)) return;
+            if (!(await appConfirm(`Hapus ${debtName}?\n\nData utang akan disembunyikan dari tab Utang Saya. Riwayat pembayaran tidak dihapus.`, 'Konfirmasi Hapus Utang', 'warning'))) return;
 
             try {
                 await postFinanceAction({ action: 'deleteDebt', id: debtId });
@@ -7478,7 +8374,8 @@
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    updateTargetsList(data.targets || []);
+                    lastTargets = data.targets || [];
+                    updateTargetsList(lastTargets);
                 }
             } catch (error) {
                 console.error('Error loading targets:', error);
@@ -8474,6 +9371,12 @@
             const refreshTransactionsBtn = document.getElementById('refreshTransactions');
             if (refreshTransactionsBtn) refreshTransactionsBtn.addEventListener('click', loadData);
 
+            const downloadTransactionsExcelBtn = document.getElementById('downloadTransactionsExcel');
+            if (downloadTransactionsExcelBtn) downloadTransactionsExcelBtn.addEventListener('click', downloadTransactionsExcel);
+
+            const downloadTransactionsPdfBtn = document.getElementById('downloadTransactionsPdf');
+            if (downloadTransactionsPdfBtn) downloadTransactionsPdfBtn.addEventListener('click', downloadTransactionsPdf);
+
             const recordPaymentBtn = document.getElementById('recordPayment');
             if (recordPaymentBtn) recordPaymentBtn.addEventListener('click', recordPayment);
 
@@ -8683,6 +9586,7 @@
             if (saveCustomCategoryBtn) saveCustomCategoryBtn.addEventListener('click', saveCustomCategory);
             const saveBudgetBtn = document.getElementById('saveBudgetBtn');
             if (saveBudgetBtn) saveBudgetBtn.addEventListener('click', saveBudget);
+            attachBudgetCategorySelectorEvents();
             const saveBillBtn = document.getElementById('saveBillBtn');
             if (saveBillBtn) saveBillBtn.addEventListener('click', saveBill);
 
@@ -8728,18 +9632,23 @@
 
                 const delBudget = e.target.closest('.delete-budget-btn');
                 if (delBudget) {
-                    if (!confirm('Hapus budget ini?')) return;
+                    if (!(await appConfirm('Hapus budget ini?', 'Konfirmasi Hapus Budget', 'warning'))) return;
                     try { await postFinanceAction({action: 'deleteBudget', id: delBudget.dataset.id}); await loadFinanceSettings(); } catch(err) { alert(err.message); }
                 }
                 const delBill = e.target.closest('.delete-bill-btn');
                 if (delBill) {
-                    if (!confirm('Hapus reminder tagihan ini?')) return;
+                    if (!(await appConfirm('Hapus reminder tagihan ini?', 'Konfirmasi Hapus Reminder', 'warning'))) return;
                     try { await postFinanceAction({action: 'deleteBill', id: delBill.dataset.id}); await loadFinanceSettings(); } catch(err) { alert(err.message); }
                 }
                 const delWallet = e.target.closest('.delete-wallet-btn');
                 if (delWallet) {
-                    if (!confirm('Hapus wallet dari daftar pilihan? Saldo di dashboard tidak ikut dihapus.')) return;
-                    try { await postFinanceAction({action: 'deleteWallet', walletName: delWallet.dataset.name}); await loadFinanceSettings(); } catch(err) { alert(err.message); }
+                    if (!(await appConfirm('Hapus wallet dari daftar pilihan? Saldo di dashboard tidak ikut dihapus.', 'Konfirmasi Hapus Wallet', 'warning'))) return;
+                    try {
+                        await postFinanceAction({action: 'deleteWallet', walletName: delWallet.dataset.name});
+                        forgetWallet(delWallet.dataset.name);
+                        await loadFinanceSettings();
+                        await loadData();
+                    } catch(err) { alert(err.message); }
                 }
             });
 
