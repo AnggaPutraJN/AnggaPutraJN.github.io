@@ -4503,12 +4503,33 @@
                 showAuthMessage('Akun berhasil dibuat. Memuat dashboard Anda...', 'success');
                 requireLoginGate();
                 applyCurrentUserDefaultWallet();
-                await loadData();
+                await loadQuickAfterRegister();
             } catch (err) {
                 showAuthMessage(err.message || String(err), 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = oldText;
+            }
+        }
+
+        async function loadQuickAfterRegister() {
+            setDashboardWalletLoading(true);
+            try {
+                const response = await fetch(SPREADSHEET_URL + '?action=getDashboard&_=' + Date.now());
+                if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
+                const data = await response.json();
+                if (data.status && data.status !== 'success') throw new Error(data.message || 'Gagal memuat dashboard awal.');
+                updateDashboard(data.dashboard || data);
+                lastTransactions = [];
+                updateTransactionTable([]);
+                sharedWalletsData = [];
+                renderSharedWallets();
+                renderFinanceCalendar();
+                await loadFinanceSettings();
+            } catch (err) {
+                console.warn('Dashboard awal setelah register gagal dimuat:', err);
+            } finally {
+                setDashboardWalletLoading(false);
             }
         }
 
@@ -4646,17 +4667,29 @@
             return normalizeWalletKey(walletName) === normalizeWalletKey(getRegisteredDefaultWallet());
         }
 
-        function isWalletAllowedForCurrentUser(walletName) {
-            const name = String(walletName || '').trim();
-            if (!name) return false;
+function isCustomWalletRegistered(walletName) {
+    const key = normalizeWalletKey(walletName);
+    if (!key) return false;
 
-            // Wallet bawaan hanya boleh tampil 1, yaitu wallet default yang dipilih saat register.
-            // Contoh: user memilih Mandiri, maka Cash/Dana/Qris/BCA disembunyikan dari seluruh UI.
-            if (isBuiltInWallet(name)) return isSelectedDefaultWallet(name);
+    const settingWallets = (financeSettings.wallets || []).map(getWalletName);
+    const localWallets = getLocalWallets ? getLocalWallets() : [];
 
-            // Selain wallet bawaan dianggap wallet custom milik user yang berasal dari settings/dashboard/cache user.
-            return true;
-        }
+    return [...settingWallets, ...localWallets].some(w => normalizeWalletKey(w) === key);
+}
+
+function isWalletAllowedForCurrentUser(walletName) {
+    const name = String(walletName || '').trim();
+    if (!name) return false;
+
+    // Kalau wallet ini memang pernah ditambahkan user sebagai custom wallet,
+    // tetap tampil walaupun namanya sama dengan wallet bawaan seperti Dana/BCA/Mandiri.
+    if (isCustomWalletRegistered(name)) return true;
+
+    // Wallet bawaan hanya tampil jika sesuai default wallet saat register.
+    if (isBuiltInWallet(name)) return isSelectedDefaultWallet(name);
+
+    return true;
+}
 
         function filterUserWalletList(wallets) {
             const result = [];
@@ -5468,7 +5501,7 @@
                 return;
             }
 
-            const currentWallet = toInt(lastDashboard.wallets[wallet] ?? 0);
+            const currentWallet = getDashboardWalletBalanceSafe(wallet);
 
             if (type === 'Pengeluaran') {
                 const newTotal = total - amount;
@@ -5715,7 +5748,7 @@
                 return;
             }
 
-            const currentWalletBalance = toInt(lastDashboard.wallets[wallet] || 0);
+            const currentWalletBalance = getDashboardWalletBalanceSafe(wallet);
             
             if (amount <= 0) {
                 previewDiv.innerHTML = `
@@ -5842,7 +5875,7 @@
                 return;
             }
 
-            const currentWalletBalance = toInt(lastDashboard.wallets[wallet] || 0);
+            const currentWalletBalance = getDashboardWalletBalanceSafe(wallet);
             if (currentWalletBalance < amount) {
                 alert(`Saldo ${wallet} tidak cukup! Saldo saat ini: ${formatRupiah(currentWalletBalance)}`);
                 return;
@@ -5986,6 +6019,22 @@
             const target = normalizeTextKey(walletName);
             if (!target) return;
             saveLocalWallets(getLocalWallets().filter(w => normalizeTextKey(w) !== target));
+        }
+
+        function getDashboardWalletBalanceSafe(walletName) {
+            const target = String(walletName || '').trim();
+            if (!target) return 0;
+            const wallets = (lastDashboard && lastDashboard.wallets) || {};
+            if (Object.prototype.hasOwnProperty.call(wallets, target)) return toInt(wallets[target]);
+
+            const normalizedTarget = normalizeTextKey(target);
+            const strippedTarget = normalizeTextKey(target.replace(/^Bersama\s*-\s*/i, ''));
+            for (const [name, balance] of Object.entries(wallets)) {
+                const normalizedName = normalizeTextKey(name);
+                const strippedName = normalizeTextKey(String(name).replace(/^Bersama\s*-\s*/i, ''));
+                if (normalizedName === normalizedTarget || strippedName === strippedTarget) return toInt(balance);
+            }
+            return 0;
         }
 
         function getWalletOpeningBalance(walletName) {
@@ -6854,6 +6903,13 @@
             const name = document.getElementById('customWalletName').value.trim();
             const openingBalance = document.getElementById('customWalletBalance').value || 0;
             if (!name) return alert('Nama wallet wajib diisi.');
+            if (isBuiltInWallet(name) && !isSelectedDefaultWallet(name)) {
+    const lanjut = confirm(
+        `"${name}" adalah nama wallet bawaan.\n\n` +
+        `Tetap tambahkan sebagai custom wallet? Wallet ini akan tetap ditampilkan sebagai wallet milik akun Anda.`
+    );
+    if (!lanjut) return;
+}
             try {
                 await postFinanceAction({action: 'saveWallet', walletName: name, openingBalance});
                 rememberWallet(name);
@@ -9413,7 +9469,7 @@
                 }
 
                 const amt = toInt(document.getElementById('amount').value);
-                const curW = toInt(lastDashboard.wallets[expenseWallet] ?? 0);
+                const curW = getDashboardWalletBalanceSafe(expenseWallet);
                 if (curW - amt < 0) {
                     alert('Saldo tidak cukup. Ubah jumlah atau pilih dompet lain.');
                     return;
@@ -9441,7 +9497,7 @@
                     alert('Jumlah transfer wajib lebih dari 0.');
                     return;
                 }
-                const fromBalance = toInt(lastDashboard.wallets[fromWallet] ?? 0);
+                const fromBalance = getDashboardWalletBalanceSafe(fromWallet);
                 if (fromBalance - amountVal < 0) {
                     alert('Saldo wallet asal tidak cukup untuk transfer.');
                     return;
@@ -10913,4 +10969,3 @@
     </script>
 </body>
 </html>
-
