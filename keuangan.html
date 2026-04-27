@@ -2066,6 +2066,45 @@
             }
         }
 
+        /* ============================================
+           FITUR TAMBAHAN: WALLET BERSAMA, KALENDER, ADMIN, AUDIT
+           ============================================ */
+        .feature-empty-state {
+            border: 1px dashed rgba(148, 163, 184, 0.25);
+            border-radius: 16px;
+            padding: 1rem;
+            color: var(--text-muted);
+            background: rgba(15, 23, 42, 0.28);
+        }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.55rem; }
+        .calendar-day-name, .calendar-cell {
+            border-radius: 14px; padding: 0.65rem; border: 1px solid rgba(148, 163, 184, 0.15);
+            background: rgba(21, 27, 46, 0.72); min-height: 92px;
+        }
+        .calendar-day-name { min-height: auto; text-align: center; color: var(--text-secondary); font-weight: 700; font-size: 0.78rem; background: rgba(15, 23, 42, 0.55); }
+        .calendar-date-num { font-weight: 800; color: var(--text-primary); }
+        .calendar-event { font-size: 0.72rem; margin-top: 0.35rem; line-height: 1.35; }
+        .calendar-income { color: #86efac; }
+        .calendar-expense { color: #fca5a5; }
+        .calendar-bill { color: #fcd34d; }
+        .calendar-cell { cursor: pointer; }
+        .calendar-cell:hover { border-color: rgba(96, 165, 250, 0.55); transform: translateY(-1px); }
+        .calendar-cell.is-selected { border-color: var(--accent-primary); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.22); }
+        .calendar-detail-panel {
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(15, 23, 42, 0.36);
+            border-radius: 16px;
+            padding: 1rem;
+        }
+        .calendar-detail-list .mini-card { margin-bottom: 0.6rem; }
+        .shared-wallet-card { border-left: 4px solid var(--accent-info); }
+        .audit-log-row { border-left: 3px solid rgba(37, 99, 235, 0.65); }
+        @media (max-width: 768px) {
+            .calendar-grid { grid-template-columns: 1fr; }
+            .calendar-day-name { display: none; }
+            .calendar-cell { min-height: auto; }
+        }
+
     </style>
 </head>
 
@@ -2218,7 +2257,22 @@
                     <i class="bi bi-cash-coin"></i> Utang Saya
                 </button>
             </li>
-        </ul>
+                    <li class="nav-item">
+                <button class="nav-link" id="shared-wallet-tab" data-bs-toggle="tab" data-bs-target="#shared-wallet-panel">
+                    <i class="bi bi-people"></i> Wallet Bersama
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="calendar-tab" data-bs-toggle="tab" data-bs-target="#calendar-panel">
+                    <i class="bi bi-calendar3"></i> Kalender
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="admin-owner-tab" data-bs-toggle="tab" data-bs-target="#admin-owner-panel">
+                    <i class="bi bi-shield-check"></i> Admin Owner
+                </button>
+            </li>
+</ul>
 
         <!-- ============================================
         TAB CONTENT
@@ -2800,6 +2854,7 @@
                                         <thead>
                                             <tr>
                                                 <th><i class="bi bi-calendar"></i> Tanggal</th>
+                                                <th><i class="bi bi-person"></i> Pelaku</th>
                                                 <th><i class="bi bi-tag"></i> Jenis</th>
                                                 <th><i class="bi bi-grid"></i> Sumber/Kategori</th>
                                                 <th><i class="bi bi-wallet"></i> Dompet</th>
@@ -2813,7 +2868,7 @@
                                         </thead>
                                         <tbody id="transactionTableBody">
                                             <tr>
-                                                <td colspan="10" class="text-center">
+                                                <td colspan="11" class="text-center">
                                                     <div class="spinner"></div> Memuat data...
                                                 </td>
                                             </tr>
@@ -3471,6 +3526,52 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ============================================
+            WALLET BERSAMA PANEL
+            ============================================ -->
+            <div class="tab-pane fade" id="shared-wallet-panel">
+                <div class="row g-3 fade-in">
+                    <div class="col-12 col-lg-5">
+                        <div class="card">
+                            <div class="card-header"><h5 class="mb-0"><i class="bi bi-people"></i> Buat Wallet Bersama / Keluarga</h5></div>
+                            <div class="card-body">
+                                <div class="mb-3"><label class="form-label required">Nama Wallet Bersama</label><input type="text" class="form-control" id="sharedWalletName" placeholder="Contoh: Keluarga, Kos, Tim Kerja"></div>
+                                <div class="mb-3"><label class="form-label">Saldo Awal</label><div class="input-group"><span class="input-group-text">Rp</span><input type="number" class="form-control" id="sharedWalletOpening" min="0" value="0"></div></div>
+                                <div class="mb-3"><label class="form-label">Username Anggota <span class="text-muted">(opsional)</span></label><textarea class="form-control" id="sharedWalletMembers" rows="3" placeholder="Pisahkan dengan koma. Contoh: ibu,bapak,adik"></textarea><div class="form-text">Anggota yang sudah terdaftar akan bisa melihat wallet ini. Transaksi tetap mencatat nama pelaku.</div></div>
+                                <button type="button" class="btn btn-primary w-100" id="saveSharedWalletBtn"><i class="bi bi-save"></i> Simpan Wallet Bersama</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-7">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center"><h5 class="mb-0"><i class="bi bi-list-ul"></i> Daftar Wallet Bersama</h5><button type="button" class="btn btn-outline-primary btn-sm" id="refreshSharedWalletBtn"><i class="bi bi-arrow-clockwise"></i> Refresh</button></div>
+                            <div class="card-body"><div id="sharedWalletList" class="row g-2"><div class="col-12"><div class="feature-empty-state">Belum ada wallet bersama.</div></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+            KALENDER KEUANGAN PANEL
+            ============================================ -->
+            <div class="tab-pane fade" id="calendar-panel">
+                <div class="row g-3 fade-in"><div class="col-12"><div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2"><h5 class="mb-0"><i class="bi bi-calendar3"></i> Kalender Keuangan Interaktif</h5><div class="d-flex gap-2 flex-wrap"><input type="month" class="form-control" id="financeCalendarMonth" style="max-width: 190px;"><button type="button" class="btn btn-success btn-sm" id="generateMonthlyReportBtn"><i class="bi bi-file-earmark-bar-graph"></i> Buat Laporan Bulanan</button></div></div>
+                    <div class="card-body"><div id="monthlyReportPreview" class="row g-2 mb-3"></div><div class="calendar-grid" id="financeCalendarGrid"></div><div id="financeCalendarDetail" class="mt-3"></div></div>
+                </div></div></div>
+            </div>
+
+            <!-- ============================================
+            ADMIN OWNER PANEL
+            ============================================ -->
+            <div class="tab-pane fade" id="admin-owner-panel">
+                <div class="row g-3 fade-in">
+                    <div class="col-12"><div class="card"><div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2"><h5 class="mb-0"><i class="bi bi-shield-check"></i> Admin Panel Khusus Owner</h5><button type="button" class="btn btn-outline-primary btn-sm" id="refreshAdminOwnerBtn"><i class="bi bi-arrow-clockwise"></i> Refresh Admin</button></div><div class="card-body"><div class="mini-card mini-card-primary mb-3"><div class="mini-card-title">Catatan Akses</div><div class="mini-card-sub">Akun pertama yang register otomatis menjadi Owner. User biasa akan melihat pesan akses ditolak.</div></div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Nama</th><th>Username</th><th>Role</th><th>Status</th><th>Wallet Default</th><th>Last Login</th><th>Aksi</th></tr></thead><tbody id="adminUserTableBody"><tr><td colspan="7" class="text-center text-muted">Panel admin belum dimuat.</td></tr></tbody></table></div></div></div></div>
+                    <div class="col-12"><div class="card"><div class="card-header d-flex justify-content-between align-items-center"><h5 class="mb-0"><i class="bi bi-clock-history"></i> Audit Log / Riwayat Perubahan</h5><button type="button" class="btn btn-outline-primary btn-sm" id="refreshAuditLogBtn"><i class="bi bi-arrow-clockwise"></i> Refresh Log</button></div><div class="card-body"><div id="auditLogList"><div class="feature-empty-state">Audit log akan muncul di sini.</div></div></div></div></div>
+                </div>
+            </div>
+
         </div>
 
         <!-- ============================================
@@ -3911,7 +4012,7 @@
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary me-2" id="cancelForm">Batal</button>
                         <button type="submit" class="btn btn-primary" id="submitForm">
-                            <span id="submitText">Simpan Transaksi</span>
+                            <span id="submitText">Kirim Transaksi</span>
                             <span class="spinner hidden" id="submitSpinner"></span>
                         </button>
                     </div>
@@ -4129,6 +4230,44 @@
     </div>
 
 
+
+
+    <!-- ============================================
+    MODAL EDIT ANGGOTA WALLET BERSAMA
+    ============================================ -->
+    <div class="modal fade" id="editSharedWalletModal" tabindex="-1" aria-labelledby="editSharedWalletModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSharedWalletModalTitle">
+                        <i class="bi bi-people"></i> Edit Anggota Wallet Bersama
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editSharedWalletId">
+                    <div class="mini-card mini-card-primary mb-3">
+                        <div class="mini-card-title" id="editSharedWalletName">Wallet Bersama</div>
+                        <div class="mini-card-sub">Hanya owner wallet yang bisa menambah atau menghapus anggota.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Username Anggota</label>
+                        <textarea class="form-control" id="editSharedWalletMembers" rows="4" placeholder="Pisahkan dengan koma. Contoh: ibu,bapak,adik"></textarea>
+                        <div class="form-text">Kosongkan daftar ini jika ingin menghapus semua anggota tambahan. Owner tidak perlu dimasukkan.</div>
+                    </div>
+                    <div id="editSharedWalletMemberPreview" class="feature-empty-state"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Batal
+                    </button>
+                    <button type="button" class="btn btn-primary" id="saveSharedWalletMembersBtn">
+                        <i class="bi bi-save"></i> Simpan Anggota
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ============================================
     MODAL PESAN APLIKASI (Pengganti alert/confirm browser)
@@ -4474,6 +4613,9 @@
         let currentChartType = 'pie';
         let debtsData = [];
         let paymentsData = [];
+        let sharedWalletsData = [];
+        let auditLogsData = [];
+        let selectedCalendarDate = '';
         let lastTargets = [];
         const DAILY_JAJAN_LIMIT = 50000;
         const JAJAN_CATEGORIES = ['Makanan', 'Minuman', 'Jajanan'];
@@ -6789,7 +6931,7 @@
 
                 document.getElementById('transactionTableBody').innerHTML = `
                     <tr>
-                        <td colspan="10" class="text-center">
+                        <td colspan="11" class="text-center">
                             <div class="spinner"></div> Memuat data...
                         </td>
                     </tr>
@@ -6822,6 +6964,7 @@
                 lastTargets = data.targets || [];
                 debtsData = data.debts || debtsData || [];
                 paymentsData = data.payments || paymentsData || [];
+                sharedWalletsData = data.sharedWallets || sharedWalletsData || [];
                 updateTransactionTable(lastTransactions);
 
                 renderMonthlyExpenseSummary(lastTransactions);
@@ -6840,12 +6983,16 @@
                 renderBillReminders();
 
                 renderBalanceInfoAndPreview();
+                renderSharedWallets();
+                renderFinanceCalendar();
+                loadAuditLogs();
+                loadAdminOwnerData();
 
             } catch (error) {
                 console.error('Error loading data:', error);
                 document.getElementById('transactionTableBody').innerHTML = `
                     <tr>
-                        <td colspan="10" class="text-center text-danger">
+                        <td colspan="11" class="text-center text-danger">
                             <i class="bi bi-exclamation-triangle"></i> Gagal memuat data.
                         </td>
                     </tr>
@@ -8055,7 +8202,7 @@
             if (!filteredTransactions || filteredTransactions.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="10" class="text-center">
+                        <td colspan="11" class="text-center">
                             <i class="bi bi-inbox"></i> Belum ada transaksi sesuai filter.
                         </td>
                     </tr>
@@ -8076,6 +8223,10 @@
                     (transaction.sumber || '-') :
                     (isTransfer ? `${transaction.sumber || '-'} → ${transaction.kategori || '-'}` : (isBalanceEdit ? 'Saldo Diedit' : (transaction.kategori || '-')));
                 const badgeClass = isIncome ? 'bg-success' : (isExpense ? 'bg-warning' : (isBalanceEdit ? 'bg-info' : 'bg-primary'));
+                let displayNote = transaction.catatan || '';
+                if (transaction.sharedWalletId && transaction.pelaku && !String(displayNote).toLowerCase().includes('pelaku wallet bersama')) {
+                    displayNote = `Pelaku Wallet Bersama: ${transaction.pelaku}${displayNote ? ' | ' + displayNote : ''}`;
+                }
                 
                 const buktiButton = transaction.linkBukti ?
                     `<a href="${transaction.linkBukti}" target="_blank" class="btn btn-sm btn-outline-primary">
@@ -8097,13 +8248,14 @@
                 html += `
                     <tr class="${rowClass}" id="transaction-${transaction.id}">
                         <td>${formatDateForDisplay(transaction.tanggal)}</td>
+                        <td>${escapeHtml(transaction.pelaku || (currentUser && currentUser.name) || '-')}</td>
                         <td><span class="badge ${badgeClass}">${transaction.jenis}</span></td>
                         <td>${sourceCategory}</td>
-                        <td>${transaction.dompet || '-'}</td>
-                        <td>${transaction.keterangan || '-'}</td>
+                        <td>${escapeHtml(transaction.dompet || '-')}</td>
+                        <td>${escapeHtml(transaction.keterangan || '-')}</td>
                         <td class="fw-bold ${amountClass}">${amountSign} ${formatRupiah(transaction.jumlah || 0)}</td>
-                        <td>${transaction.target || '-'}</td>
-                        <td>${transaction.catatan || '-'}</td>
+                        <td>${escapeHtml(transaction.target || '-')}</td>
+                        <td>${escapeHtml(displayNote || '-')}</td>
                         <td>${buktiButton}</td>
                         <td>${actionButtons}</td>
                     </tr>
@@ -9405,8 +9557,8 @@
             }
 
             try {
-                await sendDataToServer(data);
-                alert('Data berhasil disimpan!');
+                const saveResult = await sendDataToServer(data);
+                alert(saveResult.message || 'Data berhasil disimpan!');
                 resetForm();
                 document.getElementById('transactionForm').classList.add('hidden');
                 setMainTabsHidden(false);
@@ -9627,6 +9779,9 @@
                 }
 
                 const result = await response.json();
+                if (result.status && result.status !== 'success') {
+                    throw new Error(result.message || 'Server mengembalikan error.');
+                }
                 console.log('Data sent successfully', result);
                 return result;
             } catch (error) {
@@ -10357,6 +10512,405 @@
                 pane.classList.add('fade-in');
             });
         });
+        // =========================================================
+        // FITUR TAMBAHAN: WALLET BERSAMA, KALENDER, ADMIN, AUDIT
+        // =========================================================
+        function isCurrentUserOwnerOrAdmin() {
+            const role = String((currentUser && currentUser.role) || '').toLowerCase();
+            const username = String((currentUser && currentUser.username) || '').toLowerCase();
+            return role === 'owner' || role === 'admin' || username === 'angga';
+        }
+
+        async function getFinanceAction(action, params = {}) {
+            const url = new URL(SPREADSHEET_URL);
+            url.searchParams.set('action', action);
+            Object.keys(params || {}).forEach(k => url.searchParams.set(k, params[k] ?? ''));
+            url.searchParams.set('_', Date.now());
+            const res = await fetch(url.toString());
+            const data = await res.json();
+            if (data.status && data.status !== 'success') throw new Error(data.message || 'Gagal memuat data');
+            return data;
+        }
+
+        async function loadSharedWallets() {
+            try {
+                const data = await getFinanceAction('getSharedWallets');
+                sharedWalletsData = data.sharedWallets || [];
+                renderSharedWallets();
+                await loadFinanceSettings();
+            } catch (err) {
+                const box = document.getElementById('sharedWalletList');
+                if (box) box.innerHTML = `<div class="col-12"><div class="feature-empty-state text-danger">${escapeHtml(err.message)}</div></div>`;
+            }
+        }
+
+        function getSharedWalletById(id) {
+            return (sharedWalletsData || []).find(w => String(w.id) === String(id));
+        }
+
+        function renderSharedWallets() {
+            const box = document.getElementById('sharedWalletList');
+            if (!box) return;
+            if (!sharedWalletsData || sharedWalletsData.length === 0) {
+                box.innerHTML = '<div class="col-12"><div class="feature-empty-state">Belum ada wallet bersama. Buat wallet keluarga/tim dari form di sebelah kiri.</div></div>';
+                return;
+            }
+            box.innerHTML = sharedWalletsData.map(w => {
+                const membersArr = w.members || [];
+                const members = membersArr.map(m => `${escapeHtml(m.name || m.username || m.userId)} <span class="text-muted">(@${escapeHtml(m.username || '-')})</span>`).join(', ') || 'Belum ada anggota tambahan';
+                const canManage = !!w.canManage || w.ownerUserId === getAuthUserId();
+                return `
+                    <div class="col-12">
+                        <div class="mini-card shared-wallet-card">
+                            <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                                <div>
+                                    <div class="mini-card-title">${escapeHtml(w.displayName || w.name)}</div>
+                                    <div class="mini-card-value">${formatRupiah(w.balance || 0)}</div>
+                                    <div class="mini-card-sub">Owner: ${escapeHtml(w.ownerName || '-')} • Anggota: ${members}</div>
+                                    <div class="mini-card-sub mt-1">
+                                        ${canManage ? '<span class="badge bg-success">Anda Owner</span>' : '<span class="badge bg-secondary">Anda Anggota</span>'}
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    ${canManage ? `<button type="button" class="btn btn-sm btn-outline-primary edit-shared-wallet" data-id="${escapeHtml(w.id)}"><i class="bi bi-pencil-square"></i> Edit Anggota</button>` : ''}
+                                    ${canManage ? `<button type="button" class="btn btn-sm btn-outline-danger delete-shared-wallet" data-id="${escapeHtml(w.id)}"><i class="bi bi-trash"></i> Hapus Wallet</button>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            document.querySelectorAll('.edit-shared-wallet').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    openEditSharedWalletModal(this.dataset.id);
+                });
+            });
+
+            document.querySelectorAll('.delete-shared-wallet').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    if (!confirm('Hapus wallet bersama ini? Hanya owner yang bisa menghapus wallet.')) return;
+                    try {
+                        await postFinanceAction({action: 'deleteSharedWallet', id: this.dataset.id});
+                        await loadSharedWallets();
+                        await loadData();
+                    } catch (err) { alert(err.message); }
+                });
+            });
+        }
+
+        function openEditSharedWalletModal(id) {
+            const wallet = getSharedWalletById(id);
+            if (!wallet) return alert('Wallet bersama tidak ditemukan di daftar.');
+            const canManage = !!wallet.canManage || wallet.ownerUserId === getAuthUserId();
+            if (!canManage) return alert('Hanya owner wallet bersama yang boleh mengedit anggota.');
+
+            const memberUsernames = (wallet.members || []).map(m => m.username || '').filter(Boolean).join(', ');
+            document.getElementById('editSharedWalletId').value = wallet.id;
+            document.getElementById('editSharedWalletName').textContent = `${wallet.displayName || wallet.name} • ${formatRupiah(wallet.balance || 0)}`;
+            document.getElementById('editSharedWalletMembers').value = memberUsernames;
+            updateSharedWalletMemberPreview();
+
+            const modal = new bootstrap.Modal(document.getElementById('editSharedWalletModal'));
+            modal.show();
+        }
+
+        function updateSharedWalletMemberPreview() {
+            const input = document.getElementById('editSharedWalletMembers');
+            const box = document.getElementById('editSharedWalletMemberPreview');
+            if (!input || !box) return;
+            const usernames = input.value.split(/[,;\n]/).map(v => v.trim()).filter(Boolean);
+            box.innerHTML = usernames.length
+                ? `<b>Daftar username:</b><br>${usernames.map(u => `<span class="badge bg-primary me-1 mb-1">@${escapeHtml(u)}</span>`).join('')}`
+                : 'Belum ada anggota tambahan. Jika disimpan kosong, hanya owner yang tetap memiliki akses.';
+        }
+
+        async function saveSharedWalletMembers() {
+            const id = document.getElementById('editSharedWalletId')?.value;
+            const members = document.getElementById('editSharedWalletMembers')?.value || '';
+            if (!id) return alert('Wallet bersama belum dipilih.');
+            const btn = document.getElementById('saveSharedWalletMembersBtn');
+            const oldHtml = btn ? btn.innerHTML : '';
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+                }
+                const result = await postFinanceAction({action: 'updateSharedWalletMembers', id, members});
+                alert(result.message || 'Anggota wallet bersama berhasil diperbarui.');
+                const modalEl = document.getElementById('editSharedWalletModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+                await loadSharedWallets();
+                await loadData();
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = oldHtml;
+                }
+            }
+        }
+
+
+        async function saveSharedWallet() {
+            const name = document.getElementById('sharedWalletName')?.value.trim();
+            const openingBalance = document.getElementById('sharedWalletOpening')?.value || 0;
+            const members = document.getElementById('sharedWalletMembers')?.value || '';
+            if (!name) return alert('Nama wallet bersama wajib diisi.');
+            try {
+                await postFinanceAction({action: 'saveSharedWallet', walletName: name, openingBalance, members});
+                document.getElementById('sharedWalletName').value = '';
+                document.getElementById('sharedWalletOpening').value = '0';
+                document.getElementById('sharedWalletMembers').value = '';
+                alert('Wallet bersama berhasil dibuat. Wallet akan muncul di pilihan dompet dengan awalan “Bersama -”.');
+                await loadSharedWallets();
+                await loadData();
+            } catch (err) { alert(err.message); }
+        }
+
+        function setDefaultCalendarMonth() {
+            const input = document.getElementById('financeCalendarMonth');
+            if (!input || input.value) return;
+            const d = new Date();
+            input.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function renderFinanceCalendar() {
+            setDefaultCalendarMonth();
+            const grid = document.getElementById('financeCalendarGrid');
+            const monthInput = document.getElementById('financeCalendarMonth');
+            if (!grid || !monthInput) return;
+            const month = monthInput.value || normalizeMonthKey(new Date());
+            const [year, monthNumber] = month.split('-').map(Number);
+            if (!year || !monthNumber) return;
+            const first = new Date(year, monthNumber - 1, 1);
+            const last = new Date(year, monthNumber, 0);
+            const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+            const itemsByDate = {};
+            (lastTransactions || []).forEach(t => {
+                const d = parseDateFlexible(t.tanggal);
+                if (!d || d.getFullYear() !== year || d.getMonth() !== monthNumber - 1) return;
+                const key = `${year}-${String(monthNumber).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                (itemsByDate[key] = itemsByDate[key] || []).push(t);
+            });
+            ((financeSettings && financeSettings.bills) || []).forEach(b => {
+                const d = parseDateFlexible(b.dueDate || b.jatuhTempo || b.tanggal);
+                if (!d || d.getFullYear() !== year || d.getMonth() !== monthNumber - 1) return;
+                const key = `${year}-${String(monthNumber).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                (itemsByDate[key] = itemsByDate[key] || []).push(Object.assign({}, b, {jenis:'Tagihan'}));
+            });
+
+            if (selectedCalendarDate && !selectedCalendarDate.startsWith(month + '-')) {
+                selectedCalendarDate = '';
+            }
+
+            let html = dayNames.map(d => `<div class="calendar-day-name">${d}</div>`).join('');
+            for (let i = 0; i < first.getDay(); i++) html += '<div class="calendar-cell" style="opacity:.35; cursor: default"></div>';
+            for (let day = 1; day <= last.getDate(); day++) {
+                const key = `${year}-${String(monthNumber).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const list = itemsByDate[key] || [];
+                const selectedClass = selectedCalendarDate === key ? ' is-selected' : '';
+                html += `<div class="calendar-cell${selectedClass}" data-calendar-date="${key}"><div class="calendar-date-num">${day}</div>`;
+                list.slice(0, 4).forEach(item => {
+                    const type = item.jenis || item.type || '';
+                    const cls = type === 'Pemasukan' ? 'calendar-income' : (type === 'Tagihan' ? 'calendar-bill' : 'calendar-expense');
+                    const label = type === 'Tagihan' ? (item.nama || item.billName || 'Tagihan') : (item.keterangan || item.kategori || item.sumber || type);
+                    const amount = item.jumlah || item.amount || item.nominal || 0;
+                    html += `<div class="calendar-event ${cls}">• ${escapeHtml(label)}<br><b>${formatRupiah(amount)}</b></div>`;
+                });
+                if (list.length > 4) html += `<div class="calendar-event text-muted">+${list.length - 4} lainnya</div>`;
+                if (!list.length) html += `<div class="calendar-event text-muted">Tidak ada transaksi</div>`;
+                html += '</div>';
+            }
+            grid.innerHTML = html;
+
+            grid.querySelectorAll('.calendar-cell[data-calendar-date]').forEach(cell => {
+                cell.addEventListener('click', function() {
+                    selectedCalendarDate = this.dataset.calendarDate;
+                    grid.querySelectorAll('.calendar-cell').forEach(el => el.classList.remove('is-selected'));
+                    this.classList.add('is-selected');
+                    renderFinanceCalendarDetail(selectedCalendarDate, itemsByDate[selectedCalendarDate] || []);
+                });
+            });
+
+            if (selectedCalendarDate) {
+                renderFinanceCalendarDetail(selectedCalendarDate, itemsByDate[selectedCalendarDate] || []);
+            } else {
+                const detail = document.getElementById('financeCalendarDetail');
+                if (detail) detail.innerHTML = '<div class="calendar-detail-panel text-muted"><i class="bi bi-info-circle"></i> Klik salah satu tanggal untuk melihat detail pemasukan, pengeluaran, atau tagihan pada tanggal tersebut.</div>';
+            }
+
+            renderMonthlyReportPreview(month);
+        }
+
+        function renderFinanceCalendarDetail(dateKey, list) {
+            const box = document.getElementById('financeCalendarDetail');
+            if (!box) return;
+            const dateText = dateKey ? formatDateForDisplay(dateKey) : '-';
+            if (!list || !list.length) {
+                box.innerHTML = `
+                    <div class="calendar-detail-panel">
+                        <h6 class="mb-2"><i class="bi bi-calendar-date"></i> Detail ${escapeHtml(dateText)}</h6>
+                        <div class="feature-empty-state">Tidak ada pemasukan, pengeluaran, atau tagihan pada tanggal ini.</div>
+                    </div>`;
+                return;
+            }
+
+            let income = 0, expense = 0, bills = 0;
+            list.forEach(item => {
+                const type = item.jenis || item.type || '';
+                const amount = toInt(item.jumlah || item.amount || item.nominal || 0);
+                if (type === 'Pemasukan') income += amount;
+                else if (type === 'Pengeluaran') expense += amount;
+                else if (type === 'Tagihan') bills += amount;
+            });
+
+            const rows = list.map(item => {
+                const type = item.jenis || item.type || '';
+                const isIncome = type === 'Pemasukan';
+                const isBill = type === 'Tagihan';
+                const badge = isIncome ? 'bg-success' : (isBill ? 'bg-warning' : 'bg-danger');
+                const title = isBill ? (item.nama || item.billName || 'Tagihan') : (item.keterangan || item.kategori || item.sumber || type);
+                const category = isIncome ? (item.sumber || '-') : (isBill ? (item.kategori || '-') : (item.kategori || '-'));
+                const wallet = item.dompet || item.wallet || '-';
+                const amount = toInt(item.jumlah || item.amount || item.nominal || 0);
+                const note = item.catatan || item.notes || '';
+                const actor = item.pelaku || '';
+                return `
+                    <div class="mini-card ${isIncome ? 'mini-card-success' : (isBill ? 'mini-card-warning' : 'mini-card-danger')}">
+                        <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                            <div>
+                                <div class="mini-card-title"><span class="badge ${badge}">${escapeHtml(type || '-')}</span> ${escapeHtml(title || '-')}</div>
+                                <div class="mini-card-sub">
+                                    Kategori/Sumber: ${escapeHtml(category)} • Wallet: ${escapeHtml(wallet)}
+                                    ${actor ? ` • Pelaku: ${escapeHtml(actor)}` : ''}
+                                </div>
+                                ${note ? `<div class="mini-card-sub mt-1"><i class="bi bi-chat-left-text"></i> ${escapeHtml(note)}</div>` : ''}
+                            </div>
+                            <div class="mini-card-value ${isIncome ? 'text-success' : 'text-danger'}">${formatRupiah(amount)}</div>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            box.innerHTML = `
+                <div class="calendar-detail-panel">
+                    <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap mb-3">
+                        <div>
+                            <h6 class="mb-1"><i class="bi bi-calendar-date"></i> Detail ${escapeHtml(dateText)}</h6>
+                            <div class="text-muted small">${list.length} item ditemukan</div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="filter-chip text-success">Masuk: ${formatRupiah(income)}</span>
+                            <span class="filter-chip text-danger">Keluar: ${formatRupiah(expense)}</span>
+                            ${bills ? `<span class="filter-chip text-warning">Tagihan: ${formatRupiah(bills)}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="calendar-detail-list">${rows}</div>
+                </div>`;
+        }
+
+
+        function renderMonthlyReportPreview(month) {
+            const box = document.getElementById('monthlyReportPreview');
+            if (!box) return;
+            let income = 0, expense = 0, count = 0;
+            (lastTransactions || []).forEach(t => {
+                if (normalizeMonthKey(t.tanggal) !== month) return;
+                if (t.jenis === 'Pemasukan') income += toInt(t.jumlah);
+                if (t.jenis === 'Pengeluaran') expense += toInt(t.jumlah);
+                count++;
+            });
+            box.innerHTML = `
+                <div class="col-12 col-md-3"><div class="mini-card mini-card-success"><div class="mini-card-title">Pemasukan</div><div class="mini-card-value">${formatRupiah(income)}</div></div></div>
+                <div class="col-12 col-md-3"><div class="mini-card mini-card-danger"><div class="mini-card-title">Pengeluaran</div><div class="mini-card-value">${formatRupiah(expense)}</div></div></div>
+                <div class="col-12 col-md-3"><div class="mini-card mini-card-primary"><div class="mini-card-title">Sisa Bulan Ini</div><div class="mini-card-value">${formatRupiah(income - expense)}</div></div></div>
+                <div class="col-12 col-md-3"><div class="mini-card"><div class="mini-card-title">Transaksi</div><div class="mini-card-value">${count}</div></div></div>`;
+        }
+
+        async function generateMonthlyReportFromUI() {
+            setDefaultCalendarMonth();
+            const month = document.getElementById('financeCalendarMonth')?.value || normalizeMonthKey(new Date());
+            try {
+                const result = await postFinanceAction({action: 'generateMonthlyReport', month});
+                alert(result.message || 'Laporan bulanan berhasil dibuat.');
+                renderFinanceCalendar();
+            } catch (err) { alert(err.message); }
+        }
+
+        async function loadAuditLogs() {
+            const box = document.getElementById('auditLogList');
+            if (!box) return;
+            try {
+                const data = await getFinanceAction('getAuditLogs', {limit: 80});
+                auditLogsData = data.auditLogs || [];
+                if (!auditLogsData.length) {
+                    box.innerHTML = '<div class="feature-empty-state">Belum ada audit log.</div>';
+                    return;
+                }
+                box.innerHTML = auditLogsData.map(l => `
+                    <div class="mini-card audit-log-row">
+                        <div class="mini-card-title">${escapeHtml(l.action || '-')} • ${escapeHtml(l.entity || '-')}</div>
+                        <div class="mini-card-sub">${escapeHtml(l.nama || l.userId || '-')} • ${escapeHtml(l.timestamp || '-')}</div>
+                        <div class="small mt-1 text-muted">${escapeHtml(String(l.detail || '')).slice(0, 220)}</div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                box.innerHTML = `<div class="feature-empty-state text-danger">${escapeHtml(err.message)}</div>`;
+            }
+        }
+
+        async function loadAdminOwnerData() {
+            const body = document.getElementById('adminUserTableBody');
+            if (!body) return;
+            if (!isCurrentUserOwnerOrAdmin()) {
+                body.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Panel ini hanya untuk akun Owner/Admin.</td></tr>';
+                return;
+            }
+            try {
+                const data = await getFinanceAction('getAdminData');
+                const users = data.users || [];
+                body.innerHTML = users.map(u => `
+                    <tr>
+                        <td>${escapeHtml(u.nama || '-')}</td>
+                        <td>${escapeHtml(u.username || '-')}</td>
+                        <td><span class="badge bg-primary">${escapeHtml(u.role || 'User')}</span></td>
+                        <td><span class="badge ${u.status === 'Active' ? 'bg-success' : 'bg-danger'}">${escapeHtml(u.status || '-')}</span></td>
+                        <td>${escapeHtml(u.defaultWallet || '-')}</td>
+                        <td>${escapeHtml(u.lastLogin || '-')}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm ${u.status === 'Active' ? 'btn-outline-danger' : 'btn-outline-success'} toggle-user-status" data-user-id="${escapeHtml(u.userId)}" data-next-status="${u.status === 'Active' ? 'Inactive' : 'Active'}">
+                                ${u.status === 'Active' ? 'Nonaktifkan' : 'Aktifkan'}
+                            </button>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="7" class="text-center text-muted">Belum ada user.</td></tr>';
+                document.querySelectorAll('.toggle-user-status').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        try {
+                            await postFinanceAction({action: 'setUserStatus', userId: this.dataset.userId, status: this.dataset.nextStatus});
+                            await loadAdminOwnerData();
+                        } catch (err) { alert(err.message); }
+                    });
+                });
+            } catch (err) {
+                body.innerHTML = `<tr><td colspan="7" class="text-center text-danger">${escapeHtml(err.message)}</td></tr>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('saveSharedWalletBtn')?.addEventListener('click', saveSharedWallet);
+            document.getElementById('refreshSharedWalletBtn')?.addEventListener('click', loadSharedWallets);
+            document.getElementById('saveSharedWalletMembersBtn')?.addEventListener('click', saveSharedWalletMembers);
+            document.getElementById('editSharedWalletMembers')?.addEventListener('input', updateSharedWalletMemberPreview);
+            document.getElementById('financeCalendarMonth')?.addEventListener('change', renderFinanceCalendar);
+            document.getElementById('generateMonthlyReportBtn')?.addEventListener('click', generateMonthlyReportFromUI);
+            document.getElementById('refreshAuditLogBtn')?.addEventListener('click', loadAuditLogs);
+            document.getElementById('refreshAdminOwnerBtn')?.addEventListener('click', loadAdminOwnerData);
+            setDefaultCalendarMonth();
+        });
+
     </script>
 </body>
 </html>
+
