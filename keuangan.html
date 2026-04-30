@@ -2250,6 +2250,214 @@
             }
         }
 
+
+        /* ============================================
+           TRANSAKSI MOBILE CARD VIEW
+           Membuat Riwayat Transaksi nyaman dibaca di HP tanpa geser tabel
+           ============================================ */
+        .transaction-mobile-summary,
+        .transaction-mobile-list {
+            display: none;
+        }
+
+        .transaction-mobile-summary {
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            background: rgba(15, 23, 42, 0.42);
+            border-radius: 16px;
+            padding: 0.75rem 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.84rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .transaction-card-mobile {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            background: linear-gradient(145deg, rgba(26, 35, 50, 0.96), rgba(15, 23, 42, 0.82));
+            border-radius: 18px;
+            padding: 0.95rem;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+        }
+
+        .transaction-card-mobile::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--accent-primary);
+        }
+
+        .transaction-card-mobile.is-income::before { background: var(--accent-success); }
+        .transaction-card-mobile.is-expense::before { background: var(--accent-danger); }
+        .transaction-card-mobile.is-transfer::before { background: var(--accent-primary); }
+        .transaction-card-mobile.is-balance-edit::before { background: var(--accent-info); }
+
+        .transaction-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .transaction-card-title {
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
+
+        .transaction-card-date {
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            margin-top: 0.25rem;
+        }
+
+        .transaction-card-amount {
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        .transaction-card-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.55rem;
+            margin-top: 0.7rem;
+        }
+
+        .transaction-card-row {
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(10, 14, 26, 0.32);
+            border-radius: 14px;
+            padding: 0.6rem;
+            min-width: 0;
+        }
+
+        .transaction-card-label {
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 700;
+            margin-bottom: 0.18rem;
+        }
+
+        .transaction-card-value {
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .transaction-card-note {
+            margin-top: 0.65rem;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(10, 14, 26, 0.25);
+            border-radius: 14px;
+            padding: 0.65rem;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+        }
+
+        .transaction-card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .transaction-card-actions .btn {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+            border-radius: 12px;
+            min-height: 40px;
+            padding: 0.45rem 0.55rem;
+        }
+
+        .transaction-card-actions .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .transaction-card-actions .btn-group .btn {
+            border-radius: 12px !important;
+        }
+
+        .transaction-empty-mobile {
+            border: 1px dashed rgba(148, 163, 184, 0.25);
+            background: rgba(15, 23, 42, 0.32);
+            color: var(--text-muted);
+            border-radius: 18px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            #transactions-panel .transaction-desktop-table {
+                display: none !important;
+            }
+
+            #transactionMobileSummary {
+                display: block;
+            }
+
+            #transactionMobileList {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            #transactions-panel .card-header {
+                align-items: stretch !important;
+            }
+
+            #transactions-panel .export-action-group {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            #transactions-panel .export-action-group .btn {
+                width: 100% !important;
+                margin: 0 !important;
+                min-height: 42px;
+                padding: 0.55rem 0.4rem;
+                font-size: 0.78rem;
+                white-space: normal;
+            }
+
+            #refreshTransactions {
+                grid-column: 1 / -1;
+            }
+
+            .transaction-card-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-card-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-card-head {
+                align-items: flex-start;
+            }
+
+            .transaction-card-amount {
+                font-size: 1rem;
+            }
+        }
+
     </style>
 </head>
 
@@ -2983,7 +3191,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
+                                <div class="table-responsive transaction-desktop-table">
                                     <table class="table table-hover" id="transactionTable">
                                         <thead>
                                             <tr>
@@ -3008,6 +3216,15 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="transaction-mobile-summary" id="transactionMobileSummary">
+                                    <i class="bi bi-info-circle"></i> Memuat riwayat transaksi...
+                                </div>
+                                <div class="transaction-mobile-list" id="transactionMobileList" aria-live="polite">
+                                    <div class="transaction-empty-mobile">
+                                        <div class="spinner"></div>
+                                        <div class="mt-2">Memuat data transaksi...</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -8080,6 +8297,19 @@ function isWalletAllowedForCurrentUser(walletName) {
                         </td>
                     </tr>
                 `;
+                const transactionMobileListLoading = document.getElementById('transactionMobileList');
+                if (transactionMobileListLoading) {
+                    transactionMobileListLoading.innerHTML = `
+                        <div class="transaction-empty-mobile">
+                            <div class="spinner"></div>
+                            <div class="mt-2">Memuat data transaksi...</div>
+                        </div>
+                    `;
+                }
+                const transactionMobileSummaryLoading = document.getElementById('transactionMobileSummary');
+                if (transactionMobileSummaryLoading) {
+                    transactionMobileSummaryLoading.innerHTML = '<i class="bi bi-info-circle"></i> Memuat riwayat transaksi...';
+                }
 
                 const timestamp = new Date().getTime();
                 const url = `${SPREADSHEET_URL}?action=getData&_=${timestamp}`;
@@ -8142,6 +8372,19 @@ function isWalletAllowedForCurrentUser(walletName) {
                         </td>
                     </tr>
                 `;
+                const transactionMobileListError = document.getElementById('transactionMobileList');
+                if (transactionMobileListError) {
+                    transactionMobileListError.innerHTML = `
+                        <div class="transaction-empty-mobile text-danger">
+                            <i class="bi bi-exclamation-triangle"></i><br>
+                            Gagal memuat data transaksi.
+                        </div>
+                    `;
+                }
+                const transactionMobileSummaryError = document.getElementById('transactionMobileSummary');
+                if (transactionMobileSummaryError) {
+                    transactionMobileSummaryError.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Gagal memuat data transaksi.';
+                }
             } finally {
                 if (shouldShowWalletLoading) setDashboardWalletLoading(false);
             }
@@ -9441,7 +9684,15 @@ Melewati limit: ${formatRupiah(overLimit)}`;
 
         function updateTransactionTable(transactions) {
             const tableBody = document.getElementById('transactionTableBody');
-            const filteredTransactions = applyAdvancedFilters(transactions || []);
+            const mobileList = document.getElementById('transactionMobileList');
+            const mobileSummary = document.getElementById('transactionMobileSummary');
+            const allTransactions = transactions || [];
+            const filteredTransactions = applyAdvancedFilters(allTransactions);
+
+            if (mobileSummary) {
+                const totalText = `${filteredTransactions.length} transaksi ditampilkan${filteredTransactions.length !== allTransactions.length ? ` dari ${allTransactions.length} data` : ''}`;
+                mobileSummary.innerHTML = `<i class="bi bi-phone"></i> Tampilan mobile aktif: ${totalText}. Data dibuat dalam bentuk kartu agar tidak perlu digeser.`;
+            }
 
             if (!filteredTransactions || filteredTransactions.length === 0) {
                 tableBody.innerHTML = `
@@ -9451,70 +9702,146 @@ Melewati limit: ${formatRupiah(overLimit)}`;
                         </td>
                     </tr>
                 `;
+                if (mobileList) {
+                    mobileList.innerHTML = `
+                        <div class="transaction-empty-mobile">
+                            <i class="bi bi-inbox fs-4"></i>
+                            <div class="mt-2">Belum ada transaksi sesuai filter.</div>
+                        </div>
+                    `;
+                }
                 return;
             }
 
             let html = '';
+            let mobileHtml = '';
+
             filteredTransactions.forEach(transaction => {
                 const isIncome = transaction.jenis === 'Pemasukan';
                 const isExpense = transaction.jenis === 'Pengeluaran';
                 const isTransfer = transaction.jenis === 'Transfer Wallet';
                 const isBalanceEdit = transaction.jenis === 'Saldo Diedit';
                 const rowClass = isIncome ? 'income-bg' : (isExpense ? 'expense-bg' : 'transfer-bg');
+                const cardTypeClass = isIncome ? 'is-income' : (isExpense ? 'is-expense' : (isBalanceEdit ? 'is-balance-edit' : 'is-transfer'));
                 const amountClass = isIncome ? 'text-success' : (isExpense ? 'text-danger' : (isBalanceEdit ? 'text-info' : 'text-primary'));
                 const amountSign = isIncome ? '+' : (isExpense ? '-' : (isBalanceEdit ? '✎' : '↔'));
+                const typeIcon = isIncome ? 'bi-arrow-down-circle' : (isExpense ? 'bi-arrow-up-circle' : (isBalanceEdit ? 'bi-pencil-square' : 'bi-arrow-left-right'));
+                const typeLabel = transaction.jenis || '-';
                 const sourceCategory = isIncome ?
                     (transaction.sumber || '-') :
                     (isTransfer ? `${transaction.sumber || '-'} → ${transaction.kategori || '-'}` : (isBalanceEdit ? 'Saldo Diedit' : (transaction.kategori || '-')));
                 const badgeClass = isIncome ? 'bg-success' : (isExpense ? 'bg-warning' : (isBalanceEdit ? 'bg-info' : 'bg-primary'));
+                const dateText = formatDateForDisplay(transaction.tanggal);
+                const amountText = `${amountSign} ${formatRupiah(transaction.jumlah || 0)}`;
+                const actorText = transaction.pelaku || (currentUser && currentUser.name) || '-';
+                const walletText = transaction.dompet || '-';
+                const descText = transaction.keterangan || '-';
+                const targetText = transaction.target || '-';
                 let displayNote = transaction.catatan || '';
                 if (transaction.sharedWalletId && transaction.pelaku && !String(displayNote).toLowerCase().includes('pelaku wallet bersama')) {
                     displayNote = `Pelaku Wallet Bersama: ${transaction.pelaku}${displayNote ? ' | ' + displayNote : ''}`;
                 }
-                
+
                 const buktiButton = transaction.linkBukti ?
-                    `<a href="${transaction.linkBukti}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    `<a href="${escapeHtml(transaction.linkBukti)}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-eye"></i> Lihat
                     </a>` :
                     '<span class="text-muted">-</span>';
-                
+
+                const buktiButtonMobile = transaction.linkBukti ?
+                    `<a href="${escapeHtml(transaction.linkBukti)}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-paperclip"></i> Bukti
+                    </a>` :
+                    `<button type="button" class="btn btn-sm btn-outline-primary" disabled>
+                        <i class="bi bi-paperclip"></i> Tanpa Bukti
+                    </button>`;
+
                 const actionButtons = `
                     <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-warning edit-btn" data-id="${transaction.id}" ${(isTransfer || isBalanceEdit) ? 'disabled title="Transfer/Saldo Diedit tidak diedit lewat modal edit transaksi"' : ''}>
+                        <button type="button" class="btn btn-warning edit-btn" data-id="${escapeHtml(transaction.id)}" ${(isTransfer || isBalanceEdit) ? 'disabled title="Transfer/Saldo Diedit tidak diedit lewat modal edit transaksi"' : ''}>
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button type="button" class="btn btn-danger delete-btn" data-id="${transaction.id}">
+                        <button type="button" class="btn btn-danger delete-btn" data-id="${escapeHtml(transaction.id)}">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 `;
 
                 html += `
-                    <tr class="${rowClass}" id="transaction-${transaction.id}">
-                        <td>${formatDateForDisplay(transaction.tanggal)}</td>
-                        <td>${escapeHtml(transaction.pelaku || (currentUser && currentUser.name) || '-')}</td>
-                        <td><span class="badge ${badgeClass}">${transaction.jenis}</span></td>
-                        <td>${sourceCategory}</td>
-                        <td>${escapeHtml(transaction.dompet || '-')}</td>
-                        <td>${escapeHtml(transaction.keterangan || '-')}</td>
-                        <td class="fw-bold ${amountClass}">${amountSign} ${formatRupiah(transaction.jumlah || 0)}</td>
-                        <td>${escapeHtml(transaction.target || '-')}</td>
+                    <tr class="${rowClass}" id="transaction-${escapeHtml(transaction.id)}">
+                        <td>${dateText}</td>
+                        <td>${escapeHtml(actorText)}</td>
+                        <td><span class="badge ${badgeClass}">${escapeHtml(typeLabel)}</span></td>
+                        <td>${escapeHtml(sourceCategory)}</td>
+                        <td>${escapeHtml(walletText)}</td>
+                        <td>${escapeHtml(descText)}</td>
+                        <td class="fw-bold ${amountClass}">${amountText}</td>
+                        <td>${escapeHtml(targetText)}</td>
                         <td>${escapeHtml(displayNote || '-')}</td>
                         <td>${buktiButton}</td>
                         <td>${actionButtons}</td>
                     </tr>
                 `;
+
+                mobileHtml += `
+                    <article class="transaction-card-mobile ${cardTypeClass}" data-id="${escapeHtml(transaction.id)}">
+                        <div class="transaction-card-head">
+                            <div>
+                                <div class="transaction-card-title">
+                                    <i class="bi ${typeIcon}"></i> ${escapeHtml(descText)}
+                                </div>
+                                <div class="transaction-card-date"><i class="bi bi-calendar3"></i> ${dateText}</div>
+                            </div>
+                            <div class="transaction-card-amount ${amountClass}">${amountText}</div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge ${badgeClass}">${escapeHtml(typeLabel)}</span>
+                            <span class="filter-chip"><i class="bi bi-wallet2"></i> ${escapeHtml(walletText)}</span>
+                        </div>
+
+                        <div class="transaction-card-meta">
+                            <div class="transaction-card-row">
+                                <div class="transaction-card-label">Sumber/Kategori</div>
+                                <div class="transaction-card-value">${escapeHtml(sourceCategory)}</div>
+                            </div>
+                            <div class="transaction-card-row">
+                                <div class="transaction-card-label">Pelaku</div>
+                                <div class="transaction-card-value">${escapeHtml(actorText)}</div>
+                            </div>
+                            <div class="transaction-card-row">
+                                <div class="transaction-card-label">Target</div>
+                                <div class="transaction-card-value">${escapeHtml(targetText)}</div>
+                            </div>
+                            <div class="transaction-card-row">
+                                <div class="transaction-card-label">ID Transaksi</div>
+                                <div class="transaction-card-value">${escapeHtml(transaction.id || '-')}</div>
+                            </div>
+                        </div>
+
+                        <div class="transaction-card-note">
+                            <strong><i class="bi bi-chat-left-text"></i> Catatan:</strong><br>
+                            ${escapeHtml(displayNote || '-')}
+                        </div>
+
+                        <div class="transaction-card-actions">
+                            ${buktiButtonMobile}
+                            ${actionButtons}
+                        </div>
+                    </article>
+                `;
             });
 
             tableBody.innerHTML = html;
-            
+            if (mobileList) mobileList.innerHTML = mobileHtml;
+
             document.querySelectorAll('.edit-btn:not([disabled])').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const transactionId = parseInt(this.getAttribute('data-id'));
                     openEditModal(transactionId);
                 });
             });
-            
+
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const transactionId = parseInt(this.getAttribute('data-id'));
@@ -9522,6 +9849,7 @@ Melewati limit: ${formatRupiah(overLimit)}`;
                 });
             });
         }
+
 
 
 
