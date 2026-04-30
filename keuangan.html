@@ -2105,6 +2105,106 @@
             .calendar-cell { min-height: auto; }
         }
 
+    
+
+        /* ============================================
+           MOBILE MODAL PICKER + CATEGORY ICONS FIX
+           ============================================ */
+        .modal-picker-trigger {
+            width: 100%;
+            min-height: 46px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.65rem 0.85rem;
+            text-align: left;
+        }
+        .modal-picker-trigger:hover,
+        .modal-picker-trigger:focus {
+            border-color: var(--accent-primary);
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .modal-picker-value {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .option-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.65rem;
+            max-height: 62vh;
+            overflow-y: auto;
+            padding-right: 0.15rem;
+        }
+        .option-picker-btn {
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(21, 27, 46, 0.88);
+            color: var(--text-primary);
+            border-radius: 16px;
+            min-height: 72px;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            text-align: left;
+            width: 100%;
+        }
+        .option-picker-btn:hover,
+        .option-picker-btn.active {
+            border-color: var(--accent-primary);
+            background: rgba(37, 99, 235, 0.18);
+            transform: translateY(-1px);
+        }
+        .option-picker-icon {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(37, 99, 235, 0.13);
+            color: var(--accent-primary);
+            font-size: 1.25rem;
+        }
+        .option-picker-label { font-weight: 700; line-height: 1.25; }
+        .option-picker-sub { color: var(--text-muted); font-size: 0.76rem; margin-top: 0.15rem; }
+        .category-icon-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(37, 99, 235, 0.13);
+            color: var(--accent-primary);
+            margin-right: 0.35rem;
+        }
+        #adjustCurrentBalance,
+        #adjustCurrentBalance[readonly] {
+            background: var(--bg-secondary) !important;
+            color: var(--text-primary) !important;
+            -webkit-text-fill-color: var(--text-primary) !important;
+            opacity: 1 !important;
+            font-weight: 700;
+        }
+        .shortcut-hint { color: var(--text-muted); font-size: 0.76rem; }
+        @media (max-width: 768px) {
+            .option-picker-grid { grid-template-columns: 1fr; max-height: 68vh; }
+            .modal-picker-trigger { min-height: 50px; }
+        }
+
     </style>
 </head>
 
@@ -3082,6 +3182,37 @@
                         </div>
                     </div>
 
+                    <!-- Limit Harian / Batasan Jajan Harian -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <h5 class="mb-0"><i class="bi bi-speedometer"></i> Fitur Limit Harian / Batasan Jajan Harian</h5>
+                                <span class="badge bg-warning" id="dailyLimitStatusBadge">Rp 50.000</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label required">Batas Jajan Harian</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Rp</span>
+                                            <input type="number" class="form-control" id="dailyJajanLimitInput" min="0" placeholder="Contoh: 50000">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Kategori yang dihitung</label>
+                                        <input type="text" class="form-control" id="dailyJajanCategoriesInput" placeholder="Makanan, Minuman, Jajanan">
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <button type="button" class="btn btn-warning w-100" id="saveDailyLimitBtn">
+                                            <i class="bi bi-save"></i> Simpan Limit Harian
+                                        </button>
+                                    </div>
+                                    <div class="col-12"><div class="mini-card mini-card-warning mb-0"><div class="mini-card-title">Catatan Limit Harian</div><div class="mini-card-sub">Dashboard akan menghitung pengeluaran hari ini berdasarkan kategori di atas. Pisahkan kategori dengan koma.</div></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Budget Bulanan per Kategori -->
                     <div class="col-12 col-lg-7">
                         <div class="card">
@@ -3172,6 +3303,14 @@
                                 <h5 class="mb-0"><i class="bi bi-bell"></i> Reminder Tagihan dan Utang</h5>
                             </div>
                             <div class="card-body">
+                                <div class="mini-card mini-card-primary mb-3">
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-12 col-md-4"><label class="form-label">Notifikasi Jatuh Tempo</label><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="billDebtReminderEnabled"><label class="form-check-label" for="billDebtReminderEnabled">Aktifkan notifikasi tagihan/utang</label></div></div>
+                                        <div class="col-12 col-md-3"><label class="form-label">Ingatkan H-</label><input type="number" class="form-control" id="billDebtReminderDays" min="0" max="30" value="3"></div>
+                                        <div class="col-12 col-md-5"><div class="d-flex gap-2 flex-wrap"><button type="button" class="btn btn-primary" id="saveBillDebtReminderBtn"><i class="bi bi-save"></i> Simpan Notifikasi</button><button type="button" class="btn btn-outline-primary" id="testBillDebtReminderBtn"><i class="bi bi-send"></i> Tes</button></div></div>
+                                        <div class="col-12"><div class="mini-card-sub" id="billDebtReminderStatus">Notifikasi akan mengecek tagihan dan utang yang jatuh tempo.</div></div>
+                                    </div>
+                                </div>
                                 <div class="row g-3 mb-3">
                                     <div class="col-12 col-md-6">
                                         <label class="form-label required">Nama Tagihan</label>
@@ -3310,18 +3449,26 @@
                             <div class="card-body">
                                 <h6 class="mb-3"><i class="bi bi-plus-circle"></i> Tambah Kategori/Sumber</h6>
                                 <div class="row g-3 mb-3">
-                                    <div class="col-12 col-md-5">
+                                    <div class="col-12 col-md-4">
                                         <label class="form-label required">Nama</label>
                                         <input type="text" class="form-control" id="customCategoryName" placeholder="Contoh: Transportasi, Proyek">
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-3">
                                         <label class="form-label required">Jenis</label>
                                         <select class="form-select" id="customCategoryType">
                                             <option value="expense">Kategori Pengeluaran</option>
                                             <option value="income">Sumber Pemasukan</option>
                                         </select>
                                     </div>
-                                    <div class="col-12 col-md-3 d-flex align-items-end">
+                                    <div class="col-12 col-md-3">
+                                        <label class="form-label">Icon</label>
+                                        <input type="hidden" id="customCategoryIcon" value="bi-tag">
+                                        <button type="button" class="modal-picker-trigger" id="openCustomCategoryIconPicker">
+                                            <span class="modal-picker-value" id="customCategoryIconLabel"><i class="bi bi-tag"></i> bi-tag</span>
+                                            <i class="bi bi-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-md-2 d-flex align-items-end">
                                         <button type="button" class="btn btn-success w-100" id="saveCustomCategoryBtn">
                                             <i class="bi bi-save"></i> Simpan
                                         </button>
@@ -3628,13 +3775,18 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label required">Jenis Transaksi</label>
-                            <select class="form-select" id="transactionType" required>
+                            <select class="form-select d-none" id="transactionType" aria-hidden="true" tabindex="-1">
                                 <option value="">Pilih Jenis Transaksi</option>
                                 <option value="Pemasukan">Pemasukan</option>
                                 <option value="Pengeluaran">Pengeluaran</option>
                                 <option value="Transfer Wallet">Transfer Antar Wallet</option>
                                 <option value="Utang">Utang</option>
                             </select>
+                            <button type="button" class="modal-picker-trigger" id="openTransactionTypePicker">
+                                <span class="modal-picker-value" id="transactionTypePickerLabel"><i class="bi bi-list-check"></i> Pilih Jenis Transaksi</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="form-text">Lebih nyaman di HP: klik tombol ini untuk memilih melalui modal.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label required">Tanggal Transaksi</label>
@@ -3884,7 +4036,7 @@
                     <div class="row mb-3 hidden" id="expenseSection">
                         <div class="col-md-6">
                             <label class="form-label required">Kategori Pengeluaran</label>
-                            <select class="form-select" id="category" required>
+                            <select class="form-select d-none" id="category" aria-hidden="true" tabindex="-1">
                                 <option value="">Pilih Kategori</option>
                                 <option value="Makanan">Makanan</option>
                                 <option value="Minuman">Minuman</option>
@@ -3895,6 +4047,11 @@
                                 <option value="Vape">Vape</option>
                                 <option value="Lainnya">Lainnya</option>
                             </select>
+                            <button type="button" class="modal-picker-trigger" id="openCategoryPicker">
+                                <span class="modal-picker-value" id="categoryPickerLabel"><i class="bi bi-tags"></i> Pilih Kategori Pengeluaran</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="form-text">Kategori tampil memakai ikon dan dipilih lewat modal agar tidak banyak scroll di mobile.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label required">Dompet Pengeluaran</label>
@@ -4685,8 +4842,8 @@
         let auditLogsData = [];
         let selectedCalendarDate = '';
         let lastTargets = [];
-        const DAILY_JAJAN_LIMIT = 50000;
-        const JAJAN_CATEGORIES = ['Makanan', 'Minuman', 'Jajanan'];
+        let DAILY_JAJAN_LIMIT = 50000;
+        let JAJAN_CATEGORIES = ['Makanan', 'Minuman', 'Jajanan'];
         const DEFAULT_WALLETS = ['Cash', 'Dana', 'Mandiri', 'Qris', 'BCA'];
         const DEFAULT_WALLET_ICON_MAP = {
             Cash: 'bi-cash-coin',
@@ -4694,6 +4851,33 @@
             Mandiri: 'bi-bank',
             Qris: 'bi-qr-code-scan',
             BCA: 'bi-heart'
+        };
+        const TRANSACTION_TYPE_OPTIONS = [
+            { value: 'Pemasukan', label: 'Pemasukan', icon: 'bi-arrow-down-circle', sub: 'Uang masuk ke wallet' },
+            { value: 'Pengeluaran', label: 'Pengeluaran', icon: 'bi-arrow-up-circle', sub: 'Uang keluar dari wallet' },
+            { value: 'Transfer Wallet', label: 'Transfer Antar Wallet', icon: 'bi-arrow-left-right', sub: 'Pindah saldo antar wallet' },
+            { value: 'Utang', label: 'Utang', icon: 'bi-cash-coin', sub: 'Catat utang baru atau pembayaran' }
+        ];
+        const ICON_OPTIONS = [
+            'bi-tag','bi-basket','bi-cup-hot','bi-egg-fried','bi-cart','bi-bag','bi-shop','bi-truck','bi-fuel-pump','bi-bicycle','bi-car-front','bi-phone','bi-wifi','bi-lightning-charge','bi-droplet','bi-house','bi-heart-pulse','bi-capsule','bi-book','bi-mortarboard','bi-controller','bi-film','bi-music-note-beamed','bi-gift','bi-tools','bi-briefcase','bi-cash-coin','bi-bank','bi-wallet2','bi-credit-card','bi-qr-code-scan','bi-three-dots'
+        ];
+        const DEFAULT_CATEGORY_ICON_MAP = {
+            'Makanan': 'bi-egg-fried',
+            'Minuman': 'bi-cup-hot',
+            'Jajanan': 'bi-basket',
+            'Alat': 'bi-tools',
+            'Shopee': 'bi-bag',
+            'Tiktok Shop': 'bi-shop',
+            'Vape': 'bi-cloud-haze2',
+            'Transportasi': 'bi-truck',
+            'Belanja': 'bi-cart',
+            'Tagihan': 'bi-receipt',
+            'Kesehatan': 'bi-heart-pulse',
+            'Pendidikan': 'bi-book',
+            'Hiburan': 'bi-controller',
+            'Bayar Utang': 'bi-credit-card',
+            'Tabungan Target': 'bi-piggy-bank',
+            'Lainnya': 'bi-three-dots'
         };
 
         function normalizeWalletKey(walletName) {
@@ -4804,7 +4988,10 @@ function isWalletAllowedForCurrentUser(walletName) {
         };
         let lastDashboardRenderHash = '';
         let dailyFinanceReminderTimer = null;
+        let billDebtReminderTimer = null;
+        let lastFocusedExpenseAmountInput = null;
         const DAILY_REMINDER_DEFAULT_TIME = '19:00';
+        const BILL_DEBT_REMINDER_DEFAULT_DAYS = 3;
 
         // ============================================
         // FUNGSI UTILITAS
@@ -5190,6 +5377,172 @@ function isWalletAllowedForCurrentUser(walletName) {
             }
         }
 
+        function getBillDebtReminderStorageKey() {
+            return 'finance_bill_debt_reminder_' + (getAuthUserId() || 'guest');
+        }
+
+        function getBillDebtReminderSettings() {
+            try {
+                return Object.assign({ enabled: false, daysBefore: BILL_DEBT_REMINDER_DEFAULT_DAYS }, JSON.parse(localStorage.getItem(getBillDebtReminderStorageKey()) || '{}'));
+            } catch (err) {
+                return { enabled: false, daysBefore: BILL_DEBT_REMINDER_DEFAULT_DAYS };
+            }
+        }
+
+        function saveBillDebtReminderSettings(settings) {
+            localStorage.setItem(getBillDebtReminderStorageKey(), JSON.stringify(Object.assign({ enabled: false, daysBefore: BILL_DEBT_REMINDER_DEFAULT_DAYS }, settings || {})));
+        }
+
+        function initBillDebtReminderSettingsUI() {
+            const enabledEl = document.getElementById('billDebtReminderEnabled');
+            const daysEl = document.getElementById('billDebtReminderDays');
+            if (!enabledEl || !daysEl) return;
+            const settings = getBillDebtReminderSettings();
+            enabledEl.checked = !!settings.enabled;
+            daysEl.value = Math.max(0, toInt(settings.daysBefore ?? BILL_DEBT_REMINDER_DEFAULT_DAYS));
+            updateBillDebtReminderStatus();
+        }
+
+        function updateBillDebtReminderStatus(text) {
+            const statusEl = document.getElementById('billDebtReminderStatus');
+            if (!statusEl) return;
+            if (text) {
+                statusEl.textContent = text;
+                return;
+            }
+            const settings = getBillDebtReminderSettings();
+            statusEl.textContent = settings.enabled
+                ? `Aktif. Sistem mengingatkan tagihan/utang mulai H-${settings.daysBefore}.`
+                : 'Nonaktif. Aktifkan untuk menerima notifikasi jatuh tempo tagihan/utang.';
+        }
+
+        function stopBillDebtReminder() {
+            if (billDebtReminderTimer) {
+                clearTimeout(billDebtReminderTimer);
+                billDebtReminderTimer = null;
+            }
+        }
+
+        function getBillDebtDueItems(daysBefore) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const maxDays = Math.max(0, toInt(daysBefore));
+            const items = [];
+
+            (financeSettings.bills || []).forEach(bill => {
+                const due = parseDateFlexible(bill.dueDate || bill.jatuhTempo);
+                if (!due) return;
+                due.setHours(0, 0, 0, 0);
+                const diff = Math.ceil((due.getTime() - today.getTime()) / 86400000);
+                if (diff >= 0 && diff <= maxDays) {
+                    items.push({ type: 'Tagihan', name: bill.name || bill.billName || 'Tagihan', amount: toInt(bill.amount || bill.nominal || 0), dueDate: bill.dueDate || bill.jatuhTempo, diff });
+                }
+            });
+
+            (debtsData || []).forEach(debt => {
+                if (String(debt.status || '').toLowerCase() === 'lunas') return;
+                const due = parseDateFlexible(debt.jatuhTempo || debt.dueDate);
+                if (!due) return;
+                due.setHours(0, 0, 0, 0);
+                const diff = Math.ceil((due.getTime() - today.getTime()) / 86400000);
+                const amount = toInt(debt.sisaUtang || debt.remaining || debt.pokokAwal || 0);
+                if (diff >= 0 && diff <= maxDays && amount > 0) {
+                    items.push({ type: 'Utang', name: debt.target || debt.nama || 'Utang', amount, dueDate: debt.jatuhTempo || debt.dueDate, diff });
+                }
+            });
+
+            return items.sort((a, b) => a.diff - b.diff);
+        }
+
+        async function showBillDebtReminderNotification(force = false) {
+            const settings = getBillDebtReminderSettings();
+            const items = getBillDebtDueItems(settings.daysBefore);
+            if (!items.length) {
+                if (force) alert('Belum ada tagihan/utang yang jatuh tempo dalam rentang pengingat.');
+                updateBillDebtReminderStatus('Tidak ada tagihan/utang yang perlu diingatkan saat ini.');
+                return;
+            }
+            const todayKey = getTodayISODate();
+            const itemKey = items.map(x => `${x.type}:${x.name}:${x.dueDate}`).join('|');
+            const notifyKey = `finance_bill_debt_notified_${getAuthUserId() || 'guest'}`;
+            const last = localStorage.getItem(notifyKey);
+            if (!force && last === `${todayKey}|${itemKey}`) return;
+            await requestDailyReminderPermission();
+            const title = 'Reminder Tagihan & Utang';
+            const body = items.slice(0, 4).map(item => {
+                const dueLabel = item.diff === 0 ? 'hari ini' : `H-${item.diff}`;
+                return `${item.type}: ${item.name} (${dueLabel}) ${formatRupiah(item.amount)}`;
+            }).join('\n');
+            try {
+                if ('serviceWorker' in navigator) {
+                    const reg = await navigator.serviceWorker.ready;
+                    await reg.showNotification(title, {
+                        body, icon: './icon-192x192.png', badge: './icon-192x192.png', tag: 'finance-bill-debt-reminder', renotify: true,
+                        data: { url: './keuangan.html' }, actions: [{ action: 'open', title: 'Cek Sekarang' }]
+                    });
+                } else {
+                    new Notification(title, { body, icon: './icon-192x192.png', tag: 'finance-bill-debt-reminder' });
+                }
+                localStorage.setItem(notifyKey, `${todayKey}|${itemKey}`);
+                updateBillDebtReminderStatus(`${items.length} tagihan/utang masuk rentang pengingat.`);
+            } catch (err) {
+                console.warn('Gagal menampilkan reminder tagihan/utang:', err);
+            }
+        }
+
+        function getMsUntilBillDebtCheck() {
+            const now = new Date();
+            const next = new Date();
+            next.setHours(8, 0, 0, 0);
+            if (next <= now) next.setDate(next.getDate() + 1);
+            return next.getTime() - now.getTime();
+        }
+
+        function scheduleBillDebtReminder() {
+            stopBillDebtReminder();
+            const settings = getBillDebtReminderSettings();
+            if (!settings.enabled) {
+                updateBillDebtReminderStatus();
+                return;
+            }
+            if (!('Notification' in window) || Notification.permission !== 'granted') {
+                updateBillDebtReminderStatus('Butuh izin notifikasi browser. Klik Simpan Notifikasi untuk memberi izin.');
+                return;
+            }
+            billDebtReminderTimer = setTimeout(async () => {
+                await showBillDebtReminderNotification(false);
+                scheduleBillDebtReminder();
+            }, getMsUntilBillDebtCheck());
+            showBillDebtReminderNotification(false);
+            updateBillDebtReminderStatus();
+        }
+
+        async function saveBillDebtReminderSettingsFromUI() {
+            const enabled = !!document.getElementById('billDebtReminderEnabled')?.checked;
+            const daysBefore = Math.max(0, Math.min(30, toInt(document.getElementById('billDebtReminderDays')?.value || BILL_DEBT_REMINDER_DEFAULT_DAYS)));
+            try {
+                if (enabled) await requestDailyReminderPermission();
+                saveBillDebtReminderSettings({ enabled, daysBefore });
+                initBillDebtReminderSettingsUI();
+                scheduleBillDebtReminder();
+                alert(enabled ? `Notifikasi tagihan/utang aktif mulai H-${daysBefore}.` : 'Notifikasi tagihan/utang dinonaktifkan.');
+            } catch (err) {
+                saveBillDebtReminderSettings({ enabled: false, daysBefore });
+                initBillDebtReminderSettingsUI();
+                scheduleBillDebtReminder();
+                alert(err.message || String(err));
+            }
+        }
+
+        async function testBillDebtReminderNotification() {
+            try {
+                await requestDailyReminderPermission();
+                await showBillDebtReminderNotification(true);
+            } catch (err) {
+                alert(err.message || String(err));
+            }
+        }
+
         function setMainTabsHidden(isHidden) {
             const tabs = document.getElementById('mainTabs');
             const tabContent = document.querySelector('.tab-content');
@@ -5210,8 +5563,8 @@ function isWalletAllowedForCurrentUser(walletName) {
 
         function setAmountShortcutsEnabled(enabled) {
             const row = document.getElementById('amountShortcutRow');
-            document.querySelectorAll('.amount-shortcut').forEach(btn => btn.disabled = !enabled);
-            if (row) row.classList.toggle('hidden', !enabled);
+            document.querySelectorAll('.amount-shortcut').forEach(btn => btn.disabled = false);
+            if (row) row.classList.remove('hidden');
         }
 
         function buildExpenseItemsUI(count) {
@@ -5390,8 +5743,15 @@ function isWalletAllowedForCurrentUser(walletName) {
         }
 
         function applyAmountShortcut(targetSelector, mode, value) {
-            const input = document.querySelector(targetSelector);
+            let input = document.querySelector(targetSelector);
             if (!input) return;
+
+            // Jika transaksi pengeluaran memakai rincian barang, tombol shortcut utama
+            // diarahkan ke harga barang yang sedang aktif agar tombol di bawah Jumlah Transaksi tetap berguna.
+            if (targetSelector === '#amount' && document.getElementById('transactionType')?.value === 'Pengeluaran' && input.readOnly) {
+                input = lastFocusedExpenseAmountInput || document.querySelector('.expense-item-amount');
+                if (!input) return;
+            }
 
             const current = toInt(input.value);
             const n = toInt(value);
@@ -6265,6 +6625,199 @@ function isWalletAllowedForCurrentUser(walletName) {
             return item.name || item.categoryName || item.category || item.kategori || item.nama || item.namaKategori || '';
         }
 
+        function normalizeBiIcon(icon) {
+            const clean = String(icon || '').trim();
+            if (!clean) return 'bi-tag';
+            return clean.startsWith('bi-') ? clean : `bi-${clean}`;
+        }
+
+        function getCategoryIconStorageKey() {
+            return 'finance_category_icons_' + (getAuthUserId() || 'guest');
+        }
+
+        function loadLocalCategoryIconMap() {
+            try {
+                return JSON.parse(localStorage.getItem(getCategoryIconStorageKey()) || '{}') || {};
+            } catch (err) {
+                return {};
+            }
+        }
+
+        function saveLocalCategoryIcon(category, icon) {
+            const name = String(category || '').trim();
+            if (!name) return;
+            const map = loadLocalCategoryIconMap();
+            map[name] = normalizeBiIcon(icon);
+            localStorage.setItem(getCategoryIconStorageKey(), JSON.stringify(map));
+        }
+
+        function getCategoryIconMap() {
+            return Object.assign({}, DEFAULT_CATEGORY_ICON_MAP, financeSettings.categoryIcons || {}, loadLocalCategoryIconMap());
+        }
+
+        function getCategoryIcon(category) {
+            const name = String(category || '').trim();
+            const map = getCategoryIconMap();
+            if (map[name]) return normalizeBiIcon(map[name]);
+            const foundKey = Object.keys(map).find(k => normalizeTextKey(k) === normalizeTextKey(name));
+            return normalizeBiIcon(foundKey ? map[foundKey] : 'bi-tag');
+        }
+
+        function getTransactionTypeIcon(type) {
+            const found = TRANSACTION_TYPE_OPTIONS.find(x => x.value === type);
+            return found ? found.icon : 'bi-list-check';
+        }
+
+        function updateTransactionTypePickerLabel() {
+            const value = document.getElementById('transactionType')?.value || '';
+            const labelEl = document.getElementById('transactionTypePickerLabel');
+            if (!labelEl) return;
+            const found = TRANSACTION_TYPE_OPTIONS.find(x => x.value === value);
+            labelEl.innerHTML = found
+                ? `<i class="bi ${found.icon}"></i> ${escapeHtml(found.label)}`
+                : '<i class="bi bi-list-check"></i> Pilih Jenis Transaksi';
+        }
+
+        function updateCategoryPickerLabel() {
+            const value = document.getElementById('category')?.value || '';
+            const labelEl = document.getElementById('categoryPickerLabel');
+            if (!labelEl) return;
+            labelEl.innerHTML = value
+                ? `<i class="bi ${getCategoryIcon(value)}"></i> ${escapeHtml(value)}`
+                : '<i class="bi bi-tags"></i> Pilih Kategori Pengeluaran';
+        }
+
+        let optionPickerOnSelect = null;
+        let optionPickerItems = [];
+
+        function renderOptionPickerItems(search = '') {
+            const grid = document.getElementById('optionPickerGrid');
+            if (!grid) return;
+            const q = String(search || '').toLowerCase().trim();
+            const filtered = optionPickerItems.filter(item => {
+                const hay = `${item.label || item.value || ''} ${item.sub || ''}`.toLowerCase();
+                return !q || hay.includes(q);
+            });
+            if (!filtered.length) {
+                grid.innerHTML = '<div class="mini-card mini-card-muted"><div class="mini-card-sub">Tidak ada pilihan yang cocok.</div></div>';
+                return;
+            }
+            grid.innerHTML = filtered.map(item => `
+                <button type="button" class="option-picker-btn ${item.active ? 'active' : ''}" data-value="${escapeHtml(item.value)}">
+                    <span class="option-picker-icon"><i class="bi ${escapeHtml(item.icon || 'bi-tag')}"></i></span>
+                    <span>
+                        <span class="option-picker-label">${escapeHtml(item.label || item.value)}</span>
+                        ${item.sub ? `<div class="option-picker-sub">${escapeHtml(item.sub)}</div>` : ''}
+                    </span>
+                </button>
+            `).join('');
+        }
+
+        function openOptionPicker({ title, items, currentValue, onSelect }) {
+            const modalEl = document.getElementById('optionPickerModal');
+            const titleEl = document.getElementById('optionPickerTitle');
+            const searchEl = document.getElementById('optionPickerSearch');
+            if (!modalEl || typeof bootstrap === 'undefined') return;
+            optionPickerOnSelect = onSelect;
+            optionPickerItems = (items || []).map(item => Object.assign({}, item, { active: normalizeTextKey(item.value) === normalizeTextKey(currentValue) }));
+            if (titleEl) titleEl.innerHTML = title || '<i class="bi bi-ui-checks-grid"></i> Pilih';
+            if (searchEl) searchEl.value = '';
+            renderOptionPickerItems('');
+            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+        }
+
+        function setTransactionTypeValue(value) {
+            const el = document.getElementById('transactionType');
+            if (!el) return;
+            el.value = value || '';
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+            updateTransactionTypePickerLabel();
+        }
+
+        function openTransactionTypePicker() {
+            openOptionPicker({
+                title: '<i class="bi bi-list-check"></i> Pilih Jenis Transaksi',
+                currentValue: document.getElementById('transactionType')?.value || '',
+                items: TRANSACTION_TYPE_OPTIONS,
+                onSelect: item => setTransactionTypeValue(item.value)
+            });
+        }
+
+        function openCategoryPicker() {
+            const categories = getAllExpenseCategories();
+            openOptionPicker({
+                title: '<i class="bi bi-tags"></i> Pilih Kategori Pengeluaran',
+                currentValue: document.getElementById('category')?.value || '',
+                items: categories.map(cat => ({ value: cat, label: cat, icon: getCategoryIcon(cat), sub: 'Kategori pengeluaran' })),
+                onSelect: item => {
+                    const el = document.getElementById('category');
+                    if (el) {
+                        el.value = item.value;
+                        el.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                    updateCategoryPickerLabel();
+                    renderBalanceInfoAndPreview();
+                }
+            });
+        }
+
+        function updateCustomCategoryIconLabel(icon) {
+            const clean = normalizeBiIcon(icon || document.getElementById('customCategoryIcon')?.value || 'bi-tag');
+            const input = document.getElementById('customCategoryIcon');
+            const label = document.getElementById('customCategoryIconLabel');
+            if (input) input.value = clean;
+            if (label) label.innerHTML = `<i class="bi ${escapeHtml(clean)}"></i> ${escapeHtml(clean)}`;
+        }
+
+        function openCustomCategoryIconPicker() {
+            const current = document.getElementById('customCategoryIcon')?.value || 'bi-tag';
+            openOptionPicker({
+                title: '<i class="bi bi-palette"></i> Pilih Icon Kategori',
+                currentValue: current,
+                items: ICON_OPTIONS.map(icon => ({ value: icon, label: icon, icon, sub: 'Bootstrap icon' })),
+                onSelect: item => updateCustomCategoryIconLabel(item.value)
+            });
+        }
+
+        function getDailyLimitStorageKey() {
+            return 'finance_daily_limit_' + (getAuthUserId() || 'guest');
+        }
+
+        function getDailyLimitSettings() {
+            try {
+                return Object.assign({ limit: 50000, categories: ['Makanan', 'Minuman', 'Jajanan'] }, JSON.parse(localStorage.getItem(getDailyLimitStorageKey()) || '{}'));
+            } catch (err) {
+                return { limit: 50000, categories: ['Makanan', 'Minuman', 'Jajanan'] };
+            }
+        }
+
+        function applyDailyLimitSettings() {
+            const settings = getDailyLimitSettings();
+            DAILY_JAJAN_LIMIT = Math.max(0, toInt(settings.limit || 50000));
+            JAJAN_CATEGORIES = (settings.categories || ['Makanan', 'Minuman', 'Jajanan']).map(x => String(x || '').trim()).filter(Boolean);
+            const limitEl = document.getElementById('dailyJajanLimitInput');
+            const catsEl = document.getElementById('dailyJajanCategoriesInput');
+            const badge = document.getElementById('dailyLimitStatusBadge');
+            if (limitEl) limitEl.value = DAILY_JAJAN_LIMIT;
+            if (catsEl) catsEl.value = JAJAN_CATEGORIES.join(', ');
+            if (badge) badge.textContent = formatRupiah(DAILY_JAJAN_LIMIT);
+        }
+
+        function saveDailyLimitSettingsFromUI() {
+            const limit = Math.max(0, toInt(document.getElementById('dailyJajanLimitInput')?.value || 0));
+            const categories = String(document.getElementById('dailyJajanCategoriesInput')?.value || '')
+                .split(',')
+                .map(x => x.trim())
+                .filter(Boolean);
+            if (limit <= 0) return alert('Batas jajan harian wajib lebih dari 0.');
+            if (!categories.length) return alert('Minimal isi 1 kategori untuk dihitung sebagai jajan harian.');
+            localStorage.setItem(getDailyLimitStorageKey(), JSON.stringify({ limit, categories }));
+            applyDailyLimitSettings();
+            renderMonthlyExpenseSummary(lastTransactions);
+            alert('Limit harian berhasil disimpan.');
+        }
+
+
         function normalizeOptionList(items, mapper = (x) => x) {
             return uniq((items || []).map(mapper).filter(Boolean));
         }
@@ -6433,6 +6986,10 @@ function isWalletAllowedForCurrentUser(walletName) {
             populateAdjustWalletSelect();
             renderCustomDashboardWallets();
             updateBalanceAdjustmentPreview();
+            updateTransactionTypePickerLabel();
+            updateCategoryPickerLabel();
+            updateCustomCategoryIconLabel();
+            applyDailyLimitSettings();
             applyCurrentUserDefaultWallet();
         }
 
@@ -6777,9 +7334,14 @@ function isWalletAllowedForCurrentUser(walletName) {
             if (!el) return;
             const exp = getAllExpenseCategories();
             const inc = getAllIncomeSources();
+            const badge = (c, type) => {
+                const cls = type === 'income' ? 'bg-success' : 'bg-danger';
+                const icon = type === 'income' ? 'bi-cash-coin' : getCategoryIcon(c);
+                return `<span class="badge ${cls} me-1 mb-1"><i class="bi ${escapeHtml(icon)}"></i> ${escapeHtml(c)}</span>`;
+            };
             el.innerHTML = `
-                <div class="col-12"><div class="mini-card mini-card-danger"><div class="mini-card-title">Kategori Pengeluaran</div><div>${exp.map(c => `<span class="badge bg-danger me-1 mb-1">${escapeHtml(c)}</span>`).join('')}</div></div></div>
-                <div class="col-12"><div class="mini-card mini-card-success"><div class="mini-card-title">Sumber Pemasukan</div><div>${inc.map(c => `<span class="badge bg-success me-1 mb-1">${escapeHtml(c)}</span>`).join('')}</div></div></div>
+                <div class="col-12"><div class="mini-card mini-card-danger"><div class="mini-card-title">Kategori Pengeluaran</div><div>${exp.map(c => badge(c, 'expense')).join('')}</div></div></div>
+                <div class="col-12"><div class="mini-card mini-card-success"><div class="mini-card-title">Sumber Pemasukan</div><div>${inc.map(c => badge(c, 'income')).join('')}</div></div></div>
             `;
         }
 
@@ -7207,12 +7769,16 @@ function isWalletAllowedForCurrentUser(walletName) {
         async function saveCustomCategory() {
             const name = document.getElementById('customCategoryName').value.trim();
             const type = document.getElementById('customCategoryType').value;
+            const icon = normalizeBiIcon(document.getElementById('customCategoryIcon')?.value || 'bi-tag');
             if (!name) return alert('Nama kategori/sumber wajib diisi.');
             try {
-                await postFinanceAction({action: 'saveCategory', categoryName: name, categoryType: type});
+                await postFinanceAction({action: 'saveCategory', categoryName: name, categoryType: type, icon});
+                if (type === 'expense') saveLocalCategoryIcon(name, icon);
                 document.getElementById('customCategoryName').value = '';
+                updateCustomCategoryIconLabel('bi-tag');
                 await loadFinanceSettings();
-                alert('Kategori/sumber berhasil ditambahkan.');
+                updateCategoryPickerLabel();
+                alert('Kategori/sumber berhasil ditambahkan lengkap dengan icon.');
             } catch (e) { alert(e.message); }
         }
 
@@ -7311,6 +7877,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                 loadAdminOwnerData();
                 initDailyReminderSettingsUI();
                 scheduleDailyFinanceReminder();
+                initBillDebtReminderSettingsUI();
+                scheduleBillDebtReminder();
 
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -7323,6 +7891,34 @@ function isWalletAllowedForCurrentUser(walletName) {
                 `;
             } finally {
                 if (shouldShowWalletLoading) setDashboardWalletLoading(false);
+            }
+        }
+
+        async function refreshAllFinanceDataFromButton(btn) {
+            const originalHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> Refresh...';
+            }
+            try {
+                lastDashboardRenderHash = '';
+                await loadFinanceSettings(false);
+                await loadData({ forceDashboard: true, forceWalletLoading: true });
+                renderExpenseCharts();
+                renderMonthlyExpenseSummary(lastTransactions);
+                renderFinancialHealth(lastHealth, lastTransactions);
+                renderBillReminders();
+                updateCategoryPickerLabel();
+                updateTransactionTypePickerLabel();
+                alert('Data berhasil direfresh dan disinkron ulang.');
+            } catch (err) {
+                console.error('Refresh gagal:', err);
+                alert('Gagal refresh data: ' + (err.message || err));
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
             }
         }
 
@@ -10184,6 +10780,8 @@ function isWalletAllowedForCurrentUser(walletName) {
             if (countEl) countEl.value = '1';
             if (container) container.innerHTML = '';
 
+            updateTransactionTypePickerLabel();
+            updateCategoryPickerLabel();
             toggleExpenseItemsUI();
             renderBalanceInfoAndPreview();
         }
@@ -10353,12 +10951,31 @@ function isWalletAllowedForCurrentUser(walletName) {
 
             const expenseItemCountEl = document.getElementById('expenseItemCount');
             if (expenseItemCountEl) {
-                expenseItemCountEl.addEventListener('input', function () {
+                const rebuildExpenseItemsFromCount = function () {
+                    if (String(this.value).trim() === '') return;
                     const n = Math.max(1, toInt(this.value) || 1);
                     this.value = n;
                     buildExpenseItemsUI(n);
                     recalcExpenseTotalAndSummary();
                     renderBalanceInfoAndPreview();
+                };
+                expenseItemCountEl.addEventListener('input', function () {
+                    // Jangan paksa kembali ke angka 1 saat user sedang menghapus angka untuk mengetik 2, 25, dst.
+                    if (String(this.value).trim() === '') {
+                        document.getElementById('expenseItemsContainer').innerHTML = '';
+                        document.getElementById('amount').value = '';
+                        document.getElementById('description').value = '';
+                        return;
+                    }
+                    rebuildExpenseItemsFromCount.call(this);
+                });
+                expenseItemCountEl.addEventListener('blur', function () {
+                    if (String(this.value).trim() === '') this.value = '1';
+                    rebuildExpenseItemsFromCount.call(this);
+                });
+                expenseItemCountEl.addEventListener('change', function () {
+                    if (String(this.value).trim() === '') this.value = '1';
+                    rebuildExpenseItemsFromCount.call(this);
                 });
             }
 
@@ -10366,9 +10983,13 @@ function isWalletAllowedForCurrentUser(walletName) {
             if (expenseItemsContainer) {
                 expenseItemsContainer.addEventListener('input', function (e) {
                     if (e.target.classList.contains('expense-item-amount') || e.target.classList.contains('expense-item-desc')) {
+                        if (e.target.classList.contains('expense-item-amount')) lastFocusedExpenseAmountInput = e.target;
                         recalcExpenseTotalAndSummary();
                         renderBalanceInfoAndPreview();
                     }
+                });
+                expenseItemsContainer.addEventListener('focusin', function (e) {
+                    if (e.target.classList.contains('expense-item-amount')) lastFocusedExpenseAmountInput = e.target;
                 });
             }
 
@@ -10402,6 +11023,39 @@ function isWalletAllowedForCurrentUser(walletName) {
             if (typeof toggleTargetDeadlineUI === 'function') toggleTargetDeadlineUI();
 
             if (requireLoginGate()) loadData();
+            applyDailyLimitSettings();
+            initBillDebtReminderSettingsUI();
+
+            document.getElementById('openTransactionTypePicker')?.addEventListener('click', openTransactionTypePicker);
+            document.getElementById('openCategoryPicker')?.addEventListener('click', openCategoryPicker);
+            document.getElementById('openCustomCategoryIconPicker')?.addEventListener('click', openCustomCategoryIconPicker);
+            document.getElementById('saveDailyLimitBtn')?.addEventListener('click', saveDailyLimitSettingsFromUI);
+            document.getElementById('saveBillDebtReminderBtn')?.addEventListener('click', saveBillDebtReminderSettingsFromUI);
+            document.getElementById('testBillDebtReminderBtn')?.addEventListener('click', testBillDebtReminderNotification);
+            document.getElementById('billDebtReminderEnabled')?.addEventListener('change', function() {
+                const settings = getBillDebtReminderSettings();
+                saveBillDebtReminderSettings({ enabled: !!this.checked, daysBefore: settings.daysBefore });
+                initBillDebtReminderSettingsUI();
+                scheduleBillDebtReminder();
+            });
+            document.getElementById('billDebtReminderDays')?.addEventListener('change', function() {
+                const settings = getBillDebtReminderSettings();
+                saveBillDebtReminderSettings({ enabled: !!settings.enabled, daysBefore: Math.max(0, Math.min(30, toInt(this.value || BILL_DEBT_REMINDER_DEFAULT_DAYS))) });
+                initBillDebtReminderSettingsUI();
+                scheduleBillDebtReminder();
+            });
+            document.getElementById('optionPickerSearch')?.addEventListener('input', function() {
+                renderOptionPickerItems(this.value);
+            });
+            document.getElementById('optionPickerGrid')?.addEventListener('click', function(e) {
+                const btn = e.target.closest('.option-picker-btn');
+                if (!btn) return;
+                const value = btn.dataset.value || '';
+                const item = optionPickerItems.find(x => String(x.value) === String(value)) || { value, label: value };
+                if (typeof optionPickerOnSelect === 'function') optionPickerOnSelect(item);
+                const modalEl = document.getElementById('optionPickerModal');
+                if (modalEl && typeof bootstrap !== 'undefined') bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+            });
 
             const showFormBtn = document.getElementById('showForm');
             if (showFormBtn) {
@@ -10508,7 +11162,7 @@ function isWalletAllowedForCurrentUser(walletName) {
             }
 
             const refreshDataBtn = document.getElementById('refreshData');
-            if (refreshDataBtn) refreshDataBtn.addEventListener('click', loadData);
+            if (refreshDataBtn) refreshDataBtn.addEventListener('click', () => refreshAllFinanceDataFromButton(refreshDataBtn));
 
             const refreshTargetsBtn = document.getElementById('refreshTargets');
             if (refreshTargetsBtn) refreshTargetsBtn.addEventListener('click', loadTargets);
@@ -10517,7 +11171,7 @@ function isWalletAllowedForCurrentUser(walletName) {
             if (refreshDebtsBtn) refreshDebtsBtn.addEventListener('click', loadDebts);
 
             const refreshTransactionsBtn = document.getElementById('refreshTransactions');
-            if (refreshTransactionsBtn) refreshTransactionsBtn.addEventListener('click', loadData);
+            if (refreshTransactionsBtn) refreshTransactionsBtn.addEventListener('click', () => refreshAllFinanceDataFromButton(refreshTransactionsBtn));
 
             const downloadTransactionsExcelBtn = document.getElementById('downloadTransactionsExcel');
             if (downloadTransactionsExcelBtn) downloadTransactionsExcelBtn.addEventListener('click', downloadTransactionsExcel);
@@ -10564,7 +11218,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                         balancePreviewWrapper.classList.remove('hidden');
                     } else if (transactionType === 'Pengeluaran') {
                         expenseSection.classList.remove('hidden');
-                        document.getElementById('category').required = true;
+                        document.getElementById('category').required = false; // nilai kategori divalidasi manual karena UI memakai modal
                         document.getElementById('expenseWallet').required = true;
                         balancePreviewWrapper.classList.remove('hidden');
                     } else if (transactionType === 'Transfer Wallet') {
@@ -10578,6 +11232,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                         if (targetNotesRow) targetNotesRow.classList.add('hidden');
                     }
 
+                    updateTransactionTypePickerLabel();
+                    updateCategoryPickerLabel();
                     toggleTargetForExpense();
                     toggleExpenseItemsUI(); 
                     renderBalanceInfoAndPreview();
@@ -10608,6 +11264,8 @@ function isWalletAllowedForCurrentUser(walletName) {
 
             const amountEl = document.getElementById('amount');
             if (amountEl) amountEl.addEventListener('input', renderBalanceInfoAndPreview);
+            const categoryEl = document.getElementById('category');
+            if (categoryEl) categoryEl.addEventListener('change', function() { updateCategoryPickerLabel(); renderBalanceInfoAndPreview(); });
             ['transferFromWallet', 'transferToWallet'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('change', renderBalanceInfoAndPreview);
