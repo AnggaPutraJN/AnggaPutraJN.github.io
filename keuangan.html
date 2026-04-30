@@ -20,7 +20,7 @@
     <meta name="theme-color" content="#0a0e1a">
     <meta name="msapplication-TileColor" content="#0a0e1a">
     <meta name="msapplication-starturl" content="keuangan.html">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="152x152" href="icon-192x192.png">
@@ -3041,6 +3041,47 @@
                         </div>
                     </div>
 
+                    <!-- Notifikasi Pengingat Input Harian -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <h5 class="mb-0"><i class="bi bi-bell-fill"></i> Notifikasi Pengingat Input Harian</h5>
+                                <span class="badge bg-primary" id="dailyReminderStatusBadge">Default 19:00</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Aktifkan Notifikasi</label>
+                                        <div class="form-check form-switch mini-card mb-0">
+                                            <input class="form-check-input" type="checkbox" id="dailyReminderEnabled">
+                                            <label class="form-check-label" for="dailyReminderEnabled">Ingatkan saya untuk input keuangan harian</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <label class="form-label">Jam Pengingat</label>
+                                        <input type="time" class="form-control" id="dailyReminderTime" value="19:00">
+                                    </div>
+                                    <div class="col-12 col-md-5">
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <button type="button" class="btn btn-primary" id="saveDailyReminderBtn">
+                                                <i class="bi bi-save"></i> Simpan Notifikasi
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary" id="testDailyReminderBtn">
+                                                <i class="bi bi-send"></i> Tes Notifikasi
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="mini-card mini-card-primary mb-0" id="dailyReminderInfo">
+                                            <div class="mini-card-title">Pengingat harian</div>
+                                            <div class="mini-card-sub">Jika diaktifkan, aplikasi akan menampilkan notifikasi: “Apakah anda sudah menginput keuangan hari ini?” sesuai jam yang Anda pilih.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Budget Bulanan per Kategori -->
                     <div class="col-12 col-lg-7">
                         <div class="card">
@@ -4415,6 +4456,8 @@
             lastTargets = [];
             debtsData = [];
             paymentsData = [];
+            lastDashboardRenderHash = '';
+            stopDailyFinanceReminder();
             requireLoginGate();
         }
 
@@ -4459,6 +4502,8 @@
                 requireLoginGate();
                 applyCurrentUserDefaultWallet();
                 await loadData();
+                initDailyReminderSettingsUI();
+                scheduleDailyFinanceReminder();
             } catch (err) {
                 showAuthMessage(err.message || String(err), 'error');
             } finally {
@@ -4504,6 +4549,8 @@
                 requireLoginGate();
                 applyCurrentUserDefaultWallet();
                 await loadQuickAfterRegister();
+                initDailyReminderSettingsUI();
+                scheduleDailyFinanceReminder();
             } catch (err) {
                 showAuthMessage(err.message || String(err), 'error');
             } finally {
@@ -4755,6 +4802,9 @@ function isWalletAllowedForCurrentUser(walletName) {
             total: 0,
             wallets: {}
         };
+        let lastDashboardRenderHash = '';
+        let dailyFinanceReminderTimer = null;
+        const DAILY_REMINDER_DEFAULT_TIME = '19:00';
 
         // ============================================
         // FUNGSI UTILITAS
@@ -4857,7 +4907,7 @@ function isWalletAllowedForCurrentUser(walletName) {
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js', { scope: '/' });
+                navigator.serviceWorker.register('./sw.js', { scope: './' });
             });
         }
 
@@ -4996,6 +5046,148 @@ function isWalletAllowedForCurrentUser(walletName) {
         function hideOfflineNotification() {
             const toast = document.getElementById('offlineToast');
             if (toast) toast.remove();
+        }
+
+
+        function getDailyReminderStorageKey() {
+            return 'finance_daily_reminder_settings_' + (getAuthUserId() || 'guest');
+        }
+
+        function getDailyReminderSettings() {
+            try {
+                return Object.assign({ enabled: false, time: DAILY_REMINDER_DEFAULT_TIME }, JSON.parse(localStorage.getItem(getDailyReminderStorageKey()) || '{}'));
+            } catch (err) {
+                return { enabled: false, time: DAILY_REMINDER_DEFAULT_TIME };
+            }
+        }
+
+        function saveDailyReminderSettings(settings) {
+            localStorage.setItem(getDailyReminderStorageKey(), JSON.stringify(Object.assign({ enabled: false, time: DAILY_REMINDER_DEFAULT_TIME }, settings || {})));
+        }
+
+        function updateDailyReminderStatus(text, type = 'primary') {
+            const badge = document.getElementById('dailyReminderStatusBadge');
+            const info = document.getElementById('dailyReminderInfo');
+            if (badge) {
+                badge.textContent = text;
+                badge.className = `badge bg-${type}`;
+            }
+            if (info) {
+                info.className = `mini-card mini-card-${type === 'danger' ? 'danger' : type === 'warning' ? 'warning' : type === 'success' ? 'success' : 'primary'} mb-0`;
+            }
+        }
+
+        function initDailyReminderSettingsUI() {
+            const enabledEl = document.getElementById('dailyReminderEnabled');
+            const timeEl = document.getElementById('dailyReminderTime');
+            if (!enabledEl || !timeEl) return;
+            const settings = getDailyReminderSettings();
+            enabledEl.checked = !!settings.enabled;
+            timeEl.value = settings.time || DAILY_REMINDER_DEFAULT_TIME;
+            updateDailyReminderStatus(settings.enabled ? `Aktif ${timeEl.value}` : 'Nonaktif', settings.enabled ? 'success' : 'primary');
+        }
+
+        function stopDailyFinanceReminder() {
+            if (dailyFinanceReminderTimer) {
+                clearTimeout(dailyFinanceReminderTimer);
+                dailyFinanceReminderTimer = null;
+            }
+        }
+
+        function getMsUntilReminder(timeValue) {
+            const [h, m] = String(timeValue || DAILY_REMINDER_DEFAULT_TIME).split(':').map(v => parseInt(v, 10));
+            const now = new Date();
+            const next = new Date();
+            next.setHours(Number.isFinite(h) ? h : 19, Number.isFinite(m) ? m : 0, 0, 0);
+            if (next <= now) next.setDate(next.getDate() + 1);
+            return next.getTime() - now.getTime();
+        }
+
+        async function requestDailyReminderPermission() {
+            if (!('Notification' in window)) {
+                updateDailyReminderStatus('Browser tidak mendukung', 'danger');
+                throw new Error('Browser ini belum mendukung Notification API.');
+            }
+            if (Notification.permission === 'granted') return true;
+            if (Notification.permission === 'denied') {
+                updateDailyReminderStatus('Izin diblokir', 'danger');
+                throw new Error('Izin notifikasi diblokir. Aktifkan kembali izin notifikasi dari pengaturan browser.');
+            }
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') {
+                updateDailyReminderStatus('Izin belum diberikan', 'warning');
+                throw new Error('Izin notifikasi belum diberikan.');
+            }
+            return true;
+        }
+
+        async function showDailyFinanceReminderNotification() {
+            const title = 'Pengingat Keuangan Harian';
+            const body = 'Apakah anda sudah menginput keuangan hari ini?';
+            try {
+                if ('serviceWorker' in navigator) {
+                    const reg = await navigator.serviceWorker.ready;
+                    await reg.showNotification(title, {
+                        body,
+                        icon: './icon-192x192.png',
+                        badge: './icon-192x192.png',
+                        tag: 'finance-daily-reminder',
+                        renotify: true,
+                        data: { url: './keuangan.html' },
+                        actions: [{ action: 'open', title: 'Input Sekarang' }]
+                    });
+                    return;
+                }
+                new Notification(title, { body, icon: './icon-192x192.png', tag: 'finance-daily-reminder' });
+            } catch (err) {
+                console.warn('Gagal menampilkan notifikasi:', err);
+            }
+        }
+
+        function scheduleDailyFinanceReminder() {
+            stopDailyFinanceReminder();
+            const settings = getDailyReminderSettings();
+            if (!settings.enabled) {
+                updateDailyReminderStatus('Nonaktif', 'primary');
+                return;
+            }
+            if (!('Notification' in window) || Notification.permission !== 'granted') {
+                updateDailyReminderStatus('Butuh izin notifikasi', 'warning');
+                return;
+            }
+            const delay = getMsUntilReminder(settings.time || DAILY_REMINDER_DEFAULT_TIME);
+            dailyFinanceReminderTimer = setTimeout(async () => {
+                await showDailyFinanceReminderNotification();
+                scheduleDailyFinanceReminder();
+            }, delay);
+            updateDailyReminderStatus(`Aktif ${settings.time || DAILY_REMINDER_DEFAULT_TIME}`, 'success');
+        }
+
+        async function saveDailyReminderSettingsFromUI() {
+            const enabledEl = document.getElementById('dailyReminderEnabled');
+            const timeEl = document.getElementById('dailyReminderTime');
+            const enabled = !!enabledEl?.checked;
+            const time = timeEl?.value || DAILY_REMINDER_DEFAULT_TIME;
+            try {
+                if (enabled) await requestDailyReminderPermission();
+                saveDailyReminderSettings({ enabled, time });
+                scheduleDailyFinanceReminder();
+                alert(enabled ? `Notifikasi pengingat harian aktif pada jam ${time}.` : 'Notifikasi pengingat harian dinonaktifkan.');
+            } catch (err) {
+                if (enabledEl) enabledEl.checked = false;
+                saveDailyReminderSettings({ enabled: false, time });
+                scheduleDailyFinanceReminder();
+                alert(err.message || String(err));
+            }
+        }
+
+        async function testDailyReminderNotification() {
+            try {
+                await requestDailyReminderPermission();
+                await showDailyFinanceReminderNotification();
+            } catch (err) {
+                alert(err.message || String(err));
+            }
         }
 
         function setMainTabsHidden(isHidden) {
@@ -5523,7 +5715,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                             <div class="col-12 col-md-4">
                                 <div class="mini-card">
                                     <div class="mini-card-title">Dompet dipilih</div>
-                                    <div class="mini-card-value">${wallet}</div>
+                                    <div class="mini-card-value">${escapeHtml(wallet)}</div>
                                     <div class="mini-card-sub">Saldo: ${formatRupiah(currentWallet)}</div>
                                 </div>
                             </div>
@@ -6635,37 +6827,142 @@ function isWalletAllowedForCurrentUser(walletName) {
             updateTransactionTable(lastTransactions);
         }
 
-        function renderFinancialHealth(health, transactions) {
-            const clientData = calculateHealthFromClient(transactions || []);
-            const serverData = (health && Object.keys(health).length) ? health : null;
+        function normalizeTransactionTypeLabel(value) {
+            return String(value || '').trim().toLowerCase();
+        }
 
-            // Gunakan data server hanya jika tidak terlihat kosong/stale.
-            // Bug lama: server mengirim expenseRatio 0 karena bulan/tanggal terbaca sebagai ISO.
-            const serverLooksEmpty = serverData && toInt(serverData.expense || 0) === 0 && toInt(clientData.expense || 0) > 0;
-            const data = (!serverData || serverLooksEmpty) ? clientData : serverData;
+        function getTransactionsForLoggedInUser(transactions) {
+            const uid = getAuthUserId();
+            const accessibleSharedIds = new Set((sharedWalletsData || []).map(w => String(w.id || w.sharedWalletId || '').trim()).filter(Boolean));
+            return (transactions || []).filter(t => {
+                if (!t || typeof t !== 'object') return false;
+                if (String(t.status || '').toLowerCase() === 'deleted') return false;
+                const tUser = String(t.userId || '').trim();
+                const sharedId = String(t.sharedWalletId || '').trim();
+                if (!uid) return true;
+                if (!tUser) return true; // data lama tetap bisa dibaca setelah server memfilter user
+                return tUser === uid || (sharedId && accessibleSharedIds.has(sharedId));
+            });
+        }
+
+        function getCurrentMonthUserTransactions(transactions) {
+            const now = new Date();
+            return getTransactionsForLoggedInUser(transactions).filter(t => {
+                const d = parseDateFlexible(t.tanggal || t.transactionDate || t.date);
+                return d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            });
+        }
+
+        function getDebtRemainingAmount(debt) {
+            return toInt(
+                debt?.sisaUtang ?? debt?.sisa_utang ?? debt?.sisa ?? debt?.remainingDebt ??
+                debt?.sisaSetelah ?? debt?.pokokAwal ?? 0
+            );
+        }
+
+        function calculateHealthFromClient(transactions) {
+            const monthTx = getCurrentMonthUserTransactions(transactions);
+            let income = 0;
+            let expense = 0;
+            const cat = {};
+            const wal = {};
+
+            monthTx.forEach(t => {
+                const type = normalizeTransactionTypeLabel(t.jenis || t.type || t.transactionType);
+                const amount = toInt(t.jumlah || t.amount || t.nominal || 0);
+                if (amount <= 0) return;
+
+                if (type === 'pemasukan') {
+                    income += amount;
+                } else if (type === 'pengeluaran') {
+                    expense += amount;
+                    const category = String(t.kategori || t.category || 'Lainnya').trim() || 'Lainnya';
+                    const wallet = getTransactionWallet(t) || 'Tidak diketahui';
+                    cat[category] = (cat[category] || 0) + amount;
+                    wal[wallet] = (wal[wallet] || 0) + amount;
+                }
+            });
+
+            const activeDebt = (debtsData || [])
+                .filter(d => String(d.status || '').toLowerCase() !== 'lunas' && String(d.status || '').toLowerCase() !== 'deleted')
+                .reduce((sum, d) => sum + getDebtRemainingAmount(d), 0);
+
+            const saving = income - expense;
+            const expenseRatio = income > 0 ? (expense / income) * 100 : (expense > 0 ? 100 : 0);
+            const savingRate = income > 0 ? (saving / income) * 100 : 0;
+            const debtRatio = income > 0 ? (activeDebt / income) * 100 : (activeDebt > 0 ? 100 : 0);
+
+            const sortedCategories = Object.entries(cat).sort((a, b) => b[1] - a[1]);
+            const sortedWallets = Object.entries(wal).sort((a, b) => b[1] - a[1]);
+            const topCategory = sortedCategories[0]?.[0] || '-';
+            const topWallet = sortedWallets[0]?.[0] || '-';
+
+            let score = 100;
+            if (income <= 0 && expense > 0) score -= 35;
+            if (expenseRatio > 90) score -= 35;
+            else if (expenseRatio > 75) score -= 25;
+            else if (expenseRatio > 60) score -= 12;
+            if (savingRate < 0) score -= 25;
+            else if (savingRate < 10) score -= 18;
+            else if (savingRate < 20) score -= 8;
+            if (debtRatio > 100) score -= 25;
+            else if (debtRatio > 50) score -= 12;
+            score = Math.max(0, Math.min(100, Math.round(score)));
+
+            return {
+                score,
+                statusText: score >= 75 ? 'Sehat' : score >= 50 ? 'Cukup Sehat' : 'Perlu Perhatian',
+                income,
+                expense,
+                saving,
+                expenseRatio,
+                savingRate,
+                activeDebt,
+                debtRatio,
+                topCategory,
+                topCategoryAmount: cat[topCategory] || 0,
+                topWallet,
+                topWalletAmount: wal[topWallet] || 0,
+                topCategories: sortedCategories.slice(0, 5).map(([name, amount]) => ({ name, amount })),
+                topWallets: sortedWallets.slice(0, 5).map(([name, amount]) => ({ name, amount })),
+                transactionCount: monthTx.length,
+                source: 'client-user-transactions'
+            };
+        }
+
+        function renderFinancialHealth(health, transactions) {
+            // FIX: sumber utama analisis adalah transaksi aktif milik user login yang sudah difilter server.
+            // Data server tetap disimpan sebagai pembanding, tetapi nilai kategori/wallet/rasio diambil dari client agar selalu sinkron dengan tabel dan grafik.
+            const clientData = calculateHealthFromClient(transactions || []);
+            const serverData = (health && Object.keys(health).length) ? health : {};
+            const data = Object.assign({}, serverData, clientData);
 
             lastHealth = data;
             const score = Math.max(0, Math.min(100, Math.round(data.score || 0)));
             const scoreEl = document.getElementById('healthScoreValue');
             const ringEl = document.getElementById('healthScoreRing');
             const badgeEl = document.getElementById('healthStatusBadge');
+            const scoreColor = score >= 75 ? 'var(--accent-success)' : score >= 50 ? 'var(--accent-warning)' : 'var(--accent-danger)';
+
             if (scoreEl) scoreEl.textContent = score;
-            if (ringEl) ringEl.style.background = `conic-gradient(${score >= 75 ? 'var(--accent-success)' : score >= 50 ? 'var(--accent-warning)' : 'var(--accent-danger)'} 0deg, ${score >= 75 ? 'var(--accent-success)' : score >= 50 ? 'var(--accent-warning)' : 'var(--accent-danger)'} ${score * 3.6}deg, var(--bg-secondary) ${score * 3.6}deg, var(--bg-secondary) 360deg)`;
+            if (ringEl) ringEl.style.background = `conic-gradient(${scoreColor} 0deg, ${scoreColor} ${score * 3.6}deg, var(--bg-secondary) ${score * 3.6}deg, var(--bg-secondary) 360deg)`;
             if (badgeEl) {
                 badgeEl.textContent = data.statusText || (score >= 75 ? 'Sehat' : score >= 50 ? 'Cukup Sehat' : 'Perlu Perhatian');
                 badgeEl.className = `badge ${score >= 75 ? 'bg-success' : score >= 50 ? 'bg-warning' : 'bg-danger'}`;
             }
+
             const metrics = document.getElementById('healthMetricCards');
             if (metrics) {
                 metrics.innerHTML = `
-                    <div class="col-md-4"><div class="mini-card mini-card-success"><div class="mini-card-title">Pemasukan Bulan Ini</div><div class="mini-card-value">${formatRupiah(data.income || 0)}</div></div></div>
+                    <div class="col-md-4"><div class="mini-card mini-card-success"><div class="mini-card-title">Pemasukan Bulan Ini</div><div class="mini-card-value">${formatRupiah(data.income || 0)}</div><div class="mini-card-sub">${data.transactionCount || 0} transaksi bulan ini</div></div></div>
                     <div class="col-md-4"><div class="mini-card mini-card-danger"><div class="mini-card-title">Rasio Pengeluaran</div><div class="mini-card-value">${Math.round(data.expenseRatio || 0)}%</div><div class="mini-card-sub">${formatRupiah(data.expense || 0)}</div></div></div>
                     <div class="col-md-4"><div class="mini-card mini-card-primary"><div class="mini-card-title">Potensi Tabungan</div><div class="mini-card-value">${Math.round(data.savingRate || 0)}%</div><div class="mini-card-sub">${formatRupiah(data.saving || 0)}</div></div></div>
                     <div class="col-md-4"><div class="mini-card mini-card-warning"><div class="mini-card-title">Utang Aktif</div><div class="mini-card-value">${formatRupiah(data.activeDebt || 0)}</div><div class="mini-card-sub">Rasio: ${Math.round(data.debtRatio || 0)}%</div></div></div>
                     <div class="col-md-4"><div class="mini-card mini-card-danger"><div class="mini-card-title">Kategori Paling Boros</div><div class="mini-card-value">${escapeHtml(data.topCategory || '-')}</div><div class="mini-card-sub">${formatRupiah(data.topCategoryAmount || 0)}</div></div></div>
-                    <div class="col-md-4"><div class="mini-card mini-card-primary"><div class="mini-card-title">Wallet Paling Sering Keluar</div><div class="mini-card-value">${escapeHtml(data.topWallet || '-')}</div><div class="mini-card-sub">${formatRupiah(data.topWalletAmount || 0)}</div></div></div>
+                    <div class="col-md-4"><div class="mini-card mini-card-primary"><div class="mini-card-title">Dompet Paling Boros</div><div class="mini-card-value">${escapeHtml(data.topWallet || '-')}</div><div class="mini-card-sub">${formatRupiah(data.topWalletAmount || 0)}</div></div></div>
                 `;
             }
+
             const suggestion = document.getElementById('healthSuggestionCard');
             if (suggestion) {
                 let s = 'Keuangan Anda masih cukup aman. Tetap catat transaksi secara rutin agar analisis semakin akurat.';
@@ -6674,35 +6971,6 @@ function isWalletAllowedForCurrentUser(walletName) {
                 else if ((data.debtRatio || 0) > 50) s = 'Utang aktif cukup besar dibanding pemasukan bulan ini. Prioritaskan pembayaran utang yang jatuh tempo terdekat.';
                 suggestion.innerHTML = `<div class="mini-card-title">Saran Sistem</div><div class="mini-card-sub">${escapeHtml(s)}</div>`;
             }
-        }
-
-        function calculateHealthFromClient(transactions) {
-            const now = new Date();
-            let income = 0, expense = 0;
-            const cat = {}, wal = {};
-            (transactions || []).forEach(t => {
-                const d = parseDateFlexible(t.tanggal);
-                if (!d || d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear()) return;
-                const amount = toInt(t.jumlah || 0);
-                if (t.jenis === 'Pemasukan') income += amount;
-                if (t.jenis === 'Pengeluaran') {
-                    expense += amount;
-                    cat[t.kategori || 'Lainnya'] = (cat[t.kategori || 'Lainnya'] || 0) + amount;
-                    wal[t.dompet || 'Cash'] = (wal[t.dompet || 'Cash'] || 0) + amount;
-                }
-            });
-            const saving = income - expense;
-            const expenseRatio = income > 0 ? expense / income * 100 : (expense > 0 ? 100 : 0);
-            const savingRate = income > 0 ? saving / income * 100 : 0;
-            const activeDebt = (debtsData || []).filter(d => d.status !== 'Lunas').reduce((a,d) => a + toInt(d.sisa_utang || 0), 0);
-            const debtRatio = income > 0 ? activeDebt / income * 100 : 0;
-            const topCategory = Object.keys(cat).sort((a,b) => cat[b] - cat[a])[0] || '-';
-            const topWallet = Object.keys(wal).sort((a,b) => wal[b] - wal[a])[0] || '-';
-            let score = 100;
-            if (expenseRatio > 80) score -= 30; else if (expenseRatio > 60) score -= 15;
-            if (savingRate < 10) score -= 20; else if (savingRate < 20) score -= 10;
-            if (debtRatio > 100) score -= 25; else if (debtRatio > 50) score -= 10;
-            return {score, statusText: score >= 75 ? 'Sehat' : score >= 50 ? 'Cukup Sehat' : 'Perlu Perhatian', income, expense, saving, expenseRatio, savingRate, activeDebt, debtRatio, topCategory, topCategoryAmount: cat[topCategory] || 0, topWallet, topWalletAmount: wal[topWallet] || 0};
         }
 
         function getCurrentWalletBalance(walletName) {
@@ -6980,8 +7248,9 @@ function isWalletAllowedForCurrentUser(walletName) {
             } catch (e) { alert(e.message); }
         }
 
-        async function loadData() {
-            setDashboardWalletLoading(true);
+        async function loadData(options = {}) {
+            const shouldShowWalletLoading = !!(options.forceWalletLoading || !lastDashboardRenderHash);
+            if (shouldShowWalletLoading) setDashboardWalletLoading(true);
             try {
                 console.log('Loading data from:', SPREADSHEET_URL);
 
@@ -6995,7 +7264,6 @@ function isWalletAllowedForCurrentUser(walletName) {
 
                 const timestamp = new Date().getTime();
                 const url = `${SPREADSHEET_URL}?action=getData&_=${timestamp}`;
-
                 const response = await fetch(url);
 
                 if (!response.ok) {
@@ -7004,23 +7272,23 @@ function isWalletAllowedForCurrentUser(walletName) {
 
                 const data = await response.json();
                 console.log('Data received:', data);
+                if (data.status && data.status !== 'success') {
+                    throw new Error(data.message || 'Gagal memuat data.');
+                }
 
                 if (data.settings) {
                     financeSettings = Object.assign(financeSettings, data.settings || {});
                     applyFinanceSettingsUI();
                 }
 
-                if (data.health) {
-                    lastHealth = data.health || {};
-                }
-
-                updateDashboard(data.dashboard || data);
-
-                lastTransactions = data.transactions || [];
+                lastTransactions = getTransactionsForLoggedInUser(data.transactions || []);
                 lastTargets = data.targets || [];
-                debtsData = data.debts || debtsData || [];
-                paymentsData = data.payments || paymentsData || [];
-                sharedWalletsData = data.sharedWallets || sharedWalletsData || [];
+                debtsData = data.debts || [];
+                paymentsData = data.payments || [];
+                sharedWalletsData = data.sharedWallets || [];
+                lastHealth = data.health || {};
+
+                updateDashboard(data.dashboard || data, { force: !!options.forceDashboard });
                 updateTransactionTable(lastTransactions);
 
                 renderMonthlyExpenseSummary(lastTransactions);
@@ -7031,10 +7299,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                 renderFinancialHealth(lastHealth, lastTransactions);
 
                 updateTargetDropdown();
-
                 loadTargets();
                 updateCollectTargetDropdown();
-
                 loadDebts();
                 renderBillReminders();
 
@@ -7043,6 +7309,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                 renderFinanceCalendar();
                 loadAuditLogs();
                 loadAdminOwnerData();
+                initDailyReminderSettingsUI();
+                scheduleDailyFinanceReminder();
 
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -7054,7 +7322,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                     </tr>
                 `;
             } finally {
-                setDashboardWalletLoading(false);
+                if (shouldShowWalletLoading) setDashboardWalletLoading(false);
             }
         }
 
@@ -7066,7 +7334,12 @@ function isWalletAllowedForCurrentUser(walletName) {
             if (cardCol) cardCol.classList.toggle('hidden', !exists);
         }
 
-        function updateDashboard(dashboardData) {
+        function buildDashboardRenderHash(wallets, income, expense, total) {
+            const sortedWallets = Object.keys(wallets || {}).sort().map(k => `${k}:${toInt(wallets[k])}`).join('|');
+            return `${toInt(income)}::${toInt(expense)}::${toInt(total)}::${sortedWallets}`;
+        }
+
+        function updateDashboard(dashboardData, options = {}) {
             if (!dashboardData) return;
 
             const wallets = dashboardData.wallets || {};
@@ -7099,10 +7372,28 @@ function isWalletAllowedForCurrentUser(walletName) {
             });
 
             const total = Object.values(mergedWallets).reduce((a, b) => a + toInt(b), 0);
+            const nextHash = buildDashboardRenderHash(mergedWallets, income, expense, total);
+            const skipHeavyWalletRender = !options.force && lastDashboardRenderHash && nextHash === lastDashboardRenderHash;
 
-            document.getElementById('incomeAmount').textContent = formatRupiah(income);
-            document.getElementById('expenseAmount').textContent = formatRupiah(expense);
-            document.getElementById('totalBalance').textContent = formatRupiah(total);
+            lastDashboard = {
+                total: total,
+                income: income,
+                expense: expense,
+                wallets: mergedWallets
+            };
+
+            if (skipHeavyWalletRender) {
+                return;
+            }
+
+            lastDashboardRenderHash = nextHash;
+
+            const incomeEl = document.getElementById('incomeAmount');
+            const expenseEl = document.getElementById('expenseAmount');
+            const totalEl = document.getElementById('totalBalance');
+            if (incomeEl) incomeEl.textContent = formatRupiah(income);
+            if (expenseEl) expenseEl.textContent = formatRupiah(expense);
+            if (totalEl) totalEl.textContent = formatRupiah(total);
 
             const amountMap = {
                 Cash: 'cashAmount',
@@ -7118,11 +7409,6 @@ function isWalletAllowedForCurrentUser(walletName) {
                 if (el) el.textContent = formatRupiah(toInt(mergedWallets[walletName] || 0));
                 toggleDashboardWalletCard(amountId, walletName, mergedWallets);
             });
-
-            lastDashboard = {
-                total: total,
-                wallets: mergedWallets
-            };
 
             renderCustomDashboardWallets();
             renderCustomWalletList();
@@ -7214,19 +7500,21 @@ function isWalletAllowedForCurrentUser(walletName) {
         }
 
         function getWalletListFromTransactions(transactions) {
-            const candidates = [
+            const configuredWallets = filterUserWalletList([
                 ...getAllWallets(),
                 ...((financeSettings.wallets || []).map(getWalletName)),
                 ...Object.keys((lastDashboard && lastDashboard.wallets) || {})
-            ];
+            ]);
 
-            // Wallet yang muncul di transaksi tetap ikut, tetapi wallet bawaan lain tetap disaring.
+            const transactionWallets = [];
             (transactions || []).forEach(t => {
                 const wallet = getTransactionWallet(t);
-                if (wallet) candidates.push(wallet);
+                if (wallet) transactionWallets.push(wallet);
             });
 
-            return filterUserWalletList(candidates);
+            // FIX: wallet yang benar-benar muncul pada transaksi user tetap dipakai di grafik dan ringkasan,
+            // walaupun namanya sama dengan wallet bawaan dan bukan default saat register.
+            return uniq([...configuredWallets, ...transactionWallets]);
         }
 
         function buildWalletFinanceSummary(transactions) {
@@ -7523,7 +7811,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                             <div class="d-flex justify-content-between align-items-start gap-2">
                                 <div>
                                     <div class="mini-card-title">Top ${idx + 1}</div>
-                                    <div class="mini-card-value">${name}</div>
+                                    <div class="mini-card-value">${escapeHtml(name)}</div>
                                     <div class="mini-card-sub">${formatRupiah(val)} • ${pct}%</div>
                                 </div>
                                 <span class="mini-badge"><i class="bi bi-tag"></i> ${pct}%</span>
@@ -7538,7 +7826,7 @@ function isWalletAllowedForCurrentUser(walletName) {
             const card = document.getElementById('mostWastefulWalletCard');
             if (!card) return;
 
-            const entries = Object.entries(byWallet || {}).sort((a, b) => b[1] - a[1]);
+            const entries = Object.entries(byWallet || {}).filter(([, value]) => toInt(value) > 0).sort((a, b) => b[1] - a[1]);
 
             if (entries.length === 0) {
                 card.className = 'mini-card mini-card-muted';
@@ -9618,7 +9906,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                 resetForm();
                 document.getElementById('transactionForm').classList.add('hidden');
                 setMainTabsHidden(false);
-                loadData();
+                const walletChanged = ['Pemasukan', 'Pengeluaran', 'Transfer Wallet'].includes(transactionType);
+                loadData({ forceWalletLoading: walletChanged, forceDashboard: walletChanged });
 
                 if (transactionType === 'Utang') {
                     loadDebts();
@@ -10568,6 +10857,23 @@ function isWalletAllowedForCurrentUser(walletName) {
                 pane.classList.add('fade-in');
             });
         });
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('saveDailyReminderBtn')?.addEventListener('click', saveDailyReminderSettingsFromUI);
+            document.getElementById('testDailyReminderBtn')?.addEventListener('click', testDailyReminderNotification);
+            document.getElementById('dailyReminderEnabled')?.addEventListener('change', function() {
+                const settings = getDailyReminderSettings();
+                saveDailyReminderSettings({ enabled: !!this.checked, time: document.getElementById('dailyReminderTime')?.value || settings.time || DAILY_REMINDER_DEFAULT_TIME });
+                if (!this.checked) scheduleDailyFinanceReminder();
+            });
+            document.getElementById('dailyReminderTime')?.addEventListener('change', function() {
+                const settings = getDailyReminderSettings();
+                saveDailyReminderSettings({ enabled: !!settings.enabled, time: this.value || DAILY_REMINDER_DEFAULT_TIME });
+                scheduleDailyFinanceReminder();
+            });
+            initDailyReminderSettingsUI();
+            scheduleDailyFinanceReminder();
+        });
+
         // =========================================================
         // FITUR TAMBAHAN: WALLET BERSAMA, KALENDER, ADMIN, AUDIT
         // =========================================================
