@@ -2238,7 +2238,8 @@
             min-height: 48px;
             font-weight: 700;
         }
-        #more-features-tab.active {
+        #more-features-tab.active,
+        #more-features-tab.feature-active {
             background: var(--gradient-primary);
             color: #fff;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
@@ -6831,31 +6832,72 @@ function isWalletAllowedForCurrentUser(walletName) {
             const labelEl = document.getElementById('moreFeaturesTabLabel');
             if (!moreBtn || !labelEl) return;
             const found = SIMPLE_FEATURE_TABS.find(item => item.value === activeTabId);
+
+            // Jangan pakai class Bootstrap .active untuk tombol Fitur Lainnya,
+            // karena .active membuat tab tersembunyi yang pernah dibuka tetap dianggap aktif.
+            // Akibatnya, saat kembali ke Dashboard lalu membuka fitur yang sama, Bootstrap mengira tab itu sudah aktif.
+            moreBtn.classList.remove('active');
+            moreBtn.classList.toggle('feature-active', !!found);
+
             if (found) {
-                moreBtn.classList.add('active');
                 labelEl.innerHTML = `<i class="bi ${found.icon}"></i> ${escapeHtml(found.label)}`;
             } else {
-                moreBtn.classList.remove('active');
                 labelEl.innerHTML = '<i class="bi bi-grid-3x3-gap"></i> Fitur Lainnya';
             }
         }
 
+        function showMainTab(tabId, scrollTop = true) {
+            const targetBtn = document.getElementById(tabId);
+            if (!targetBtn) return;
+
+            const targetSelector = targetBtn.getAttribute('data-bs-target');
+            const targetPane = targetSelector ? document.querySelector(targetSelector) : null;
+            if (!targetPane) return;
+
+            // Reset manual semua tab dan semua panel, termasuk tab lama yang disembunyikan.
+            // Ini membuat fitur yang sama tetap bisa dibuka berkali-kali setelah kembali ke Dashboard.
+            document.querySelectorAll('#mainTabs .nav-link').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content > .tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+
+            targetBtn.classList.add('active');
+            targetPane.classList.add('show', 'active');
+
+            setMainTabsHidden(false);
+            updateSimpleFeatureTabLabel(tabId === 'dashboard-tab' ? '' : tabId);
+            runSimpleTabSideEffects(tabId);
+
+            if (scrollTop) window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function runSimpleTabSideEffects(tabId) {
+            if (tabId === 'grafik-tab') {
+                setTimeout(() => {
+                    if (typeof renderExpenseCharts === 'function') renderExpenseCharts();
+                }, 300);
+            }
+
+            if (tabId === 'settings-tab') {
+                if (typeof loadFinanceSettings === 'function') loadFinanceSettings(false);
+                if (typeof renderBudgetTable === 'function') renderBudgetTable();
+                if (typeof renderBillReminders === 'function') renderBillReminders();
+                if (typeof populateAdjustWalletSelect === 'function') populateAdjustWalletSelect();
+                if (typeof updateBalanceAdjustmentPreview === 'function') updateBalanceAdjustmentPreview();
+            }
+
+            if (tabId === 'debts-tab') {
+                if (typeof loadDebts === 'function') loadDebts();
+                if (typeof renderBillReminders === 'function') renderBillReminders();
+            }
+        }
+
         function openMoreFeaturesModal() {
-            const activeTab = document.querySelector('#mainTabs .nav-link.active');
-            const currentValue = activeTab && activeTab.id !== 'dashboard-tab' ? activeTab.id : '';
+            const activeFeature = SIMPLE_FEATURE_TABS.find(item => document.getElementById(item.value)?.classList.contains('active'));
+            const currentValue = activeFeature ? activeFeature.value : '';
             openOptionPicker({
                 title: '<i class="bi bi-grid-3x3-gap"></i> Pilih Fitur Lainnya',
                 currentValue,
                 items: SIMPLE_FEATURE_TABS,
-                onSelect: item => {
-                    const targetBtn = document.getElementById(item.value);
-                    if (!targetBtn) return;
-                    if (typeof bootstrap !== 'undefined') bootstrap.Tab.getOrCreateInstance(targetBtn).show();
-                    else targetBtn.click();
-                    updateSimpleFeatureTabLabel(item.value);
-                    setMainTabsHidden(false);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+                onSelect: item => showMainTab(item.value)
             });
         }
 
@@ -6869,16 +6911,20 @@ function isWalletAllowedForCurrentUser(walletName) {
             const dashboardBtn = document.getElementById('dashboard-tab');
             if (dashboardBtn && !dashboardBtn.dataset.simpleBound) {
                 dashboardBtn.dataset.simpleBound = '1';
-                dashboardBtn.addEventListener('shown.bs.tab', () => updateSimpleFeatureTabLabel(''));
-                dashboardBtn.addEventListener('click', () => updateSimpleFeatureTabLabel(''));
+                dashboardBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showMainTab('dashboard-tab');
+                });
             }
 
             SIMPLE_FEATURE_TABS.forEach(item => {
                 const btn = document.getElementById(item.value);
                 if (btn && !btn.dataset.simpleBound) {
                     btn.dataset.simpleBound = '1';
-                    btn.addEventListener('shown.bs.tab', () => updateSimpleFeatureTabLabel(item.value));
-                    btn.addEventListener('click', () => updateSimpleFeatureTabLabel(item.value));
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        showMainTab(item.value);
+                    });
                 }
             });
         }
@@ -11371,7 +11417,7 @@ Melewati limit: ${formatRupiah(overLimit)}`;
                     document.getElementById('targetForm').classList.remove('hidden');
                     document.getElementById('transactionForm').classList.add('hidden');
                     resetTargetForm();
-                    document.getElementById('targets-tab').click();
+                    showMainTab('targets-tab', false);
                     document.getElementById('targetForm').classList.add('fade-in');
                 }
 
@@ -11381,7 +11427,7 @@ Melewati limit: ${formatRupiah(overLimit)}`;
                     resetForm();
                     document.getElementById('transactionType').value = 'Utang';
                     document.getElementById('transactionType').dispatchEvent(new Event('change'));
-                    document.getElementById('debts-tab').click();
+                    showMainTab('debts-tab', false);
                     document.getElementById('transactionForm').classList.add('fade-in');
                 }
             });
@@ -11741,30 +11787,19 @@ Melewati limit: ${formatRupiah(overLimit)}`;
             const budgetMonthEl = document.getElementById('budgetMonth');
             if (budgetMonthEl && !budgetMonthEl.value) budgetMonthEl.value = getCurrentMonthKey();
 
-            const triggerTabList = [].slice.call(document.querySelectorAll('#mainTabs button'));
+            const triggerTabList = [].slice.call(document.querySelectorAll('#mainTabs button[data-bs-toggle="tab"]'));
             triggerTabList.forEach(function (triggerEl) {
-                const tabTrigger = new bootstrap.Tab(triggerEl);
                 triggerEl.addEventListener('click', function (event) {
+                    // Jika sudah ditangani oleh navigasi simpel, jangan panggil Bootstrap Tab lagi.
+                    // Ini mencegah tab lama tetap dianggap active saat kembali dari Dashboard.
+                    if (event.defaultPrevented) return;
                     event.preventDefault();
-                    tabTrigger.show();
 
-                    if (triggerEl.id === 'grafik-tab') {
-                        setTimeout(() => {
-                            renderExpenseCharts();
-                        }, 300);
-                    }
-
-                    if (triggerEl.id === 'settings-tab') {
-                        loadFinanceSettings(false);
-                        renderBudgetTable();
-                        renderBillReminders();
-                        populateAdjustWalletSelect();
-                        updateBalanceAdjustmentPreview();
-                    }
-
-                    if (triggerEl.id === 'debts-tab') {
-                        loadDebts();
-                renderBillReminders();
+                    if (typeof showMainTab === 'function') {
+                        showMainTab(triggerEl.id, false);
+                    } else {
+                        const tabTrigger = new bootstrap.Tab(triggerEl);
+                        tabTrigger.show();
                     }
                 });
             });
