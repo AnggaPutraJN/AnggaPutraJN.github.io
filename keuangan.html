@@ -348,6 +348,19 @@
         .stat-mandiri .stat-icon { color: #dc2626; }
         .stat-qris .stat-icon { color: #a855f7; }
         .stat-bca .stat-icon { color: #ec4899; } /* Ikon Saldo BCA */
+
+        .stat-bri::before { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+        .stat-bri .stat-icon { color: #14b8a6; }
+        .stat-bni::before { background: linear-gradient(135deg, #ea580c, #f97316); }
+        .stat-bni .stat-icon { color: #f97316; }
+        .stat-shopeepay::before { background: linear-gradient(135deg, #c2410c, #fb923c); }
+        .stat-shopeepay .stat-icon { color: #fb923c; }
+        .stat-gopay::before { background: linear-gradient(135deg, #0369a1, #38bdf8); }
+        .stat-gopay .stat-icon { color: #38bdf8; }
+        .stat-ovo::before { background: linear-gradient(135deg, #6d28d9, #a78bfa); }
+        .stat-ovo .stat-icon { color: #a78bfa; }
+        .stat-paypal::before { background: linear-gradient(135deg, #1d4ed8, #60a5fa); }
+        .stat-paypal .stat-icon { color: #60a5fa; }
         .stat-custom-wallet::before { background: linear-gradient(135deg, #0891b2, #2563eb); }
         .stat-custom-wallet .stat-icon { color: var(--accent-info); }
         .wallet-dashboard-card .btn { width: auto; margin-bottom: 0; }
@@ -2205,6 +2218,37 @@
             .modal-picker-trigger { min-height: 50px; }
         }
 
+
+
+        /* ============================================
+           TAMPILAN SIMPEL: Dashboard + Fitur Lainnya
+           ============================================ */
+        .simple-main-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.55rem;
+        }
+        .simple-main-tabs .nav-item:not(.d-none),
+        .simple-main-tabs .nav-link {
+            width: 100%;
+        }
+        .simple-main-tabs .nav-link {
+            justify-content: center;
+            text-align: center;
+            min-height: 48px;
+            font-weight: 700;
+        }
+        #more-features-tab.active {
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        @media (max-width: 420px) {
+            .simple-main-tabs {
+                grid-template-columns: 1fr;
+            }
+        }
+
     </style>
 </head>
 
@@ -2276,11 +2320,15 @@
                     <div class="col-12 col-md-6">
                         <label class="form-label required">Default E-Wallet</label>
                         <select class="form-select" id="registerDefaultWallet" required>
-                            <option value="Cash">Cash</option>
-                            <option value="Dana">Dana</option>
                             <option value="Mandiri">Mandiri</option>
-                            <option value="Qris">Qris</option>
                             <option value="BCA">BCA</option>
+                            <option value="BRI">BRI</option>
+                            <option value="BNI">BNI</option>
+                            <option value="ShopeePay">ShopeePay</option>
+                            <option value="GoPay">GoPay</option>
+                            <option value="Ovo">Ovo</option>
+                            <option value="Paypal">Paypal</option>
+                            <option value="Cash">Cash</option>
                         </select>
                     </div>
                 </div>
@@ -2325,54 +2373,60 @@
         <!-- ============================================
         TABS NAVIGASI
         ============================================ -->
-        <ul class="nav nav-tabs mb-4" id="mainTabs">
+        <ul class="nav nav-tabs mb-4 simple-main-tabs" id="mainTabs">
             <li class="nav-item">
-                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-panel">
+                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-panel" type="button">
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" id="grafik-tab" data-bs-toggle="tab" data-bs-target="#grafik-panel">
-                    <i class="bi bi-bar-chart"></i> Grafik Keuangan
-                </button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions-panel">
-                    <i class="bi bi-wallet2"></i> Transaksi
+                <button class="nav-link" id="more-features-tab" type="button">
+                    <span id="moreFeaturesTabLabel"><i class="bi bi-grid-3x3-gap"></i> Fitur Lainnya</span>
                 </button>
             </li>
 
-            <li class="nav-item">
-                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-panel">
+            <!-- Tombol tab lama tetap ada tetapi disembunyikan agar semua fungsi JS lama tetap kompatibel. -->
+            <li class="nav-item d-none">
+                <button class="nav-link" id="grafik-tab" data-bs-toggle="tab" data-bs-target="#grafik-panel" type="button">
+                    <i class="bi bi-bar-chart"></i> Grafik Keuangan
+                </button>
+            </li>
+            <li class="nav-item d-none">
+                <button class="nav-link" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions-panel" type="button">
+                    <i class="bi bi-wallet2"></i> Transaksi
+                </button>
+            </li>
+            <li class="nav-item d-none">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-panel" type="button">
                     <i class="bi bi-sliders"></i> Pengaturan Keuangan
                 </button>
             </li>
-            <li class="nav-item">
-                <button class="nav-link" id="targets-tab" data-bs-toggle="tab" data-bs-target="#targets-panel">
+            <li class="nav-item d-none">
+                <button class="nav-link" id="targets-tab" data-bs-toggle="tab" data-bs-target="#targets-panel" type="button">
                     <i class="bi bi-bullseye"></i> Target
                 </button>
             </li>
-            <li class="nav-item">
-                <button class="nav-link" id="debts-tab" data-bs-toggle="tab" data-bs-target="#debts-panel">
+            <li class="nav-item d-none">
+                <button class="nav-link" id="debts-tab" data-bs-toggle="tab" data-bs-target="#debts-panel" type="button">
                     <i class="bi bi-cash-coin"></i> Utang Saya
                 </button>
             </li>
-                    <li class="nav-item">
-                <button class="nav-link" id="shared-wallet-tab" data-bs-toggle="tab" data-bs-target="#shared-wallet-panel">
+            <li class="nav-item d-none">
+                <button class="nav-link" id="shared-wallet-tab" data-bs-toggle="tab" data-bs-target="#shared-wallet-panel" type="button">
                     <i class="bi bi-people"></i> Wallet Bersama
                 </button>
             </li>
-            <li class="nav-item">
-                <button class="nav-link" id="calendar-tab" data-bs-toggle="tab" data-bs-target="#calendar-panel">
+            <li class="nav-item d-none">
+                <button class="nav-link" id="calendar-tab" data-bs-toggle="tab" data-bs-target="#calendar-panel" type="button">
                     <i class="bi bi-calendar3"></i> Kalender
                 </button>
             </li>
-            <li class="nav-item">
-                <button class="nav-link" id="admin-owner-tab" data-bs-toggle="tab" data-bs-target="#admin-owner-panel">
+            <li class="nav-item d-none">
+                <button class="nav-link" id="admin-owner-tab" data-bs-toggle="tab" data-bs-target="#admin-owner-panel" type="button">
                     <i class="bi bi-shield-check"></i> Admin Owner
                 </button>
             </li>
-</ul>
+        </ul>
 
         <!-- ============================================
         TAB CONTENT
@@ -2442,80 +2496,59 @@
                     </div>
                 </div>
 
-                <!-- 5 kartu dompet (Cash, Dana, Mandiri, Qris, BCA) -->
+                <!-- 9 kartu dompet bawaan: Mandiri, BCA, BRI, BNI, ShopeePay, GoPay, Ovo, Paypal, Cash -->
                 <div class="row g-3 mb-4 fade-in dashboard-wallet-row" style="animation-delay: 0.1s">
                     <div class="col-12 col-sm-6 col-lg-2 hidden">
-                        <div class="stat-card stat-cash">
-                            <div class="stat-head">
-                                <div>
-                                    <p class="stat-label">Saldo Cash</p>
-                                    <div class="stat-value" id="cashAmount">Rp 0</div>
-                                    <p class="stat-meta">Dompet Cash</p>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="bi bi-cash-coin"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-sm-6 col-lg-2 hidden">
-                        <div class="stat-card stat-dana">
-                            <div class="stat-head">
-                                <div>
-                                    <p class="stat-label">Saldo Dana</p>
-                                    <div class="stat-value" id="danaAmount">Rp 0</div>
-                                    <p class="stat-meta">E-Wallet Dana</p>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="bi bi-phone"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-sm-6 col-lg-2 hidden">
                         <div class="stat-card stat-mandiri">
-                            <div class="stat-head">
-                                <div>
-                                    <p class="stat-label">Saldo Mandiri</p>
-                                    <div class="stat-value" id="mandiriAmount">Rp 0</div>
-                                    <p class="stat-meta">Bank Mandiri</p>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="bi bi-bank"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-sm-6 col-lg-2 hidden">
-                        <div class="stat-card stat-qris">
-                            <div class="stat-head">
-                                <div>
-                                    <p class="stat-label">Saldo Qris</p>
-                                    <div class="stat-value" id="qrisAmount">Rp 0</div>
-                                    <p class="stat-meta">Qris</p>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="bi bi-qr-code-scan"></i>
-                                </div>
-                            </div>
+                            <div class="stat-head"><div><p class="stat-label">Saldo Mandiri</p><div class="stat-value" id="mandiriAmount">Rp 0</div><p class="stat-meta">Bank Mandiri</p></div><div class="stat-icon"><i class="bi bi-bank"></i></div></div>
                         </div>
                     </div>
 
                     <div class="col-12 col-sm-6 col-lg-2 hidden">
                         <div class="stat-card stat-bca">
-                            <div class="stat-head">
-                                <div>
-                                    <p class="stat-label">Saldo BCA</p>
-                                    <div class="stat-value" id="bcaAmount">Rp 0</div>
-                                    <p class="stat-meta">Dompet BCA</p>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="bi bi-heart"></i>
-                                </div>
-                            </div>
+                            <div class="stat-head"><div><p class="stat-label">Saldo BCA</p><div class="stat-value" id="bcaAmount">Rp 0</div><p class="stat-meta">Bank BCA</p></div><div class="stat-icon"><i class="bi bi-credit-card"></i></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
+                        <div class="stat-card stat-bri">
+                            <div class="stat-head"><div><p class="stat-label">Saldo BRI</p><div class="stat-value" id="briAmount">Rp 0</div><p class="stat-meta">Bank BRI</p></div><div class="stat-icon"><i class="bi bi-building"></i></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
+                        <div class="stat-card stat-bni">
+                            <div class="stat-head"><div><p class="stat-label">Saldo BNI</p><div class="stat-value" id="bniAmount">Rp 0</div><p class="stat-meta">Bank BNI</p></div><div class="stat-icon"><i class="bi bi-building"></i></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
+                        <div class="stat-card stat-shopeepay">
+                            <div class="stat-head"><div><p class="stat-label">Saldo ShopeePay</p><div class="stat-value" id="shopeepayAmount">Rp 0</div><p class="stat-meta">E-Wallet ShopeePay</p></div><div class="stat-icon"><i class="bi bi-bag"></i></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
+                        <div class="stat-card stat-gopay">
+                            <div class="stat-head"><div><p class="stat-label">Saldo GoPay</p><div class="stat-value" id="gopayAmount">Rp 0</div><p class="stat-meta">E-Wallet GoPay</p></div><div class="stat-icon"><i class="bi bi-phone"></i></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
+                        <div class="stat-card stat-ovo">
+                            <div class="stat-head"><div><p class="stat-label">Saldo Ovo</p><div class="stat-value" id="ovoAmount">Rp 0</div><p class="stat-meta">E-Wallet Ovo</p></div><div class="stat-icon"><i class="bi bi-phone-vibrate"></i></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
+                        <div class="stat-card stat-paypal">
+                            <div class="stat-head"><div><p class="stat-label">Saldo Paypal</p><div class="stat-value" id="paypalAmount">Rp 0</div><p class="stat-meta">Paypal</p></div><div class="stat-icon"><i class="bi bi-paypal"></i></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2 hidden">
+                        <div class="stat-card stat-cash">
+                            <div class="stat-head"><div><p class="stat-label">Saldo Cash</p><div class="stat-value" id="cashAmount">Rp 0</div><p class="stat-meta">Dompet Cash</p></div><div class="stat-icon"><i class="bi bi-cash-coin"></i></div></div>
                         </div>
                     </div>
                 </div>
@@ -2550,7 +2583,7 @@
 
                         <div class="mini-card-sub text-danger hidden" id="jajanLimitWarning">
                             <i class="bi bi-exclamation-triangle"></i>
-                            Hari ini anda telah melebihi batasan jajan untuk hari ini, mohon lebih hemat lagi
+                            Anda sudah melewati batas jajan harian anda, tolong jangan berlebihan untuk hari ini
                         </div>
                     </div>
                 </div>
@@ -2683,7 +2716,7 @@
                                         
                                         <h6><i class="bi bi-list-check"></i> Ringkasan Per Dompet</h6>
         
-                                <div class="card mb-3" id="advancedTransactionFilters">
+                                <div class="card mb-3 d-none" id="advancedTransactionFilters" aria-hidden="true">
                                     <div class="card-header bg-secondary d-flex justify-content-between align-items-center">
                                         <h6 class="mb-0"><i class="bi bi-funnel"></i> Filter Transaksi Lengkap</h6>
                                         <span class="filter-chip" id="filterResultCount">0 data</span>
@@ -3228,31 +3261,17 @@
                                     <div class="col-12 col-md-4">
                                         <label class="form-label required">Kategori Budget</label>
 
-                                        <!-- Select asli tetap dipertahankan untuk kompatibilitas JS lama, tapi UI utama memakai checkbox agar tidak bug di HP/laptop. -->
+                                        <!-- Select asli tetap dipertahankan untuk kompatibilitas JS lama, UI dipermudah lewat modal. -->
                                         <select class="form-select d-none" id="budgetCategory" multiple size="6" aria-label="Pilih satu atau lebih kategori budget">
                                         </select>
 
-                                        <div class="budget-category-box">
-                                            <div class="input-group input-group-sm mb-2">
-                                                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                                <input type="text" class="form-control" id="budgetCategorySearch" placeholder="Cari kategori...">
-                                            </div>
-                                            <div class="d-flex gap-2 flex-wrap mb-2">
-                                                <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllBudgetCategories">
-                                                    <i class="bi bi-check2-square"></i> Pilih Semua
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" id="clearBudgetCategories">
-                                                    <i class="bi bi-x-square"></i> Bersihkan
-                                                </button>
-                                            </div>
-                                            <div class="budget-category-grid" id="budgetCategoryCheckboxList">
-                                                <div class="text-muted small">Memuat kategori...</div>
-                                            </div>
-                                            <div class="budget-selected-summary" id="budgetCategorySummary">Belum ada kategori dipilih.</div>
-                                        </div>
-
+                                        <button type="button" class="modal-picker-trigger" id="openBudgetCategoryModal">
+                                            <span class="modal-picker-value" id="budgetCategoryPickerLabel"><i class="bi bi-tags"></i> Pilih Kategori Budget</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+                                        <div class="budget-selected-summary" id="budgetCategorySummary">Belum ada kategori dipilih.</div>
                                         <div class="multi-select-help">
-                                            Bisa pilih lebih dari 1 kategori. Contoh: Makanan, Minuman, Jajanan.
+                                            Klik tombol di atas, lalu pilih kategori lewat modal agar lebih simpel di HP.
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-4">
@@ -4495,6 +4514,72 @@
 
 
     <!-- ============================================
+    MODAL PILIHAN MOBILE: Jenis Transaksi, Kategori, dan Icon
+    ============================================ -->
+    <div class="modal fade" id="optionPickerModal" tabindex="-1" aria-labelledby="optionPickerTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="optionPickerTitle"><i class="bi bi-ui-checks-grid"></i> Pilih</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="optionPickerSearch" placeholder="Cari pilihan atau icon...">
+                    </div>
+                    <div class="option-picker-grid" id="optionPickerGrid">
+                        <div class="mini-card mini-card-muted">
+                            <div class="mini-card-sub">Memuat pilihan...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================
+    MODAL PILIH KATEGORI BUDGET
+    ============================================ -->
+    <div class="modal fade" id="budgetCategoryModal" tabindex="-1" aria-labelledby="budgetCategoryModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="budgetCategoryModalTitle"><i class="bi bi-tags"></i> Pilih Kategori Budget</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" id="budgetCategorySearch" placeholder="Cari kategori...">
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap mb-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllBudgetCategories">
+                            <i class="bi bi-check2-square"></i> Pilih Semua
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="clearBudgetCategories">
+                            <i class="bi bi-x-square"></i> Bersihkan
+                        </button>
+                    </div>
+                    <div class="budget-category-box">
+                        <div class="budget-category-grid" id="budgetCategoryCheckboxList">
+                            <div class="text-muted small">Memuat kategori...</div>
+                        </div>
+                    </div>
+                    <div class="budget-selected-summary mt-3" id="budgetCategoryModalSummary">Belum ada kategori dipilih.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><i class="bi bi-check-circle"></i> Selesai</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================
     SCRIPT LIBRARY
     ============================================ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -4844,13 +4929,17 @@
         let lastTargets = [];
         let DAILY_JAJAN_LIMIT = 50000;
         let JAJAN_CATEGORIES = ['Makanan', 'Minuman', 'Jajanan'];
-        const DEFAULT_WALLETS = ['Cash', 'Dana', 'Mandiri', 'Qris', 'BCA'];
+        const DEFAULT_WALLETS = ['Mandiri', 'BCA', 'BRI', 'BNI', 'ShopeePay', 'GoPay', 'Ovo', 'Paypal', 'Cash'];
         const DEFAULT_WALLET_ICON_MAP = {
-            Cash: 'bi-cash-coin',
-            Dana: 'bi-phone',
             Mandiri: 'bi-bank',
-            Qris: 'bi-qr-code-scan',
-            BCA: 'bi-heart'
+            BCA: 'bi-credit-card',
+            BRI: 'bi-building',
+            BNI: 'bi-building',
+            ShopeePay: 'bi-bag',
+            GoPay: 'bi-phone',
+            Ovo: 'bi-phone-vibrate',
+            Paypal: 'bi-paypal',
+            Cash: 'bi-cash-coin'
         };
         const TRANSACTION_TYPE_OPTIONS = [
             { value: 'Pemasukan', label: 'Pemasukan', icon: 'bi-arrow-down-circle', sub: 'Uang masuk ke wallet' },
@@ -4945,7 +5034,7 @@ function isWalletAllowedForCurrentUser(walletName) {
         }
 
         function hideAllDashboardDefaultWalletCards() {
-            ['cashAmount', 'danaAmount', 'mandiriAmount', 'qrisAmount', 'bcaAmount'].forEach(id => {
+            ['mandiriAmount', 'bcaAmount', 'briAmount', 'bniAmount', 'shopeepayAmount', 'gopayAmount', 'ovoAmount', 'paypalAmount', 'cashAmount'].forEach(id => {
                 const el = document.getElementById(id);
                 const cardCol = el?.closest('[class*="col-"]');
                 if (cardCol) cardCol.classList.add('hidden');
@@ -6726,6 +6815,74 @@ function isWalletAllowedForCurrentUser(walletName) {
             bootstrap.Modal.getOrCreateInstance(modalEl).show();
         }
 
+        const SIMPLE_FEATURE_TABS = [
+            { value: 'grafik-tab', label: 'Grafik Keuangan', icon: 'bi-bar-chart', sub: 'Grafik pemasukan, pengeluaran, dan per wallet' },
+            { value: 'transactions-tab', label: 'Transaksi', icon: 'bi-wallet2', sub: 'Riwayat dan daftar transaksi' },
+            { value: 'settings-tab', label: 'Pengaturan Keuangan', icon: 'bi-sliders', sub: 'Wallet, kategori, budget, dan reminder' },
+            { value: 'targets-tab', label: 'Target', icon: 'bi-bullseye', sub: 'Target tabungan dan progress keuangan' },
+            { value: 'debts-tab', label: 'Utang Saya', icon: 'bi-cash-coin', sub: 'Catatan utang dan cicilan' },
+            { value: 'shared-wallet-tab', label: 'Wallet Bersama', icon: 'bi-people', sub: 'Dompet keluarga atau bersama' },
+            { value: 'calendar-tab', label: 'Kalender', icon: 'bi-calendar3', sub: 'Kalender keuangan bulanan' },
+            { value: 'admin-owner-tab', label: 'Admin Owner', icon: 'bi-shield-check', sub: 'Panel khusus owner/admin' }
+        ];
+
+        function updateSimpleFeatureTabLabel(activeTabId = '') {
+            const moreBtn = document.getElementById('more-features-tab');
+            const labelEl = document.getElementById('moreFeaturesTabLabel');
+            if (!moreBtn || !labelEl) return;
+            const found = SIMPLE_FEATURE_TABS.find(item => item.value === activeTabId);
+            if (found) {
+                moreBtn.classList.add('active');
+                labelEl.innerHTML = `<i class="bi ${found.icon}"></i> ${escapeHtml(found.label)}`;
+            } else {
+                moreBtn.classList.remove('active');
+                labelEl.innerHTML = '<i class="bi bi-grid-3x3-gap"></i> Fitur Lainnya';
+            }
+        }
+
+        function openMoreFeaturesModal() {
+            const activeTab = document.querySelector('#mainTabs .nav-link.active');
+            const currentValue = activeTab && activeTab.id !== 'dashboard-tab' ? activeTab.id : '';
+            openOptionPicker({
+                title: '<i class="bi bi-grid-3x3-gap"></i> Pilih Fitur Lainnya',
+                currentValue,
+                items: SIMPLE_FEATURE_TABS,
+                onSelect: item => {
+                    const targetBtn = document.getElementById(item.value);
+                    if (!targetBtn) return;
+                    if (typeof bootstrap !== 'undefined') bootstrap.Tab.getOrCreateInstance(targetBtn).show();
+                    else targetBtn.click();
+                    updateSimpleFeatureTabLabel(item.value);
+                    setMainTabsHidden(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        function initSimpleFeatureTabs() {
+            const moreBtn = document.getElementById('more-features-tab');
+            if (moreBtn && !moreBtn.dataset.bound) {
+                moreBtn.dataset.bound = '1';
+                moreBtn.addEventListener('click', openMoreFeaturesModal);
+            }
+
+            const dashboardBtn = document.getElementById('dashboard-tab');
+            if (dashboardBtn && !dashboardBtn.dataset.simpleBound) {
+                dashboardBtn.dataset.simpleBound = '1';
+                dashboardBtn.addEventListener('shown.bs.tab', () => updateSimpleFeatureTabLabel(''));
+                dashboardBtn.addEventListener('click', () => updateSimpleFeatureTabLabel(''));
+            }
+
+            SIMPLE_FEATURE_TABS.forEach(item => {
+                const btn = document.getElementById(item.value);
+                if (btn && !btn.dataset.simpleBound) {
+                    btn.dataset.simpleBound = '1';
+                    btn.addEventListener('shown.bs.tab', () => updateSimpleFeatureTabLabel(item.value));
+                    btn.addEventListener('click', () => updateSimpleFeatureTabLabel(item.value));
+                }
+            });
+        }
+
         function setTransactionTypeValue(value) {
             const el = document.getElementById('transactionType');
             if (!el) return;
@@ -6734,7 +6891,7 @@ function isWalletAllowedForCurrentUser(walletName) {
             updateTransactionTypePickerLabel();
         }
 
-        function openTransactionTypePicker() {
+        function showTransactionTypePickerModal() {
             openOptionPicker({
                 title: '<i class="bi bi-list-check"></i> Pilih Jenis Transaksi',
                 currentValue: document.getElementById('transactionType')?.value || '',
@@ -6743,7 +6900,7 @@ function isWalletAllowedForCurrentUser(walletName) {
             });
         }
 
-        function openCategoryPicker() {
+        function showCategoryPickerModal() {
             const categories = getAllExpenseCategories();
             openOptionPicker({
                 title: '<i class="bi bi-tags"></i> Pilih Kategori Pengeluaran',
@@ -6769,7 +6926,7 @@ function isWalletAllowedForCurrentUser(walletName) {
             if (label) label.innerHTML = `<i class="bi ${escapeHtml(clean)}"></i> ${escapeHtml(clean)}`;
         }
 
-        function openCustomCategoryIconPicker() {
+        function showCustomCategoryIconPickerModal() {
             const current = document.getElementById('customCategoryIcon')?.value || 'bi-tag';
             openOptionPicker({
                 title: '<i class="bi bi-palette"></i> Pilih Icon Kategori',
@@ -6926,12 +7083,23 @@ function isWalletAllowedForCurrentUser(walletName) {
         }
 
         function updateBudgetCategorySummary(values = null) {
-            const summary = document.getElementById('budgetCategorySummary');
-            if (!summary) return;
             const selected = values || getCurrentSelectValues(document.getElementById('budgetCategory'));
-            summary.textContent = selected.length
+            const text = selected.length
                 ? `${selected.length} kategori dipilih: ${selected.join(', ')}`
                 : 'Belum ada kategori dipilih.';
+
+            const summary = document.getElementById('budgetCategorySummary');
+            if (summary) summary.textContent = text;
+
+            const modalSummary = document.getElementById('budgetCategoryModalSummary');
+            if (modalSummary) modalSummary.textContent = text;
+
+            const label = document.getElementById('budgetCategoryPickerLabel');
+            if (label) {
+                label.innerHTML = selected.length
+                    ? `<i class="bi bi-check2-square"></i> ${selected.length} kategori dipilih`
+                    : '<i class="bi bi-tags"></i> Pilih Kategori Budget';
+            }
         }
 
         function clearBudgetCategorySelection() {
@@ -6943,6 +7111,18 @@ function isWalletAllowedForCurrentUser(walletName) {
         }
 
         function attachBudgetCategorySelectorEvents() {
+            const openBudgetBtn = document.getElementById('openBudgetCategoryModal');
+            if (openBudgetBtn && !openBudgetBtn.dataset.bound) {
+                openBudgetBtn.dataset.bound = '1';
+                openBudgetBtn.addEventListener('click', () => {
+                    const search = document.getElementById('budgetCategorySearch');
+                    if (search) search.value = '';
+                    renderBudgetCategoryCheckboxes(getAllExpenseCategories(), getCurrentSelectValues(document.getElementById('budgetCategory')));
+                    const modalEl = document.getElementById('budgetCategoryModal');
+                    if (modalEl && typeof bootstrap !== 'undefined') bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                });
+            }
+
             const search = document.getElementById('budgetCategorySearch');
             if (search && !search.dataset.bound) {
                 search.dataset.bound = '1';
@@ -7449,6 +7629,30 @@ function isWalletAllowedForCurrentUser(walletName) {
                 .filter(d => String(d.status || '').toLowerCase() !== 'lunas' && String(d.status || '').toLowerCase() !== 'deleted')
                 .reduce((sum, d) => sum + getDebtRemainingAmount(d), 0);
 
+            // FIX: kalau belum ada data bulan ini dan semua metrik masih 0,
+            // jangan tampilkan skor sehat 82/100. Skor harus 0 dan status "Belum Ada Data".
+            if (monthTx.length === 0 && income <= 0 && expense <= 0 && activeDebt <= 0) {
+                return {
+                    score: 0,
+                    statusText: 'Belum Ada Data',
+                    income: 0,
+                    expense: 0,
+                    saving: 0,
+                    expenseRatio: 0,
+                    savingRate: 0,
+                    activeDebt: 0,
+                    debtRatio: 0,
+                    topCategory: '-',
+                    topCategoryAmount: 0,
+                    topWallet: '-',
+                    topWalletAmount: 0,
+                    topCategories: [],
+                    topWallets: [],
+                    transactionCount: 0,
+                    source: 'client-user-transactions-empty'
+                };
+            }
+
             const saving = income - expense;
             const expenseRatio = income > 0 ? (expense / income) * 100 : (expense > 0 ? 100 : 0);
             const savingRate = income > 0 ? (saving / income) * 100 : 0;
@@ -7500,17 +7704,18 @@ function isWalletAllowedForCurrentUser(walletName) {
             const data = Object.assign({}, serverData, clientData);
 
             lastHealth = data;
-            const score = Math.max(0, Math.min(100, Math.round(data.score || 0)));
+            const noHealthData = (data.transactionCount || 0) === 0 && toInt(data.income || 0) === 0 && toInt(data.expense || 0) === 0 && toInt(data.activeDebt || 0) === 0;
+            const score = noHealthData ? 0 : Math.max(0, Math.min(100, Math.round(data.score || 0)));
             const scoreEl = document.getElementById('healthScoreValue');
             const ringEl = document.getElementById('healthScoreRing');
             const badgeEl = document.getElementById('healthStatusBadge');
-            const scoreColor = score >= 75 ? 'var(--accent-success)' : score >= 50 ? 'var(--accent-warning)' : 'var(--accent-danger)';
+            const scoreColor = noHealthData ? 'var(--text-muted)' : (score >= 75 ? 'var(--accent-success)' : score >= 50 ? 'var(--accent-warning)' : 'var(--accent-danger)');
 
             if (scoreEl) scoreEl.textContent = score;
             if (ringEl) ringEl.style.background = `conic-gradient(${scoreColor} 0deg, ${scoreColor} ${score * 3.6}deg, var(--bg-secondary) ${score * 3.6}deg, var(--bg-secondary) 360deg)`;
             if (badgeEl) {
-                badgeEl.textContent = data.statusText || (score >= 75 ? 'Sehat' : score >= 50 ? 'Cukup Sehat' : 'Perlu Perhatian');
-                badgeEl.className = `badge ${score >= 75 ? 'bg-success' : score >= 50 ? 'bg-warning' : 'bg-danger'}`;
+                badgeEl.textContent = noHealthData ? 'Belum Ada Data' : (data.statusText || (score >= 75 ? 'Sehat' : score >= 50 ? 'Cukup Sehat' : 'Perlu Perhatian'));
+                badgeEl.className = `badge ${noHealthData ? 'bg-primary' : (score >= 75 ? 'bg-success' : score >= 50 ? 'bg-warning' : 'bg-danger')}`;
             }
 
             const metrics = document.getElementById('healthMetricCards');
@@ -7527,10 +7732,12 @@ function isWalletAllowedForCurrentUser(walletName) {
 
             const suggestion = document.getElementById('healthSuggestionCard');
             if (suggestion) {
-                let s = 'Keuangan Anda masih cukup aman. Tetap catat transaksi secara rutin agar analisis semakin akurat.';
-                if ((data.expenseRatio || 0) > 80) s = `Pengeluaran sudah tinggi. Kurangi kategori ${data.topCategory || 'paling boros'} dan cek ulang budget bulan ini.`;
-                else if ((data.savingRate || 0) < 10) s = 'Tabungan bulan ini masih rendah. Coba tetapkan budget kategori dan sisihkan saldo di awal bulan.';
-                else if ((data.debtRatio || 0) > 50) s = 'Utang aktif cukup besar dibanding pemasukan bulan ini. Prioritaskan pembayaran utang yang jatuh tempo terdekat.';
+                let s = noHealthData
+                    ? 'Belum ada transaksi bulan ini. Input pemasukan/pengeluaran terlebih dahulu agar sistem bisa menghitung skor kesehatan keuangan dengan akurat.'
+                    : 'Keuangan Anda masih cukup aman. Tetap catat transaksi secara rutin agar analisis semakin akurat.';
+                if (!noHealthData && (data.expenseRatio || 0) > 80) s = `Pengeluaran sudah tinggi. Kurangi kategori ${data.topCategory || 'paling boros'} dan cek ulang budget bulan ini.`;
+                else if (!noHealthData && (data.savingRate || 0) < 10) s = 'Tabungan bulan ini masih rendah. Coba tetapkan budget kategori dan sisihkan saldo di awal bulan.';
+                else if (!noHealthData && (data.debtRatio || 0) > 50) s = 'Utang aktif cukup besar dibanding pemasukan bulan ini. Prioritaskan pembayaran utang yang jatuh tempo terdekat.';
                 suggestion.innerHTML = `<div class="mini-card-title">Saran Sistem</div><div class="mini-card-sub">${escapeHtml(s)}</div>`;
             }
         }
@@ -7956,11 +8163,16 @@ function isWalletAllowedForCurrentUser(walletName) {
 
                 // Legacy field lama hanya boleh dipakai jika wallet tersebut memang wallet default user login.
                 if (isSelectedDefaultWallet(w)) {
-                    if (normalizeWalletKey(w) === 'cash') value = dashboardData.cash ?? value;
-                    if (normalizeWalletKey(w) === 'dana') value = dashboardData.dana ?? value;
-                    if (normalizeWalletKey(w) === 'mandiri') value = dashboardData.mandiri ?? value;
-                    if (normalizeWalletKey(w) === 'qris') value = dashboardData.qris ?? dashboardData.bri ?? value;
-                    if (normalizeWalletKey(w) === 'bca') value = dashboardData.bca ?? value;
+                    const wKey = normalizeWalletKey(w);
+                    if (wKey === 'cash') value = dashboardData.cash ?? value;
+                    if (wKey === 'mandiri') value = dashboardData.mandiri ?? value;
+                    if (wKey === 'bca') value = dashboardData.bca ?? value;
+                    if (wKey === 'bri') value = dashboardData.bri ?? value;
+                    if (wKey === 'bni') value = dashboardData.bni ?? value;
+                    if (wKey === 'shopeepay') value = dashboardData.shopeepay ?? dashboardData.shopeePay ?? value;
+                    if (wKey === 'gopay') value = dashboardData.gopay ?? dashboardData.goPay ?? value;
+                    if (wKey === 'ovo') value = dashboardData.ovo ?? value;
+                    if (wKey === 'paypal') value = dashboardData.paypal ?? value;
                 }
 
                 if (value === undefined || value === null || value === '') value = getWalletOpeningBalance(w);
@@ -7992,11 +8204,15 @@ function isWalletAllowedForCurrentUser(walletName) {
             if (totalEl) totalEl.textContent = formatRupiah(total);
 
             const amountMap = {
-                Cash: 'cashAmount',
-                Dana: 'danaAmount',
                 Mandiri: 'mandiriAmount',
-                Qris: 'qrisAmount',
-                BCA: 'bcaAmount'
+                BCA: 'bcaAmount',
+                BRI: 'briAmount',
+                BNI: 'bniAmount',
+                ShopeePay: 'shopeepayAmount',
+                GoPay: 'gopayAmount',
+                Ovo: 'ovoAmount',
+                Paypal: 'paypalAmount',
+                Cash: 'cashAmount'
             };
 
             DEFAULT_WALLETS.forEach(walletName => {
@@ -8814,19 +9030,21 @@ function isWalletAllowedForCurrentUser(walletName) {
             let todayJajanTotal = 0;
 
             (transactions || []).forEach(t => {
-                if ((t.jenis || '').trim() !== 'Pengeluaran') return;
+                const type = normalizeTransactionTypeLabel(t.jenis || t.type || t.transactionType);
+                if (type !== 'pengeluaran') return;
 
-                const k = getTxnDateKey(t.tanggal);
+                const k = getTxnDateKey(t.tanggal || t.transactionDate || t.date);
                 if (!k) return;
 
-                const amt = toInt(t.jumlah);
+                const amt = toInt(t.jumlah || t.amount || t.nominal || 0);
                 if (amt <= 0) return;
 
                 if (k === todayKey) {
                     todayTotal += amt;
 
-                    const cat = (t.kategori || '').trim();
-                    if (JAJAN_CATEGORIES.includes(cat)) {
+                    const cat = String(t.kategori || t.category || 'Lainnya').trim();
+                    const isJajanCategory = JAJAN_CATEGORIES.some(item => normalizeTextKey(item) === normalizeTextKey(cat));
+                    if (isJajanCategory) {
                         todayJajanTotal += amt;
                     }
                 }
@@ -8837,6 +9055,45 @@ function isWalletAllowedForCurrentUser(walletName) {
             });
 
             return { todayTotal, yesterdayTotal, todayKey, yesterdayKey, todayJajanTotal };
+        }
+
+        function getJajanLimitNotifyKey() {
+            return 'finance_jajan_limit_notified_' + (getAuthUserId() || 'guest') + '_' + dateKeyLocal(new Date());
+        }
+
+        function notifyJajanLimitExceeded(jajanTotal, overLimit) {
+            const key = getJajanLimitNotifyKey();
+            if (localStorage.getItem(key) === '1') return;
+            localStorage.setItem(key, '1');
+
+            const message = 'Anda sudah melewati batas jajan harian anda, tolong jangan berlebihan untuk hari ini';
+            const detail = `${message}
+
+Total jajan hari ini: ${formatRupiah(jajanTotal)}
+Melewati limit: ${formatRupiah(overLimit)}`;
+
+            if (typeof showAppModal === 'function') {
+                showAppModal({
+                    title: 'Batas Jajan Harian Terlewati',
+                    message: detail,
+                    type: 'warning',
+                    okText: 'Saya Mengerti'
+                });
+            } else {
+                alert(detail);
+            }
+
+            try {
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('Batas Jajan Harian Terlewati', {
+                        body: message,
+                        icon: './icon-192x192.png',
+                        tag: 'finance-jajan-limit'
+                    });
+                }
+            } catch (err) {
+                console.warn('Notifikasi batas jajan gagal ditampilkan:', err);
+            }
         }
 
         function renderDailyExpenseCards(daily) {
@@ -8898,6 +9155,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                 jajanCard.className = 'mini-card mini-card-danger pulse';
                 jajanMetaEl.textContent = `Batas: ${formatRupiah(DAILY_JAJAN_LIMIT)} • Lebih: ${formatRupiah(Math.abs(sisa))}`;
                 jajanWarnEl.classList.remove('hidden');
+                notifyJajanLimitExceeded(jajanTotal, Math.abs(sisa));
             }
         }
 
@@ -10822,6 +11080,7 @@ function isWalletAllowedForCurrentUser(walletName) {
 
         document.addEventListener('DOMContentLoaded', function () {
             console.log('Keuangan Pro - Tema Gelap Loaded with Saldo BCA');
+            initSimpleFeatureTabs();
 
             const today = new Date().toISOString().split('T')[0];
             const debtUploadArea = document.getElementById('debtUploadArea');
@@ -11026,9 +11285,9 @@ function isWalletAllowedForCurrentUser(walletName) {
             applyDailyLimitSettings();
             initBillDebtReminderSettingsUI();
 
-            document.getElementById('openTransactionTypePicker')?.addEventListener('click', openTransactionTypePicker);
-            document.getElementById('openCategoryPicker')?.addEventListener('click', openCategoryPicker);
-            document.getElementById('openCustomCategoryIconPicker')?.addEventListener('click', openCustomCategoryIconPicker);
+            document.getElementById('openTransactionTypePicker')?.addEventListener('click', showTransactionTypePickerModal);
+            document.getElementById('openCategoryPicker')?.addEventListener('click', showCategoryPickerModal);
+            document.getElementById('openCustomCategoryIconPicker')?.addEventListener('click', showCustomCategoryIconPickerModal);
             document.getElementById('saveDailyLimitBtn')?.addEventListener('click', saveDailyLimitSettingsFromUI);
             document.getElementById('saveBillDebtReminderBtn')?.addEventListener('click', saveBillDebtReminderSettingsFromUI);
             document.getElementById('testBillDebtReminderBtn')?.addEventListener('click', testBillDebtReminderNotification);
