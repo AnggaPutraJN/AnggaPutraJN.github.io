@@ -1,68 +1,74 @@
 // sw.js
-const CACHE_NAME = 'keuangan-pwa-v2.0';
+const CACHE_NAME = 'keuangan-pwa-v3.1.0';
 const APP_SHELL = [
-  '',
-  'keuangan.html',
-  'manifest.json',
-  'icon-192x192.png'
+  './',
+  './keuangan.html',
+  './manifest.json',
+  './icon-192x192.png',
+  './icon-512x512.png'
 ];
 
-// Install event
 self.addEventListener('install', (event) => {
-  console.log('🔄 Service Worker installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('📦 Caching app shell');
-        return cache.addAll(APP_SHELL);
-      })
+      .then((cache) => cache.addAll(APP_SHELL.map((url) => new Request(url, { cache: 'reload' }))))
       .then(() => self.skipWaiting())
+      .catch(() => self.skipWaiting())
   );
 });
 
-// Activate event
 self.addEventListener('activate', (event) => {
-  console.log('✅ Service Worker activated');
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('🗑️ Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys().then((cacheNames) => Promise.all(
+      cacheNames.map((cacheName) => cacheName !== CACHE_NAME ? caches.delete(cacheName) : null)
+    )).then(() => self.clients.claim())
   );
 });
 
-// Fetch event - Network First Strategy
 self.addEventListener('fetch', (event) => {
-  // Jangan sentuh request ke Apps Script
-  if (event.request.url.includes('script.google.com')) return;
-
-  // Skip non-GET
+  const url = new URL(event.request.url);
+  if (url.hostname.includes('script.google.com') || url.hostname.includes('googleusercontent.com')) return;
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        if (response.status === 200) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        if (response && response.status === 200 && response.type !== 'opaque') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./keuangan.html')))
   );
 });
 
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const targetUrl = (event.notification.data && event.notification.data.url) || './keuangan.html';
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientsArr) => {
+      for (const client of clientsArr) {
+        if ('focus' in client) {
+          client.navigate(targetUrl);
+          return client.focus();
+        }
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
+    })
+  );
+});
 
-// Background sync (opsional)
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-transactions') {
-    console.log('🔄 Background sync triggered');
-    // Implement background sync logic here
+self.addEventListener('message', (event) => {
+  const data = event.data || {};
+  if (data.type === 'SHOW_DAILY_REMINDER') {
+    self.registration.showNotification('Pengingat Keuangan Harian', {
+      body: 'Apakah anda sudah menginput keuangan hari ini?',
+      icon: './icon-192x192.png',
+      badge: './icon-192x192.png',
+      tag: 'finance-daily-reminder',
+      renotify: true,
+      data: { url: './keuangan.html' }
+    });
   }
 });
