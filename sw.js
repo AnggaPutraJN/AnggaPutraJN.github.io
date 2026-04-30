@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'keuangan-pwa-v3.1.0';
+const CACHE_NAME = 'keuangan-pwa-v3.2.0';
 const APP_SHELL = [
   './',
   './keuangan.html',
@@ -67,6 +67,17 @@ self.addEventListener('message', (event) => {
       icon: './icon-192x192.png',
       badge: './icon-192x192.png',
       tag: 'finance-daily-reminder',
+      renotify: true,
+      data: { url: './keuangan.html' }
+    });
+  }
+
+  if (data.type === 'SHOW_BILL_DEBT_REMINDER') {
+    self.registration.showNotification('Reminder Tagihan & Utang', {
+      body: data.body || 'Ada tagihan/utang yang mendekati jatuh tempo.',
+      icon: './icon-192x192.png',
+      badge: './icon-192x192.png',
+      tag: 'finance-bill-debt-reminder',
       renotify: true,
       data: { url: './keuangan.html' }
     });
