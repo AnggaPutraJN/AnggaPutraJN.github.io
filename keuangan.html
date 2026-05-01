@@ -5399,10 +5399,17 @@ function isWalletAllowedForCurrentUser(walletName) {
 
 
         // Service Worker Registration
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator && location.protocol !== 'file:') {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js', { scope: './' });
+                navigator.serviceWorker.register('./sw.js', { scope: './' })
+                    .then(reg => {
+                        console.log('Service Worker aktif:', reg.scope);
+                        if (reg.update) reg.update();
+                    })
+                    .catch(err => console.warn('Service Worker gagal aktif:', err));
             });
+        } else if (location.protocol === 'file:') {
+            console.warn('Service Worker tidak bisa aktif dari file://. Upload ke GitHub Pages/HTTPS agar notifikasi background berjalan.');
         }
 
         // PWA Install Logic
@@ -5666,6 +5673,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                 if (enabled) await requestDailyReminderPermission();
                 saveDailyReminderSettings({ enabled, time });
                 scheduleDailyFinanceReminder();
+                await registerFinanceBackgroundReminder();
                 alert(enabled ? `Notifikasi pengingat harian aktif pada jam ${time}.` : 'Notifikasi pengingat harian dinonaktifkan.');
             } catch (err) {
                 if (enabledEl) enabledEl.checked = false;
@@ -5832,6 +5840,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                 saveBillDebtReminderSettings({ enabled, daysBefore });
                 initBillDebtReminderSettingsUI();
                 scheduleBillDebtReminder();
+                await registerFinanceBackgroundReminder();
                 alert(enabled ? `Notifikasi tagihan/utang aktif mulai H-${daysBefore}.` : 'Notifikasi tagihan/utang dinonaktifkan.');
             } catch (err) {
                 saveBillDebtReminderSettings({ enabled: false, daysBefore });
@@ -5847,6 +5856,154 @@ function isWalletAllowedForCurrentUser(walletName) {
                 await showBillDebtReminderNotification(true);
             } catch (err) {
                 alert(err.message || String(err));
+            }
+        }
+
+        /* =========================================================
+           BACKGROUND NOTIFICATION SYNC
+           Mengirim data pengingat ke Service Worker agar tetap bisa dicek
+           walaupun aplikasi sedang tidak dibuka.
+           ========================================================= */
+
+        function getFinanceNotificationLastInputDate() {
+            try {
+                let last = '';
+
+                (lastTransactions || []).forEach(t => {
+                    const rawDate = t.tanggal || t.transactionDate || t.date || t.Tanggal || '';
+                    const key = typeof getTxnDateKey === 'function'
+                        ? getTxnDateKey(rawDate)
+                        : String(rawDate || '').slice(0, 10);
+
+                    if (key && key > last) last = key;
+                });
+
+                return last;
+            } catch (err) {
+                console.warn('Gagal mengambil tanggal input terakhir:', err);
+                return '';
+            }
+        }
+
+        function buildFinanceNotificationSnapshot() {
+            const dailySummary = typeof buildDailyExpenseSummary === 'function'
+                ? buildDailyExpenseSummary(lastTransactions || [])
+                : { todayJajanTotal: 0 };
+
+            const currentUserId = typeof getAuthUserId === 'function'
+                ? (getAuthUserId() || 'guest')
+                : 'guest';
+
+            return {
+                userId: currentUserId,
+                savedAt: new Date().toISOString(),
+
+                dailyReminder: getDailyReminderSettings(),
+                billDebtReminder: getBillDebtReminderSettings(),
+
+                lastInputDate: getFinanceNotificationLastInputDate(),
+
+                jajan: {
+                    limit: Number(DAILY_JAJAN_LIMIT || 0),
+                    categories: JAJAN_CATEGORIES || [],
+                    todayTotal: Number(dailySummary.todayJajanTotal || 0)
+                },
+
+                bills: (financeSettings.bills || []).map(bill => ({
+                    name: bill.name || bill.billName || 'Tagihan',
+                    amount: Number(bill.amount || bill.nominal || 0),
+                    dueDate: bill.dueDate || bill.jatuhTempo || '',
+                    status: bill.status || 'Active'
+                })),
+
+                debts: (debtsData || []).map(debt => ({
+                    nama: debt.nama || '',
+                    target: debt.target || debt.nama || 'Utang',
+                    pokokAwal: Number(debt.pokokAwal || 0),
+                    sisaUtang: Number(debt.sisaUtang || debt.remaining || debt.pokokAwal || 0),
+                    jatuhTempo: debt.jatuhTempo || debt.dueDate || '',
+                    status: debt.status || 'Active'
+                }))
+            };
+        }
+
+        async function syncFinanceNotificationDataToSW(forceCheck = false) {
+            try {
+                if (!('serviceWorker' in navigator)) return false;
+
+                if (location.protocol === 'file:') {
+                    console.warn('Service Worker tidak berjalan dari file://. Upload ke GitHub Pages/HTTPS agar notifikasi background aktif.');
+                    return false;
+                }
+
+                const reg = await navigator.serviceWorker.ready;
+                const targetWorker = reg.active || navigator.serviceWorker.controller;
+
+                if (!targetWorker) return false;
+
+                targetWorker.postMessage({
+                    type: 'SYNC_FINANCE_NOTIFICATION_DATA',
+                    payload: buildFinanceNotificationSnapshot()
+                });
+
+                if (forceCheck) {
+                    targetWorker.postMessage({ type: 'FORCE_CHECK_FINANCE_NOTIFICATIONS' });
+                }
+
+                return true;
+            } catch (err) {
+                console.warn('Gagal sync data notifikasi ke Service Worker:', err);
+                return false;
+            }
+        }
+
+        async function registerFinanceBackgroundReminder() {
+            try {
+                if (!('serviceWorker' in navigator)) return false;
+                if (!('Notification' in window)) return false;
+                if (Notification.permission !== 'granted') return false;
+                if (location.protocol === 'file:') return false;
+
+                const reg = await navigator.serviceWorker.ready;
+
+                await syncFinanceNotificationDataToSW(true);
+
+                if ('periodicSync' in reg) {
+                    try {
+                        let allowed = true;
+
+                        if ('permissions' in navigator && navigator.permissions.query) {
+                            try {
+                                const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
+                                allowed = status.state !== 'denied';
+                            } catch (err) {
+                                allowed = true;
+                            }
+                        }
+
+                        if (allowed) {
+                            await reg.periodicSync.register('finance-reminder-check', {
+                                minInterval: 60 * 60 * 1000
+                            });
+                            console.log('Periodic Background Sync aktif untuk notifikasi keuangan.');
+                        }
+                    } catch (err) {
+                        console.warn('Periodic Background Sync tidak aktif di browser ini:', err);
+                    }
+                }
+
+                if ('sync' in reg) {
+                    try {
+                        await reg.sync.register('finance-reminder-check');
+                    } catch (err) {
+                        console.warn('Background Sync tidak tersedia:', err);
+                    }
+                }
+
+                return true;
+            } catch (err) {
+                console.warn('Gagal mendaftarkan background reminder:', err);
+                return false;
             }
         }
 
@@ -7234,6 +7391,8 @@ function isWalletAllowedForCurrentUser(walletName) {
             localStorage.setItem(getDailyLimitStorageKey(), JSON.stringify({ limit, categories }));
             applyDailyLimitSettings();
             renderMonthlyExpenseSummary(lastTransactions);
+            syncFinanceNotificationDataToSW(true);
+            registerFinanceBackgroundReminder();
             alert('Limit harian berhasil disimpan.');
         }
 
@@ -8362,6 +8521,9 @@ function isWalletAllowedForCurrentUser(walletName) {
                 scheduleDailyFinanceReminder();
                 initBillDebtReminderSettingsUI();
                 scheduleBillDebtReminder();
+
+                syncFinanceNotificationDataToSW(false);
+                registerFinanceBackgroundReminder();
 
             } catch (error) {
                 console.error('Error loading data:', error);
