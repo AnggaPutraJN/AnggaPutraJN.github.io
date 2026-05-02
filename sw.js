@@ -17,8 +17,8 @@ const STATE_KEY = 'finance-notification-state';
 
 const APP_SHELL = [
   './',
-  './keuangan.html',
-  './manifest.json',
+  'keuangan.html',
+  'manifest.json',
   './icon-192x192.png',
   './icon-512x512.png'
 ];
@@ -53,8 +53,8 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   // Jangan cache file worker OneSignal, endpoint dinamis, atau file Google.
-  if (url.pathname.includes('/push/onesignal/')) return;
-  if (url.pathname.endsWith('/OneSignalSDKWorker.js')) return;
+  if (url.pathname.includes('push/onesignal/')) return;
+  if (url.pathname.endsWith('OneSignalSDKWorker.js')) return;
   if (url.hostname.includes('script.google.com') || url.hostname.includes('googleusercontent.com')) return;
 
   const isNavigation = request.mode === 'navigate' ||
@@ -76,7 +76,7 @@ self.addEventListener('fetch', (event) => {
 
         // Fallback ke halaman utama hanya untuk navigasi dokumen, bukan untuk file JS/CSS.
         if (isNavigation) {
-          return (await caches.match('./keuangan.html')) || (await caches.match('./')) || Response.error();
+          return (await caches.match('keuangan.html')) || (await caches.match('./')) || Response.error();
         }
 
         return Response.error();
