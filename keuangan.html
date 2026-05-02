@@ -4820,7 +4820,7 @@
         // REST API KEY jangan pernah ditaruh di HTML; simpan di Code.gs Script Properties.
         // ============================================
         const ONESIGNAL_APP_ID = "30ad9b68-d1e3-4d92-8cfc-dd3db56d5634";
-        const ONESIGNAL_PUBLIC_URL = new URL('keuangan.html', window.location.href).href;
+        const ONESIGNAL_PUBLIC_URL = new URL('./keuangan.html', window.location.href).href;
         let oneSignalInitPromise = null;
         let oneSignalInitialized = false;
 
@@ -13029,4 +13029,3 @@ Melewati limit: ${formatRupiah(overLimit)}`;
     </script>
 </body>
 </html>
-
