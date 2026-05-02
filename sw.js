@@ -9,7 +9,7 @@
 // Catatan: Service Worker hanya berjalan di HTTPS/GitHub Pages/localhost, bukan file://
 // =========================================================
 
-const CACHE_NAME = 'keuangan-pwa-v3.4.0-notification-fixed';
+const CACHE_NAME = 'keuangan-pwa-v3.5.0-onesignal-fetch-fixed';
 const DB_NAME = 'keuangan-notification-db';
 const DB_VERSION = 1;
 const STORE_NAME = 'state';
@@ -41,22 +41,46 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
+  const request = event.request;
+  const url = new URL(request.url);
 
-  // Jangan cache endpoint Google Apps Script dan file Google.
+  if (request.method !== 'GET') return;
+
+  // FIX PENTING:
+  // Jangan pernah intercept/cache script dari CDN atau domain lain.
+  // Jika CDN OneSignal gagal lalu SW mengembalikan keuangan.html, browser akan membaca HTML sebagai JS
+  // dan muncul error: OneSignalSDK.page.js Unexpected token '<'.
+  if (url.origin !== self.location.origin) return;
+
+  // Jangan cache file worker OneSignal, endpoint dinamis, atau file Google.
+  if (url.pathname.includes('/push/onesignal/')) return;
+  if (url.pathname.endsWith('/OneSignalSDKWorker.js')) return;
   if (url.hostname.includes('script.google.com') || url.hostname.includes('googleusercontent.com')) return;
-  if (event.request.method !== 'GET') return;
+
+  const isNavigation = request.mode === 'navigate' ||
+    request.destination === 'document' ||
+    (request.headers.get('accept') || '').includes('text/html');
 
   event.respondWith(
-    fetch(event.request)
+    fetch(request)
       .then((response) => {
         if (response && response.status === 200 && response.type !== 'opaque') {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./keuangan.html')))
+      .catch(async () => {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+
+        // Fallback ke halaman utama hanya untuk navigasi dokumen, bukan untuk file JS/CSS.
+        if (isNavigation) {
+          return (await caches.match('./keuangan.html')) || (await caches.match('./')) || Response.error();
+        }
+
+        return Response.error();
+      })
   );
 });
 
@@ -210,12 +234,25 @@ function pruneOldNotified(notified) {
 }
 
 async function showFinanceNotification(title, options = {}) {
-  return self.registration.showNotification(title, Object.assign({
-    icon: './icon-192x192.png',
-    badge: './icon-192x192.png',
-    data: { url: './keuangan.html' },
-    renotify: true
-  }, options));
+  // Service Worker tidak boleh memanggil showNotification kalau izin belum granted.
+  // Ini mencegah error: No notification permission has been granted for this origin.
+  if (!('Notification' in self) || Notification.permission !== 'granted') {
+    console.warn('Notifikasi dilewati karena izin belum diberikan:', ('Notification' in self ? Notification.permission : 'unsupported'));
+    return false;
+  }
+
+  try {
+    await self.registration.showNotification(title, Object.assign({
+      icon: './icon-192x192.png',
+      badge: './icon-192x192.png',
+      data: { url: './keuangan.html' },
+      renotify: true
+    }, options));
+    return true;
+  } catch (err) {
+    console.warn('Gagal menampilkan notifikasi lokal:', err);
+    return false;
+  }
 }
 
 // =========================================================
@@ -237,13 +274,13 @@ async function checkFinanceNotifications(source = 'manual') {
     const notifyKey = `daily-input:${todayKey}`;
 
     if (!alreadyInputToday && nowMinutes >= remindAt && !state.notified[notifyKey]) {
-      await showFinanceNotification('Pengingat Keuangan Harian', {
+      const sent = await showFinanceNotification('Pengingat Keuangan Harian', {
         body: 'Apakah anda sudah menginput keuangan hari ini?',
         tag: 'finance-daily-reminder',
         actions: [{ action: 'open', title: 'Input Sekarang' }]
       });
 
-      state.notified[notifyKey] = new Date().toISOString();
+      if (sent) state.notified[notifyKey] = new Date().toISOString();
     }
   }
 
@@ -255,12 +292,12 @@ async function checkFinanceNotifications(source = 'manual') {
   const jajanKey = `jajan-limit:${todayKey}`;
 
   if (limit > 0 && todayJajanTotal > limit && !state.notified[jajanKey]) {
-    await showFinanceNotification('Batas Jajan Harian Terlewati', {
+    const sent = await showFinanceNotification('Batas Jajan Harian Terlewati', {
       body: `Anda sudah melewati batas jajan harian. Total jajan hari ini ${rupiah(todayJajanTotal)}, melewati limit ${rupiah(overLimit)}.`,
       tag: 'finance-jajan-limit'
     });
 
-    state.notified[jajanKey] = new Date().toISOString();
+    if (sent) state.notified[jajanKey] = new Date().toISOString();
   }
 
   // 3. Reminder Tagihan dan Utang
@@ -312,13 +349,13 @@ async function checkFinanceNotifications(source = 'manual') {
         return `${item.type}: ${item.name} (${dueLabel}) ${rupiah(item.amount)}`;
       }).join('\n');
 
-      await showFinanceNotification('Reminder Tagihan & Utang', {
+      const sent = await showFinanceNotification('Reminder Tagihan & Utang', {
         body,
         tag: 'finance-bill-debt-reminder',
         actions: [{ action: 'open', title: 'Cek Sekarang' }]
       });
 
-      state.notified[notifyKey] = new Date().toISOString();
+      if (sent) state.notified[notifyKey] = new Date().toISOString();
     }
   }
 
