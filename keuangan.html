@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="id">
 <head>
     <!-- ============================================
@@ -4826,7 +4825,8 @@
         let oneSignalInitialized = false;
 
         function hasOneSignalConfig() {
-            return !!ONESIGNAL_APP_ID && ONESIGNAL_APP_ID !== '30ad9b68-d1e3-4d92-8cfc-dd3db56d5634';
+            // FIX: App ID di bawah memang App ID asli Anda. Jangan dibandingkan lagi sebagai placeholder.
+            return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(ONESIGNAL_APP_ID || '').trim());
         }
 
         function getOneSignalWorkerConfig() {
@@ -4856,7 +4856,7 @@
 
         async function initOneSignalFinance() {
             if (!hasOneSignalConfig()) {
-                console.warn('OneSignal belum aktif: isi ONESIGNAL_APP_ID di keuangan.html.');
+                console.warn('OneSignal belum aktif: App ID kosong/tidak valid di keuangan.html.');
                 return false;
             }
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
@@ -4955,7 +4955,8 @@
 
         async function getOneSignalSubscriptionData() {
             const ready = await initOneSignalFinance();
-            if (!ready) return { onesignalId:'', externalId:getAuthUserId ? getAuthUserId() : '', subscriptionId:'', token:'', optedIn:false, permission:false };
+            const fallbackUserId = (typeof getAuthUserId === 'function') ? (getAuthUserId() || '') : '';
+            if (!ready) return { onesignalId:'', externalId:fallbackUserId, subscriptionId:'', token:'', optedIn:false, permission:false };
             return withOneSignal(async function(OneSignal) {
                 return getOneSignalSubscriptionDataFromInstance(OneSignal);
             });
@@ -4963,7 +4964,7 @@
 
         async function syncOneSignalReminderProfile(forceCheck = false) {
             try {
-                if (!getAuthUserId || !getAuthUserId()) return false;
+                if (typeof getAuthUserId !== 'function' || !getAuthUserId()) return false;
                 if (!hasOneSignalConfig()) return false;
 
                 const ready = await initOneSignalFinance();
@@ -7644,7 +7645,9 @@ function isWalletAllowedForCurrentUser(walletName) {
             renderMonthlyExpenseSummary(lastTransactions);
             syncFinanceNotificationDataToSW(true);
             registerFinanceBackgroundReminder();
-            alert('Limit harian berhasil disimpan.');
+            // FIX: sinkronkan juga ke server OneSignal agar limit jajan tetap dicek saat PWA ditutup.
+            syncOneSignalReminderProfile(true);
+            alert('Limit harian berhasil disimpan dan disinkronkan ke notifikasi background.');
         }
 
 
