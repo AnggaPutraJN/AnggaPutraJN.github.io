@@ -656,6 +656,47 @@
             filter: invert(1) grayscale(100%) brightness(200%);
         }
         
+
+        /* Screenshot Gameplay Preview */
+        .screenshot-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .screenshot-preview-card {
+            background: rgba(26, 26, 46, 0.65);
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 8px;
+            overflow: hidden;
+        }
+        .screenshot-preview-card img {
+            width: 100%;
+            height: 95px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: #111827;
+        }
+        .screenshot-preview-card small {
+            display: block;
+            margin-top: 6px;
+            color: #9ca3af;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .media-save-note {
+            background: rgba(0, 102, 204, 0.12);
+            border: 1px solid rgba(0, 102, 204, 0.35);
+            color: #cfe8ff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
         /* Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 10px;
@@ -1093,6 +1134,33 @@ http://link.indapk.com/QLPwH2"></textarea>
                             <div id="thumbnailPreview" class="mt-2" style="display: none;">
                                 <img src="" alt="Thumbnail Preview" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
                             </div>
+                            <div class="media-save-note">
+                                <i class="bi bi-cloud-check"></i> Thumbnail ini tetap masuk ke data PS3 dan juga dikirim ke API screenshot PS2/PS3 saat tombol <strong>Simpan Data Game PS3</strong> ditekan.
+                            </div>
+                        </div>
+
+                        <!-- SCREENSHOT GAMEPLAY INPUT (OPTIONAL) -->
+                        <div class="col-md-12 mb-3">
+                            <label for="gameplayScreenshots" class="form-label">
+                                <i class="bi bi-images"></i> Screenshot Gameplay URL (Optional)
+                            </label>
+                            <textarea id="gameplayScreenshots" class="form-control" rows="5"
+                                      placeholder="Masukkan link screenshot gameplay, 1 URL per baris.
+Contoh:
+https://www.indapk.com/wp-content/uploads/2025/12/GOW3-Gameplay-1.jpg
+https://www.indapk.com/wp-content/uploads/2025/12/GOW3-Gameplay-2.jpg"></textarea>
+                            <div class="form-text">
+                                Bisa diisi beberapa screenshot. Sistem akan menyimpan daftar screenshot ini ke API screenshot yang sama seperti PS2.
+                            </div>
+                            <div class="d-flex gap-2 mt-2 flex-wrap">
+                                <button type="button" class="btn btn-outline-secondary" id="btnPreviewScreenshots">
+                                    <i class="bi bi-eye"></i> Preview Screenshot
+                                </button>
+                                <button type="button" class="btn btn-outline-danger" id="btnClearScreenshots">
+                                    <i class="bi bi-trash"></i> Hapus Screenshot
+                                </button>
+                            </div>
+                            <div id="screenshotPreview" class="screenshot-preview-grid" style="display: none;"></div>
                         </div>
                         
                         <div class="mt-3">
@@ -1185,6 +1253,8 @@ http://link.indapk.com/QLPwH2"></textarea>
         // ============= URL API =============
         const GAMEPS3_API_URL = "https://script.google.com/macros/s/AKfycbwqkrPhEvF3-_r1cu_wI7nRd56Z1AzNhank78R7dFgxHK57Wd2cf2WmV9ESXMAg_LHC/exec"; 
         const USER_API_URL = "https://script.google.com/macros/s/AKfycbweRCcVmuWrz2gpvIanBqeIsyubAUgOjSssHhnXBW3WUiOu9QbNeUq-y4-9Ps6BuQ8L/exec";
+        // API khusus penyimpanan thumbnail + screenshot gameplay, dibuat sama seperti generator PS2.
+        const SCREENSHOOT_API_URL = "https://script.google.com/macros/s/AKfycbwjF-qp6zHQGiBchoReCX3xLpWSLJysoUsRDDiXbm3nZ51RdaLWrpCh5jqno5A-Rmn4/exec";
         
         // Data state untuk PS3
         let currentStep = 1;
@@ -1721,6 +1791,8 @@ function saveCloudCache() {
             
             // Thumbnail preview
             document.getElementById('btnPreviewThumbnail')?.addEventListener('click', previewThumbnail);
+            document.getElementById('btnPreviewScreenshots')?.addEventListener('click', previewGameplayScreenshots);
+            document.getElementById('btnClearScreenshots')?.addEventListener('click', clearGameplayScreenshots);
         }
         
 function setupPasteFunctionality() {
@@ -1731,8 +1803,9 @@ function setupPasteFunctionality() {
             setTimeout(() => {
                 const text = pasteArea.value.trim();
                 if (text.split('\n').length >= 5) {
-                    // Auto-detect thumbnail terlebih dahulu
+                    // Auto-detect thumbnail dan screenshot terlebih dahulu
                     autoFillThumbnailFromPaste();
+                    autoFillGameplayScreenshotsFromPaste();
                     // Kemudian parse data
                     setTimeout(() => {
                         parsePasteDataHandler();
@@ -2098,6 +2171,7 @@ function parsePasteDataHandler() {
         // Auto-detect thumbnail setelah parse data
         setTimeout(() => {
             autoFillThumbnailFromPaste();
+            autoFillGameplayScreenshotsFromPaste();
         }, 300);
         
         const pasteStatus = document.getElementById('pasteStatus');
@@ -2190,6 +2264,7 @@ function parsePasteData(text) {
     // 9. Auto-detect thumbnail
     setTimeout(() => {
         autoFillThumbnailFromPaste();
+        autoFillGameplayScreenshotsFromPaste();
     }, 300);
 }
         
@@ -2306,6 +2381,8 @@ http://link.indapk.com/cnO3AF
 http://link.indapk.com/qbGe
 http://link.indapk.com/5XTUF
 http://link.indapk.com/csbI
+https://www.indapk.com/wp-content/uploads/2025/12/GOW3-PS3-Gameplay-1.jpg
+https://www.indapk.com/wp-content/uploads/2025/12/GOW3-PS3-Gameplay-2.jpg
 https://www.indapk.com/wp-content/uploads/2025/12/GOW3-PS3-INDapk-1.jpg`;
             
             document.getElementById('pasteArea').value = exampleText;
@@ -2343,12 +2420,192 @@ function previewThumbnail() {
     
     testImage.src = url;
 }
+
+// ===================== SCREENSHOT GAMEPLAY FUNCTIONS =====================
+function getGameplayScreenshotUrls() {
+    const textarea = document.getElementById('gameplayScreenshots');
+    if (!textarea) return [];
+
+    return textarea.value
+        .split(/\r?\n|,/)
+        .map(url => String(url || '').trim())
+        .filter(url => url && /^https?:\/\//i.test(url))
+        .filter((url, index, arr) => arr.indexOf(url) === index);
+}
+
+function setGameplayScreenshotUrls(urls) {
+    const textarea = document.getElementById('gameplayScreenshots');
+    if (!textarea) return;
+
+    const cleanUrls = Array.isArray(urls)
+        ? urls.map(url => String(url || '').trim()).filter(Boolean)
+        : [];
+
+    textarea.value = cleanUrls.join('\n');
+    previewGameplayScreenshots();
+}
+
+function previewGameplayScreenshots() {
+    const preview = document.getElementById('screenshotPreview');
+    if (!preview) return;
+
+    const urls = getGameplayScreenshotUrls();
+    if (!urls.length) {
+        preview.style.display = 'none';
+        preview.innerHTML = '';
+        showToast('info', 'Belum ada screenshot gameplay untuk dipreview.');
+        return;
+    }
+
+    preview.innerHTML = urls.map((url, index) => `
+        <div class="screenshot-preview-card">
+            <img src="${escapeHTML(url)}" alt="Screenshot Gameplay ${index + 1}" loading="lazy" onerror="this.style.opacity='0.35'; this.alt='Gagal memuat screenshot';">
+            <small title="${escapeHTML(url)}">${index + 1}. ${escapeHTML(url)}</small>
+        </div>
+    `).join('');
+    preview.style.display = 'grid';
+}
+
+function clearGameplayScreenshots() {
+    const textarea = document.getElementById('gameplayScreenshots');
+    if (textarea) textarea.value = '';
+    const preview = document.getElementById('screenshotPreview');
+    if (preview) {
+        preview.style.display = 'none';
+        preview.innerHTML = '';
+    }
+    if (gameData.gameInfo) gameData.gameInfo.screenshot_urls = [];
+    showToast('warning', 'Daftar screenshot gameplay dikosongkan.');
+}
+
+function hasMediaForScreenshootApi() {
+    const thumbnail = String(document.getElementById('thumbnailUrl')?.value || gameData?.gameInfo?.thumbnail_url || '').trim();
+    const screenshots = getGameplayScreenshotUrls();
+    return Boolean(thumbnail || screenshots.length);
+}
+
+function detectGameplayScreenshotsFromPasteLines(lines, thumbnailUrl = '') {
+    const imageUrls = [];
+    const thumb = String(thumbnailUrl || '').trim();
+
+    (lines || []).forEach(line => {
+        const url = String(line || '').trim();
+        if (!url || url === thumb) return;
+        if (isProbablyImageUrl(url)) imageUrls.push(url);
+    });
+
+    // Anggap gambar terakhir sebagai thumbnail, sisanya sebagai screenshot gameplay.
+    // Jika thumbnail sudah ditemukan, hanya URL gambar selain thumbnail yang dimasukkan.
+    const unique = imageUrls.filter((url, index, arr) => arr.indexOf(url) === index);
+    if (thumb) return unique.filter(url => url !== thumb);
+    return unique.length > 1 ? unique.slice(0, -1) : [];
+}
+
+function autoFillGameplayScreenshotsFromPaste() {
+    try {
+        const pasteArea = document.getElementById('pasteArea');
+        if (!pasteArea) return;
+
+        const text = pasteArea.value.trim();
+        if (!text) return;
+
+        const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+        const thumbnailUrl = String(document.getElementById('thumbnailUrl')?.value || detectThumbnailFromPasteLines(lines) || '').trim();
+        const screenshots = detectGameplayScreenshotsFromPasteLines(lines, thumbnailUrl);
+
+        if (screenshots.length) {
+            setGameplayScreenshotUrls(screenshots);
+            console.log('✅ Screenshot gameplay otomatis terdeteksi:', screenshots);
+            showToast('success', `${screenshots.length} screenshot gameplay otomatis terdeteksi!`);
+        }
+    } catch (error) {
+        console.error('❌ Error auto-detect screenshot gameplay:', error);
+    }
+}
+
+async function saveMediaToScreenshootApi(options = {}) {
+    const silent = Boolean(options.silent);
+    const thumbnailUrl = String(document.getElementById('thumbnailUrl')?.value || gameData?.gameInfo?.thumbnail_url || '').trim();
+    const screenshotUrls = getGameplayScreenshotUrls();
+
+    if (!thumbnailUrl && screenshotUrls.length === 0) {
+        if (!silent) showToast('info', 'Tidak ada thumbnail/screenshot gameplay untuk disimpan.');
+        return { status: 'skipped', message: 'Tidak ada media' };
+    }
+
+    const downloadId = String(gameData.downloadId || '').trim();
+    const gameName = String(gameData?.gameInfo?.nama_game || document.getElementById('gameName')?.value || '').trim();
+    const category = String(gameData?.gameInfo?.category || document.getElementById('category')?.value || '').trim();
+    const language = String(gameData?.gameInfo?.language || document.getElementById('language')?.value || '').trim();
+
+    const basePayload = {
+        platform: 'PS3',
+        console: 'PS3',
+        source: 'Generator HTML Game PS3',
+        download_id: downloadId,
+        game_id: downloadId,
+        nama_game: gameName,
+        game_name: gameName,
+        title: gameName,
+        category: category,
+        language: language,
+        thumbnail_url: thumbnailUrl,
+        thumbnail: thumbnailUrl,
+        screenshot_urls: JSON.stringify(screenshotUrls),
+        screenshots: JSON.stringify(screenshotUrls),
+        gameplay_screenshots: JSON.stringify(screenshotUrls),
+        screenshot_count: String(screenshotUrls.length),
+        updated_at: new Date().toISOString()
+    };
+
+    screenshotUrls.forEach((url, index) => {
+        basePayload[`screenshot_${index + 1}`] = url;
+        basePayload[`screenshot_url_${index + 1}`] = url;
+    });
+
+    // Beberapa Apps Script lama memakai nama action berbeda. Dicoba satu per satu, berhenti ketika sukses.
+    const actionCandidates = [
+        'saveScreenshoot',
+        'saveScreenshot',
+        'saveScreenshots',
+        'saveGameScreenshot',
+        'saveGameScreenshoot',
+        'saveGameMedia',
+        'saveMedia',
+        'saveGame'
+    ];
+
+    let lastError = null;
+    for (const action of actionCandidates) {
+        try {
+            const result = await apiPost(SCREENSHOOT_API_URL, { action, ...basePayload });
+            const status = String(result?.status || '').toLowerCase();
+            const ok = status === 'success' || status === 'ok' || result?.success === true;
+
+            if (ok) {
+                if (!silent) showToast('success', 'Thumbnail dan screenshot gameplay berhasil disimpan ke API screenshot.');
+                console.log('✅ Media PS3 tersimpan ke SCREENSHOOT_API_URL via action:', action, result);
+                return result;
+            }
+
+            lastError = new Error(result?.message || `Action ${action} belum diterima API screenshot.`);
+        } catch (err) {
+            lastError = err;
+        }
+    }
+
+    console.warn('⚠️ Gagal menyimpan media ke SCREENSHOOT_API_URL:', lastError);
+    if (!silent) showToast('warning', 'Data game tersimpan, tapi thumbnail/screenshot belum diterima API screenshot: ' + (lastError?.message || 'Unknown error'));
+    return { status: 'error', message: lastError?.message || 'Gagal menyimpan media ke API screenshot' };
+}
+
         // ===================== SAVE GAME DATA =====================
 async function saveGameData() {
     const gameName = document.getElementById('gameName').value.trim();
     const category = document.getElementById('category').value.trim();
     const language = document.getElementById('language').value.trim();
     const thumbnailUrl = document.getElementById('thumbnailUrl').value.trim();
+    const screenshotUrls = getGameplayScreenshotUrls();
     
     if (!gameName || !category || !language) {
         alert('Harap isi semua field yang wajib!');
@@ -2394,7 +2651,8 @@ async function saveGameData() {
         nama_game: gameName,
         category: category,
         language: language,
-        thumbnail_url: thumbnailUrl
+        thumbnail_url: thumbnailUrl,
+        screenshot_urls: screenshotUrls
     };
             
             try {
@@ -2409,6 +2667,7 @@ async function saveGameData() {
                 params.append('category', gameData.gameInfo.category);
                 params.append('language', gameData.gameInfo.language);
                 params.append('thumbnail_url', gameData.gameInfo.thumbnail_url || '');
+                params.append('screenshot_urls', JSON.stringify(gameData.gameInfo.screenshot_urls || []));
                 
                 // Add formats data
                 params.append('formats', JSON.stringify(gameData.selectedFormats));
@@ -2431,7 +2690,13 @@ async function saveGameData() {
                     const result = await response.json();
                     if (result.status === 'success') {
                         gameData.downloadId = result.data.download_id;
-                        alert(`✅ Game PS3 berhasil disimpan!\n\nNama Game: ${gameData.gameInfo.nama_game}\nDownload ID: ${result.data.download_id}`);
+                        const mediaResult = await saveMediaToScreenshootApi({ silent: true });
+                        const mediaStatus = hasMediaForScreenshootApi()
+                            ? (String(mediaResult?.status || '').toLowerCase() === 'success' || mediaResult?.success === true || String(mediaResult?.status || '').toLowerCase() === 'ok'
+                                ? 'Terkirim ke API Screenshot'
+                                : 'Belum diterima API Screenshot')
+                            : 'Tidak ada media tambahan';
+                        alert(`✅ Game PS3 berhasil disimpan!\n\nNama Game: ${gameData.gameInfo.nama_game}\nDownload ID: ${result.data.download_id}\nThumbnail/Screenshot: ${mediaStatus}`);
                     } else {
                         throw new Error(result.message || 'Gagal menyimpan');
                     }
@@ -2501,6 +2766,22 @@ async function saveGameData() {
             let adLinks2HTML = '';
             let originalLinksHTML = '';
             let sizeTableHTML = '';
+            const gameplayScreenshots = Array.isArray(gameData?.gameInfo?.screenshot_urls)
+                ? gameData.gameInfo.screenshot_urls.filter(Boolean)
+                : [];
+            const screenshotGalleryHTML = gameplayScreenshots.length ? `
+                    <div class="col-md-12 mt-4">
+                        <h4><i class="bi bi-images"></i> Screenshot Gameplay</h4>
+                        <div class="row g-3">
+                            ${gameplayScreenshots.map((url, idx) => `
+                                <div class="col-6 col-md-4">
+                                    <a href="${escapeHTML(url)}" target="_blank" rel="noopener">
+                                        <img src="${escapeHTML(url)}" alt="${escapeHTML(gameData.gameInfo.nama_game)} Screenshot ${idx + 1}" class="img-fluid rounded" style="width: 100%; height: 150px; object-fit: cover; border: 1px solid #444;">
+                                    </a>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>` : '';
             
             gameData.selectedFormats.forEach(format => {
                 const size = gameData.sizeFormats[format] || '-';
@@ -2905,6 +3186,7 @@ async function saveGameData() {
                         </div>
                     </div>
                     ` : ''}
+                    ${screenshotGalleryHTML}
                     
                     <div class="mt-3 text-center">
                         <a href="https://indapk.com/listgame.html"
@@ -4016,10 +4298,14 @@ function applyServerGameToGameData(serverGame) {
             nama_game: toStr(serverGame.nama_game || serverGame.game_name),
             category: toStr(serverGame.category),
             language: toStr(serverGame.language),
-            thumbnail_url: toStr(serverGame.thumbnail_url || serverGame.thumb_url)
+            thumbnail_url: toStr(serverGame.thumbnail_url || serverGame.thumb_url),
+            screenshot_urls: parseArray(serverGame.screenshot_urls || serverGame.screenshots || serverGame.gameplay_screenshots || '[]')
         };
 
         gameData.downloadId = toStr(serverGame.download_id || serverGame.id);
+        if (document.getElementById('gameplayScreenshots')) {
+            setGameplayScreenshotUrls(gameData.gameInfo.screenshot_urls || []);
+        }
         
         console.log('Applied game data:', gameData); // Debug log
         
