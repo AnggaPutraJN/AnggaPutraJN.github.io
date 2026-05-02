@@ -4820,7 +4820,7 @@
         // REST API KEY jangan pernah ditaruh di HTML; simpan di Code.gs Script Properties.
         // ============================================
         const ONESIGNAL_APP_ID = "30ad9b68-d1e3-4d92-8cfc-dd3db56d5634";
-        const ONESIGNAL_PUBLIC_URL = new URL('./keuangan.html', window.location.href).href;
+        const ONESIGNAL_PUBLIC_URL = new URL('keuangan.html', window.location.href).href;
         let oneSignalInitPromise = null;
         let oneSignalInitialized = false;
 
@@ -4840,15 +4840,21 @@
         }
 
         function withOneSignal(callback) {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+                const timer = setTimeout(() => {
+                    reject(new Error('OneSignal SDK tidak berhasil dimuat. Pastikan internet aktif dan script OneSignal CDN tidak diblokir.'));
+                }, 15000);
+
                 window.OneSignalDeferred.push(async function(OneSignal) {
+                    clearTimeout(timer);
                     try {
                         const result = await callback(OneSignal);
                         resolve(result);
                     } catch (err) {
                         console.warn('OneSignal error:', err);
-                        resolve(null);
+                        reject(err);
                     }
                 });
             });
@@ -4918,24 +4924,61 @@
         }
 
         async function requestOneSignalPermission() {
+            if (!('Notification' in window)) {
+                throw new Error('Browser ini belum mendukung Notification API.');
+            }
+
+            if (Notification.permission === 'denied') {
+                throw new Error('Izin notifikasi sudah diblokir. Buka pengaturan browser > Site settings > Notifications, lalu ubah menjadi Allow/Izinkan.');
+            }
+
             const ready = await initOneSignalFinance();
-            if (!ready) throw new Error('OneSignal belum siap. Pastikan APP ID sudah benar dan file dibuka dari HTTPS/GitHub Pages.');
+            if (!ready) {
+                throw new Error('OneSignal belum siap. Pastikan web dibuka dari HTTPS/GitHub Pages dan file push/onesignal/OneSignalSDKWorker.js sudah diupload.');
+            }
 
             return withOneSignal(async function(OneSignal) {
                 if (!OneSignal.Notifications.isPushSupported()) {
                     throw new Error('Browser ini belum mendukung Web Push OneSignal.');
                 }
-                if (!OneSignal.Notifications.permission) {
-                    await OneSignal.Notifications.requestPermission();
+
+                // Panggil native browser prompt langsung dari klik tombol Simpan/Tes.
+                // Ini memperbaiki kasus status tetap "Butuh izin notifikasi" tetapi popup izin tidak muncul.
+                let browserPermission = Notification.permission;
+                if (browserPermission === 'default') {
+                    browserPermission = await Notification.requestPermission();
                 }
-                if (!OneSignal.Notifications.permission) {
-                    throw new Error('Izin notifikasi belum diberikan. Klik Allow/Izinkan pada browser.');
+
+                // Sinkronkan juga ke OneSignal. Jika token belum ada, optIn akan membuat push subscription.
+                if (browserPermission === 'granted') {
+                    try {
+                        await OneSignal.User.PushSubscription.optIn();
+                    } catch (optErr) {
+                        console.warn('optIn OneSignal gagal/dilewati:', optErr);
+                    }
+                } else if (!OneSignal.Notifications.permission) {
+                    try {
+                        await OneSignal.Notifications.requestPermission();
+                    } catch (promptErr) {
+                        console.warn('Prompt OneSignal gagal:', promptErr);
+                    }
                 }
+
+                await new Promise(resolve => setTimeout(resolve, 600));
+
+                const granted = Notification.permission === 'granted' || !!OneSignal.Notifications.permission;
+                if (!granted) {
+                    throw new Error('Izin notifikasi belum diberikan. Klik Allow/Izinkan saat popup muncul. Jika popup tidak muncul, reset izin notifikasi dari pengaturan browser.');
+                }
+
                 try {
-                    await OneSignal.User.PushSubscription.optIn();
-                } catch (optErr) {
-                    console.warn('optIn OneSignal dilewati:', optErr);
+                    if (!OneSignal.User.PushSubscription.optedIn) {
+                        await OneSignal.User.PushSubscription.optIn();
+                    }
+                } catch (subErr) {
+                    console.warn('Gagal memastikan subscription OneSignal:', subErr);
                 }
+
                 await syncOneSignalReminderProfile(true);
                 return true;
             });
@@ -4985,7 +5028,8 @@
                     subscriptionId: subscription.subscriptionId || '',
                     token: subscription.token || '',
                     optedIn: subscription.optedIn ? '1' : '0',
-                    permission: subscription.permission ? 'granted' : 'default'
+                    permission: subscription.permission ? 'granted' : (('Notification' in window) ? Notification.permission : 'default'),
+                    timezone: 'Asia/Jakarta'
                 });
 
                 const response = await fetch(SPREADSHEET_URL, {
@@ -5835,28 +5879,33 @@ function isWalletAllowedForCurrentUser(walletName) {
         }
 
         async function requestDailyReminderPermission() {
-            // Prioritas utama: OneSignal agar notifikasi tetap muncul walaupun PWA ditutup.
+            if (!('Notification' in window)) {
+                updateDailyReminderStatus('Browser tidak mendukung', 'danger');
+                throw new Error('Browser ini belum mendukung Notification API.');
+            }
+
+            if (Notification.permission === 'denied') {
+                updateDailyReminderStatus('Izin diblokir', 'danger');
+                throw new Error('Izin notifikasi diblokir. Aktifkan kembali izin notifikasi dari pengaturan browser.');
+            }
+
+            // Prioritas utama: OneSignal agar notifikasi tetap muncul walaupun PWA/web ditutup.
             if (hasOneSignalConfig() && location.protocol !== 'file:') {
                 await requestOneSignalPermission();
                 updateDailyReminderStatus('OneSignal aktif', 'success');
                 return true;
             }
 
-            // Fallback lama hanya untuk kondisi APP ID belum diisi / pengujian lokal.
-            if (!('Notification' in window)) {
-                updateDailyReminderStatus('Browser tidak mendukung', 'danger');
-                throw new Error('Browser ini belum mendukung Notification API.');
+            // Fallback lokal hanya untuk testing. Ini tidak bisa menjamin notifikasi saat browser ditutup.
+            let permission = Notification.permission;
+            if (permission === 'default') {
+                permission = await Notification.requestPermission();
             }
-            if (Notification.permission === 'granted') return true;
-            if (Notification.permission === 'denied') {
-                updateDailyReminderStatus('Izin diblokir', 'danger');
-                throw new Error('Izin notifikasi diblokir. Aktifkan kembali izin notifikasi dari pengaturan browser.');
-            }
-            const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
                 updateDailyReminderStatus('Izin belum diberikan', 'warning');
                 throw new Error('Izin notifikasi belum diberikan.');
             }
+            updateDailyReminderStatus('Browser aktif / Lokal', 'success');
             return true;
         }
 
@@ -5922,7 +5971,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                 scheduleDailyFinanceReminder();
                 await registerFinanceBackgroundReminder();
                 await syncOneSignalReminderProfile(true);
-                alert(enabled ? `Notifikasi OneSignal pengingat harian aktif pada jam ${time}.` : 'Notifikasi pengingat harian dinonaktifkan.');
+                alert(enabled ? `Notifikasi pengingat harian aktif pada jam ${time}. Jika web/PWA ditutup, pengiriman dijalankan oleh OneSignal + Apps Script trigger.` : 'Notifikasi pengingat harian dinonaktifkan.');
             } catch (err) {
                 if (enabledEl) enabledEl.checked = false;
                 saveDailyReminderSettings({ enabled: false, time });
@@ -6093,7 +6142,7 @@ function isWalletAllowedForCurrentUser(walletName) {
                 scheduleBillDebtReminder();
                 await registerFinanceBackgroundReminder();
                 await syncOneSignalReminderProfile(true);
-                alert(enabled ? `Notifikasi OneSignal tagihan/utang aktif mulai H-${daysBefore}.` : 'Notifikasi tagihan/utang dinonaktifkan.');
+                alert(enabled ? `Notifikasi tagihan/utang aktif mulai H-${daysBefore}. Jika web/PWA ditutup, pengiriman dijalankan oleh OneSignal + Apps Script trigger.` : 'Notifikasi tagihan/utang dinonaktifkan.');
             } catch (err) {
                 saveBillDebtReminderSettings({ enabled: false, daysBefore });
                 initBillDebtReminderSettingsUI();
@@ -12564,7 +12613,11 @@ Melewati limit: ${formatRupiah(overLimit)}`;
             document.getElementById('dailyReminderEnabled')?.addEventListener('change', function() {
                 const settings = getDailyReminderSettings();
                 saveDailyReminderSettings({ enabled: !!this.checked, time: document.getElementById('dailyReminderTime')?.value || settings.time || DAILY_REMINDER_DEFAULT_TIME });
-                if (!this.checked) scheduleDailyFinanceReminder();
+                if (this.checked && (!('Notification' in window) || Notification.permission !== 'granted')) {
+                    updateDailyReminderStatus('Butuh izin notifikasi. Klik Simpan Notifikasi.', 'warning');
+                } else {
+                    scheduleDailyFinanceReminder();
+                }
             });
             document.getElementById('dailyReminderTime')?.addEventListener('change', function() {
                 const settings = getDailyReminderSettings();
@@ -12976,3 +13029,4 @@ Melewati limit: ${formatRupiah(overLimit)}`;
     </script>
 </body>
 </html>
+
