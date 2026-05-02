@@ -1294,6 +1294,7 @@ https://www.indapk.com/wp-content/uploads/2025/12/GOW3-Gameplay-2.jpg"></textare
             { id: 'MultiUp', name: 'Multiup', color: 'btn-success' },
             { id: 'Qiwi', name: 'Qiwi', color: 'btn-success' },
             { id: 'Mega', name: 'Mega', color: 'btn-success' },
+            { id: 'MegaUp', name: 'MegaUp', color: 'btn-success' },
             { id: 'Clicknupload', name: 'Clicknupload', color: 'btn-success' },
             { id: 'KatFile', name: 'KatFile', color: 'btn-success' },
             { id: 'Bowfile', name: 'Bowfile', color: 'btn-success' },
@@ -2751,6 +2752,7 @@ async function saveGameData() {
                     '1Fichier': 'btn-dark',
                     'Qiwi': 'btn-danger',
                     'Mega': 'btn-danger',
+                    'MegaUp': 'btn-danger',
                     'Clicknupload': 'btn-danger',
                     'KatFile': 'btn-danger',
                     'Bowfile': 'btn-danger',
@@ -3181,9 +3183,6 @@ async function saveGameData() {
                     
                     ${gameData.gameInfo.thumbnail_url ? `
                     <div class="col-md-12 mt-3">
-                        <div class="text-center">
-                            <img src="${escapeHTML(gameData.gameInfo.thumbnail_url)}" alt="${escapeHTML(gameData.gameInfo.nama_game)}" class="img-fluid rounded" style="max-height: 300px;">
-                        </div>
                     </div>
                     ` : ''}
                     ${screenshotGalleryHTML}
