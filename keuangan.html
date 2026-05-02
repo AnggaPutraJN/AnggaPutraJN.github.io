@@ -4805,12 +4805,230 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     
     <script>
         // ============================================
         // KONFIGURASI & VARIABEL GLOBAL
         // ============================================
         const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbx5hWHJfX8f8KGT3di3-0I42EPhXJU4vddlq0ZZbQ7-xmYY5_lvjwhz18V-bvqfi7Gd/exec";
+
+        // ============================================
+        // ONESIGNAL WEB PUSH - PWA GITHUB PAGES
+        // Ganti APP ID di bawah dengan App ID dari OneSignal Dashboard.
+        // REST API KEY jangan pernah ditaruh di HTML; simpan di Code.gs Script Properties.
+        // ============================================
+        const ONESIGNAL_APP_ID = "30ad9b68-d1e3-4d92-8cfc-dd3db56d5634";
+        const ONESIGNAL_PUBLIC_URL = new URL('./keuangan.html', window.location.href).href;
+        let oneSignalInitPromise = null;
+        let oneSignalInitialized = false;
+
+        function hasOneSignalConfig() {
+            return !!ONESIGNAL_APP_ID && ONESIGNAL_APP_ID !== '30ad9b68-d1e3-4d92-8cfc-dd3db56d5634';
+        }
+
+        function getOneSignalWorkerConfig() {
+            // Worker OneSignal ditempatkan di subfolder agar tidak bentrok dengan sw.js PWA utama.
+            const workerUrl = new URL('push/onesignal/OneSignalSDKWorker.js', window.location.href);
+            const scopeUrl = new URL('push/onesignal/', window.location.href);
+            return {
+                path: workerUrl.pathname.replace(/^\//, ''),
+                scope: scopeUrl.pathname
+            };
+        }
+
+        function withOneSignal(callback) {
+            return new Promise((resolve) => {
+                window.OneSignalDeferred = window.OneSignalDeferred || [];
+                window.OneSignalDeferred.push(async function(OneSignal) {
+                    try {
+                        const result = await callback(OneSignal);
+                        resolve(result);
+                    } catch (err) {
+                        console.warn('OneSignal error:', err);
+                        resolve(null);
+                    }
+                });
+            });
+        }
+
+        async function initOneSignalFinance() {
+            if (!hasOneSignalConfig()) {
+                console.warn('OneSignal belum aktif: isi ONESIGNAL_APP_ID di keuangan.html.');
+                return false;
+            }
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                console.warn('OneSignal Web Push wajib HTTPS/localhost. Upload ke GitHub Pages atau custom domain HTTPS.');
+                return false;
+            }
+            if (!('serviceWorker' in navigator)) {
+                console.warn('Browser tidak mendukung Service Worker.');
+                return false;
+            }
+            if (oneSignalInitPromise) return oneSignalInitPromise;
+
+            oneSignalInitPromise = withOneSignal(async function(OneSignal) {
+                const swCfg = getOneSignalWorkerConfig();
+                if (!oneSignalInitialized) {
+                    await OneSignal.init({
+                        appId: ONESIGNAL_APP_ID,
+                        serviceWorkerPath: swCfg.path,
+                        serviceWorkerParam: { scope: swCfg.scope },
+                        notifyButton: { enable: false },
+                        allowLocalhostAsSecureOrigin: true
+                    });
+                    oneSignalInitialized = true;
+
+                    try {
+                        OneSignal.Notifications.addEventListener('permissionChange', async function(permission) {
+                            console.log('OneSignal permission:', permission);
+                            await syncOneSignalReminderProfile(true);
+                        });
+                        OneSignal.User.PushSubscription.addEventListener('change', async function(event) {
+                            console.log('OneSignal subscription berubah:', event);
+                            await syncOneSignalReminderProfile(true);
+                        });
+                        OneSignal.Notifications.addEventListener('click', function(event) {
+                            console.log('Notifikasi OneSignal diklik:', event);
+                        });
+                    } catch (listenerErr) {
+                        console.warn('Listener OneSignal tidak terpasang:', listenerErr);
+                    }
+                }
+
+                const userId = typeof getAuthUserId === 'function' ? getAuthUserId() : '';
+                if (userId) {
+                    await OneSignal.login(userId);
+                    try {
+                        OneSignal.User.addTags({
+                            app: 'keuangan_pwa',
+                            finance_user_id: userId,
+                            finance_username: (currentUser && currentUser.username) ? currentUser.username : ''
+                        });
+                    } catch (tagErr) {
+                        console.warn('Gagal menambah tag OneSignal:', tagErr);
+                    }
+                }
+                return true;
+            });
+
+            return oneSignalInitPromise;
+        }
+
+        async function requestOneSignalPermission() {
+            const ready = await initOneSignalFinance();
+            if (!ready) throw new Error('OneSignal belum siap. Pastikan APP ID sudah benar dan file dibuka dari HTTPS/GitHub Pages.');
+
+            return withOneSignal(async function(OneSignal) {
+                if (!OneSignal.Notifications.isPushSupported()) {
+                    throw new Error('Browser ini belum mendukung Web Push OneSignal.');
+                }
+                if (!OneSignal.Notifications.permission) {
+                    await OneSignal.Notifications.requestPermission();
+                }
+                if (!OneSignal.Notifications.permission) {
+                    throw new Error('Izin notifikasi belum diberikan. Klik Allow/Izinkan pada browser.');
+                }
+                try {
+                    await OneSignal.User.PushSubscription.optIn();
+                } catch (optErr) {
+                    console.warn('optIn OneSignal dilewati:', optErr);
+                }
+                await syncOneSignalReminderProfile(true);
+                return true;
+            });
+        }
+
+        function getOneSignalSubscriptionDataFromInstance(OneSignal) {
+            const push = OneSignal && OneSignal.User && OneSignal.User.PushSubscription ? OneSignal.User.PushSubscription : {};
+            return {
+                onesignalId: (OneSignal.User && OneSignal.User.onesignalId) || '',
+                externalId: (OneSignal.User && OneSignal.User.externalId) || (typeof getAuthUserId === 'function' ? getAuthUserId() : ''),
+                subscriptionId: push.id || '',
+                token: push.token || '',
+                optedIn: push.optedIn === undefined ? true : !!push.optedIn,
+                permission: !!(OneSignal.Notifications && OneSignal.Notifications.permission)
+            };
+        }
+
+        async function getOneSignalSubscriptionData() {
+            const ready = await initOneSignalFinance();
+            if (!ready) return { onesignalId:'', externalId:getAuthUserId ? getAuthUserId() : '', subscriptionId:'', token:'', optedIn:false, permission:false };
+            return withOneSignal(async function(OneSignal) {
+                return getOneSignalSubscriptionDataFromInstance(OneSignal);
+            });
+        }
+
+        async function syncOneSignalReminderProfile(forceCheck = false) {
+            try {
+                if (!getAuthUserId || !getAuthUserId()) return false;
+                if (!hasOneSignalConfig()) return false;
+
+                const ready = await initOneSignalFinance();
+                if (!ready) return false;
+
+                const subscription = await getOneSignalSubscriptionData();
+                const profile = typeof buildFinanceNotificationSnapshot === 'function'
+                    ? buildFinanceNotificationSnapshot()
+                    : { userId: getAuthUserId(), savedAt: new Date().toISOString() };
+
+                const body = new URLSearchParams({
+                    action: 'saveOneSignalUser',
+                    profile: JSON.stringify(profile),
+                    publicUrl: ONESIGNAL_PUBLIC_URL,
+                    forceCheck: forceCheck ? '1' : '0',
+                    onesignalId: subscription.onesignalId || '',
+                    externalId: subscription.externalId || getAuthUserId(),
+                    subscriptionId: subscription.subscriptionId || '',
+                    token: subscription.token || '',
+                    optedIn: subscription.optedIn ? '1' : '0',
+                    permission: subscription.permission ? 'granted' : 'default'
+                });
+
+                const response = await fetch(SPREADSHEET_URL, {
+                    method: 'POST',
+                    body: body.toString(),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+                const result = await response.json();
+                if (result.status !== 'success') throw new Error(result.message || 'Gagal sinkron OneSignal.');
+                console.log('Sinkron OneSignal berhasil:', result);
+                return true;
+            } catch (err) {
+                console.warn('Gagal sinkron profil OneSignal:', err);
+                return false;
+            }
+        }
+
+        async function sendOneSignalServerNotification(kind, title, body, tag) {
+            try {
+                await requestOneSignalPermission();
+                const profile = typeof buildFinanceNotificationSnapshot === 'function'
+                    ? buildFinanceNotificationSnapshot()
+                    : { userId: getAuthUserId(), savedAt: new Date().toISOString() };
+                const params = new URLSearchParams({
+                    action: 'sendOneSignalNow',
+                    kind: kind || 'manual',
+                    title: title || 'Notifikasi Keuangan',
+                    body: body || '',
+                    tag: tag || 'finance-notification',
+                    publicUrl: ONESIGNAL_PUBLIC_URL,
+                    profile: JSON.stringify(profile)
+                });
+                const response = await fetch(SPREADSHEET_URL, {
+                    method: 'POST',
+                    body: params.toString(),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+                const result = await response.json();
+                if (result.status !== 'success') throw new Error(result.message || 'Gagal mengirim OneSignal.');
+                return result;
+            } catch (err) {
+                console.warn('Gagal kirim notifikasi OneSignal:', err);
+                throw err;
+            }
+        }
+
 
         // ============================================
         // LOGIN / REGISTER MULTI USER
@@ -4911,6 +5129,11 @@
         }
 
         function logoutFinanceUser() {
+            try {
+                if (window.OneSignalDeferred) {
+                    OneSignalDeferred.push(async function(OneSignal) { await OneSignal.logout(); });
+                }
+            } catch (err) { console.warn('Gagal logout OneSignal:', err); }
             saveCurrentUser(null);
             lastTransactions = [];
             lastTargets = [];
@@ -4964,6 +5187,8 @@
                 await loadData();
                 initDailyReminderSettingsUI();
                 scheduleDailyFinanceReminder();
+                await initOneSignalFinance();
+                await syncOneSignalReminderProfile(true);
             } catch (err) {
                 showAuthMessage(err.message || String(err), 'error');
             } finally {
@@ -5011,6 +5236,8 @@
                 await loadQuickAfterRegister();
                 initDailyReminderSettingsUI();
                 scheduleDailyFinanceReminder();
+                await initOneSignalFinance();
+                await syncOneSignalReminderProfile(true);
             } catch (err) {
                 showAuthMessage(err.message || String(err), 'error');
             } finally {
@@ -5605,6 +5832,14 @@ function isWalletAllowedForCurrentUser(walletName) {
         }
 
         async function requestDailyReminderPermission() {
+            // Prioritas utama: OneSignal agar notifikasi tetap muncul walaupun PWA ditutup.
+            if (hasOneSignalConfig() && location.protocol !== 'file:') {
+                await requestOneSignalPermission();
+                updateDailyReminderStatus('OneSignal aktif', 'success');
+                return true;
+            }
+
+            // Fallback lama hanya untuk kondisi APP ID belum diisi / pengujian lokal.
             if (!('Notification' in window)) {
                 updateDailyReminderStatus('Browser tidak mendukung', 'danger');
                 throw new Error('Browser ini belum mendukung Notification API.');
@@ -5626,6 +5861,15 @@ function isWalletAllowedForCurrentUser(walletName) {
             const title = 'Pengingat Keuangan Harian';
             const body = 'Apakah anda sudah menginput keuangan hari ini?';
             try {
+                // Kirim lewat OneSignal server, bukan hanya notifikasi lokal browser.
+                await sendOneSignalServerNotification('daily-input-test', title, body, 'finance-daily-reminder');
+                return;
+            } catch (err) {
+                console.warn('OneSignal harian gagal, mencoba fallback lokal:', err);
+            }
+
+            // Fallback untuk testing lokal saja.
+            try {
                 if ('serviceWorker' in navigator) {
                     const reg = await navigator.serviceWorker.ready;
                     await reg.showNotification(title, {
@@ -5640,8 +5884,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                     return;
                 }
                 new Notification(title, { body, icon: './icon-192x192.png', tag: 'finance-daily-reminder' });
-            } catch (err) {
-                console.warn('Gagal menampilkan notifikasi:', err);
+            } catch (fallbackErr) {
+                console.warn('Gagal menampilkan notifikasi fallback:', fallbackErr);
             }
         }
 
@@ -5674,7 +5918,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                 saveDailyReminderSettings({ enabled, time });
                 scheduleDailyFinanceReminder();
                 await registerFinanceBackgroundReminder();
-                alert(enabled ? `Notifikasi pengingat harian aktif pada jam ${time}.` : 'Notifikasi pengingat harian dinonaktifkan.');
+                await syncOneSignalReminderProfile(true);
+                alert(enabled ? `Notifikasi OneSignal pengingat harian aktif pada jam ${time}.` : 'Notifikasi pengingat harian dinonaktifkan.');
             } catch (err) {
                 if (enabledEl) enabledEl.checked = false;
                 saveDailyReminderSettings({ enabled: false, time });
@@ -5777,17 +6022,22 @@ function isWalletAllowedForCurrentUser(walletName) {
                 updateBillDebtReminderStatus('Tidak ada tagihan/utang yang perlu diingatkan saat ini.');
                 return;
             }
-            const todayKey = getTodayISODate();
-            const itemKey = items.map(x => `${x.type}:${x.name}:${x.dueDate}`).join('|');
-            const notifyKey = `finance_bill_debt_notified_${getAuthUserId() || 'guest'}`;
-            const last = localStorage.getItem(notifyKey);
-            if (!force && last === `${todayKey}|${itemKey}`) return;
-            await requestDailyReminderPermission();
             const title = 'Reminder Tagihan & Utang';
             const body = items.slice(0, 4).map(item => {
                 const dueLabel = item.diff === 0 ? 'hari ini' : `H-${item.diff}`;
                 return `${item.type}: ${item.name} (${dueLabel}) ${formatRupiah(item.amount)}`;
             }).join('\n');
+
+            try {
+                // Kirim lewat OneSignal agar tetap muncul walaupun aplikasi PWA ditutup.
+                await sendOneSignalServerNotification(force ? 'bill-debt-test' : 'bill-debt', title, body, 'finance-bill-debt-reminder');
+                updateBillDebtReminderStatus(`${items.length} tagihan/utang masuk rentang pengingat dan sudah disinkron ke OneSignal.`);
+                return;
+            } catch (err) {
+                console.warn('OneSignal tagihan/utang gagal, mencoba fallback lokal:', err);
+            }
+
+            // Fallback lokal hanya untuk pengujian jika OneSignal belum dikonfigurasi.
             try {
                 if ('serviceWorker' in navigator) {
                     const reg = await navigator.serviceWorker.ready;
@@ -5798,10 +6048,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                 } else {
                     new Notification(title, { body, icon: './icon-192x192.png', tag: 'finance-bill-debt-reminder' });
                 }
-                localStorage.setItem(notifyKey, `${todayKey}|${itemKey}`);
-                updateBillDebtReminderStatus(`${items.length} tagihan/utang masuk rentang pengingat.`);
-            } catch (err) {
-                console.warn('Gagal menampilkan reminder tagihan/utang:', err);
+            } catch (fallbackErr) {
+                console.warn('Gagal menampilkan reminder tagihan/utang fallback:', fallbackErr);
             }
         }
 
@@ -5841,7 +6089,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                 initBillDebtReminderSettingsUI();
                 scheduleBillDebtReminder();
                 await registerFinanceBackgroundReminder();
-                alert(enabled ? `Notifikasi tagihan/utang aktif mulai H-${daysBefore}.` : 'Notifikasi tagihan/utang dinonaktifkan.');
+                await syncOneSignalReminderProfile(true);
+                alert(enabled ? `Notifikasi OneSignal tagihan/utang aktif mulai H-${daysBefore}.` : 'Notifikasi tagihan/utang dinonaktifkan.');
             } catch (err) {
                 saveBillDebtReminderSettings({ enabled: false, daysBefore });
                 initBillDebtReminderSettingsUI();
@@ -8439,7 +8688,8 @@ function isWalletAllowedForCurrentUser(walletName) {
                 await postFinanceAction({action: 'saveBill', billName: name, amount, dueDate, wallet, category});
                 ['billName','billAmount','billDueDate'].forEach(id => document.getElementById(id).value = '');
                 await loadFinanceSettings();
-                alert('Reminder tagihan berhasil disimpan.');
+                await syncOneSignalReminderProfile(true);
+                alert('Reminder tagihan berhasil disimpan dan disinkronkan ke OneSignal.');
             } catch (e) { alert(e.message); }
         }
 
@@ -8524,6 +8774,7 @@ function isWalletAllowedForCurrentUser(walletName) {
 
                 syncFinanceNotificationDataToSW(false);
                 registerFinanceBackgroundReminder();
+                syncOneSignalReminderProfile(false);
 
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -9543,8 +9794,11 @@ Melewati limit: ${formatRupiah(overLimit)}`;
                     });
                 }
             } catch (err) {
-                console.warn('Notifikasi batas jajan gagal ditampilkan:', err);
+                console.warn('Notifikasi batas jajan fallback gagal ditampilkan:', err);
             }
+
+            // Kirim juga ke server OneSignal supaya notifikasi tetap berjalan di luar aplikasi.
+            syncOneSignalReminderProfile(true);
         }
 
         function renderDailyExpenseCards(daily) {
