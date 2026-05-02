@@ -2459,6 +2459,9 @@
         }
 
     </style>
+    <!-- OneSignal Web Push SDK v16 - harus CDN, jangan diupload lokal -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 </head>
 
 <body>
@@ -4805,7 +4808,6 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     
     <script>
         // ============================================
@@ -4824,7 +4826,7 @@
         let oneSignalInitialized = false;
 
         function hasOneSignalConfig() {
-            return !!ONESIGNAL_APP_ID && ONESIGNAL_APP_ID !== 'os_v2_app_gcwzw2gr4ngzfdh43u63k3kwgrvrt2r4iuou5mnkqiasyq6kuhrsnhlmb2ne3xm4c4l5nrfny7pxzoaz2whmbatwyxazlwbthumchyy';
+            return !!ONESIGNAL_APP_ID && ONESIGNAL_APP_ID !== 'os_v2_app_gcwzw2gr4ngzfdh43u63k3kwgq6nkvapoq5eugviiysnrolw73qe2cpkbwofhsvu6vkfxol3pyixci3duqoew7lo44ukjpc6pnpg3sa';
         }
 
         function getOneSignalWorkerConfig() {
