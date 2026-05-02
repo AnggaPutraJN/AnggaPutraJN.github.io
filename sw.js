@@ -9,7 +9,7 @@
 // Catatan: Service Worker hanya berjalan di HTTPS/GitHub Pages/localhost, bukan file://
 // =========================================================
 
-const CACHE_NAME = 'keuangan-pwa-v3.3.0';
+const CACHE_NAME = 'keuangan-pwa-v3.4.0-notification-fixed';
 const DB_NAME = 'keuangan-notification-db';
 const DB_VERSION = 1;
 const STORE_NAME = 'state';
@@ -406,4 +406,3 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
-
