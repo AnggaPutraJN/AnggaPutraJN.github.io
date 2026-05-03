@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<title>Generator Kode Share Game PS3</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+:root {
+  --primary-bg: #0a0a0a;
+  --secondary-bg: #1a1a1a;
+  --card-bg: #2a2a2a;
+  --text-primary: #7CC6ED;
+  --text-secondary: #7CC6ED;
+  --accent-color: #00d4ff;
+  --accent-secondary: #ff006e;
+  --accent-green: #00ff88;
+  --border-color: #333;
+  --neon-glow: 0 0 20px;
+  --placeholder-color: #888;
+}
+
+[data-theme="light"] {
+  --primary-bg: #f8f9fa;
+  --secondary-bg: #ffffff;
+  --card-bg: #ffffff;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --accent-color: #0066cc;
+  --accent-secondary: #dc3545;
+  --accent-green: #28a745;
+  --border-color: #dee2e6;
+  --neon-glow: 0 0 10px;
+  --placeholder-color: #6c757d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* Navigation Styles */
+.nav-section {
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--accent-color);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  padding: 12px 24px;
+  border-radius: 25px;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gradient-bg3 {
+  background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+  box-shadow: var(--neon-glow) var(--accent-color);
+}
+
+.btn-gradient-bg5 {
+  background: linear-gradient(45deg, var(--accent-secondary), var(--accent-color));
+  box-shadow: var(--neon-glow) var(--accent-secondary);
+}
+
+.btn-gradient-bg6 {
+  background: linear-gradient(45deg, #7b2ff7, var(--accent-color));
+  box-shadow: var(--neon-glow) var(--accent-color);
+}
+
+.nav-btn:hover {
+  transform: translateY(-3px);
+  color: white;
+  box-shadow: var(--neon-glow) var(--accent-color), 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Theme Switch */
+.theme-switch-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+}
+
+.theme-switch {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background: var(--card-bg);
+  border-radius: 15px;
+  border: 2px solid var(--accent-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-switch::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+.theme-switch.active::before {
+  transform: translateX(28px);
+}
+
+/* Container Styles */
+.container-fluid {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Card Styles */
+.custom-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.custom-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+  color: white;
+  padding: 1.5rem;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+/* Form Styles */
+.form-control, input[type="text"] {
+  background: var(--secondary-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  padding: 12px 16px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.form-control:focus, input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  background: var(--card-bg);
+}
+
+.form-control.is-invalid,
+input[type="text"].is-invalid {
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 12px rgba(255, 0, 110, 0.35);
+}
+
+/* Placeholder Styles - Fixed */
+.form-control::placeholder, 
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 1;
+}
+
+.form-control::-webkit-input-placeholder,
+input[type="text"]::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: var(--placeholder-color) !important;
+}
+
+.form-control::-moz-placeholder,
+input[type="text"]::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 1;
+}
+
+.form-control:-ms-input-placeholder,
+input[type="text"]:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: var(--placeholder-color) !important;
+}
+
+.form-control:-moz-placeholder,
+input[type="text"]:-moz-placeholder,
+textarea:-moz-placeholder {
+  color: var(--placeholder-color) !important;
+  opacity: 1;
+}
+
+textarea.form-control {
+  min-height: 200px;
+  resize: vertical;
+  font-family: 'Courier New', monospace;
+}
+
+label {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Button Styles */
+.btn-custom {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-custom:hover::before {
+  left: 100%;
+}
+
+.btn-primary-custom {
+  background: linear-gradient(45deg, var(--accent-color), var(--accent-green));
+  color: white;
+  box-shadow: var(--neon-glow) var(--accent-color);
+}
+
+.btn-secondary-custom {
+  background: linear-gradient(45deg, #6c757d, #495057);
+  color: white;
+}
+
+.btn-danger-custom {
+  background: linear-gradient(45deg, var(--accent-secondary), #ff4757);
+  color: white;
+  box-shadow: var(--neon-glow) var(--accent-secondary);
+}
+
+.btn-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Result Section */
+#result {
+  background: var(--card-bg);
+  border: 2px solid var(--accent-color);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  color: var(--text-primary);
+  box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1);
+  min-height: 100px;
+}
+
+/* Info Box */
+.info-box {
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.info-box code {
+  color: var(--accent-green);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .container-fluid {
+    padding: 1rem;
+  }
+  
+  .theme-switch-container {
+    top: 10px;
+    right: 10px;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--accent-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Success Animation */
+.success-animation {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
+}
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.2em;
+    background-color: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+}
+
+.form-check-label {
+    margin-left: 0.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+<!-- Theme Switch -->
+<div class="theme-switch-container">
+  <div class="theme-switch" onclick="toggleTheme()" title="Toggle Theme"></div>
+</div>
+
+<!-- Navigation Section -->
+<div class="nav-section">
+  <div class="nav-buttons">
+    <a href="index" class="nav-btn btn-gradient-bg3">
+      <i class="fas fa-code"></i> Generator HTML Switch
+    </a>
+    <a href="ps2" class="nav-btn btn-gradient-bg5">
+      <i class="fas fa-gamepad"></i> Generator HTML PS2
+    </a>
+    <a href="ps3" class="nav-btn btn-gradient-bg6">
+      <i class="fas fa-gamepad"></i> Generator HTML PS3
+    </a>
+  </div>
+</div>
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-6 mb-4">
+<div class="custom-card">
+<div class="card-header">
+<h2><i class="fas fa-terminal"></i> Input Area PS3</h2>
+</div>
+<div class="card-body">
+<div class="mb-3">
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="updateRequest" value="update" checked>
+        <label class="form-check-label" for="updateRequest">
+            UPDATE REQUEST GAME PS3
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="shareGame" value="share">
+        <label class="form-check-label" for="shareGame">
+            SHARE GAME PS3
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="postType" id="uploadulang" value="upload">
+        <label class="form-check-label" for="uploadulang">
+            Upload Ulang GAME PS3
+        </label>
+    </div>
+
+<div class="info-box">
+  <b>Format paste PS3:</b><br>
+  <code>Nama Game</code><br>
+  <code>Ukuran Game</code><br>
+  <code>Category</code><br>
+  <code>Region</code><br>
+  <code>Link Game</code>
+</div>
+
+<label for="myTextarea">Masukkan Detail Game PS3 (satu per baris):</label>
+<textarea id="myTextarea" class="form-control" placeholder="Masukkan detail game PS3...&#10;Contoh:&#10;Borderlands&#10;3.48 GB&#10;Action&#10;USA&#10;https://www.indapk.com/borderlands-ps3"></textarea>
+</div>
+<div class="d-flex justify-content-center flex-wrap gap-2">
+<button type="button" onclick="generateCode()" class="btn btn-custom btn-primary-custom">
+<i class="fas fa-cogs"></i> Generate Code
+</button>
+<button type="button" onclick="copyCode()" class="btn btn-custom btn-secondary-custom">
+<i class="fas fa-copy"></i> Copy Code
+</button>
+<button type="button" onclick="clearCode()" class="btn btn-custom btn-danger-custom">
+<i class="fas fa-trash"></i> Clear All
+</button>
+</div>
+<div id="result"></div>
+</div>
+</div>
+</div>
+
+<div class="col-md-6 mb-4">
+<div class="custom-card">
+<div class="card-header">
+<h2><i class="fas fa-gamepad"></i> Detail Game PS3</h2>
+</div>
+<div class="card-body">
+<form id="myForm">
+<label for="inputName"><i class="fas fa-tag"></i> Nama Game:</label>
+<input type="text" id="inputName" name="inputName" placeholder="Masukkan nama game...">
+
+<label for="inputSingleSize"><i class="fas fa-hdd"></i> Ukuran Game:</label>
+<input type="text" id="inputSingleSize" name="inputSingleSize" placeholder="Contoh: 3.48 GB">
+
+<label for="inputCategory"><i class="fas fa-list"></i> Category:</label>
+<input type="text" id="inputCategory" name="inputCategory" placeholder="Contoh: Action, RPG, Sports">
+
+<label for="inputRegion"><i class="fas fa-globe"></i> Region:</label>
+<input type="text" id="inputRegion" name="inputRegion" placeholder="Contoh: USA, EUR, ASIA">
+
+<label for="inputLink"><i class="fas fa-link"></i> Link Game:</label>
+<input type="text" id="inputLink" name="inputLink" placeholder="https://www.indapk.com/nama-game-ps3">
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!--Scripts-->
+<script>
+// Theme Toggle Function
+function toggleTheme() {
+  const body = document.body;
+  const themeSwitch = document.querySelector('.theme-switch');
+  
+  if (body.getAttribute('data-theme') === 'light') {
+    body.removeAttribute('data-theme');
+    themeSwitch.classList.remove('active');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.setAttribute('data-theme', 'light');
+    themeSwitch.classList.add('active');
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+// Load saved theme
+document.addEventListener('DOMContentLoaded', function() {
+  const savedTheme = localStorage.getItem('theme');
+  const themeSwitch = document.querySelector('.theme-switch');
+  
+  if (savedTheme === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    themeSwitch.classList.add('active');
+  }
+});
+
+function clearCode() {
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerText = "";
+  
+  // Add animation
+  resultDiv.style.animation = 'pulse 0.3s ease-out';
+  setTimeout(() => {
+    resultDiv.style.animation = '';
+  }, 300);
+
+  // Clear text inputs and textarea only. Radio value jangan dihapus.
+  const textInputs = document.querySelectorAll('input[type="text"], textarea');
+  textInputs.forEach(input => {
+    input.value = '';
+    input.classList.remove('is-invalid');
+  });
+
+  document.getElementById('updateRequest').checked = true;
+}
+
+function copyCode() {
+  const resultDiv = document.getElementById("result");
+  const generatedHtml = resultDiv.innerText;
+
+  if (generatedHtml.trim() === "") {
+    showNotification("Maaf, codingan belum dibuat!", "error");
+    return;
+  }
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(generatedHtml).then(() => {
+      showNotification("Codingan berhasil disalin!", "success");
+      resultDiv.classList.add('success-animation');
+      setTimeout(() => resultDiv.classList.remove('success-animation'), 500);
+    }).catch(() => fallbackCopy(generatedHtml, resultDiv));
+  } else {
+    fallbackCopy(generatedHtml, resultDiv);
+  }
+}
+
+function fallbackCopy(text, resultDiv) {
+  const tempTextarea = document.createElement("textarea");
+  tempTextarea.value = text;
+  document.body.appendChild(tempTextarea);
+  tempTextarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempTextarea);
+  
+  showNotification("Codingan berhasil disalin!", "success");
+  resultDiv.classList.add('success-animation');
+  setTimeout(() => resultDiv.classList.remove('success-animation'), 500);
+}
+
+// Notification function
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+    ${type === 'success' ? 'background: linear-gradient(45deg, #00ff88, #00d4ff);' : 'background: linear-gradient(45deg, #ff006e, #ff4757);'}
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
+// Add CSS for notification animations
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideDown {
+    from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+  }
+  @keyframes slideUp {
+    from { transform: translateX(-50%) translateY(0); opacity: 1; }
+    to { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+  }
+`;
+document.head.appendChild(style);
+
+const textarea = document.getElementById('myTextarea');
+const form = document.getElementById('myForm');
+const inputs = Array.from(form.querySelectorAll('input[type="text"]'));
+
+textarea.addEventListener('input', () => {
+  const text = textarea.value.trim();
+  const values = text
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(line => line !== '');
+
+  inputs.forEach((input, index) => {
+    input.value = values[index] || '';
+    input.classList.remove('is-invalid');
+  });
+});
+
+textarea.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    const currentIndex = inputs.findIndex((input) => input === document.activeElement);
+
+    if (currentIndex !== -1) {
+      event.preventDefault();
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < inputs.length) {
+        inputs[nextIndex].focus();
+      }
+    }
+  }
+});
+
+function validateRequiredFields() {
+  const requiredFields = [
+    { id: 'inputName', label: 'Nama Game' },
+    { id: 'inputSingleSize', label: 'Ukuran Game' },
+    { id: 'inputCategory', label: 'Category' },
+    { id: 'inputRegion', label: 'Region' },
+    { id: 'inputLink', label: 'Link Game' }
+  ];
+
+  const missing = [];
+
+  requiredFields.forEach(field => {
+    const el = document.getElementById(field.id);
+    const value = el.value.trim();
+    el.classList.remove('is-invalid');
+
+    if (!value) {
+      el.classList.add('is-invalid');
+      missing.push(field.label);
+    }
+  });
+
+  if (missing.length > 0) {
+    showNotification('Data belum lengkap: ' + missing.join(', '), 'error');
+    return false;
+  }
+
+  return true;
+}
+
+function getPostTypeLabel(postType) {
+  if (postType === 'share') return '🎮SHARE GAME PS3:';
+  if (postType === 'upload') return '🎮Upload Ulang GAME PS3:';
+  return '🎮UPDATE REQUEST GAME PS3:';
+}
+
+function generateCode() {
+    if (!validateRequiredFields()) return;
+
+    // Show loading state
+    const generateBtn = document.querySelector('.btn-primary-custom');
+    const originalText = generateBtn.innerHTML;
+    generateBtn.innerHTML = '<span class="loading"></span> Generating...';
+    generateBtn.disabled = true;
+    
+    setTimeout(() => {
+        // Get values from game form
+        const inputName = document.getElementById("inputName").value.trim();
+        const inputSingleSize = document.getElementById("inputSingleSize").value.trim();
+        const inputCategory = document.getElementById("inputCategory").value.trim();
+        const inputRegion = document.getElementById("inputRegion").value.trim();
+        const inputLink = document.getElementById("inputLink").value.trim();
+        
+        // Get selected post type
+        const postType = document.querySelector('input[name="postType"]:checked').value;
+        const postTypeLabel = getPostTypeLabel(postType);
+
+        // Encode game name for URL. Spasi dibuat + agar cocok untuk query.
+        const encodedGameName = encodeURIComponent(inputName).replace(/%20/g, '+');
+        
+        const generatedHtml = `${postTypeLabel}
+Nama Game: ${inputName}
+Ukuran Game: ${inputSingleSize}
+Category: ${inputCategory}
+Region: ${inputRegion}
+Emulator: RPCS3 (Windows, Linux, macOS)
+Connection: Offline
+Download: Google Drive, Mediafire, VikingFile, PixelDrain, 1Fichier, Multiup
+Format: ISO
+
+🌐Link Game:
+https://indapk.github.io/?q=${encodedGameName}
+
+🌐Link Alternatif:
+${inputLink}
+
+🌐Join Komunitas INDapk:
+https://www.kuysocial.com/pages/INDapk
+
+🌐Request Game:
+https://indapk.com/requestgame.html
+
+
+#INDapk`;
+
+        // Display the generated HTML
+        document.getElementById("result").innerText = generatedHtml;
+        
+        // Reset button
+        generateBtn.innerHTML = originalText;
+        generateBtn.disabled = false;
+        
+        // Show success notification
+        showNotification("Code PS3 berhasil di-generate!", "success");
+    }, 500);
+}
+</script>
+
+</body>
+</html>
