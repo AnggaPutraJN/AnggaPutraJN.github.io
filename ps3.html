@@ -2391,35 +2391,55 @@ https://www.indapk.com/wp-content/uploads/2025/12/GOW3-PS3-INDapk-1.jpg`;
         }
         
 function previewThumbnail() {
-    const url = document.getElementById('thumbnailUrl').value.trim();
+    const url = String(document.getElementById('thumbnailUrl')?.value || '').trim();
     const preview = document.getElementById('thumbnailPreview');
-    const img = preview.querySelector('img');
-    
+    if (!preview) return;
+
+    let img = preview.querySelector('img');
+    if (!img) {
+        img = document.createElement('img');
+        img.className = 'img-thumbnail';
+        img.style.maxWidth = '200px';
+        img.style.maxHeight = '150px';
+        preview.appendChild(img);
+    }
+
     if (!url) {
         preview.style.display = 'none';
+        img.removeAttribute('src');
         return;
     }
-    
-    // Show loading state
+
+    // Jangan blokir penyimpanan hanya karena preview browser gagal.
+    // Beberapa server gambar/hotlink bisa gagal pada pengecekan new Image(), padahal URL tetap valid.
     preview.style.display = 'block';
-    img.src = '';
-    img.alt = 'Loading thumbnail...';
-    
-    // Create new image object to check if it loads
-    const testImage = new Image();
-    testImage.onload = function() {
-        img.src = url;
+    img.referrerPolicy = 'no-referrer';
+    img.crossOrigin = 'anonymous';
+    img.alt = 'Thumbnail Preview';
+    img.style.opacity = '1';
+    img.style.display = 'block';
+
+    img.onload = function() {
+        img.style.opacity = '1';
         img.alt = 'Thumbnail Preview';
         console.log('✅ Thumbnail berhasil dimuat:', url);
     };
-    
-    testImage.onerror = function() {
-        preview.style.display = 'none';
-        console.log('❌ Gagal memuat thumbnail:', url);
-        showToast('warning', 'Gagal memuat thumbnail. URL mungkin tidak valid.');
+
+    img.onerror = function() {
+        console.warn('⚠️ Preview thumbnail gagal dimuat di browser, tetapi URL tetap disimpan:', url);
+        img.style.display = 'none';
+        let fallback = preview.querySelector('.thumb-preview-fallback');
+        if (!fallback) {
+            fallback = document.createElement('div');
+            fallback.className = 'thumb-preview-fallback alert alert-warning mt-2 mb-0 p-2';
+            preview.appendChild(fallback);
+        }
+        fallback.innerHTML = `Preview gambar tidak bisa dimuat di browser, tetapi URL tetap akan disimpan.<br><small>${escapeHTML(url)}</small>`;
     };
-    
-    testImage.src = url;
+
+    const fallback = preview.querySelector('.thumb-preview-fallback');
+    if (fallback) fallback.remove();
+    img.src = url;
 }
 
 // ===================== SCREENSHOT GAMEPLAY FUNCTIONS =====================
@@ -2460,7 +2480,8 @@ function previewGameplayScreenshots() {
 
     preview.innerHTML = urls.map((url, index) => `
         <div class="screenshot-preview-card">
-            <img src="${escapeHTML(url)}" alt="Screenshot Gameplay ${index + 1}" loading="lazy" onerror="this.style.opacity='0.35'; this.alt='Gagal memuat screenshot';">
+            <img src="${escapeHTML(url)}" alt="Screenshot Gameplay ${index + 1}" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" onerror="this.style.display='none'; this.parentElement.querySelector('.screenshot-fallback').style.display='block';">
+            <div class="screenshot-fallback alert alert-warning p-2 mb-1" style="display:none;font-size:.75rem;">Preview gagal dimuat, URL tetap disimpan.</div>
             <small title="${escapeHTML(url)}">${index + 1}. ${escapeHTML(url)}</small>
         </div>
     `).join('');
@@ -2486,20 +2507,10 @@ function hasMediaForScreenshootApi() {
 }
 
 function detectGameplayScreenshotsFromPasteLines(lines, thumbnailUrl = '') {
-    const imageUrls = [];
-    const thumb = String(thumbnailUrl || '').trim();
-
-    (lines || []).forEach(line => {
-        const url = String(line || '').trim();
-        if (!url || url === thumb) return;
-        if (isProbablyImageUrl(url)) imageUrls.push(url);
-    });
-
-    // Anggap gambar terakhir sebagai thumbnail, sisanya sebagai screenshot gameplay.
-    // Jika thumbnail sudah ditemukan, hanya URL gambar selain thumbnail yang dimasukkan.
-    const unique = imageUrls.filter((url, index, arr) => arr.indexOf(url) === index);
-    if (thumb) return unique.filter(url => url !== thumb);
-    return unique.length > 1 ? unique.slice(0, -1) : [];
+    // Di format PS3 baru: semua URL gambar di bagian akhir dianggap Screenshot Gameplay.
+    // Gambar pertama juga tetap boleh dipakai sebagai thumbnail utama, tetapi TIDAK dikeluarkan dari daftar screenshot.
+    const imageUrls = extractImageUrlsFromLines(lines || []);
+    return imageUrls.filter((url, index, arr) => arr.indexOf(url) === index);
 }
 
 function autoFillGameplayScreenshotsFromPaste() {
@@ -2511,8 +2522,7 @@ function autoFillGameplayScreenshotsFromPaste() {
         if (!text) return;
 
         const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
-        const thumbnailUrl = String(document.getElementById('thumbnailUrl')?.value || detectThumbnailFromPasteLines(lines) || '').trim();
-        const screenshots = detectGameplayScreenshotsFromPasteLines(lines, thumbnailUrl);
+        const screenshots = detectGameplayScreenshotsFromPasteLines(lines);
 
         if (screenshots.length) {
             setGameplayScreenshotUrls(screenshots);
@@ -2778,7 +2788,7 @@ async function saveGameData() {
                             ${gameplayScreenshots.map((url, idx) => `
                                 <div class="col-6 col-md-4">
                                     <a href="${escapeHTML(url)}" target="_blank" rel="noopener">
-                                        <img src="${escapeHTML(url)}" alt="${escapeHTML(gameData.gameInfo.nama_game)} Screenshot ${idx + 1}" class="img-fluid rounded" style="width: 100%; height: 150px; object-fit: cover; border: 1px solid #444;">
+                                        <img src="${escapeHTML(url)}" alt="${escapeHTML(gameData.gameInfo.nama_game)} Screenshot ${idx + 1}" class="img-fluid rounded" referrerpolicy="no-referrer" loading="lazy" style="width: 100%; height: 150px; object-fit: cover; border: 1px solid #444;">
                                     </a>
                                 </div>
                             `).join('')}
@@ -3183,6 +3193,7 @@ async function saveGameData() {
                     
                     ${gameData.gameInfo.thumbnail_url ? `
                     <div class="col-md-12 mt-3">
+
                     </div>
                     ` : ''}
                     ${screenshotGalleryHTML}
@@ -3816,40 +3827,49 @@ function openPayConfirmModal(format, cloudName, saldo, cost = 1000) {
 
 // ===================== THUMBNAIL AUTO-DETECT FUNCTIONS =====================
 
+function normalizeImageUrl(url) {
+    return String(url || '')
+        .trim()
+        .replace(/[\u200B-\u200D\uFEFF]/g, '')
+        .replace(/^[\"'`]+|[\"'`,;]+$/g, '');
+}
+
 function isProbablyImageUrl(url) {
-    const u = String(url || '').trim().toLowerCase();
-    if (!/^https?:\/\//i.test(u)) return false;
-    
-    // Deteksi ekstensi gambar umum
-    const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg'];
-    return imageExtensions.some(ext => u.includes(ext));
+    const clean = normalizeImageUrl(url);
+    const u = clean.toLowerCase();
+    if (!/^https?:\/\//i.test(clean)) return false;
+
+    // Deteksi ekstensi gambar umum, termasuk URL WordPress yang kadang punya query string.
+    return /\.(png|jpe?g|gif|webp|bmp|svg)(\?.*)?$/i.test(clean)
+        || (u.includes('/wp-content/uploads/') && /\.(png|jpe?g|gif|webp|bmp|svg)/i.test(u))
+        || u.includes('imgur.com')
+        || u.includes('postimg.cc')
+        || u.includes('ibb.co')
+        || u.includes('imageshack.us')
+        || u.includes('flickr.com');
+}
+
+function extractImageUrlsFromLines(lines) {
+    const urls = [];
+    (lines || []).forEach(line => {
+        const clean = normalizeImageUrl(line);
+        if (isProbablyImageUrl(clean)) urls.push(clean);
+    });
+    return urls.filter((url, index, arr) => arr.indexOf(url) === index);
 }
 
 function detectThumbnailFromPasteLines(lines) {
-    // Cari dari BAWAH ke ATAS (karena biasanya thumbnail ada di akhir)
-    for (let i = lines.length - 1; i >= 0; i--) {
-        const line = String(lines[i] || '').trim();
-        if (isProbablyImageUrl(line)) {
-            console.log('✅ Thumbnail ditemukan di baris', i + 1, ':', line);
-            return line;
-        }
+    const imageUrls = extractImageUrlsFromLines(lines || []);
+
+    // Format PS3 yang Anda pakai: gambar pertama adalah screenshot pertama.
+    // Thumbnail utama otomatis memakai gambar pertama supaya tetap tersimpan sebagai thumbnail juga.
+    if (imageUrls.length) {
+        const firstImage = imageUrls[0];
+        const lineIndex = (lines || []).findIndex(line => normalizeImageUrl(line) === firstImage);
+        console.log('✅ Thumbnail utama memakai gambar pertama / screenshot pertama di baris', lineIndex + 1, ':', firstImage);
+        return firstImage;
     }
-    
-    // Coba cari pattern image hosting umum
-    for (let i = lines.length - 1; i >= 0; i--) {
-        const line = String(lines[i] || '').trim().toLowerCase();
-        if (line.includes('imgur.com') || 
-            line.includes('postimg.cc') ||
-            line.includes('ibb.co') ||
-            line.includes('imageshack.us') ||
-            line.includes('flickr.com') ||
-            line.includes('drive.google.com/file/d/') ||
-            (line.includes('indapk.com') && line.includes('uploads'))) {
-            console.log('✅ Thumbnail ditemukan (pattern match):', line);
-            return lines[i].trim(); // Return original case
-        }
-    }
-    
+
     return '';
 }
 
@@ -3857,37 +3877,30 @@ function autoFillThumbnailFromPaste() {
     try {
         const pasteArea = document.getElementById('pasteArea');
         if (!pasteArea) return;
-        
+
         const text = pasteArea.value.trim();
         if (!text) return;
-        
+
         const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
-        
-        // Deteksi thumbnail
         const thumbnailUrl = detectThumbnailFromPasteLines(lines);
-        
+
         if (thumbnailUrl) {
-            // Isi field thumbnail
             const thumbnailInput = document.getElementById('thumbnailUrl');
             if (thumbnailInput) {
                 thumbnailInput.value = thumbnailUrl;
-                // Trigger preview
-                setTimeout(() => {
-                    previewThumbnail();
-                }, 100);
+                setTimeout(() => previewThumbnail(), 100);
             }
-            
-            console.log('✅ Thumbnail otomatis terdeteksi:', thumbnailUrl);
-            showToast('success', 'Thumbnail otomatis terdeteksi dan diisi!');
+
+            console.log('✅ Thumbnail otomatis memakai screenshot pertama:', thumbnailUrl);
+            showToast('success', 'Thumbnail otomatis memakai gambar/screenshot pertama!');
         } else {
-            console.log('ℹ️ Tidak ada thumbnail yang terdeteksi dalam paste data');
+            console.log('ℹ️ Tidak ada thumbnail/gambar yang terdeteksi dalam paste data');
         }
-        
+
     } catch (error) {
         console.error('❌ Error dalam auto-detect thumbnail:', error);
     }
 }
-
 
 
         // ===================== UTILITY FUNCTIONS =====================
